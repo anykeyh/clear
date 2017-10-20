@@ -58,29 +58,10 @@ class Clear::SQL::SelectQuery
 
   def print_columns
     "SELECT " +
-      begin
-        if @columns.any?
-          @columns.map { |c| c.to_sql }.join(", ")
-        else
-          "*"
-        end
-      end
+      (@columns.any? ? @columns.map { |c| c.to_sql }.join(", ") : "*")
   end
 
   def to_sql
-    puts "---- START ----"
-    p print_columns
-    p print_froms
-    p print_joins
-    p @wheres
-    p print_wheres
-    p print_havings
-    p print_group_bys
-    p print_order_bys
-    p print_limit_offsets
-    p print_lock
-    puts "------- END ------"
-
     [print_columns,
      print_froms,
      print_joins,
@@ -100,7 +81,6 @@ class Clear::SQL::SelectQuery
 
     raise QueryBuildingError.new("Cannot delete from a select with sub-select as from clause") if v.is_a?(SelectQuery)
 
-    puts v
     DeleteQuery.new(from: v.dup, wheres: @wheres.dup)
   end
 

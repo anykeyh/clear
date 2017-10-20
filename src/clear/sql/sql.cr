@@ -1,6 +1,7 @@
 require "../expression/expression"
 require "./select_query"
 require "./delete_query"
+require "./insert_query"
 
 module Clear
   # Helpers to create SQL tree

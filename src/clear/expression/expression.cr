@@ -3,8 +3,11 @@
 # Provide natural way of writing down WHERE, JOIN and HAVING condition clause
 #
 class Clear::Expression
-  DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M%S.%L"
+  DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L"
   DATABASE_DATE_FORMAT      = "%Y-%m-%d"
+
+  alias AvailableLiteral = Int32 | Int64 | Float32 | Float64 |
+                           String | Symbol | Time | Bool
 
   def self.[](*args) : String
     safe_literal(*args)
@@ -102,14 +105,14 @@ class Clear::Expression
     raw(x)
   end
 
-  # macro method_missing(call)
-  #   {% if call.args.size > 0 %}
-  #     args = {{call.args}}.map{|x| Clear::Expression[x] }.join(", ")
-  #     return Node::Variable.new("{{call.name.id}}( #{args} )")
-  #   {% else %}
-  #     return Node::Variable.new({{call.name.id.stringify}})
-  #   {% end %}
-  # end
+  macro method_missing(call)
+     {% if call.args.size > 0 %}
+       args = {{call.args}}.map{|x| Clear::Expression[x] }.join(", ")
+       return Node::Variable.new("{{call.name.id}}( #{args} )")
+     {% else %}
+       return Node::Variable.new({{call.name.id.stringify}})
+     {% end %}
+  end
 end
 
 require "./nodes/node"

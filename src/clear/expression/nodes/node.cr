@@ -11,7 +11,7 @@ abstract class Clear::Expression::Node
     {% end %}
 
     def {{op_name.id}}(any : T) : Node forall T
-      Node::DoubleOperator.new(self, Literal(T).new(any), "{{sql_name.id}}")
+      Node::DoubleOperator.new(self, Literal.new(any), "{{sql_name.id}}")
     end
   end
 
@@ -28,7 +28,7 @@ abstract class Clear::Expression::Node
   define_operator("|", "OR")
 
   def in?(arr : Array(T)) forall T
-    Node::InArray(T).new(self, arr.map { |x| Literal(T).new(x) })
+    Node::InArray.new(self, arr.map { |x| Literal.new(x) })
   end
 
   def in?(request : Clear::SQL::SelectQuery)

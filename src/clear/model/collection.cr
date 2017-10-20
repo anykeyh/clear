@@ -6,11 +6,11 @@ module Clear::Model
     end
 
     def to_a : Array(T)
-      out = [] of T
+      # out = [] of T
 
-      self.to_rs do |rs|
-        T.new(rs)
-      end
+      # self.to_rs do |rs|
+      #   T.new(rs)
+      # end
     end
 
     # Pluck one value
@@ -18,7 +18,7 @@ module Clear::Model
     end
 
     def first : T
-      T.new(limit(1).offset(0).to_rs)
+      # T.new(limit(1).offset(0).to_rs)
     end
   end
 end

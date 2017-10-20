@@ -1,5 +1,5 @@
-class Clear::Expression::Node::InArray(T) < Clear::Expression::Node
-  def initialize(@target : Node, @array : Array(Literal(T))); end
+class Clear::Expression::Node::InArray < Clear::Expression::Node
+  def initialize(@target : Node, @array : Array(Literal)); end
 
   def resolve
     if @array.size == 0

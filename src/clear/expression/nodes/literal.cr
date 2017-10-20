@@ -1,8 +1,8 @@
-class Clear::Expression::Node::Literal(T) < Clear::Expression::Node
-  def initialize(@lit : T)
+class Clear::Expression::Node::Literal < Clear::Expression::Node
+  def initialize(@lit : AvailableLiteral)
   end
 
-  def resolve
+  def resolve : String
     Clear::Expression[@lit]
   end
 end

@@ -2,41 +2,45 @@ require "spec"
 
 require "../src/clear/sql"
 
-def delete_request
-  Clear::SQL::DeleteQuery.new
-end
+module DeleteSpec
+  extend self
 
-def one_request
-  select_request
-    .select("MAX(updated_at)")
-    .from(:users)
-end
+  def delete_request
+    Clear::SQL::DeleteQuery.new
+  end
 
-def complex_query
-  Clear::SQL.select.from(:users)
-                   .join(:role_users) { role_users.user_id == users.id }
-                   .join(:roles) { role_users.role_id == roles.id }
-                   .where({role: ["admin", "superadmin"]})
-                   .order_by({priority: :desc, name: :asc})
-                   .limit(1)
-end
+  def one_request
+    select_request
+      .select("MAX(updated_at)")
+      .from(:users)
+  end
 
-describe "Clear::SQL" do
-  describe "DeleteQuery" do
-    it "can create a simple delete" do
-      r = delete_request.from("table")
-      r.to_sql.should eq "DELETE FROM table"
-    end
+  def complex_query
+    Clear::SQL.select.from(:users)
+                     .join(:role_users) { role_users.user_id == users.id }
+                     .join(:roles) { role_users.role_id == roles.id }
+                     .where({role: ["admin", "superadmin"]})
+                     .order_by({priority: :desc, name: :asc})
+                     .limit(1)
+  end
 
-    it "can create a delete with where parameter" do
-      r = delete_request.from("table").where({id: complex_query})
-      r.to_sql.should eq "DELETE FROM table WHERE id IN (SELECT *\n" +
-                         "FROM users\n" +
-                         "INNER JOIN role_users ON ((role_users.user_id = users.id))\n" +
-                         "INNER JOIN roles ON ((role_users.role_id = roles.id))\n" +
-                         "WHERE role IN ('admin', 'superadmin')\n" +
-                         "ORDER BY priority DESC, name ASC\n" +
-                         "LIMIT 1)"
+  describe "Clear::SQL" do
+    describe "DeleteQuery" do
+      it "can create a simple delete" do
+        r = delete_request.from("table")
+        r.to_sql.should eq "DELETE FROM table"
+      end
+
+      it "can create a delete with where parameter" do
+        r = delete_request.from("table").where({id: complex_query})
+        r.to_sql.should eq "DELETE FROM table WHERE id IN (SELECT *\n" +
+                           "FROM users\n" +
+                           "INNER JOIN role_users ON ((role_users.user_id = users.id))\n" +
+                           "INNER JOIN roles ON ((role_users.role_id = roles.id))\n" +
+                           "WHERE role IN ('admin', 'superadmin')\n" +
+                           "ORDER BY priority DESC, name ASC\n" +
+                           "LIMIT 1)"
+      end
     end
   end
 end
