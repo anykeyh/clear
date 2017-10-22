@@ -1,3 +1,4 @@
+require "pg"
 require "big_int"
 require "big_float"
 
@@ -15,8 +16,7 @@ require "big_float"
 #
 #
 class Clear::SQL::InsertQuery
-  alias Inserable = String | Time | Int32 | Int64 | Float32 | Float64 |
-                    BigInt | BigFloat
+  alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   @keys : Array(Symbolic) = [] of Symbolic
   @values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
   @table : Selectable
@@ -29,6 +29,15 @@ class Clear::SQL::InsertQuery
   # insert({field: "value"}).into(:table)
   #
   def insert(row : NamedTuple)
+    @keys = row.keys.to_a.map(&.as(Symbolic))
+
+    v = @values = [] of Array(Inserable)
+    v << row.values.to_a.map(&.as(Inserable))
+
+    self
+  end
+
+  def insert(row : Hash(Symbolic, Inserable))
     @keys = row.keys.to_a.map(&.as(Symbolic))
 
     v = @values = [] of Array(Inserable)

@@ -56,16 +56,19 @@ class Clear::Expression
     when Node
       node
     when Bool
-      # Having precomputed boolean return is
-      # interesting in debug mode and / or if the condition
-      # can be computed before requesting. Therefore we trick the system to
-      # allow this option
-      #
-      # Maybe it would be advisable to raise an error in this case,
+      # UPDATE: Having precomputed boolean return is
+      # probably a mistake using the Expression engine
+      # It is advisable to raise an error in this case,
       # because a developer mistake can create a boolean where he doesn't want to.
-      node = Node::Variable.new(node ? "TRUE" : "FALSE")
+      raise ArgumentError.new("The expression engine discovered a runtime-evaluable condition.\n" +
+                              "It happens when a test is done with values on both sides.\n" +
+                              "Maybe a local variable is breaking the expression engine like here:\n" +
+                              "id = 1\n" +
+                              "Users.where{ id == nil }\n" +
+                              "In this case, please use raw(id == nil) to allow the expression.")
+      # node = Node::Variable.new(node ? "TRUE" : "FALSE")
     else
-      raise ArgumentError.new("Node is incorrect, it must be Bool or ExpressionNode")
+      raise ArgumentError.new("Node is incorrect, it must be an ExpressionNode")
     end
   end
 
@@ -92,11 +95,7 @@ class Clear::Expression
   # where{ raw("COUNT(*)") > 5 }
   # TODO: raw should accept array splat as second parameters and the "?" keyword
   #
-  def raw(x : String)
-    Node::Variable.new(x)
-  end
-
-  def raw(x : Symbol)
+  def raw(x)
     Node::Variable.new(x.to_s)
   end
 

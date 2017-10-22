@@ -1,16 +1,26 @@
 require "../sql/select_query"
 
 module Clear::Model
-  class Collection(T) < Clear::SQL::SelectQuery
+  class CollectionBase(T)
+    include Clear::SQL::SelectBuilder
+
     def each(&block)
+      self.to_rs do |hash|
+        yield(T.new(hash))
+      end
     end
 
-    def to_a : Array(T)
-      # out = [] of T
+    # def self.each(rs : ::DB::ResultSet)
+    #   objs = Array(self).new
+    #   rs.each do
+    #     objs << self.new(rs)
+    #   end
+    #   objs
+    # ensure
+    #   rs.close
+    # end
 
-      # self.to_rs do |rs|
-      #   T.new(rs)
-      # end
+    def to_a : Array(T)
     end
 
     # Pluck one value
@@ -18,7 +28,11 @@ module Clear::Model
     end
 
     def first : T
-      # T.new(limit(1).offset(0).to_rs)
+      limit(1).to_rs do |hash|
+        return T.new(hash)
+      end
+
+      raise "Not Found"
     end
   end
 end

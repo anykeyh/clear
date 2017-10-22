@@ -11,5 +11,8 @@ description: |
 dependencies:
   pg:
     github: will/crystal-pg
+  inflector:
+    github: phoffer/inflector.cr
+    version: "~> 0.1.8"
 
 license: MIT

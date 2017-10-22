@@ -17,7 +17,7 @@ module SelectSpec
 
   def complex_query
     select_request.from(:users)
-                  .join(:role_users) { var("role_users.user_id") == var("users.id") }
+                  .join(:role_users) { var("role_users.user_id") == users.id }
                   .join(:roles) { var("role_users.role_id") == var("roles.id") }
                   .where({role: ["admin", "superadmin"]})
                   .order_by({priority: :desc, name: :asc})
@@ -162,55 +162,55 @@ module SelectSpec
 
         context "using expression engine" do
           it "can use different comparison and arithmetic operators" do
-            r = select_request.from(:users).where { var("users.id") > 1 }
+            r = select_request.from(:users).where { users.id > 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id > 1)"
-            r = select_request.from(:users).where { var("users.id") < 1 }
+            r = select_request.from(:users).where { users.id < 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id < 1)"
-            r = select_request.from(:users).where { var("users.id") >= 1 }
+            r = select_request.from(:users).where { users.id >= 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id >= 1)"
-            r = select_request.from(:users).where { var("users.id") <= 1 }
+            r = select_request.from(:users).where { users.id <= 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id <= 1)"
-            r = select_request.from(:users).where { var("users.id") * 2 == 1 }
+            r = select_request.from(:users).where { users.id * 2 == 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE ((users.id * 2) = 1)"
-            r = select_request.from(:users).where { var("users.id") / 2 == 1 }
+            r = select_request.from(:users).where { users.id / 2 == 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE ((users.id / 2) = 1)"
-            r = select_request.from(:users).where { var("users.id") + 2 == 1 }
+            r = select_request.from(:users).where { users.id + 2 == 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE ((users.id + 2) = 1)"
-            r = select_request.from(:users).where { var("users.id") - 2 == 1 }
+            r = select_request.from(:users).where { users.id - 2 == 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE ((users.id - 2) = 1)"
-            r = select_request.from(:users).where { -var("users.id") < -1000 }
+            r = select_request.from(:users).where { -users.id < -1000 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (-users.id < -1000)"
           end
 
           it "can use expression engine equal" do
-            r = select_request.from(:users).where { var("users.id") == var("test") }
+            r = select_request.from(:users).where { users.id == var("test") }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id = test)"
           end
 
           it "can use expression engine not equals" do
-            r = select_request.from(:users).where { var("users.id") != 1 }
+            r = select_request.from(:users).where { users.id != 1 }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id <> 1)"
           end
 
           it "can use expression engine not null" do
-            r = select_request.from(:users).where { var("users.id") != nil }
+            r = select_request.from(:users).where { users.id != nil }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id IS NOT NULL)"
           end
 
           it "can use expression engine null" do
-            r = select_request.from(:users).where { var("users.id") == nil }
+            r = select_request.from(:users).where { users.id == nil }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id IS NULL)"
           end
 
           it "can stack with `AND` operator" do
             now = Time.now
-            r = select_request.from(:users).where { var("users.id") == nil }.where { var("users.updated_at") >= now }
+            r = select_request.from(:users).where { users.id == nil }.where { var("users.updated_at") >= now }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE (users.id IS NULL) " +
                                "AND (users.updated_at >= #{Clear::Expression[now]})"
           end
 
           it "can use subquery into where clause" do
-            r = select_request.from(:users).where { var("users.id").in?(complex_query.clear_select.select(:id)) }
+            r = select_request.from(:users).where { users.id.in?(complex_query.clear_select.select(:id)) }
             r.to_sql.should eq "SELECT *\nFROM users\nWHERE users.id IN ( " +
                                "SELECT id\nFROM users\nINNER JOIN role_users ON " +
                                "((role_users.user_id = users.id))\nINNER JOIN roles" +
