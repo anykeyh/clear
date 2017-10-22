@@ -10,6 +10,12 @@ module Clear::Model
       end
     end
 
+    def each_with_cursor(batch = 1000, &block)
+      self.to_rs_cursor(count: batch) do |hash|
+        yield(T.new(hash))
+      end
+    end
+
     # def self.each(rs : ::DB::ResultSet)
     #   objs = Array(self).new
     #   rs.each do

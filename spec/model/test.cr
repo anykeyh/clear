@@ -12,7 +12,7 @@ module ModelSpec
 
     field(first_name : String)
     field(last_name : String)
-    field(middle_name : String)
+    field(middle_name : String?)
 
     field(notification_preferences : JSON::Any?)
 
@@ -56,6 +56,12 @@ module ModelSpec
 
       it "can load models" do
         User.query.each do |user|
+          pp user.first_name
+        end
+      end
+
+      it "can read through cursor" do
+        User.query.each_with_cursor(batch: 1000) do |user|
           pp user.first_name
         end
       end
