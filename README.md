@@ -8,7 +8,7 @@ Currently just a work in progress
 
 ```
 +------------------------------------+
-| Model | DB Views | Migrations      | < High Levels Tools
+| Model | DB Views | Migrations      | < High Level Tools
 +---------------+--------------------+
 |  Field | Validation | Converters   | < Mapping system
 +---------------+--------------------+
