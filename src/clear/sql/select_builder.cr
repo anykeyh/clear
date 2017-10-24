@@ -52,7 +52,7 @@ module Clear::SQL::SelectBuilder
      print_group_bys,
      print_order_bys,
      print_limit_offsets,
-     print_lock].compact.reject(&.empty?).join("\n")
+     print_lock].compact.reject(&.empty?).join(" ")
   end
 
   def to_delete

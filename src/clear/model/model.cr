@@ -8,6 +8,7 @@ module Clear::Model
   include Clear::Model::HasSaving
   include Clear::Model::HasValidation
   include Clear::Model::HasRelations
+  include Clear::Model::HasScope
 
   getter? persisted : Bool
 

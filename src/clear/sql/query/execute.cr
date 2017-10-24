@@ -53,6 +53,16 @@ module Clear::SQL::Query::Execute
     end
   end
 
+  def first
+    limit(1).fetch { |x| return x }
+  end
+
+  def to_a : Array(Hash(String, ::Clear::SQL::Any))
+    o = [] of Hash(String, ::Clear::SQL::Any)
+    fetch { |x| o << x }
+    o
+  end
+
   def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)
     Clear::SQL.log_query to_sql do
       h = {} of String => ::Clear::SQL::Any

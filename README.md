@@ -25,12 +25,14 @@ Currently just a work in progress
 - [X] Field mapping
 - [X] Basic SQL: Select/Insert/Update/Delete
 - [X] Cursored fetching
-- [ ] All logic of transaction, update, saving...
+- [X] Debug Queries & Pretty Print (sort of)
+- [ ] Model joins query
+- [ ] Scope
 - [ ] Locks
 - [ ] Having clause
-- [ ] DB Views
 - [ ] CTE
-- [ ] Debug Queries & Pretty Print
+- [ ] All logic of transaction, update, saving...
+- [ ] DB Views
 - [ ] Caching for N+1 Queries
 - [ ] Migrations
 - [ ] Filling this checklist and drink a beer

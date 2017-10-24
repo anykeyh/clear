@@ -36,11 +36,36 @@ module Clear
       Clear::Expression[x]
     end
 
+    SQL_KEYWORDS = %w(
+      ALL ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
+      BOTH CASE CAST CHECK COLLATE COLUMN CONSTRAINT CREATE
+      CURRENT_DATE CURRENT_ROLE CURRENT_TIME CURRENT_TIMESTAMP
+      CURRENT_USER DEFAULT DEFERRABLE DESC DISTINCT DO ELSE
+      END EXCEPT FALSE FOR FOREIGN FROM GRANT GROUP HAVING IN
+      INITIALLY INTERSECT INTO LEADING LIMIT LOCALTIME LOCALTIMESTAMP
+      NEW NOT NULL OFF OFFSET OLD ON ONLY OR ORDER PLACING PRIMARY
+      REFERENCES SELECT SESSION_USER SOME SYMMETRIC TABLE THEN TO
+      TRAILING TRUE UNION UNIQUE USER USING WHEN WHERE
+    )
+
+    def colorize_query(qry : String)
+      qry.to_s.split(/ /).map do |word|
+        if SQL_KEYWORDS.includes?(word.upcase)
+          word.colorize.bold.blue.to_s
+        elsif word =~ /\d+/
+          word.colorize.red
+        else
+          word.colorize.dark_gray
+        end
+      end.join(" ")
+    end
+
     def log_query(sql, &block)
-      time = Benchmark.measure do
-        yield
-      end
-      logger.debug(("[" + time.to_s.colorize.bold.white.to_s + "] #{sql.colorize.dark_gray}"))
+      time = Time.now.epoch_f # TODO: Change to Time.monotonic
+      yield
+    ensure
+      time = Time.now.epoch_f - time.not_nil!
+      logger.debug(("[" + time.to_s.colorize.bold.white.to_s + "s] #{colorize_query(sql)}"))
     end
 
     def sel_str(s : Selectable)
