@@ -27,7 +27,7 @@ Currently just a work in progress
 - [X] Cursored fetching
 - [X] Debug Queries & Pretty Print (sort of)
 - [ ] Model joins query
-- [ ] Scope
+- [X] Scope
 - [ ] Locks
 - [ ] Having clause
 - [ ] CTE
