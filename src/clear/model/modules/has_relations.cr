@@ -35,11 +35,20 @@ module Clear::Model::HasRelations
     {% end %}
   end
 
-  macro belongs_to(name, foreign_key = nil, no_cache = false)
+  macro belongs_to(name, foreign_key = nil, no_cache = false, key_type = Int32?)
     {% t = name.type %}
+    {% foreign_key = foreign_key || t.stringify.underscore + "_id" %}
+
+    field {{foreign_key.id}} : {{key_type}}
+
     def {{name.var.id}} : {{t}}?
-      {% foreign_key = foreign_key || t.stringify.underscore + "_id" %}
-      {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first
+      @{{foreign_key.id}} ||
+        {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first
+    end
+
+    def {{name.var.id}}=(x : {{t}}?)
+      @{{foreign_key.id}} = x
+      @{{foreign_key.id}}_field.value = x.pkey
     end
   end
 end

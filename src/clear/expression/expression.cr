@@ -7,7 +7,7 @@ class Clear::Expression
   DATABASE_DATE_FORMAT      = "%Y-%m-%d"
 
   alias AvailableLiteral = Int32 | Int64 | Float32 | Float64 |
-                           String | Symbol | Time | Bool
+                           String | Symbol | Time | Bool | Nil
 
   def self.[](*args) : String
     safe_literal(*args)

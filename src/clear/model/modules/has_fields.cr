@@ -54,6 +54,8 @@ module Clear::Model::HasFields
        unless converter
          if type.is_a?(Path)
            converter = ("Clear::Model::Converter::" + type.stringify + "Converter").id
+         elsif type.is_a?(Generic) # Union?
+           converter = ("Clear::Model::Converter::" + type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          else
            converter = ("Clear::Model::Converter::" + type.types.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          end

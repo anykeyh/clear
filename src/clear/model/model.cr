@@ -35,7 +35,6 @@ module Clear::Model
     class_property table : Clear::SQL::Symbolic = self.name.downcase.pluralize
 
     class Collection < Clear::Model::CollectionBase({{@type}}); end
-    extend Clear::Model::HasHooks::ClassMethods
 
     # extend Clear::Model::ClassMethods
 

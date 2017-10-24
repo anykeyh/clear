@@ -3,8 +3,8 @@ module Clear::Model::HasValidation
 
   getter errors : Array(Error) = [] of Error
 
-  def add_error(reason, field = nil)
-    @errors << Error.new(reason: reason, field: field)
+  def add_error(field, reason)
+    @errors << Error.new(reason: reason, field: field.to_s)
   end
 
   def has_error?
