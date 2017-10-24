@@ -16,10 +16,26 @@ module Clear::Model
       end
     end
 
+    def count(x : T.class = Int32) : T forall T
+      T.new(self.clear_select.select("COUNT(*)").scalar.as(Int64))
+    end
+
+    def max(field, x : T.class) forall T
+      self.clear_select.select("MAX(#{field})").scalar.as(T)
+    end
+
     def to_a(fetch_columns = false) : Array(T)
       out = [] of T
       each(fetch_columns: fetch_columns) { |m| out << m }
       out
+    end
+
+    def [](off) : T
+      self.[]?(off).not_nil
+    end
+
+    def []?(off) : T?
+      self.offset(off).first
     end
 
     # Pluck one specific value
@@ -27,12 +43,16 @@ module Clear::Model
 
     # end
 
-    def first : T
+    def first! : T
+      first.not_nil!
+    end
+
+    def first : T?
       limit(1).fetch do |hash|
         return T.new(hash)
       end
 
-      raise "Not Found"
+      return nil
     end
   end
 end

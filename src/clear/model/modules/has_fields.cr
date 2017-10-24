@@ -4,8 +4,10 @@ require "pg"
 # This module declare all the methods and macro related to fields in `Clear::Model`
 module Clear::Model::HasFields
   macro included
-    FIELDS = {} of Nil => Nil
-    getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
+    macro included
+      FIELDS = {} of Nil => Nil
+      getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
+    end
   end
 
   # Access to direct SQL attributes given by the request used to build the model.

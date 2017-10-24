@@ -7,6 +7,7 @@ module Clear::Model
   include Clear::Model::HasTimestamps
   include Clear::Model::HasSaving
   include Clear::Model::HasValidation
+  include Clear::Model::HasRelations
 
   getter? persisted : Bool
 
@@ -28,14 +29,14 @@ module Clear::Model
     end
   end
 
+  # For some reasons (the class "Collection" inheriting from Generic prevent working extension...
+  # So the fields will be added manually
   macro included
     class_property table : Clear::SQL::Symbolic = self.name.downcase.pluralize
 
     class Collection < Clear::Model::CollectionBase({{@type}}); end
     extend Clear::Model::HasHooks::ClassMethods
 
-    # For some reasons (the class "Collection" inheriting from Generic prevent working extension...
-    # So the fields will be added manually
     # extend Clear::Model::ClassMethods
 
     def self.query
@@ -55,7 +56,6 @@ module Clear::Model
     def self.fields
       @@fields
     end
-
 
     macro finished
       __generate_fields

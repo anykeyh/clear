@@ -3,6 +3,10 @@ require "../expression/expression"
 require "pg"
 require "db"
 
+require "colorize"
+require "logger"
+require "benchmark"
+
 module Clear
   # Helpers to create SQL tree
   module SQL
@@ -19,6 +23,10 @@ module Clear
 
     extend self
 
+    class_property logger : Logger = Logger.new(STDOUT)
+
+    logger.level = Logger::DEBUG
+
     class_getter connection : DB::Database = DB.open("postgres://postgres@localhost/otc_development_master")
 
     alias Symbolic = String | Symbol
@@ -26,6 +34,13 @@ module Clear
 
     def sanitize(x : String, delimiter = "''")
       Clear::Expression[x]
+    end
+
+    def log_query(sql, &block)
+      time = Benchmark.measure do
+        yield
+      end
+      logger.debug(("[" + time.to_s.colorize.bold.white.to_s + "] #{sql.colorize.dark_gray}"))
     end
 
     def sel_str(s : Selectable)

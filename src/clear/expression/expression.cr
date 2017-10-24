@@ -65,7 +65,7 @@ class Clear::Expression
                               "Maybe a local variable is breaking the expression engine like here:\n" +
                               "id = 1\n" +
                               "Users.where{ id == nil }\n" +
-                              "In this case, please use raw(id == nil) to allow the expression.")
+                              "In this case, please use `raw(\"id == nil\")` to allow the expression.")
       # node = Node::Variable.new(node ? "TRUE" : "FALSE")
     else
       raise ArgumentError.new("Node is incorrect, it must be an ExpressionNode")

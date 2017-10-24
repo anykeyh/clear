@@ -1,6 +1,6 @@
 # Clear
 
-This is an attempt to recreate an ORM for postgresql and crystal from scratch.
+This is an attempt to recreate an ORM for PostgreSQL and Crystal from scratch.
 
 Currently just a work in progress
 
@@ -24,6 +24,13 @@ Currently just a work in progress
 - [X] Hook callback
 - [X] Field mapping
 - [X] Basic SQL: Select/Insert/Update/Delete
-- [X] Cursor fetching
+- [X] Cursored fetching
+- [ ] All logic of transaction, update, saving...
+- [ ] Locks
+- [ ] Having clause
 - [ ] DB Views
 - [ ] CTE
+- [ ] Debug Queries & Pretty Print
+- [ ] Caching for N+1 Queries
+- [ ] Migrations
+- [ ] Filling this checklist and drink a beer
