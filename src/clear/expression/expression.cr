@@ -24,7 +24,7 @@ class Clear::Expression
   end
 
   # Be able to use a Select Query as sub query
-  def self.safe_literal(x : ::Clear::SQL::SelectQuery)
+  def self.safe_literal(x : ::Clear::SQL::SelectBuilder)
     "(#{x.to_sql})"
   end
 

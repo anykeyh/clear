@@ -30,6 +30,10 @@ struct Clear::Model::Field(T)
     @value.as(T)
   end
 
+  def value(default : X) : T | X forall X
+    defined? ? @value.as(T) : default
+  end
+
   def revert
     if @value != @old_value && @old_value != UNKNOWN
       @changed = true
@@ -52,6 +56,11 @@ struct Clear::Model::Field(T)
     end
 
     @old_value = @value
+  end
+
+  def value=(x : UnknownClass)
+    @value = UNKNOWN
+    @changed = false
   end
 
   def value=(x : T)

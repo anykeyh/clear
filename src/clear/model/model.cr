@@ -6,6 +6,7 @@ module Clear::Model
   include Clear::Model::HasHooks
   include Clear::Model::HasTimestamps
   include Clear::Model::HasSaving
+  include Clear::Model::HasValidation
 
   getter? persisted : Bool
 
@@ -14,7 +15,7 @@ module Clear::Model
   end
 
   def initialize(h : Hash(String, ::Clear::SQL::Any), @persisted = false)
-    @attributes.merge(h)
+    @attributes.merge!(h)
     set(h)
   end
 

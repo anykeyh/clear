@@ -5,7 +5,7 @@ module Clear::Model
     include Clear::SQL::SelectBuilder
 
     def each(&block)
-      self.to_rs do |hash|
+      self.each do |hash|
         yield(T.new(hash))
       end
     end
@@ -16,25 +16,19 @@ module Clear::Model
       end
     end
 
-    # def self.each(rs : ::DB::ResultSet)
-    #   objs = Array(self).new
-    #   rs.each do
-    #     objs << self.new(rs)
-    #   end
-    #   objs
-    # ensure
-    #   rs.close
+    def to_a : Array(T)
+      out = [] of T
+      each { |m| out << m }
+      out
+    end
+
+    # Pluck one specific value
+    # def pluck(fields : NamedTuple(*U)) : Array(Hash(String, U)) forall U
+
     # end
 
-    def to_a : Array(T)
-    end
-
-    # Pluck one value
-    def pluck(field_name, c : Class(T)) : Array(T) forall T
-    end
-
     def first : T
-      limit(1).to_rs do |hash|
+      limit(1).each do |hash|
         return T.new(hash)
       end
 

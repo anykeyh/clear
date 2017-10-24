@@ -7,6 +7,14 @@ module Clear::Model::HasFields
     getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
   end
 
+  def [](x) : ::Clear::SQL::Any
+    attributes[x]
+  end
+
+  def []?(x) : ::Clear::SQL::Any
+    attributes[x]?
+  end
+
   macro field(name, primary = false, converter = nil, field = nil)
     {% type = name.type
        unless converter
@@ -85,7 +93,7 @@ module Clear::Model::HasFields
 
       {% for name, settings in FIELDS %}
         if @{{name}}_field.defined?
-          out["{{settings[:field]}}"] = {{settings[:converter]}}.to_db(@{{name}}_field.value)
+          out["{{settings[:field]}}"] = {{settings[:converter]}}.to_db(@{{name}}_field.value(nil))
         end
       {% end %}
 

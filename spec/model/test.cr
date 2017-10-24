@@ -61,7 +61,7 @@ module ModelSpec
       end
 
       it "can read through cursor" do
-        User.query.each_with_cursor(batch: 1000) do |user|
+        User.query.each_with_cursor(batch: 50) do |user|
           pp user.first_name
         end
       end

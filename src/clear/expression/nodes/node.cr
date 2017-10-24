@@ -31,7 +31,7 @@ abstract class Clear::Expression::Node
     Node::InArray.new(self, arr.map { |x| Literal.new(x) })
   end
 
-  def in?(request : Clear::SQL::SelectQuery)
+  def in?(request : ::Clear::SQL::SelectBuilder)
     Node::InSelect.new(self, request)
   end
 

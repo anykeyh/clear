@@ -17,13 +17,15 @@ module Clear::SQL::Query::Execute
     end
 
     lines
+  ensure
+    rs.close
   end
 
   # Use a cursor to fetch the data
-  def to_rs_cursor(count = 1000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def each_cursor(count = 1000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     Clear::SQL.connection.transaction do |tx|
       cnx = tx.connection
-      cursor_name = "__cur__#{Time.now.epoch}_#{(rand*0xfffffff).to_i}"
+      cursor_name = "__cursor_#{Time.now.epoch ^ (rand*0xfffffff).to_i}__"
       cnx.exec("DECLARE #{cursor_name} CURSOR FOR #{to_sql}")
 
       n = count
@@ -36,9 +38,15 @@ module Clear::SQL::Query::Execute
     end
   end
 
-  def to_rs(&block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def scalar(type : T.class) forall T
+    Clear::SQL.connection.scalar(to_sql).as(T)
+  end
+
+  def each(&block : Hash(String, ::Clear::SQL::Any) -> Void)
     h = {} of String => ::Clear::SQL::Any
-    puts "#{to_sql}..."
-    Clear::SQL.connection.query(to_sql) { |rs| fetch_result_set(h, rs) { |x| yield(x) } }
+
+    Clear::SQL.connection.query(to_sql) do |rs|
+      fetch_result_set(h, rs) { |x| yield(x) }
+    end
   end
 end

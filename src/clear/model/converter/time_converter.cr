@@ -11,6 +11,11 @@ class Clear::Model::Converter::TimeConverter
   end
 
   def self.to_db(x : Time?)
-    x.to_s(Clear::Expression::DATABASE_DATE_TIME_FORMAT)
+    case x
+    when Nil
+      nil
+    else
+      x.to_s(Clear::Expression::DATABASE_DATE_TIME_FORMAT)
+    end
   end
 end
