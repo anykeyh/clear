@@ -1,4 +1,4 @@
-module Clear::ValidationHelper
+module Clear::Validation::Helper
   macro _on_presence(field, &block)
     if persisted?
       if {{field.id}}_field.defined?

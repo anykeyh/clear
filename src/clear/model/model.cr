@@ -10,17 +10,22 @@ module Clear::Model
 
   getter? persisted : Bool
 
-  def initialize
-    @persisted = false
-  end
+  # We use here included for errors purpose.
+  # The overload are shown in this case, but not in the case the constructors
+  # are directly defined without the included block.
+  macro included
+    def initialize
+      @persisted = false
+    end
 
-  def initialize(h : Hash(String, ::Clear::SQL::Any), @persisted = false)
-    @attributes.merge!(h)
-    set(h)
-  end
+    def initialize(h : Hash(String, ::Clear::SQL::Any), @persisted = false, fetch_columns = false )
+      @attributes.merge!(h) if fetch_columns
+      set(h)
+    end
 
-  def initialize(t : NamedTuple, @persisted = false)
-    set(t)
+    def initialize(t : NamedTuple, @persisted = false)
+      set(t)
+    end
   end
 
   macro included

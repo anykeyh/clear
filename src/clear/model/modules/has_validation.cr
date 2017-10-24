@@ -24,7 +24,9 @@ module Clear::Model::HasValidation
 
   def valid?
     clear_errors
-    validate
+
+    with_triggers(:validate) { validate }
+
     !has_error?
   end
 end

@@ -4,6 +4,17 @@ module Clear::Model::HasHooks
 
     EVENTS_BEFORE = {} of Symbol => Array(HookFunction)
     EVENTS_AFTER = {} of Symbol => Array(HookFunction)
+
+    macro included
+      macro before(event_name, method)
+        before(:"\\{{event_name.id}}"){ |mdl| mdl.as(\{{@type}}).\\{{method}}  }
+      end
+
+      macro after(event_name, method)
+        after(:"\\{{event_name.id}}"){ |mdl| mdl.as(\{{@type}}).\\{{method}}  }
+      end
+    end
+
   end
 
   module ClassMethods

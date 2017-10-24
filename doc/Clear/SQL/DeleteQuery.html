@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/anykeyh/clear">
+  <link href="../../css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="../../js/doc.js"></script>
+  <title>Clear::SQL::DeleteQuery - github.com/anykeyh/clear</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li><a href="../../index.html">README</a></li>
+  </ul>
+
+  <ul>
+  
+  <li class="parent open current" data-id="github.com/anykeyh/clear/Clear" data-name="clear">
+      <a href="../../Clear.html">Clear</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Expression" data-name="clear::expression">
+      <a href="../../Clear/Expression.html">Expression</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/AvailableLiteral" data-name="clear::expression::availableliteral">
+      <a href="../../Clear/Expression/AvailableLiteral.html">AvailableLiteral</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Expression/Node" data-name="clear::expression::node">
+      <a href="../../Clear/Expression/Node.html">Node</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Between" data-name="clear::expression::node::between">
+      <a href="../../Clear/Expression/Node/Between.html">Between</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Between/BetweenType" data-name="clear::expression::node::between::betweentype">
+      <a href="../../Clear/Expression/Node/Between/BetweenType.html">BetweenType</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/DoubleOperator" data-name="clear::expression::node::doubleoperator">
+      <a href="../../Clear/Expression/Node/DoubleOperator.html">DoubleOperator</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/InArray" data-name="clear::expression::node::inarray">
+      <a href="../../Clear/Expression/Node/InArray.html">InArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/InSelect" data-name="clear::expression::node::inselect">
+      <a href="../../Clear/Expression/Node/InSelect.html">InSelect</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Literal" data-name="clear::expression::node::literal">
+      <a href="../../Clear/Expression/Node/Literal.html">Literal</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Minus" data-name="clear::expression::node::minus">
+      <a href="../../Clear/Expression/Node/Minus.html">Minus</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Not" data-name="clear::expression::node::not">
+      <a href="../../Clear/Expression/Node/Not.html">Not</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Expression/Node/NotBetween" data-name="clear::expression::node::notbetween">
+      <a href="../../Clear/Expression/Node/NotBetween.html">NotBetween</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/NotBetween/BetweenType" data-name="clear::expression::node::notbetween::betweentype">
+      <a href="../../Clear/Expression/Node/NotBetween/BetweenType.html">BetweenType</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Null" data-name="clear::expression::node::null">
+      <a href="../../Clear/Expression/Node/Null.html">Null</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Expression/Node/Variable" data-name="clear::expression::node::variable">
+      <a href="../../Clear/Expression/Node/Variable.html">Variable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model" data-name="clear::model">
+      <a href="../../Clear/Model.html">Model</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/ClassMethods" data-name="clear::model::classmethods">
+      <a href="../../Clear/Model/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/CollectionBase" data-name="clear::model::collectionbase(t)">
+      <a href="../../Clear/Model/CollectionBase.html">CollectionBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model/Converter" data-name="clear::model::converter">
+      <a href="../../Clear/Model/Converter.html">Converter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Converter/Float32Converter" data-name="clear::model::converter::float32converter">
+      <a href="../../Clear/Model/Converter/Float32Converter.html">Float32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Converter/Int32Converter" data-name="clear::model::converter::int32converter">
+      <a href="../../Clear/Model/Converter/Int32Converter.html">Int32Converter</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model/Converter/JSON" data-name="clear::model::converter::json">
+      <a href="../../Clear/Model/Converter/JSON.html">JSON</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Converter/JSON/AnyConverter" data-name="clear::model::converter::json::anyconverter">
+      <a href="../../Clear/Model/Converter/JSON/AnyConverter.html">AnyConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Converter/StringConverter" data-name="clear::model::converter::stringconverter">
+      <a href="../../Clear/Model/Converter/StringConverter.html">StringConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Converter/TimeConverter" data-name="clear::model::converter::timeconverter">
+      <a href="../../Clear/Model/Converter/TimeConverter.html">TimeConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model/Field" data-name="clear::model::field(t)">
+      <a href="../../Clear/Model/Field.html">Field</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Field/CustomType" data-name="clear::model::field::customtype">
+      <a href="../../Clear/Model/Field/CustomType.html">CustomType</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/Field/UnknownClass" data-name="clear::model::field::unknownclass">
+      <a href="../../Clear/Model/Field/UnknownClass.html">UnknownClass</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HasFields" data-name="clear::model::hasfields">
+      <a href="../../Clear/Model/HasFields.html">HasFields</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model/HasHooks" data-name="clear::model::hashooks">
+      <a href="../../Clear/Model/HasHooks.html">HasHooks</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HasHooks/ClassMethods" data-name="clear::model::hashooks::classmethods">
+      <a href="../../Clear/Model/HasHooks/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HasSaving" data-name="clear::model::hassaving">
+      <a href="../../Clear/Model/HasSaving.html">HasSaving</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HasTimestamps" data-name="clear::model::hastimestamps">
+      <a href="../../Clear/Model/HasTimestamps.html">HasTimestamps</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/Model/HasValidation" data-name="clear::model::hasvalidation">
+      <a href="../../Clear/Model/HasValidation.html">HasValidation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HasValidation/Error" data-name="clear::model::hasvalidation::error">
+      <a href="../../Clear/Model/HasValidation/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/Model/HookFunction" data-name="clear::model::hookfunction">
+      <a href="../../Clear/Model/HookFunction.html">HookFunction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="github.com/anykeyh/clear/Clear/SQL" data-name="clear::sql">
+      <a href="../../Clear/SQL.html">SQL</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Any" data-name="clear::sql::any">
+      <a href="../../Clear/SQL/Any.html">Any</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Column" data-name="clear::sql::column">
+      <a href="../../Clear/SQL/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" current" data-id="github.com/anykeyh/clear/Clear/SQL/DeleteQuery" data-name="clear::sql::deletequery">
+      <a href="../../Clear/SQL/DeleteQuery.html">DeleteQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Error" data-name="clear::sql::error">
+      <a href="../../Clear/SQL/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Fragment" data-name="clear::sql::fragment">
+      <a href="../../Clear/SQL/Fragment.html">Fragment</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/From" data-name="clear::sql::from">
+      <a href="../../Clear/SQL/From.html">From</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/SQL/InsertQuery" data-name="clear::sql::insertquery">
+      <a href="../../Clear/SQL/InsertQuery.html">InsertQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/InsertQuery/Inserable" data-name="clear::sql::insertquery::inserable">
+      <a href="../../Clear/SQL/InsertQuery/Inserable.html">Inserable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Join" data-name="clear::sql::join">
+      <a href="../../Clear/SQL/Join.html">Join</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/SQL/Query" data-name="clear::sql::query">
+      <a href="../../Clear/SQL/Query.html">Query</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/Execute" data-name="clear::sql::query::execute">
+      <a href="../../Clear/SQL/Query/Execute.html">Execute</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/From" data-name="clear::sql::query::from">
+      <a href="../../Clear/SQL/Query/From.html">From</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/GroupBy" data-name="clear::sql::query::groupby">
+      <a href="../../Clear/SQL/Query/GroupBy.html">GroupBy</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/Join" data-name="clear::sql::query::join">
+      <a href="../../Clear/SQL/Query/Join.html">Join</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/OffsetLimit" data-name="clear::sql::query::offsetlimit">
+      <a href="../../Clear/SQL/Query/OffsetLimit.html">OffsetLimit</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/OrderBy" data-name="clear::sql::query::orderby">
+      <a href="../../Clear/SQL/Query/OrderBy.html">OrderBy</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/Select" data-name="clear::sql::query::select">
+      <a href="../../Clear/SQL/Query/Select.html">Select</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Query/Where" data-name="clear::sql::query::where">
+      <a href="../../Clear/SQL/Query/Where.html">Where</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/QueryBuildingError" data-name="clear::sql::querybuildingerror">
+      <a href="../../Clear/SQL/QueryBuildingError.html">QueryBuildingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Selectable" data-name="clear::sql::selectable">
+      <a href="../../Clear/SQL/Selectable.html">Selectable</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/SelectBuilder" data-name="clear::sql::selectbuilder">
+      <a href="../../Clear/SQL/SelectBuilder.html">SelectBuilder</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/SelectQuery" data-name="clear::sql::selectquery">
+      <a href="../../Clear/SQL/SelectQuery.html">SelectQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/Symbolic" data-name="clear::sql::symbolic">
+      <a href="../../Clear/SQL/Symbolic.html">Symbolic</a>
+      
+    </li>
+  
+  <li class="parent " data-id="github.com/anykeyh/clear/Clear/SQL/UpdateQuery" data-name="clear::sql::updatequery">
+      <a href="../../Clear/SQL/UpdateQuery.html">UpdateQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/UpdateQuery/Updatable" data-name="clear::sql::updatequery::updatable">
+      <a href="../../Clear/SQL/UpdateQuery/Updatable.html">Updatable</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/SQL/UpdateQuery/UpdateInstruction" data-name="clear::sql::updatequery::updateinstruction">
+      <a href="../../Clear/SQL/UpdateQuery/UpdateInstruction.html">UpdateInstruction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="github.com/anykeyh/clear/Clear/ValidationHelper" data-name="clear::validationhelper">
+      <a href="../../Clear/ValidationHelper.html">ValidationHelper</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> Clear::SQL::DeleteQuery
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Clear/SQL/DeleteQuery.html">Clear::SQL::DeleteQuery</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+  <h2>Included Modules</h2>
+  <ul class="other-types-list">
+  
+    <li class="other-type"><a href="../../Clear/SQL/Query/Where.html">Clear::SQL::Query::Where</a></li>
+  
+  </ul>
+
+
+
+
+
+
+
+
+
+
+  <h2>Defined in:</h2>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/dda24a6a410d536212661e3ad32ca28950c595f5/src/clear/sql/delete_query.cr#L3" target="_blank">clear/sql/delete_query.cr</a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>Constructors</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28from%3Dnil%2Cwheres%3D%5B%5DofClear%3A%3AExpression%3A%3ANode%29-class-method" class="signature"><strong>.new</strong>(from = <span class="n">nil</span>, wheres = <span class="o">[]</span> <span class="k">of</span> <span class="t">Clear</span><span class="t">::</span><span class="t">Expression</span><span class="t">::</span><span class="t">Node</span>)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>Instance Method Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#from%28x%29-instance-method" class="signature"><strong>#from</strong>(x)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#from%3ASymbolic%3F-instance-method" class="signature"><strong>#from</strong> : Symbolic?</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_sql-instance-method" class="signature"><strong>#to_sql</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wheres%3AArray%28Clear%3A%3AExpression%3A%3ANode%29-instance-method" class="signature"><strong>#wheres</strong> : Array(Clear::Expression::Node)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+  <h3>Instance methods inherited from module <code><a href="../../Clear/SQL/Query/Where.html">Clear::SQL::Query::Where</a></code></h3>
+  
+  
+    <a href="../../Clear/SQL/Query/Where.html#clear_wheres-instance-method" class="tooltip">
+      <span>clear_wheres</span>
+    clear_wheres</a>, 
+    
+  
+    <a href="../../Clear/SQL/Query/Where.html#where%28%26block%29-instance-method" class="tooltip">
+      <span>where(&block)<br/>where(str : String, parameters : Array(T)) forall T<br/>where(str : String, parameters : NamedTuple)<br/>where(x : NamedTuple)<br/>where(str : String)</span>
+    where</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>Constructor Detail</h2>
+  
+    <div class="entry-detail" id="new&#40;from&#61;nil,wheres&#61;&#91;&#93;ofClear::Expression::Node&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(from = <span class="n">nil</span>, wheres = <span class="o">[]</span> <span class="k">of</span> <span class="t">Clear</span><span class="t">::</span><span class="t">Expression</span><span class="t">::</span><span class="t">Node</span>)
+
+        <a class="method-permalink" href="#new%28from%3Dnil%2Cwheres%3D%5B%5DofClear%3A%3AExpression%3A%3ANode%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/dda24a6a410d536212661e3ad32ca28950c595f5/src/clear/sql/delete_query.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>Instance Method Detail</h2>
+  
+    <div class="entry-detail" id="from&#40;x&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>from</strong>(x)
+
+        <a class="method-permalink" href="#from%28x%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/dda24a6a410d536212661e3ad32ca28950c595f5/src/clear/sql/delete_query.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="from:Symbolic?-instance-method">
+      <div class="signature">
+        
+        def <strong>from</strong> : <a href="../../Clear/SQL/Symbolic.html">Symbolic</a>?
+
+        <a class="method-permalink" href="#from%3ASymbolic%3F-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/dda24a6a410d536212661e3ad32ca28950c595f5/src/clear/sql/delete_query.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_sql-instance-method">
+      <div class="signature">
+        
+        def <strong>to_sql</strong>
+
+        <a class="method-permalink" href="#to_sql-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/dda24a6a410d536212661e3ad32ca28950c595f5/src/clear/sql/delete_query.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wheres:Array&#40;Clear::Expression::Node&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>wheres</strong> : Array(<a href="../../Clear/Expression/Node.html">Clear::Expression::Node</a>)
+
+        <a class="method-permalink" href="#wheres%3AArray%28Clear%3A%3AExpression%3A%3ANode%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>

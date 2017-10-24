@@ -4,21 +4,21 @@ module Clear::Model
   class CollectionBase(T)
     include Clear::SQL::SelectBuilder
 
-    def each(&block)
-      self.each do |hash|
-        yield(T.new(hash))
+    def each(fetch_columns = false, &block)
+      fetch do |hash|
+        yield(T.new(hash, fetch_columns: fetch_columns))
       end
     end
 
-    def each_with_cursor(batch = 1000, &block)
-      self.to_rs_cursor(count: batch) do |hash|
-        yield(T.new(hash))
+    def each_with_cursor(batch = 1000, fetch_columns = false, &block)
+      self.fetch_with_cursor(count: batch) do |hash|
+        yield(T.new(hash, fetch_columns: fetch_columns))
       end
     end
 
-    def to_a : Array(T)
+    def to_a(fetch_columns = false) : Array(T)
       out = [] of T
-      each { |m| out << m }
+      each(fetch_columns: fetch_columns) { |m| out << m }
       out
     end
 
@@ -28,7 +28,7 @@ module Clear::Model
     # end
 
     def first : T
-      limit(1).each do |hash|
+      limit(1).fetch do |hash|
         return T.new(hash)
       end
 

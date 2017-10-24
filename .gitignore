@@ -1,2 +1,4 @@
 .shards
 lib
+tmp
+poc
