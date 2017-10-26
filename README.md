@@ -1,14 +1,33 @@
 # Clear
 
-This is an attempt to recreate an ORM for PostgreSQL and Crystal from scratch.
+This is an attempt to recreate a fully functional and elegant
+Lightweight API Framework + Dense ORM for Crystal, from scratch.
 
-Currently just a work in progress
+Nothing ambitious at all !
+
+## Key features
+
+- A powerful ORM for PostgreSQL database. No other database are planned yet,
+ thus to allow Clear to use the full potential of Postgres.
+- A controller system for JSON APIs.
+- Assets distribution (html, javascript, images, css).
+- Tooling for generating backbone of your application
+- Documentation to use the framework.
+- Documentation to enhance the framework (plugins).
+
+The idea is to use Clear in backend, and View / React frontend.
+
+*Currently just a work in progress.*
+
+( But the ORM is in good way now! :) )
 
 ## Architecture
 
 ```
 +------------------------------------+
-| Model | DB Views | Migrations      | < High Level Tools
+|           THE ORM STACK            +
++------------------------------------+
+|  Model | DB Views | Migrations     | < High Level Tools
 +---------------+--------------------+
 |  Field | Validation | Converters   | < Mapping system
 +---------------+--------------------+
@@ -18,7 +37,12 @@ Currently just a work in progress
 +------------------------------------+
 ```
 
+The ORM is freely inspired by Sequel and ActiveRecord.
+It offers advanced features for Postgres (see Roadmap)
+
 ## Roadmap
+
+ORM:
 
 - [X] Validation
 - [X] Hook callback
@@ -26,13 +50,13 @@ Currently just a work in progress
 - [X] Basic SQL: Select/Insert/Update/Delete
 - [X] Cursored fetching
 - [X] Debug Queries & Pretty Print (sort of)
-- [ ] Model joins query
 - [X] Scope
-- [ ] Locks
+- [X] Locks
 - [ ] Having clause
 - [ ] CTE
 - [ ] All logic of transaction, update, saving...
 - [ ] DB Views
 - [ ] Caching for N+1 Queries
+- [ ] Model joins query
 - [ ] Migrations
 - [ ] Filling this checklist and drink a beer

@@ -67,45 +67,8 @@ module ModelSpec
       end
 
       it "can read json" do
-        pp User.query.first.notification_preferences
+        pp User.query.first!.notification_preferences
       end
     end
   end
 end
-
-# id = 1
-
-# abstract struct X
-#   abstract def to_something
-# end
-
-# struct Y < X
-#   def to_something
-#     "As string !"
-#   end
-# end
-
-# struct Z < X
-#   def to_something : Int32
-#     123 # Integer ?
-#   end
-# end
-
-# class Test
-#   property x : X
-
-#   def initialize(@x)
-#   end
-# end
-
-# class T
-#   property! x : Clear::Model::Converter::Base
-# end
-
-# u = User.new
-# u.name = "hello"
-# p u.name
-
-# p User.fields
-# p User.all.where { raw(id == nil) }.to_sql
-# p User.find(123)

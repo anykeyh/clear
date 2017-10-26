@@ -2,6 +2,8 @@ require "pg"
 require "big_int"
 require "big_float"
 
+require "./query/*"
+
 #
 # An insert query
 #
@@ -17,9 +19,11 @@ require "big_float"
 #
 class Clear::SQL::InsertQuery
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
-  @keys : Array(Symbolic) = [] of Symbolic
-  @values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
-  @table : Selectable
+  getter keys : Array(Symbolic) = [] of Symbolic
+  getter values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
+  getter table : Selectable
+
+  include Query::Execute
 
   def initialize(@table : Selectable)
   end

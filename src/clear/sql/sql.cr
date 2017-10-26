@@ -36,6 +36,10 @@ module Clear
       Clear::Expression[x]
     end
 
+    def execute(sql)
+      log_query(sql) { Clear::SQL.connection.exec(sql) }
+    end
+
     SQL_KEYWORDS = %w(
       ALL ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
       BOTH CASE CAST CHECK COLLATE COLUMN CONSTRAINT CREATE
@@ -60,12 +64,22 @@ module Clear
       end.join(" ")
     end
 
+    def self.display_time(x)
+      if (x > 1)
+        x.to_i.to_s + "s"
+      elsif (x > 0.001)
+        (1000*x).to_i.to_s + "ms"
+      else
+        (1000000*x).to_i.to_s + "µs"
+      end
+    end
+
     def log_query(sql, &block)
       time = Time.now.epoch_f # TODO: Change to Time.monotonic
       yield
     ensure
       time = Time.now.epoch_f - time.not_nil!
-      logger.debug(("[" + time.to_s.colorize.bold.white.to_s + "s] #{colorize_query(sql)}"))
+      logger.debug(("[" + SQL.display_time(time).colorize.bold.white.to_s + "] #{colorize_query(sql)}"))
     end
 
     def sel_str(s : Selectable)

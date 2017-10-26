@@ -4,6 +4,7 @@ class Clear::SQL::DeleteQuery
   getter from : Symbolic?
 
   include Query::Where
+  include Query::Execute
 
   def initialize(@from = nil,
                  @wheres = [] of Clear::Expression::Node)

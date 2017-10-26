@@ -22,7 +22,7 @@ module InsertSpec
           Clear::SQL.select.from("old_users")
                            .where { old_users.id > 100 }
         ).to_sql.should eq (
-          "INSERT INTO users (SELECT *\nFROM old_users\nWHERE (old_users.id > 100))"
+          "INSERT INTO users (SELECT * FROM old_users WHERE (old_users.id > 100))"
         )
       end
     end

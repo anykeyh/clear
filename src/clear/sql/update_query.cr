@@ -11,6 +11,7 @@ class Clear::SQL::UpdateQuery
   @table : String
 
   include Query::Where
+  include Query::Execute
 
   def initialize(table, @wheres = [] of Clear::Expression::Node)
     @table = table.to_s

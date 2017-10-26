@@ -10,8 +10,4 @@ module Clear::Model::HasSaving
 
     true
   end
-
-  # macro included
-  #   class_property table : Clear::SQL::Symbolic = self.name.downcase.pluralize
-  # end
 end

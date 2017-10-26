@@ -1,8 +1,6 @@
 module Clear::SQL::SelectBuilder
   getter havings : Array(Clear::Expression::Node)
 
-  getter lock : String?
-
   def initialize(@columns = [] of SQL::Column,
                  @froms = [] of SQL::From,
                  @joins = [] of SQL::Join,
@@ -23,6 +21,8 @@ module Clear::SQL::SelectBuilder
   include Query::GroupBy
   include Query::OffsetLimit
   include Query::Execute
+  include Query::Lock
+  include Query::Fetch
 
   def dup
     d = SelectQuery.new(columns: @columns.dup,
@@ -69,10 +69,5 @@ module Clear::SQL::SelectBuilder
   protected def print_havings
     return unless @havings.any?
     "HAVING " + @havings.map(&.resolve).join(" AND ")
-  end
-
-  protected def print_lock
-    return unless @lock
-    @lock
   end
 end

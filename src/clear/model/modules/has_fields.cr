@@ -105,8 +105,8 @@ module Clear::Model::HasFields
 
     def set( h : Hash(Symbol, ::Clear::SQL::Any) )
       {% for name, settings in FIELDS %}
-        v = h[:"{{settings[:field]}}"].fetch(Field::UNKNOWN)
-        @{{name}}_field.reset({{settings[:converter]}}.to_field(v)) if v != Field::UNKNOWN
+        v = h.fetch(:"{{settings[:field]}}"){ Field::UNKNOWN }
+        @{{name}}_field.reset({{settings[:converter]}}.to_field(v)) unless v.is_a?(Field::UnknownClass)
       {% end %}
     end
 

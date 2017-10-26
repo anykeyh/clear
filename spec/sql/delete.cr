@@ -33,12 +33,12 @@ module DeleteSpec
 
       it "can create a delete with where parameter" do
         r = delete_request.from("table").where({id: complex_query})
-        r.to_sql.should eq "DELETE FROM table WHERE id IN (SELECT *\n" +
-                           "FROM users\n" +
-                           "INNER JOIN role_users ON ((role_users.user_id = users.id))\n" +
-                           "INNER JOIN roles ON ((role_users.role_id = roles.id))\n" +
-                           "WHERE role IN ('admin', 'superadmin')\n" +
-                           "ORDER BY priority DESC, name ASC\n" +
+        r.to_sql.should eq "DELETE FROM table WHERE id IN (SELECT * " +
+                           "FROM users " +
+                           "INNER JOIN role_users ON ((role_users.user_id = users.id)) " +
+                           "INNER JOIN roles ON ((role_users.role_id = roles.id)) " +
+                           "WHERE role IN ('admin', 'superadmin') " +
+                           "ORDER BY priority DESC, name ASC " +
                            "LIMIT 1)"
       end
     end
