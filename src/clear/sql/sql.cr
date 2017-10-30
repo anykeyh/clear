@@ -8,7 +8,35 @@ require "logger"
 require "benchmark"
 
 module Clear
-  # Helpers to create SQL tree
+  #
+  # ## Clear::SQL
+  #
+  # Clear is made like an onion:
+  #
+  # ```
+  # +------------------------------------+
+  # |           THE ORM STACK            +
+  # +------------------------------------+
+  # |  Model | DB Views | Migrations     | < High Level Tools
+  # +---------------+--------------------+
+  # |  Field | Validation | Converters   | < Mapping system
+  # +---------------+--------------------+
+  # |  Clear::SQL   | Clear::Expression  | < Low Level SQL Builder
+  # +------------------------------------+
+  # |  Crystal DB   | Crystal PG         | < Low Level connection
+  # +------------------------------------+
+  # ```
+  # On the bottom stack, Clear offer SQL query building.
+  # Theses features are then used by uppermost parts of the engine.
+  #
+  # The SQL module provide simple API to generate delete, insert, select and update
+  # methods.
+  #
+  # Each requests can be duplicated then modified and executed.
+  #
+  # Each request object is mutable. Therefor, to update and store a request,
+  # you must use manually the `dup` method.
+  #
   module SQL
     alias Any = Array(PG::BoolArray) | Array(PG::CharArray) | Array(PG::Float32Array) |
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
@@ -32,14 +60,21 @@ module Clear
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectQuery
 
+    # Sanitize the
     def sanitize(x : String, delimiter = "''")
       Clear::Expression[x]
     end
 
+    # Execute a SQL request.
+    #
+    # Usage:
+    # Clear::SQL.execute("SELECT 1 FROM users")
+    #
     def execute(sql)
       log_query(sql) { Clear::SQL.connection.exec(sql) }
     end
 
+    # FIXME: This is a helper, we should export it somewhere else
     SQL_KEYWORDS = %w(
       ALL ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
       BOTH CASE CAST CHECK COLLATE COLUMN CONSTRAINT CREATE
@@ -64,6 +99,7 @@ module Clear
       end.join(" ")
     end
 
+    # FIXME: This is a helper, we should export it somewhere else
     def self.display_time(x)
       if (x > 1)
         x.to_i.to_s + "s"

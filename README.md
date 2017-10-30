@@ -1,40 +1,34 @@
 # Clear
 
-This is an attempt to recreate a fully functional and elegant
-Lightweight API Framework + Dense ORM for Crystal, from scratch.
+Clear ORM is currently in development by myself ( github: _anykeyh_ ).
+The goal is to provide an advanced ORM for postgreSQL.
 
-Nothing ambitious at all !
+Instead of working on adapter for differents database, I wanted to offer the
+maximum features for a specific platform.
 
-## Key features
+It's not every day we chose a database layout, and there's few reasons for you
+to change your database during the development cycle (at least, from SQL to SQL).
 
-- A powerful ORM for PostgreSQL database. No other database are planned yet,
- thus to allow Clear to use the full potential of Postgres.
-- A controller system for JSON APIs.
-- Assets distribution (html, javascript, images, css).
-- Tooling for generating backbone of your application
-- Documentation to use the framework.
-- Documentation to enhance the framework (plugins).
+Postgres offers a lot of features in a very performant engine, and seems suitable
+for large projects in Crystal.
 
-The idea is to use Clear in backend, and View / React frontend.
-
-*Currently just a work in progress.*
-
-( But the ORM is in good way now! :) )
+And here you have ! The ORM made for Postgres and Crystal, simple to use, full
+of ideas stolen to ActiveRecord or Sequel :-).
 
 ## Architecture
 
-```
-+------------------------------------+
-|           THE ORM STACK            +
-+------------------------------------+
-|  Model | DB Views | Migrations     | < High Level Tools
-+---------------+--------------------+
-|  Field | Validation | Converters   | < Mapping system
-+---------------+--------------------+
-|  Clear::SQL   | Clear::Expression  | < Low Level SQL Builder
-+------------------------------------+
-|  Crystal DB   | Crystal PG         | < Low Level connection
-+------------------------------------+
+```text
++---------------------------------------------+
+|              Clear                          +
++---------------------------------------------+
+|  Model | DB Views | Migrations | crclr CLI  | < High Level Tools
++---------------+-----------------------------+
+|  Field | Validation | Converters            | < Mapping system
++---------------+-----------------------------+
+|  Clear::SQL   | Clear::Expression           | < Low Level SQL Builder
++---------------------------------------------+
+|  Crystal DB   | Crystal PG                  | < Low Level connection
++---------------------------------------------+
 ```
 
 The ORM is freely inspired by Sequel and ActiveRecord.
@@ -59,4 +53,9 @@ ORM:
 - [ ] Caching for N+1 Queries
 - [ ] Model joins query
 - [ ] Migrations
+- [ ] crclr tool
 - [ ] Filling this checklist and drink a beer
+
+## Licensing
+
+This shard is provided under the MIT license.

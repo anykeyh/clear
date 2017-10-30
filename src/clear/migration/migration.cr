@@ -1,15 +1,75 @@
 module Clear::Migration::Helper; end
 
 ###
-# Base module for database migration management.
+# # Clear's migration system
+#
+# Migrations in Clear are very similar to active record's migrations.
+# Migrations are two-way modification of the database.
+#
+# It helps to keep a consistent database state during development lifecycle
+# of your application.
+#
+#
+# To create a migration, two ways:
+#
+# ## Clear command
+#
+# ### TL;DR
+#
+# You can create a new file which will be present in `src/db/migrate` using:
+#
+# `crclr migration:g migration_name`
+#
+# Thus will create a migration in `src/db/migration/[:uid]_migration_name.cr`
+# (with uid number) and a class `MigrationName`
+#
+# ### Advanced options
+#
+# You can use `crclr help migration` to get advanced options.
+#
+# ## Manually
+#
+# You can create a class following this naming convention:
+# `Anything + Number.`
+# The number is then used to order the migration between each others and must be unique.
+#
+# Following the rule than inclusion is often better than inheritance, just
+# include the module `Clear::Migration` to your class.
+#
+# ## Methods of migration
+#
+# ### Migration direction
+#
+# Only one method must be overrided: `change`. In comparison to ActiveRecord, there's no
+# up and down methods, instead you can put specific up/down code like this:
+#
+# ```
+# def change(dir)
+#   dir.down { irreversible! }
+# end
+# ```
+#
+# ```
+# def change(dir)
+#   add_column :users, :full_name, :string
+#
+#   dir.up do
+#     execute("UPDATE users SET full_name = (SELECT first_name || ' '  || last_name) from users")
+#   end
+# end
+# ```
+#
 #
 ###
 module Clear::Migration
   include Helper
 
+  # This error is throw when you try to revert a migration which is irreversible.
+  class IrreversibleMigration < Exception; end
+
   macro included
 
-    ###
+  #
     # Return the migration number (Unique ID or UID) for migration sorting.
     #
     # Default behavior (By order of priority):
@@ -23,7 +83,7 @@ module Clear::Migration
     # `class MyMigration1234567 # << Order = 1234567`
     # `file db/1234567_my_migration.cr # << Order = 1234567`
     #
-    ###
+  #
     def uid
       filename = File.basename(__FILE__)
       if self.class.name =~ /[0-9]+$/
@@ -38,8 +98,9 @@ module Clear::Migration
             "– Override the method uid ! Be sure the number is immutable\n"
       end
     end
-
   end
+
+  @operations : Array(Operation) = [] of Operation
 
   abstract def change(dir)
 
@@ -47,18 +108,33 @@ module Clear::Migration
     SQL.connection.execute(x)
   end
 
-  def apply(dir)
-    change(dir)
-
-    if dir == :up
-      @operations.each(&.up)
-    elsif dir == :down
-      @operations.each(&.down)
-    end
+  def add_operation(op : Operation)
+    @operations << op
   end
 
-  def included
-    Migration::Manager.instance.add(self.new)
+  def irreversible!
+    raise IrreversibleMigration.new("Migration #{@name} is irreversible!")
+  end
+
+  # This will apply the migration in a given direction (up or down)
+  def apply(dir : Direction)
+    change(dir)
+
+    if dir.up?
+      @operations.each { |op|
+        puts op.up
+      }
+    elsif dir.down?
+      @operations.each { |op|
+        puts op.down
+      }
+    end
+
+    self
+  end
+
+  macro included
+    Clear::Migration::Manager.instance.add(self.new)
   end
 end
 

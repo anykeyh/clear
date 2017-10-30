@@ -37,16 +37,16 @@ module Clear::Migration
     end
   end
 
-  struct DropIndex < Operation
-    def initialize(@table)
-    end
+  # struct DropIndex < Operation
+  #   def initialize(@table)
+  #   end
 
-    def up
-      "DROP TABLE #{@table}"
-    end
+  #   def up
+  #     "DROP TABLE #{@table}"
+  #   end
 
-    def down
-      "CREATE TABLE #{@table}"
-    end
-  end
+  #   def down
+  #     "CREATE TABLE #{@table}"
+  #   end
+  # end
 end

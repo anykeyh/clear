@@ -1,3 +1,17 @@
+###
+# A variable AST node.
+# It's what's created under the hood when you use a non-existent variable:
+#
+# ```
+# where { users.id != nil }
+#
+# will produce this tree:
+#
+# # => double_operator('<>')
+# #   # => variable('id', parent: 'users')
+# #   # => null
+#
+# ```
 class Clear::Expression::Node::Variable < Clear::Expression::Node
   def initialize(@a : String); end
 

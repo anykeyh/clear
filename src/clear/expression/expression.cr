@@ -1,6 +1,56 @@
+###
+# ## Clear's Expression engine
 #
-# Clear's Expression engine
-# Provide natural way of writing down WHERE, JOIN and HAVING condition clause
+# The goal of this module is to offer the most natural way to write down your
+# query in crystal.
+#
+# If you're familiar with Sequel on Ruby, then here you have !
+#
+# Instead of writing:
+#
+# ```
+# model_collection.where("created_at BETWEEN ? AND ?", 1.day.ago, DateTime.now)
+# ```
+#
+# You can write:
+# ```
+# model_collection.where { created_at.between(1.day.ago, DateTime.now) }
+# ```
+#
+# or even:
+# ```
+# model_collection.where { created_at.in?(1.day.ago..DateTime.now) }
+# ```
+#
+# (Note for the later, it will generate `created_at > 1.day.ago AND created_at < DateTime.now`)
+#
+# ## Limitations
+#
+# Due to the use of `missing_method` macro, some case can be confusing.
+#
+# ### Existing local variable / instance method
+#
+# ```
+# id = 1
+# model_collection.where { id > 100 } # Will raise an error, because the expression is resolved by Crystal !
+# # Should be:
+# id = 1
+# model_collection.where { var("id") > 100 } # Will works
+# ```
+#
+# ### Usage of AND / OR
+#
+# And/Or can be used using the bitwises operators `&` and `|`.
+# Due to the impossibility to reuse `||` and `&&`, beware the operator precendance
+# rules are changed.
+#
+# ```crystal
+# # v-- This below will not works, as we cannot redefine the `or` operator
+# model_collection.where { first_name == "yacine" || last_name == "petitprez" }
+# # v-- This will works, but beware of the parenthesis between each terms, as `|` is prioritary on `==`
+# model.collection.where { (firt_name == "yacine") | (last_name == "petitprez") }
+# # ^-- ... WHERE first_name = 'yacine' OR last_name == ''
+# ```
 #
 class Clear::Expression
   DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L"
@@ -9,25 +59,25 @@ class Clear::Expression
   alias AvailableLiteral = Int32 | Int64 | Float32 | Float64 |
                            String | Symbol | Time | Bool | Nil
 
+  # fastest way to call self.safe_literal
+  # See `safe_literal(x : _)`
   def self.[](*args) : String
     safe_literal(*args)
   end
 
-  # Safe literal of a number is the number itself
   def self.safe_literal(x : Number) : String
     x.to_s
   end
 
-  # Safe literal of a string. Replace the quote character to double-quote (postgres only)
   def self.safe_literal(x : String) : String
     "'" + x.gsub(/\'/, "''") + "'"
   end
 
-  # Be able to use a Select Query as sub query
   def self.safe_literal(x : ::Clear::SQL::SelectBuilder)
     "(#{x.to_sql})"
   end
 
+  #
   # Safe literal of a time is the time in the database format
   # @params date
   #   if date is passed, then only the date part of the Time is used:
@@ -83,23 +133,33 @@ class Clear::Expression
   end
 
   # Not operator
+  #
+  # ```
+  # Clear::Expression.where { not(a == b) }.resolve # >> "WHERE NOT( a = b )
+  # ```
   def not(x : Node)
     Node::Not.new(x)
   end
 
+  #
   # In case the name of the variable is a reserved word (e.g. not or ... raw :P)
   # or in case of a complex piece impossible to express with the expression engine
   # (mostly usage of functions)
   # you can use then raw
   #
-  # where{ raw("COUNT(*)") > 5 }
-  # TODO: raw should accept array splat as second parameters and the "?" keyword
+  # ```
+  # where { raw("COUNT(*)") > 5 }
+  # ```
+  #
+  # IDEA: raw should accept array splat as second parameters and the "?" keyword
   #
   def raw(x)
     Node::Variable.new(x.to_s)
   end
 
-  # Alias for raw since I deactivated the method_missing code
+  # Alias for `raw`
+  #
+  # See `raw`
   def var(x)
     raw(x)
   end
