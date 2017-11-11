@@ -120,15 +120,19 @@ module Clear::Migration
   def apply(dir : Direction)
     change(dir)
 
-    if dir.up?
+    dir.up do
       @operations.each { |op|
-        puts op.up
-      }
-    elsif dir.down?
-      @operations.each { |op|
-        puts op.down
+        op.up.each { |x| Clear::SQL.execute(x.as(String)) }
       }
     end
+
+    dir.down do
+      @operations.each { |op|
+        op.down.each { |x| Clear::SQL.execute(x.as(String)) }
+      }
+    end
+
+    SQL.insert("__clear_metadatas", {metatype: "migration", value: uid}).execute
 
     self
   end

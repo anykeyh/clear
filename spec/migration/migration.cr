@@ -1,4 +1,4 @@
-require "../../src/clear"
+require "../spec_helper"
 
 module MigrationSpec
   extend self
@@ -8,8 +8,6 @@ module MigrationSpec
 
     def change(dir)
       create_table(:test) do |t|
-        t.integer :id, primary: true
-
         t.string :first_name
         t.string :last_name
 
@@ -20,6 +18,9 @@ module MigrationSpec
     end
   end
 
-  puts Migration123.new.uid
-  Clear::Migration::Manager.instance.apply_all
+  describe "Migration" do
+    it "can apply migration up" do
+      Migration123.new.apply(Clear::Migration::Direction::UP)
+    end
+  end
 end

@@ -7,11 +7,11 @@ module Clear::Migration
     end
 
     def up
-      @up
+      [@up].compact
     end
 
     def down
-      @down
+      [@down].compact
     end
   end
 end

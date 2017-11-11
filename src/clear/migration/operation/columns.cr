@@ -8,11 +8,11 @@ module Clear::Migration
     end
 
     def up
-      "ALTER TABLE #{@table} ADD #{@column} #{@datatype}"
+      ["ALTER TABLE #{@table} ADD #{@column} #{@datatype}"]
     end
 
     def down
-      "ALTER TABLE table_name DROP #{@column}"
+      ["ALTER TABLE table_name DROP #{@column}"]
     end
   end
 
@@ -25,12 +25,12 @@ module Clear::Migration
     end
 
     def up
-      "ALTER TABLE #{@table} DROP #{@column}"
+      ["ALTER TABLE #{@table} DROP #{@column}"]
     end
 
     def down
-      raise IrreversibleMigration.new if @datatype.nil?
-      "ALTER TABLE #{@table} ADD #{@column} #{@datatype}"
+      raise IrreversibleMigration.new("Cannot revert column drop, because datatype is unknown") if @datatype.nil?
+      ["ALTER TABLE #{@table} ADD #{@column} #{@datatype}"]
     end
   end
 
@@ -49,25 +49,25 @@ module Clear::Migration
     end
 
     def up
-      o = ""
+      o = [] of String
       if @old_column_name && @new_column_name && @old_column_name != @new_column_name
-        o += "ALTER TABLE #{@table} RENAME COLUMN #{@old_column_name} TO #{@new_column_name};"
+        o << "ALTER TABLE #{@table} RENAME COLUMN #{@old_column_name} TO #{@new_column_name};"
       end
 
       if @old_column_type && @new_column_type && @old_column_type != @new_column_type
-        o += "ALTER TABLE #{@table} ALTER COLUMN #{@new_column_name} SET DATA TYPE #{@new_column_type};"
+        o << "ALTER TABLE #{@table} ALTER COLUMN #{@new_column_name} SET DATA TYPE #{@new_column_type};"
       end
 
       o
     end
 
     def down
-      o = ""
+      o = [] of String
       if @old_column_name && @new_column_name && @old_column_name != @new_column_name
-        o += "ALTER TABLE #{@table} RENAME COLUMN #{@new_column_name} TO #{@old_column_name};"
+        o << "ALTER TABLE #{@table} RENAME COLUMN #{@new_column_name} TO #{@old_column_name};"
       end
       if @old_column_type && @new_column_type && @old_column_type != @new_column_type
-        o += "ALTER TABLE #{@table} ALTER COLUMN #{@old_column_name} SET DATA TYPE #{@old_column_type};"
+        o << "ALTER TABLE #{@table} ALTER COLUMN #{@old_column_name} SET DATA TYPE #{@old_column_type};"
       end
 
       o
@@ -85,6 +85,14 @@ module Clear::Migration::Helper
     self.add_operation(Clear::Migration::AddColumn.new(
       table, from, nil, to, nil
     ))
+  end
+
+  def drop_column(table, column, type)
+    self.add_operation(Clear::Migration::RemoveColumn.new(table, column, type))
+  end
+
+  def change_column_type(table, column, to, from = nil)
+    self.add_operation(Clear::Migration::AlterColumn.new(table, column, from, nil, to))
   end
 
   def change_type_column(table, from, to)

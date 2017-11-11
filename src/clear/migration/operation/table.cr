@@ -21,10 +21,19 @@ module Clear::Migration
     # Method missing is used to generate add_column using the method name as
     # column type (ActiveRecord's style)
     macro method_missing(caller)
+      type = {{caller.name.stringify}}
+
+      type = case type
+      when "string"
+        "text"
+      else
+        type
+      end
+
       {% if caller.named_args.is_a?(Nop) %}
-        self.add_column( {{caller.args[0]}}.to_s, type: {{caller.name.stringify}} )
+        self.add_column( {{caller.args[0]}}.to_s, type: type )
       {% else %}
-        self.add_column( {{caller.args[0]}}.to_s, type: {{caller.name.stringify}},
+        self.add_column( {{caller.args[0]}}.to_s, type: type,
           {{caller.named_args.join(", ").id}} )
       {% end %}
     end
@@ -99,10 +108,11 @@ module Clear::Migration
 
     private def print_columns
       out = column_operations.map do |x|
-        [x.column, x.type,
+        [x.column,
+         x.type,
          x.null ? nil : "NOT NULL",
          x.default ? "DEFAULT #{x.default}" : nil,
-         x.primary ? "PRIMARY" : nil]
+         x.primary ? "PRIMARY KEY" : nil]
           .compact.join(" ")
       end.join(", ")
 
@@ -117,11 +127,11 @@ module Clear::Migration
     end
 
     def up
-      "CREATE TABLE #{@table}"
+      ["CREATE TABLE #{@table}"]
     end
 
     def down
-      "DROP TABLE #{@table}"
+      ["DROP TABLE #{@table}"]
     end
   end
 
@@ -132,11 +142,11 @@ module Clear::Migration
     end
 
     def up
-      "DROP TABLE #{@table}"
+      ["DROP TABLE #{@table}"]
     end
 
     def down
-      "CREATE TABLE #{@table}"
+      ["CREATE TABLE #{@table}"]
     end
   end
 
@@ -171,8 +181,9 @@ module Clear::Migration
     #
     def create_table(name, primary = true, &block)
       table = Table.new(name.to_s, is_create: true)
+
       if primary
-        table.id :integer, primary: true
+        table.serial :id, primary: true
       end
 
       yield(table)

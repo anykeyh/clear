@@ -27,7 +27,7 @@ class Clear::Migration::Manager
   # Return a set of uid of the current up migrations.
   getter migrations_up : Set(Int32) = Set(Int32).new
 
-  private def initialize
+  protected def initialize
     ensure_database_is_ready
   end
 
@@ -42,7 +42,7 @@ class Clear::Migration::Manager
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
     list_of_migrations.reject! { |x| @migrations_up.includes?(x) }
 
-    list_of_migrations.map(&.apply(:up))
+    list_of_migrations.each(&.apply(:up))
   end
 
   #
@@ -105,7 +105,7 @@ class Clear::Migration::Manager
     Clear::SQL.select("*")
               .from("__clear_metadatas")
               .where({metatype: "migration"}).to_a.map { |m|
-      @migrations_up.add(m["value"].as(Int32))
+      @migrations_up.add(m["value"].as(String).to_i)
     }
   end
 

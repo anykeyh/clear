@@ -1,12 +1,23 @@
+require "spec"
+
 require "../src/clear"
 
-module SpecHelper
-  class SetupDatabase1
-    include Clear::Migration
+def initdb
+  `echo "DROP DATABASE IF EXISTS clear_spec;" | psql -U postgres`
+  `echo "CREATE DATABASE clear_spec;" | psql -U postgres`
 
-    def change(dir)
-    end
-  end
+  Clear::SQL.init("postgres://postgres@localhost/clear_spec")
 end
 
-Clear::Migration::Manager.instance.apply_all!
+initdb
+
+# module SpecHelper
+#   class SetupDatabase1
+#     include Clear::Migration
+
+#     def change(dir)
+#     end
+#   end
+# end
+
+# Clear::Migration::Manager.instance.apply_all!

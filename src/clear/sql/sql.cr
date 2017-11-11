@@ -47,6 +47,8 @@ module Clear
 
     class Error < Exception; end
 
+    class ExecutionError < Error; end
+
     class QueryBuildingError < Error; end
 
     extend self
@@ -55,7 +57,7 @@ module Clear
 
     logger.level = Logger::DEBUG
 
-    class_getter connection : DB::Database = DB.open("postgres://postgres@localhost/otc_development_master")
+    class_getter! connection : DB::Database
 
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectQuery
@@ -65,13 +67,22 @@ module Clear
       Clear::Expression[x]
     end
 
+    def init(url : String)
+      @@connection = DB.open(url)
+    end
+
     # Execute a SQL request.
     #
     # Usage:
     # Clear::SQL.execute("SELECT 1 FROM users")
     #
     def execute(sql)
-      log_query(sql) { Clear::SQL.connection.exec(sql) }
+      begin
+        log_query(sql) { Clear::SQL.connection.exec(sql) }
+      rescue e
+        raise ExecutionError.new("Error while trying to execute SQL: `#{e.message}`\n" +
+                                 "`#{colorize_query(sql)}`")
+      end
     end
 
     # FIXME: This is a helper, we should export it somewhere else
@@ -88,7 +99,7 @@ module Clear
     )
 
     def colorize_query(qry : String)
-      qry.to_s.split(/ /).map do |word|
+      qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
         if SQL_KEYWORDS.includes?(word.upcase)
           word.colorize.bold.blue.to_s
         elsif word =~ /\d+/
@@ -96,7 +107,7 @@ module Clear
         else
           word.colorize.dark_gray
         end
-      end.join(" ")
+      end.join("")
     end
 
     # FIXME: This is a helper, we should export it somewhere else
@@ -120,6 +131,10 @@ module Clear
 
     def sel_str(s : Selectable)
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
+    end
+
+    def insert(table, *args)
+      insert_into(table, *args)
     end
 
     def insert_into(table, *args)

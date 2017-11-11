@@ -29,7 +29,7 @@ module Clear::Migration
     @dir : Symbol
 
     # :nodoc:
-    private def initialize(@dir)
+    protected def initialize(@dir)
     end
 
     # Run the block if the direction is up

@@ -29,11 +29,11 @@ module Clear::Migration
     end
 
     def up
-      ["CREATE", print_unique, "INDEX", @name, "ON", @table, print_using, print_columns].compact.join(" ")
+      [["CREATE", print_unique, "INDEX", @name, "ON", @table, print_using, print_columns].compact.join(" ")]
     end
 
     def down
-      "DROP INDEX #{@name}"
+      ["DROP INDEX #{@name}"]
     end
   end
 
