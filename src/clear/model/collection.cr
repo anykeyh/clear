@@ -24,6 +24,10 @@ module Clear::Model
       return false
     end
 
+    def empty?
+      not any?
+    end
+
     def count : Int64
       self.clear_select.select("COUNT(*)").scalar(Int64)
     end

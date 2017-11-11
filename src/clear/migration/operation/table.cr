@@ -33,8 +33,7 @@ module Clear::Migration
       {% if caller.named_args.is_a?(Nop) %}
         self.add_column( {{caller.args[0]}}.to_s, type: type )
       {% else %}
-        self.add_column( {{caller.args[0]}}.to_s, type: type,
-          {{caller.named_args.join(", ").id}} )
+        self.add_column( {{caller.args[0]}}.to_s, type: type, {{caller.named_args.join(", ").id}} )
       {% end %}
     end
 
@@ -49,9 +48,15 @@ module Clear::Migration
 
     #
     # Add/alter a column for this table.
-    def add_column(column, type, default = nil, null = true, primary = false)
+    def add_column(column, type, default = nil, null = true, primary = false, index = false, unique = false)
       self.column_operations << ColumnOperation.new(column: column.to_s, type: type.to_s,
         default: default, null: null, primary: primary)
+
+      if unique
+        add_index(field: column, unique: true)
+      elsif index
+        add_index(field: column, unique: false)
+      end
     end
 
     #
@@ -62,7 +67,7 @@ module Clear::Migration
     end
 
     private def add_index(field, name = nil, using = nil, unique = false)
-      name ||= safe_index_name(field.to_s)
+      name ||= safe_index_name([@name, field.to_s].join("_"))
 
       using = using.to_s unless using.nil?
 
@@ -188,10 +193,6 @@ module Clear::Migration
 
       yield(table)
       self.add_operation(table)
-    end
-
-    def alter_table(name, &block)
-      raise "Coming soon !"
     end
   end
 end

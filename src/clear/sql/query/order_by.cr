@@ -10,8 +10,10 @@ module Clear::SQL::Query::OrderBy
     self
   end
 
-  def order_by(name, direction = :desc)
-    @order_bys << "#{k} #{direction.to_s.upcase}"
+  def order_by(*args)
+    @order_bys += args.to_a.map(&.to_s)
+
+    self
   end
 
   protected def print_order_bys

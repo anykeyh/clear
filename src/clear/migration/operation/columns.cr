@@ -12,7 +12,7 @@ module Clear::Migration
     end
 
     def down
-      ["ALTER TABLE table_name DROP #{@column}"]
+      ["ALTER TABLE #{@table} DROP #{@column}"]
     end
   end
 

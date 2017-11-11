@@ -84,10 +84,10 @@ module Clear::Migration
     # `file db/1234567_my_migration.cr # << Order = 1234567`
     #
   #
-    @uid : Int32? = nil
+    @uid : Int64? = nil
 
     def uid
-      @uid ||= begin
+      @uid ||= Int64.new(begin
         filename = File.basename(__FILE__)
 
         if self.class.name =~ /[0-9]+$/
@@ -101,13 +101,17 @@ module Clear::Migration
               "– Rename your file to have the migration UID in front of the filename\n" +
               "– Override the method uid ! Be sure the number is immutable\n"
         end
-      end.to_i
+      end)
     end
   end
 
   @operations : Array(Operation) = [] of Operation
 
   abstract def change(dir)
+
+  # def uid : Int64
+  #   Int64.new(0)
+  # end
 
   def execute(x : String)
     SQL.connection.execute(x)
@@ -129,15 +133,16 @@ module Clear::Migration
       @operations.each { |op|
         op.up.each { |x| Clear::SQL.execute(x.as(String)) }
       }
+      SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
     end
 
     dir.down do
       @operations.each { |op|
         op.down.each { |x| Clear::SQL.execute(x.as(String)) }
       }
-    end
 
-    SQL.insert("__clear_metadatas", {metatype: "migration", value: uid}).execute
+      SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
+    end
 
     self
   end

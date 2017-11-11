@@ -22,17 +22,17 @@ class Clear::Migration::Manager
   end
 
   # Return the list of all the migrations loaded into the system.
-  getter migrations : Array(Migration) = [] of Migration
+  @migrations : Array(Clear::Migration) = [] of Clear::Migration
 
   # Return a set of uid of the current up migrations.
-  getter migrations_up : Set(Int32) = Set(Int32).new
+  getter migrations_up : Set(Int64) = Set(Int64).new
 
   protected def initialize
     ensure_database_is_ready
   end
 
   # :nodoc:
-  def add(x : Migration)
+  def add(x : Clear::Migration)
     @migrations << x
   end
 
@@ -56,8 +56,8 @@ class Clear::Migration::Manager
   #
   # Return `true` if the migration has been commited (already applied into the database)
   # or `false` otherwise
-  def committed?(m : Migration)
-    @migrations_up.includes?(m)
+  def commited?(m : Clear::Migration)
+    @migrations_up.includes?(m.uid)
   end
 
   # :nodoc:
@@ -72,7 +72,7 @@ class Clear::Migration::Manager
 
     check_version
     load_existing_migrations
-    ensure_unicity!
+    ensure_unicity! # << Compiler bug for now :-|
   end
 
   # : nodoc:
@@ -95,8 +95,8 @@ class Clear::Migration::Manager
 
   # :nodoc:
   private def ensure_unicity!
-    migrations = @migrations.map(&.uid)
-    r = migrations - migrations.uniq
+    all_migrations = @migrations.map(&.uid)
+    r = all_migrations - all_migrations.uniq
     raise "Some migrations UID are not unique and will cause problem (listed here): #{r.join(", ")}" if r.any?
   end
 
@@ -105,15 +105,44 @@ class Clear::Migration::Manager
     Clear::SQL.select("*")
               .from("__clear_metadatas")
               .where({metatype: "migration"}).to_a.map { |m|
-      @migrations_up.add(m["value"].as(String).to_i)
+      @migrations_up.add(Int64.new(m["value"].as(String)))
     }
+  end
+
+  def refresh
+    load_existing_migrations
+  end
+
+  def find(number)
+    number = Int64.new(number)
+    @migrations.find(&.uid.==(number)) || raise "Migration not found: #{number}"
+  end
+
+  def up(number : Int64) : Void
+    m = find(number)
+    if migrations_up.includes?(number)
+      raise "Migration already up: #{number}"
+    else
+      m.apply(Clear::Migration::Direction::UP)
+      @migrations_up.add(m.uid)
+    end
+  end
+
+  def down(number : Int64) : Void
+    m = find(number)
+    unless migrations_up.includes?(number)
+      raise "Migration already down: #{number}"
+    else
+      m.apply(Clear::Migration::Direction::DOWN)
+      @migrations_up.delete(m.uid)
+    end
   end
 
   # Print out the status ( up | down ) of all migrations found by the manager.
   def print_status : String
-    @migrations.sort { |a, b| a.uid <=> b.uid }.map do |m|
+    @migrations.sort { |a, b| a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid }.map do |m|
       active = @migrations_up.includes?(m.uid)
-      "[#{active ? '✓' : '✗'}] #{m.class.name} ( m.uid )"
+      "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"
     end.join("\n")
   end
 end

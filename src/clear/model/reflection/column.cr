@@ -1,4 +1,5 @@
 # Reflection of the columns using information_schema in postgreSQL.
+# TODO: Usage of view instead of model
 class Clear::Reflection::Column
   include Clear::Model
 

@@ -52,7 +52,7 @@ ORM:
 - [ ] DB Views
 - [ ] Caching for N+1 Queries
 - [ ] Model joins query
-- [ ] Migrations
+- [X] Migrations
 - [ ] crclr tool
 - [ ] Filling this checklist and drink a beer
 
