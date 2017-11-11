@@ -1,9 +1,10 @@
 require "../spec_helper"
+require "./12345_migration_by_file"
 
 module MigrationSpec
   extend self
 
-  class Migration123
+  class Migration1
     include Clear::Migration
 
     def change(dir)
@@ -19,13 +20,23 @@ module MigrationSpec
   end
 
   describe "Migration" do
-    it "can apply migration up" do
-      Migration123.new.apply(Clear::Migration::Direction::UP)
+    it "can discover UID from class name" do
+      Migration1.new.uid.should eq 1
+    end
 
-      Clear::Reflection::Table.public.each do |t|
-        puts "table = #{t.table_name}"
-        puts "column count = #{t.columns.count}"
-      end
+    it "can discover UID from file name" do
+      MigrationByFile.new.uid.should eq 12345
+    end
+
+    it "can apply migration up" do
+      Migration1.new.apply(Clear::Migration::Direction::UP)
+
+      Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
+
+      columns = Clear::Reflection::Table.public.find { table_name == "test" }.columns
+
+      columns.dup.where { column_name == "first_name" }.any?.should eq true
+      columns.dup.where { column_name == "last_name" }.any?.should eq true
     end
   end
 end

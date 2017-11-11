@@ -24,8 +24,8 @@ module Clear::SQL::SelectBuilder
   include Query::Lock
   include Query::Fetch
 
-  def dup
-    d = SelectQuery.new(columns: @columns.dup,
+  def dup : self
+    d = self.class.new(columns: @columns.dup,
       froms: @froms.dup,
       joins: @joins.dup,
       wheres: @wheres.dup,

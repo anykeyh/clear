@@ -16,6 +16,14 @@ module Clear::Model
       end
     end
 
+    def any?
+      self.clear_select.select("1").limit(1).fetch do |h|
+        return true
+      end
+
+      return false
+    end
+
     def count : Int64
       self.clear_select.select("COUNT(*)").scalar(Int64)
     end
@@ -36,6 +44,16 @@ module Clear::Model
 
     def []?(off) : T?
       self.offset(off).first
+    end
+
+    def find(&block) : T?
+      x = Clear::Expression.to_node(with Clear::Expression.new yield)
+      where(x).first
+    end
+
+    def find(&block) : T
+      x = Clear::Expression.to_node(with Clear::Expression.new yield)
+      where(x).first!
     end
 
     # Pluck one specific value

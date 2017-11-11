@@ -3,11 +3,14 @@ module Clear::SQL::Query::Where
     getter wheres : Array(Clear::Expression::Node)
   end
 
-  def where(&block)
-    x = Clear::Expression.to_node(with Clear::Expression.new yield)
-    @wheres << Clear::Expression.to_node(with Clear::Expression.new yield)
+  def where(node : Clear::Expression::Node)
+    @wheres << node
 
     self
+  end
+
+  def where(&block)
+    where(Clear::Expression.to_node(with Clear::Expression.new yield))
   end
 
   def where(x : NamedTuple)

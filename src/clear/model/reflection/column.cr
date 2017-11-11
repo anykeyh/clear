@@ -7,6 +7,7 @@ class Clear::Reflection::Column
   field table_catalog : String
   field table_schema : String
   field table_name : String
+  field column_name : String
 
   def table : Clear::Reflection::Table
     Column.query.where { var("table_name") == self.table_name }.first

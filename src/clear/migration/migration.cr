@@ -84,19 +84,24 @@ module Clear::Migration
     # `file db/1234567_my_migration.cr # << Order = 1234567`
     #
   #
+    @uid : Int32? = nil
+
     def uid
-      filename = File.basename(__FILE__)
-      if self.class.name =~ /[0-9]+$/
-        self.class.name[/[0-9]+$/]
-      elsif filename =~ /^[0-9]$/
-        filename[/^[0-9]$/]
-      else
-        raise \
-            "I don't know how to order this migration.\n" +
-            "– Rename your migration class to have the migration UID at the end of the classname\n" +
-            "– Rename your file to have the migration UID in front of the filename\n" +
-            "– Override the method uid ! Be sure the number is immutable\n"
-      end
+      @uid ||= begin
+        filename = File.basename(__FILE__)
+
+        if self.class.name =~ /[0-9]+$/
+          self.class.name[/[0-9]+$/]
+        elsif filename =~ /^[0-9]+/
+          filename[/^[0-9]+/]
+        else
+          raise \
+              "I don't know how to order this migration.\n" +
+              "– Rename your migration class to have the migration UID at the end of the classname\n" +
+              "– Rename your file to have the migration UID in front of the filename\n" +
+              "– Override the method uid ! Be sure the number is immutable\n"
+        end
+      end.to_i
     end
   end
 
