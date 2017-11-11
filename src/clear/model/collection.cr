@@ -16,8 +16,8 @@ module Clear::Model
       end
     end
 
-    def count(x : T.class = Int32) : T forall T
-      T.new(self.clear_select.select("COUNT(*)").scalar.as(Int64))
+    def count : Int64
+      self.clear_select.select("COUNT(*)").scalar(Int64)
     end
 
     def max(field, x : T.class) forall T

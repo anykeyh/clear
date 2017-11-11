@@ -21,6 +21,11 @@ module MigrationSpec
   describe "Migration" do
     it "can apply migration up" do
       Migration123.new.apply(Clear::Migration::Direction::UP)
+
+      Clear::Reflection::Table.public.each do |t|
+        puts "table = #{t.table_name}"
+        puts "column count = #{t.columns.count}"
+      end
     end
   end
 end

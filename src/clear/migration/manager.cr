@@ -77,27 +77,27 @@ class Clear::Migration::Manager
 
   # : nodoc:
   private def check_version
-    begin
-      version = Clear::SQL.select("value").from("__clear_metadatas").where({metatype: "version"}).scalar(String)
+    version = Clear::SQL.select("value").from("__clear_metadatas").where({metatype: "version"}).scalar(String)
 
-      if version != METADATA_VERSION
-        raise "The database has been initialized with a different version of Clear.\n" +
-              " (wanted: #{METADATA_VERSION}, current: #{version})"
-      end
-    rescue
-      #
-      # The shard db Must have a better exception than just "no result" in scalar fetching
-      # because it breaks here the code...
-      # TODO: Fixme
-      # Clear::SQL.insert_into("__clear_metadatas", {metatype: "version", value: METADATA_VERSION}).execute
+    if version != METADATA_VERSION
+      raise "The database has been initialized with a different version of Clear.\n" +
+            " (wanted: #{METADATA_VERSION}, current: #{version})"
     end
+  rescue e
+    #
+    # The shard `db` Must have a better exception than just "no result" in scalar fetching
+    # because it breaks here the code...
+    # TODO: Fixme
+    # Clear::SQL.insert_into("__clear_metadatas", {metatype: "version", value: METADATA_VERSION}).execute
+    #
+    # raise e
   end
 
   # :nodoc:
   private def ensure_unicity!
     migrations = @migrations.map(&.uid)
     r = migrations - migrations.uniq
-    raise "Some migrations UID are not unique and will cause problem: #{r.join(", ")}" if r.any?
+    raise "Some migrations UID are not unique and will cause problem (listed here): #{r.join(", ")}" if r.any?
   end
 
   # Fetch all the migrations already activated on the database.

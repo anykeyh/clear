@@ -1,5 +1,9 @@
 require "../sql"
-require "./**"
+require "./collection"
+require "./field"
+require "./modules/**"
+require "./converter/**"
+require "./validation/**"
 
 module Clear::Model
   include Clear::Model::HasFields
@@ -33,19 +37,16 @@ module Clear::Model
   # For some reasons (the class "Collection" inheriting from Generic prevent working extension...
   # So the fields will be added manually
   macro included
-    class_property table : Clear::SQL::Symbolic = self.name.downcase.pluralize
+    class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
 
     class Collection < Clear::Model::CollectionBase({{@type}}); end
-
-    # extend Clear::Model::ClassMethods
 
     def self.query
       Collection.new.from(table)
     end
 
     def self.find(x)
-      pk = pkey
-      query.where { raw(pk) == x }.first
+      query.where { raw(pkey) == x }.first
     end
 
     # Default primary query is "id"
@@ -62,3 +63,5 @@ module Clear::Model
     end
   end
 end
+
+require "./reflection/**"

@@ -9,7 +9,7 @@ module Clear::Model::HasRelations
   #   has passport : Passport
   # ```
   #
-  macro has(name, foreign_key = nil, no_cache = false)
+  macro has(name, foreign_key = nil, no_cache = false, primary_key = nil)
     {% if name.type.is_a?(Generic) && "#{name.type.name}" == "Array" %}
       {% if name.type.type_vars.size != 1 %}
         {% raise "has method accept only Array(Model) for has many behavior. Unions are not accepted" %}
@@ -19,8 +19,9 @@ module Clear::Model::HasRelations
       {% if t < Clear::Model %}
         # Here the has many code
         def {{name.var.id}} : {{t}}::Collection
+          %primary_key = {{(primary_key || "pkey").id}}
           %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
-          {{t}}.query.where{ raw(%foreign_key) == pkey }
+          {{t}}.query.where{ raw(%foreign_key) == %primary_key }
         end
       {% else %}
         {% raise "Use `has` with an Array of model, or a single model. `#{t}` is not a valid model" %}
@@ -28,8 +29,9 @@ module Clear::Model::HasRelations
     {% else %}
       {% t = name.type %}
       def {{name.var.id}} : {{t}}?
+        %primary_key = {{(primary_key || "pkey").id}}
         %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
-        {{t}}.query.where{ raw(%foreign_key) == pkey }.first
+        {{t}}.query.where{ raw(%foreign_key) == %primary_key }.first
       end
       # Here the has one code.
     {% end %}
