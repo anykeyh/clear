@@ -21,4 +21,8 @@ module Clear
   class_getter logger : Logger = Logger.new(STDOUT)
 end
 
-require "./clear/**"
+require "./clear/expression/**"
+require "./clear/sql/**"
+require "./clear/model/**"
+require "./clear/migration/**"
+require "./clear/cli"

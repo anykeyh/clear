@@ -1,55 +1,54 @@
 require "inflector/core_ext"
 require "pg"
 
-# This module declare all the methods and macro related to fields in `Clear::Model`
-module Clear::Model::HasFields
+# This module declare all the methods and macro related to columns in `Clear::Model`
+module Clear::Model::HasColumns
   macro included
     macro included
-      FIELDS = {} of Nil => Nil
+      COLUMNS = {} of Nil => Nil
       getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
     end
   end
 
   # Access to direct SQL attributes given by the request used to build the model.
-  # Access is read only and updating the model fields will not apply change to theses fields.
+  # Access is read only and updating the model columns will not apply change to theses columns.
   def [](x) : ::Clear::SQL::Any
     attributes[x]
   end
 
   # Access to direct SQL attributes given by the request  used to build the model
   # or Nil if not found.
-  # Access is read only and updating the model fields will not apply change to theses fields.
+  # Access is read only and updating the model columns will not apply change to theses columns.
   def []?(x) : ::Clear::SQL::Any
     attributes[x]?
   end
 
-  # Declare a field in the model.
-  # Field are bound to a SQL column
+  # Bind a column to the model.
   #
   # Simple example:
   # ```
   # class MyModel
   #   include Clear::Model
   #
-  #   field some_id : Int32, primary: true
-  #   field nullable_field : String?
+  #   column some_id : Int32, primary: true
+  #   column nullable_column : String?
   # end
   # ```
   # options:
   #
-  # * `primary : Bool`: Let Clear ORM know which field is the primary key.
+  # * `primary : Bool`: Let Clear ORM know which column is the primary key.
   # Currently compound primary key are not compatible with Clear ORM.
   #
   # * `converter : Class | Module`: Use this class to convert the data from the
   # SQL. This class must possess the class methods
-  # `to_field(::Clear::SQL::Any) : T` and `to_db(T) : ::Clear::SQL::Any`
-  # with `T` the type of the field.
+  # `to_column(::Clear::SQL::Any) : T` and `to_db(T) : ::Clear::SQL::Any`
+  # with `T` the type of the column.
   #
-  # * `column : String`: If the name of the field in the model doesn't fit the name of the
+  # * `column : String`: If the name of the column in the model doesn't fit the name of the
   # column in the SQL, you can use the parameter `column` to tell Clear ORM about
-  # which column is linked to the field.
+  # which column is linked to the column.
   #
-  macro field(name, primary = false, converter = nil, field = nil)
+  macro column(name, primary = false, converter = nil, column = nil)
     {% type = name.type
        unless converter
          if type.is_a?(Path)
@@ -61,31 +60,31 @@ module Clear::Model::HasFields
          end
        end %}
 
-    {% FIELDS[name.var] = {
+    {% COLUMNS[name.var] = {
          type:      type,
          primary:   primary,
          converter: converter,
-         field:     field || name.var,
+         column:    column || name.var,
        } %}
 
   end
 
-  # Used internally to gather the fields
-  macro __generate_fields
-    {% for name, settings in FIELDS %}
+  # Used internally to gather the columns
+  macro __generate_columns
+    {% for name, settings in COLUMNS %}
       {% type = settings[:type] %}
-      @{{name}}_field : Clear::Model::Field({{type}}) = Clear::Model::Field({{type}}).new("{{name}}")
+      @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}")
 
-      def {{name}}_field : Clear::Model::Field({{type}})
-        @{{name}}_field
+      def {{name}}_column : Clear::Model::Column({{type}})
+        @{{name}}_column
       end
 
       def {{name}} : {{type}}
-        @{{name}}_field.value
+        @{{name}}_column.value
       end
 
       def {{name}}=(x : {{type}})
-        @{{name}}_field.value = x
+        @{{name}}_column.value = x
       end
 
       {% if settings[:primary] %}
@@ -94,7 +93,7 @@ module Clear::Model::HasFields
         end
 
         def pkey
-          @{{name}}_field.value
+          @{{name}}_column.value
         end
       {% end %}
     {% end %}
@@ -104,9 +103,9 @@ module Clear::Model::HasFields
     end
 
     def set( h : Hash(Symbol, ::Clear::SQL::Any) )
-      {% for name, settings in FIELDS %}
-        v = h.fetch(:"{{settings[:field]}}"){ Field::UNKNOWN }
-        @{{name}}_field.reset({{settings[:converter]}}.to_field(v)) unless v.is_a?(Field::UnknownClass)
+      {% for name, settings in COLUMNS %}
+        v = h.fetch(:"{{settings[:column]}}"){ Column::UNKNOWN }
+        @{{name}}_column.reset({{settings[:converter]}}.to_column(v)) unless v.is_a?(Column::UnknownClass)
       {% end %}
     end
 
@@ -114,10 +113,10 @@ module Clear::Model::HasFields
     def update_h : Hash(String, ::Clear::SQL::Any)
       out = {} of String => ::Clear::SQL::Any
 
-      {% for name, settings in FIELDS %}
-        if @{{name}}_field.defined? &&
-           @{{name}}_field.changed?
-          out["{{settings[:field]}}"] = {{settings[:converter]}}.to_db(@{{name}}_field.value)
+      {% for name, settings in COLUMNS %}
+        if @{{name}}_column.defined? &&
+           @{{name}}_column.changed?
+          out["{{settings[:column]}}"] = {{settings[:converter]}}.to_db(@{{name}}_column.value)
         end
       {% end %}
 
@@ -127,9 +126,9 @@ module Clear::Model::HasFields
     def to_h : Hash(String, ::Clear::SQL::Any)
       out = {} of String => ::Clear::SQL::Any
 
-      {% for name, settings in FIELDS %}
-        if @{{name}}_field.defined?
-          out["{{settings[:field]}}"] = {{settings[:converter]}}.to_db(@{{name}}_field.value(nil))
+      {% for name, settings in COLUMNS %}
+        if @{{name}}_column.defined?
+          out["{{settings[:column]}}"] = {{settings[:converter]}}.to_db(@{{name}}_column.value(nil))
         end
       {% end %}
 
@@ -137,9 +136,9 @@ module Clear::Model::HasFields
     end
 
     def set( h : Hash(String, ::Clear::SQL::Any) )
-      {% for name, settings in FIELDS %}
-        if h.has_key?("{{settings[:field]}}")
-          @{{name}}_field.reset({{settings[:converter]}}.to_field(h["{{settings[:field]}}"]))
+      {% for name, settings in COLUMNS %}
+        if h.has_key?("{{settings[:column]}}")
+          @{{name}}_column.reset({{settings[:converter]}}.to_column(h["{{settings[:column]}}"]))
         end
       {% end %}
     end

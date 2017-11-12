@@ -1,7 +1,7 @@
 require "pg"
 
 class Clear::Model::Converter::StringConverter
-  def self.to_field(x : ::Clear::SQL::Any) : String?
+  def self.to_column(x : ::Clear::SQL::Any) : String?
     case x
     when Nil
       nil

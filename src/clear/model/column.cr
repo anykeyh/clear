@@ -1,12 +1,12 @@
 require "db"
 
-# A field of a Model
+# A column of a Model
 # Provide some methods like:
 #   - Informations persistance (value before, value changed?)
 #   - Raise error if we try to access the value of a field
-#   - which is not gathered through the query system. Or use the `get_def` to get with default value
-#
-struct Clear::Model::Field(T)
+#     which is not gathered through the query system (uninitialized column).
+#     Or use the `get_def` to get with default value
+struct Clear::Model::Column(T)
   struct UnknownClass; end
 
   UNKNOWN = UnknownClass.new

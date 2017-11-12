@@ -1,7 +1,7 @@
 require "pg"
 
 class Clear::Model::Converter::JSON::AnyConverter
-  def self.to_field(x : ::Clear::SQL::Any) : ::JSON::Any?
+  def self.to_column(x : ::Clear::SQL::Any) : ::JSON::Any?
     case x
     when Nil
       nil

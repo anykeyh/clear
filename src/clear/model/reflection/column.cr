@@ -5,10 +5,10 @@ class Clear::Reflection::Column
 
   self.table = "information_schema.columns"
 
-  field table_catalog : String
-  field table_schema : String
-  field table_name : String
-  field column_name : String
+  column table_catalog : String
+  column table_schema : String
+  column table_name : String
+  column column_name : String
 
   def table : Clear::Reflection::Table
     Column.query.where { var("table_name") == self.table_name }.first

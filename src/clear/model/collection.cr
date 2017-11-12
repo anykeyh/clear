@@ -1,6 +1,9 @@
 require "../sql/select_query"
 
 module Clear::Model
+  # The query collection system
+  # Every time a collection is created when you call `Model.query`
+  # or call any defined scope
   class CollectionBase(T)
     include Clear::SQL::SelectBuilder
 
@@ -32,9 +35,16 @@ module Clear::Model
       self.clear_select.select("COUNT(*)").scalar(Int64)
     end
 
-    def max(field, x : T.class) forall T
-      self.clear_select.select("MAX(#{field})").scalar.as(T)
+    # Call an aggregation function.
+    def agg(field, x : T.class) forall T
+      self.clear_select.select(field).scalar.as(T)
     end
+
+    {% for x in %w(min max avg) %}
+      def {{x.id}}(field, x : T.class) forall T
+        agg("{{x.id.upcase}}(#{field})", T)
+      end
+    {% end %}
 
     def to_a(fetch_columns = false) : Array(T)
       out = [] of T

@@ -1,7 +1,7 @@
 require "pg"
 
 class Clear::Model::Converter::Float32Converter
-  def self.to_field(x : ::Clear::SQL::Any) : Float32?
+  def self.to_column(x : ::Clear::SQL::Any) : Float32?
     case x
     when Nil
       nil

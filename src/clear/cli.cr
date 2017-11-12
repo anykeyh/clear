@@ -68,3 +68,5 @@ module Clear::CLI
     end
   end
 end
+
+require "./cli/**"

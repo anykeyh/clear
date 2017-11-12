@@ -1,9 +1,11 @@
 module Clear::Model::HasTimestamps
   macro timestamps
-    field( updated_at : Time )
-    field( created_at : Time )
+    column( updated_at : Time )
+    column( created_at : Time )
 
     before(:save) do |model|
+      model = model.as(self)
+
       now = Time.now
 
       unless model.persisted?

@@ -1,12 +1,12 @@
 require "../sql"
 require "./collection"
-require "./field"
+require "./column"
 require "./modules/**"
 require "./converter/**"
 require "./validation/**"
 
 module Clear::Model
-  include Clear::Model::HasFields
+  include Clear::Model::HasColumns
   include Clear::Model::HasHooks
   include Clear::Model::HasTimestamps
   include Clear::Model::HasSaving
@@ -35,7 +35,7 @@ module Clear::Model
   end
 
   # For some reasons (the class "Collection" inheriting from Generic prevent working extension...
-  # So the fields will be added manually
+  # So the columns will be added manually
   macro included
     class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
 
@@ -54,12 +54,12 @@ module Clear::Model
       "id"
     end
 
-    def self.fields
-      @@fields
+    def self.columns
+      @@columns
     end
 
     macro finished
-      __generate_fields
+      __generate_columns
     end
   end
 end

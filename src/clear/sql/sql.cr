@@ -3,6 +3,7 @@ require "../expression/expression"
 require "pg"
 require "db"
 
+require "./errors"
 require "./logger"
 
 module Clear

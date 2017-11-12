@@ -5,13 +5,13 @@ class Clear::Reflection::Table
 
   self.table = "information_schema.tables"
 
-  field table_catalog : String
-  field table_schema : String
-  field table_name : String
+  column table_catalog : String
+  column table_schema : String
+  column table_name : String
 
   scope(:public) { where { table_schema == "public" } }
 
-  has columns : Array(Column), foreign_key: "table_name", primary_key: "table_name"
+  has columns : Array(Clear::Reflection::Column), foreign_key: "table_name", primary_key: "table_name"
 
   def list_indexes : Hash(String, Array(String))
     # https://stackoverflow.com/questions/2204058/list-columns-with-indexes-in-postgresql

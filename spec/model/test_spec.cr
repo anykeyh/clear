@@ -1,6 +1,5 @@
 require "spec"
-
-require "../src/clear/model"
+require "../spec_helper"
 
 module ModelSpec
   class User
@@ -8,18 +7,36 @@ module ModelSpec
 
     before(:save) { |u| puts "hello world!" }
 
-    field(id : Int32, primary: true)
+    column(id : Int32, primary: true)
 
-    field(first_name : String)
-    field(last_name : String)
-    field(middle_name : String?)
+    column(first_name : String?)
+    column(last_name : String?)
+    column(middle_name : String?)
 
-    field(notification_preferences : JSON::Any?)
+    column(notification_preferences : JSON::Any)
 
     timestamps
 
     self.table = "users"
   end
+
+  class UserMigration1
+    include Clear::Migration
+
+    def change(dir)
+      create_table "users" do |t|
+        t.text "first_name"
+        t.text "last_name"
+        t.text "middle_name"
+
+        t.jsonb "notification_preferences", index: "gin", default: Clear::Expression["{}"]
+
+        t.timestamps
+      end
+    end
+  end
+
+  UserMigration1.new.apply(Clear::Migration::Direction::UP)
 
   describe "Clear::Model" do
     context "fields management" do

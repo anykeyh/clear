@@ -54,6 +54,7 @@ ORM:
 - [ ] Model joins query
 - [X] Migrations
 - [ ] crclr tool
+- [ ] Handling of compound primary key + CitusDB Support
 - [ ] Filling this checklist and drink a beer
 
 ## Licensing

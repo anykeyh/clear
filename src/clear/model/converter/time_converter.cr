@@ -1,7 +1,7 @@
 require "pg"
 
 class Clear::Model::Converter::TimeConverter
-  def self.to_field(x : ::Clear::SQL::Any) : Time?
+  def self.to_column(x : ::Clear::SQL::Any) : Time?
     case x
     when Nil
       nil

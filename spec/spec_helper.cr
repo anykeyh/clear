@@ -7,6 +7,7 @@ def initdb
   `echo "CREATE DATABASE clear_spec;" | psql -U postgres`
 
   Clear::SQL.init("postgres://postgres@localhost/clear_spec")
+  Clear.logger.level = ::Logger::DEBUG
 end
 
 initdb
