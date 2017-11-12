@@ -128,6 +128,8 @@ module Clear::Migration
   # This will apply the migration in a given direction (up or down)
   def apply(dir : Direction)
     Clear::SQL.transaction do
+      Clear.logger.info("[#{dir}] #{self.class.name}")
+
       change(dir)
 
       dir.up do

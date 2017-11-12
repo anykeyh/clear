@@ -15,16 +15,16 @@ module Clear::Model::HasRelations
       {% end %}
 
       {% t = name.type.type_vars[0].resolve %}
-      {% if t < Clear::Model %}
-        # Here the has many code
-        def {{name.var.id}} : {{t}}::Collection
-          %primary_key = {{(primary_key || "pkey").id}}
-          %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
-          {{t}}.query.where{ raw(%foreign_key) == %primary_key }
-        end
-      {% else %}
+
+      {% unless t < Clear::Model %}
         {% raise "Use `has` with an Array of model, or a single model. `#{t}` is not a valid model" %}
       {% end %}
+      # Here the has many code
+      def {{name.var.id}} : {{t}}::Collection
+        %primary_key = {{(primary_key || "pkey").id}}
+        %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
+        {{t}}.query.tags({ "#{%foreign_key}" => "#{%primary_key}" }).where{ raw(%foreign_key) == %primary_key }
+      end
     {% else %}
       {% t = name.type %}
       def {{name.var.id}} : {{t}}?

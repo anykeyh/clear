@@ -15,7 +15,7 @@ module Clear::SQL::Logger
     TRAILING TRUE UNION UNIQUE UPDATE USER USING WHEN WHERE
   ))
 
-  private def self.colorize_query(qry : String)
+  def self.colorize_query(qry : String)
     qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
       if SQL_KEYWORDS.includes?(word.upcase)
         word.colorize.bold.blue.to_s
@@ -27,14 +27,14 @@ module Clear::SQL::Logger
     end.join("")
   end
 
-  private def self.display_mn_sec(x) : String
+  def self.display_mn_sec(x) : String
     mn = x.to_i / 60
     sc = x.to_i % 60
 
     [mn > 9 ? mn : "0#{mn}", sc > 9 ? sc : "0#{sc}"].join("mn") + "s"
   end
 
-  private def self.display_time(x) : String
+  def self.display_time(x) : String
     if (x > 60)
       display_mn_sec(x)
     elsif (x > 1)

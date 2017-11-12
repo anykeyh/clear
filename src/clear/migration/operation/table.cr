@@ -7,34 +7,18 @@ module Clear::Migration
     record IndexOperation, field : String, name : String,
       using : String? = nil, unique : Bool = false
 
+    record FkeyOperation, fields : Array(String), table : String,
+      foreign_fields : Array(String), on_delete : String
+
     getter name : String
     getter? is_create : Bool
 
     getter column_operations : Array(ColumnOperation) = [] of ColumnOperation
     getter index_operations : Array(IndexOperation) = [] of IndexOperation
+    getter fkey_operations : Array(FkeyOperation) = [] of FkeyOperation
 
     def initialize(@name, @is_create)
       raise "Not yet implemented" unless is_create?
-    end
-
-    #
-    # Method missing is used to generate add_column using the method name as
-    # column type (ActiveRecord's style)
-    macro method_missing(caller)
-      type = {{caller.name.stringify}}
-
-      type = case type
-      when "string"
-        "text"
-      else
-        type
-      end
-
-      {% if caller.named_args.is_a?(Nop) %}
-        self.add_column( {{caller.args[0]}}.to_s, type: type )
-      {% else %}
-        self.add_column( {{caller.args[0]}}.to_s, type: type, {{caller.named_args.join(", ").id}} )
-      {% end %}
     end
 
     # Add the timestamps to the field.
@@ -43,6 +27,22 @@ module Clear::Migration
       add_column(:updated_at, "timestamp without time zone", null: null, default: "NOW()")
       add_index(:created_at)
       add_index(:updated_at)
+    end
+
+    def references(to, name = nil, on_delete = "restrict", type = "integer",
+                   null = false, foreign_key = "id")
+      name ||= to.singularize.underscore + "_id"
+
+      add_column(name, "integer")
+
+      add_fkey(fields: [name.to_s], table: to.to_s, foreign_fields: [foreign_key.to_s],
+        on_delete: on_delete.to_s)
+    end
+
+    def add_fkey(fields : Array(String), table : String,
+                 foreign_fields : Array(String), on_delete : String)
+      self.fkey_operations << FkeyOperation.new(fields: fields, table: table,
+        foreign_fields: foreign_fields, on_delete: on_delete)
     end
 
     # Add/alter a column for this table.
@@ -80,8 +80,12 @@ module Clear::Migration
     end
 
     def up
+      columns_and_fkeys = print_columns + print_fkeys
+
+      content = "(#{columns_and_fkeys.join(", ")})" unless columns_and_fkeys.empty?
+
       [
-        (["CREATE TABLE", @name, print_columns].join(" ") if is_create?),
+        (["CREATE TABLE", @name, content].reject(&.nil?).join(" ") if is_create?),
       ] + print_indexes
     end
 
@@ -91,8 +95,22 @@ module Clear::Migration
       ]
     end
 
+    private def print_fkeys
+      # FOREIGN KEY (b, c) REFERENCES other_table (c1, c2)
+      fkey_operations.map do |x|
+        ["FOREIGN KEY",
+         "(" + x.fields.join(", ") + ")",
+         "REFERENCES",
+         x.table,
+         "(" + x.foreign_fields.join(", ") + ")",
+         "ON DELETE",
+         x.on_delete]
+          .compact.join(" ")
+      end
+    end
+
     private def print_indexes
-      out = index_operations.map do |x|
+      index_operations.map do |x|
         [
           "CREATE",
           (x.unique ? "UNIQUE" : nil),
@@ -104,21 +122,41 @@ module Clear::Migration
           "(#{x.field})",
         ].compact.join(" ")
       end
-
-      out
     end
 
     private def print_columns
-      out = column_operations.map do |x|
+      column_operations.map do |x|
         [x.column,
          x.type,
          x.null ? nil : "NOT NULL",
          x.default ? "DEFAULT #{x.default}" : nil,
          x.primary ? "PRIMARY KEY" : nil]
           .compact.join(" ")
-      end.join(", ")
+      end
+    end
 
-      out = "(#{out})" unless out.empty?
+    #
+    # Method missing is used to generate add_column using the method name as
+    # column type (ActiveRecord's style)
+    macro method_missing(caller)
+      type = {{caller.name.stringify}}
+
+      type = case type
+      when "string"
+        "text"
+      when "datetime"
+        "timestamp without time zone"
+      when "datetimetz"
+        "timestamp with time zone"
+      else
+        type
+      end
+
+      {% if caller.named_args.is_a?(Nop) %}
+        self.add_column( {{caller.args[0]}}.to_s, type: type )
+      {% else %}
+        self.add_column( {{caller.args[0]}}.to_s, type: type, {{caller.named_args.join(", ").id}} )
+      {% end %}
     end
   end
 

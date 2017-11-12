@@ -2,10 +2,20 @@ require "spec"
 require "../spec_helper"
 
 module ModelSpec
+  class Post
+    include Clear::Model
+
+    column id : Int32, primary: true
+
+    column title : String?
+
+    belongs_to user : User
+  end
+
   class User
     include Clear::Model
 
-    before(:save) { |u| puts "hello world!" }
+    before(:save) { |u| }
 
     column(id : Int32, primary: true)
 
@@ -14,6 +24,8 @@ module ModelSpec
     column(middle_name : String?)
 
     column(notification_preferences : JSON::Any)
+
+    has posts : Array(Post)
 
     timestamps
 
@@ -32,6 +44,11 @@ module ModelSpec
         t.jsonb "notification_preferences", index: "gin", default: Clear::Expression["{}"]
 
         t.timestamps
+      end
+
+      create_table "posts" do |t|
+        t.string "title", index: true
+        t.references to: "users", on_delete: "cascade"
       end
     end
   end
@@ -86,6 +103,11 @@ module ModelSpec
         User.query.each_with_cursor(batch: 50) do |u|
           u.id.should_not eq(nil)
         end
+      end
+
+      it "define constraints on has-many to build object" do
+        p = User.query.first!.posts.build
+        pp p.to_h
       end
 
       it "can read and write json" do
