@@ -37,7 +37,6 @@ module Clear::Migration
       {% end %}
     end
 
-    #
     # Add the timestamps to the field.
     def timestamps(null = false)
       add_column(:created_at, "timestamp without time zone", null: null, default: "NOW()")
@@ -46,7 +45,6 @@ module Clear::Migration
       add_index(:updated_at)
     end
 
-    #
     # Add/alter a column for this table.
     def add_column(column, type, default = nil, null = true, primary = false, index = false, unique = false)
       self.column_operations << ColumnOperation.new(column: column.to_s, type: type.to_s,
@@ -59,7 +57,6 @@ module Clear::Migration
       end
     end
 
-    #
     # Add or replace an index for this table.
     # Alias for `add_index`
     def index(field, name = nil, using = nil, unique = false)

@@ -102,6 +102,7 @@ module Clear::Model::HasColumns
       set(t.to_h)
     end
 
+    # Set the columns from hash
     def set( h : Hash(Symbol, ::Clear::SQL::Any) )
       {% for name, settings in COLUMNS %}
         v = h.fetch(:"{{settings[:column]}}"){ Column::UNKNOWN }
@@ -123,6 +124,13 @@ module Clear::Model::HasColumns
       out
     end
 
+    # Reset the `changed?` flag on all columns
+    def clear_change_flags
+      {% for name, settings in COLUMNS %}
+        @{{name}}_column.clear_change_flag
+      {% end %}
+    end
+
     def to_h : Hash(String, ::Clear::SQL::Any)
       out = {} of String => ::Clear::SQL::Any
 
@@ -133,6 +141,23 @@ module Clear::Model::HasColumns
       {% end %}
 
       out
+    end
+
+    def changed?
+      {% for name, settings in COLUMNS %}
+          return true if @{{name}}_column.changed?
+      {% end %}
+
+      return false
+    end
+
+    def persist!(pkey : ::Clear::SQL::Any)
+      @persisted = true
+      {% for name, settings in COLUMNS %}
+        {% if settings[:primary] %}
+          @{{name}}_column.reset({{settings[:converter]}}.to_column(pkey))
+        {% end %}
+      {% end %}
     end
 
     def set( h : Hash(String, ::Clear::SQL::Any) )

@@ -61,6 +61,17 @@ module Clear
       @@connection = DB.open(url)
     end
 
+    def transaction(&block)
+      execute("BEGIN")
+      begin
+        yield
+        execute("COMMIT")
+      rescue e
+        execute("ROLLBACK") rescue nil
+        raise e
+      end
+    end
+
     # Execute a SQL request.
     #
     # Usage:

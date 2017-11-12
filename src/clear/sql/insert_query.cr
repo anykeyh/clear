@@ -22,10 +22,50 @@ class Clear::SQL::InsertQuery
   getter keys : Array(Symbolic) = [] of Symbolic
   getter values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
   getter table : Selectable
-
-  include Query::Execute
+  getter returning : String?
 
   def initialize(@table : Selectable)
+  end
+
+  def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)
+    Clear::SQL.log_query to_sql do
+      h = {} of String => ::Clear::SQL::Any
+
+      Clear::SQL.connection.query(to_sql) do |rs|
+        fetch_result_set(h, rs) { |x| yield(x) }
+      end
+    end
+  end
+
+  protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &block) : Bool
+    return false unless rs.move_next
+
+    loop do
+      rs.each_column do |col|
+        h[col] = rs.read
+      end
+
+      yield(h)
+
+      break unless rs.move_next
+    end
+
+    return true
+  ensure
+    rs.close
+  end
+
+  def execute : Hash(String, ::Clear::SQL::Any)
+    o = {} of String => ::Clear::SQL::Any
+
+    if @returning.nil?
+      Clear::SQL.execute(to_sql)
+    else
+      # return {} of String => ::Clear::SQL::Any
+      fetch { |x| o = x; break }
+    end
+
+    o
   end
 
   # Fast insert system
@@ -74,6 +114,13 @@ class Clear::SQL::InsertQuery
     self
   end
 
+  def returning(str : String)
+    puts "set returning = #{str}"
+    @returning = str
+
+    self
+  end
+
   # Number of rows of this insertion request
   def size : Int32
     v = @values
@@ -103,6 +150,10 @@ class Clear::SQL::InsertQuery
     else
       o << "VALUES"
       o << print_values
+    end
+    if @returning
+      o << "RETURNING"
+      o << @returning
     end
 
     o.compact.join(" ")

@@ -9,13 +9,13 @@ module Clear::Model
 
     def each(fetch_columns = false, &block)
       fetch do |hash|
-        yield(T.new(hash, fetch_columns: fetch_columns))
+        yield(T.new(hash, persisted: true, fetch_columns: fetch_columns))
       end
     end
 
     def each_with_cursor(batch = 1000, fetch_columns = false, &block)
       self.fetch_with_cursor(count: batch) do |hash|
-        yield(T.new(hash, fetch_columns: fetch_columns))
+        yield(T.new(hash, persisted: true, fetch_columns: fetch_columns))
       end
     end
 
@@ -70,18 +70,15 @@ module Clear::Model
       where(x).first!
     end
 
-    # Pluck one specific value
-    # def pluck(fields : NamedTuple(*U)) : Array(Hash(String, U)) forall U
-
-    # end
-
     def first! : T
       first.not_nil!
     end
 
     def first : T?
+      order_by("#{T.pkey} ASC") unless T.pkey.nil?
+
       limit(1).fetch do |hash|
-        return T.new(hash)
+        return T.new(hash, persisted: true)
       end
 
       return nil

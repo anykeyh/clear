@@ -5,6 +5,10 @@ class Clear::Reflection::Table
 
   self.table = "information_schema.tables"
 
+  def self.pkey
+    nil
+  end
+
   column table_catalog : String
   column table_schema : String
   column table_name : String

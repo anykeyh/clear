@@ -127,24 +127,27 @@ module Clear::Migration
 
   # This will apply the migration in a given direction (up or down)
   def apply(dir : Direction)
-    change(dir)
+    Clear::SQL.transaction do
+      change(dir)
 
-    dir.up do
-      @operations.each { |op|
-        op.up.each { |x| Clear::SQL.execute(x.as(String)) }
-      }
-      SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
+      dir.up do
+        @operations.each { |op|
+          op.up.each { |x| Clear::SQL.execute(x.as(String)) }
+        }
+
+        SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
+      end
+
+      dir.down do
+        @operations.each { |op|
+          op.down.each { |x| Clear::SQL.execute(x.as(String)) }
+        }
+
+        SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
+      end
+
+      self
     end
-
-    dir.down do
-      @operations.each { |op|
-        op.down.each { |x| Clear::SQL.execute(x.as(String)) }
-      }
-
-      SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
-    end
-
-    self
   end
 
   macro included

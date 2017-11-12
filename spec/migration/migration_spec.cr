@@ -64,6 +64,7 @@ module MigrationSpec
       table.list_indexes.size.should eq 5
 
       # Revert the table migration
+      puts "here7?"
       Migration1.new.apply(Clear::Migration::Direction::DOWN)
       Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq false
     end

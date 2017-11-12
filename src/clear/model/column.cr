@@ -72,6 +72,16 @@ struct Clear::Model::Column(T)
     @value
   end
 
+  # If a column is not loaded (e.g. not defined once), it will show "#undef".
+  # If a column is dirty (e.g. change hasn't be saved), it will show a "*" after the value.
+  def inspect
+    if defined?
+      @value.inspect + (changed? ? "*" : "")
+    else
+      "#undef"
+    end
+  end
+
   def defined?
     @value != UNKNOWN
   end
@@ -79,5 +89,9 @@ struct Clear::Model::Column(T)
   def clear
     self.value = UNKNOWN
     @old_value = UNKNOWN
+  end
+
+  def clear_change_flag
+    @changed = false
   end
 end
