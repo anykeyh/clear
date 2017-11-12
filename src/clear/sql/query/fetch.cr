@@ -53,7 +53,11 @@ module Clear::SQL::Query::Fetch
 
   def to_a : Array(Hash(String, ::Clear::SQL::Any))
     o = [] of Hash(String, ::Clear::SQL::Any)
-    fetch { |x| o << x }
+
+    fetch do |x|
+      o << x.dup
+    end
+
     o
   end
 

@@ -3,11 +3,6 @@ require "logger"
 require "benchmark"
 
 module Clear::SQL::Logger
-  macro included
-    class_property logger : ::Logger = ::Logger.new(STDOUT)
-    logger.level = ::Logger::DEBUG
-  end
-
   SQL_KEYWORDS = %w(
     ALL ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
     BOTH CASE CAST CHECK COLLATE COLUMN CONSTRAINT CREATE
@@ -56,6 +51,6 @@ module Clear::SQL::Logger
     yield
   ensure
     time = Time.now.epoch_f - time.not_nil!
-    logger.debug(("[" + SQL::Logger.display_time(time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
+    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
   end
 end

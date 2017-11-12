@@ -36,21 +36,91 @@ class Clear::Migration::Manager
     @migrations << x
   end
 
-  #
+  def current_version
+    if @migrations_up.any?
+      @migrations_up.max
+    else
+      nil
+    end
+  end
+
+  def max_version
+    @migrations.map(&.uid).max
+  end
+
+  def apply_to(version, direction = :both)
+    list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
+
+    current_version = self.current_version
+
+    # Apply negative version
+    if version < 0
+      raise "Cannot revert HEAD-#{version}, because no migrations are loaded yet." if current_version.nil?
+
+      version = list_of_migrations[version - 1].uid
+    end
+
+    operations = [] of {Int64, Migration::Direction}
+
+    # We migrate to a specific point; we apply all migrations
+    # not yet done to this point
+    # We apply migration until requested version...
+    uid_to_apply = list_of_migrations.map(&.uid).reject(&.>(version)) - @migrations_up.to_a
+
+    uid_to_apply.each do |uid|
+      operations << {uid, Migration::Direction::UP}
+    end
+
+    # Then we revert migration from requested version to now
+    uid_to_apply = list_of_migrations.map(&.uid).select(&.>(version)) & @migrations_up.to_a
+
+    uid_to_apply.each do |uid|
+      operations << {uid, Migration::Direction::DOWN}
+    end
+
+    # We sort
+    # 1/ From DOWN to UP until `version` we apply UP migration
+    # 2/ Then from UP TO DOWN until `version` we apply DOWN migration
+    operations.sort! do |a, b|
+      if a[1].up?
+        if b[1].down?
+          1 # up first
+        else
+          # Order: a <=> b
+          a[0] <=> b[0]
+        end
+      else # a is down migration
+        if b[1].down?
+          # Order: b <=> a
+          b[0] <=> a[0]
+        else
+          0 # b is preferred on a
+        end
+      end
+    end
+
+    Clear.logger.debug("Migrations will be applied (in this order):")
+    operations.each do |(uid, d)|
+      Clear.logger.debug("#{d.up? ? "^" : "V"} #{uid}")
+    end
+
+    operations.each do |(uid, d)|
+      if direction == :both || direction == :up
+        d.up { up(uid) }
+      end
+
+      if direction == :both || direction == :down
+        d.down { down(uid) }
+      end
+    end
+  end
+
   # Apply all the migrations not yet applied.
   def apply_all
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
     list_of_migrations.reject! { |x| @migrations_up.includes?(x) }
 
-    list_of_migrations.each(&.apply(:up))
-  end
-
-  #
-  # Revert the migration specified by this `uid`
-  def revert(num : Int32) # Revert a specific migration
-    m = @migrations.find(&.uid.==(num))
-    raise "Cannot revert #{m}: The migration is not applied" unless committed?(m)
-    m.apply(:down)
+    list_of_migrations.each(&.apply(Clear::Migration::Direction::UP))
   end
 
   #
