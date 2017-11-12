@@ -1,5 +1,4 @@
 module Clear::Model::HasRelations
-  #
   # ```
   # class Model
   #   include Clear::Model
@@ -37,11 +36,17 @@ module Clear::Model::HasRelations
     {% end %}
   end
 
+  # ```
+  # class Model
+  #   include Clear::Model
+  #   belongs_to user : User, foreign_key: "the_user_id"
+  #
+  # ```
   macro belongs_to(name, foreign_key = nil, no_cache = false, key_type = Int32?)
     {% t = name.type %}
     {% foreign_key = foreign_key || t.stringify.underscore + "_id" %}
 
-    field {{foreign_key.id}} : {{key_type}}
+    column {{foreign_key.id}} : {{key_type}}
 
     def {{name.var.id}} : {{t}}?
       @{{foreign_key.id}} ||

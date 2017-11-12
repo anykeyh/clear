@@ -1,9 +1,8 @@
 require "logger"
 
-#
 # # Welcome to Clear ORM !
 #
-# Clear ORM is currently in development by myself ( _anykeyh_ ).
+# Clear ORM is currently in heavy development.
 # The goal is to provide an advanced ORM for postgreSQL.
 #
 # Instead of working on adapter for differents database, I wanted to offer the
@@ -21,6 +20,7 @@ module Clear
   class_getter logger : Logger = Logger.new(STDOUT)
 end
 
+require "./clear/version"
 require "./clear/expression/**"
 require "./clear/sql/**"
 require "./clear/model/**"

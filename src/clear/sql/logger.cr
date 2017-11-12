@@ -3,7 +3,7 @@ require "logger"
 require "benchmark"
 
 module Clear::SQL::Logger
-  SQL_KEYWORDS = %w(
+  SQL_KEYWORDS = Set(String).new(%w(
     ALL ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
     BEGIN BOTH CASE CAST CHECK COLLATE COLUMN COMMIT CONSTRAINT CREATE
     CURRENT_DATE CURRENT_ROLE CURRENT_TIME CURRENT_TIMESTAMP
@@ -13,9 +13,9 @@ module Clear::SQL::Logger
     NEW NOT NULL OFF OFFSET OLD ON ONLY OR ORDER PLACING PRIMARY
     REFERENCES SELECT SESSION_USER SOME SYMMETRIC TABLE THEN TO
     TRAILING TRUE UNION UNIQUE UPDATE USER USING WHEN WHERE
-  )
+  ))
 
-  def self.colorize_query(qry : String)
+  private def self.colorize_query(qry : String)
     qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
       if SQL_KEYWORDS.includes?(word.upcase)
         word.colorize.bold.blue.to_s
@@ -27,14 +27,14 @@ module Clear::SQL::Logger
     end.join("")
   end
 
-  def self.display_mn_sec(x) : String
+  private def self.display_mn_sec(x) : String
     mn = x.to_i / 60
     sc = x.to_i % 60
 
     [mn > 9 ? mn : "0#{mn}", sc > 9 ? sc : "0#{sc}"].join("mn") + "s"
   end
 
-  def self.display_time(x) : String
+  private def self.display_time(x) : String
     if (x > 60)
       display_mn_sec(x)
     elsif (x > 1)
@@ -47,7 +47,7 @@ module Clear::SQL::Logger
   end
 
   def log_query(sql, &block)
-    time = Time.now.epoch_f # TODO: Change to Time.monotonic
+    time = Time.now.epoch_f
     yield
   ensure
     time = Time.now.epoch_f - time.not_nil!

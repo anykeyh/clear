@@ -4,9 +4,7 @@ version: 0.1.0
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
 
-description: |
-  And attempt to write an elegant MVC web framework
-  with crystal and postgresql
+description: Clear ORM is an advanced ORM focusing on PostgreSQL
 
 dependencies:
   pg:

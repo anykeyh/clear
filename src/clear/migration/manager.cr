@@ -57,7 +57,11 @@ class Clear::Migration::Manager
     if version < 0
       raise "Cannot revert HEAD-#{version}, because no migrations are loaded yet." if current_version.nil?
 
-      version = list_of_migrations[version - 1].uid
+      if list_of_migrations.size == 1
+        version = 0
+      else
+        version = list_of_migrations[version - 1].uid
+      end
     end
 
     operations = [] of {Int64, Migration::Direction}
