@@ -132,6 +132,7 @@ module Clear::Model
       str_hash = {} of String => Clear::SQL::Any
 
       tuple.map { |k, v| str_hash[k.to_s] = v }
+      str_hash.merge!(@tags)
 
       r = T.new(str_hash)
       yield(r)
