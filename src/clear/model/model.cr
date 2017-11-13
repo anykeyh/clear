@@ -49,6 +49,14 @@ module Clear::Model
       query.where { raw(pkey) == x }.first
     end
 
+    def self.create(x : Array(NamedTuple)) : Array(self)
+      x.map do |nt|
+        mdl = self.new(nt)
+        mdl.save
+        mdl
+      end
+    end
+
     # Default primary query is "id"
     def self.pkey : String
       "id"

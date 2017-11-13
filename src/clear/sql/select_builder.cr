@@ -10,7 +10,8 @@ module Clear::SQL::SelectBuilder
                  @order_bys = [] of String,
                  @limit = nil,
                  @offset = nil,
-                 @lock = nil)
+                 @lock = nil,
+                 @before_query_triggers = [] of -> Void)
   end
 
   include Query::Select
@@ -23,6 +24,7 @@ module Clear::SQL::SelectBuilder
   include Query::Execute
   include Query::Lock
   include Query::Fetch
+  include Query::BeforeQuery
 
   def dup : self
     d = self.class.new(columns: @columns.dup,

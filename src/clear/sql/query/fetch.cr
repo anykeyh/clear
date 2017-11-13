@@ -19,22 +19,29 @@ module Clear::SQL::Query::Fetch
 
   # Use a cursor to fetch the data
   def fetch_with_cursor(count = 1000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
-    Clear::SQL.log_query to_sql do
-      Clear::SQL.connection.transaction do |tx|
-        cnx = tx.connection
-        cursor_name = "__cursor_#{Time.now.epoch ^ (rand * 0xfffffff).to_i}__"
-        cnx.exec("DECLARE #{cursor_name} CURSOR FOR #{to_sql}")
+    trigger_before_query
 
-        n = count
+    Clear::SQL.connection.transaction do |tx|
+      cnx = tx.connection
+      cursor_name = "__cursor_#{Time.now.epoch ^ (rand * 0xfffffff).to_i}__"
 
-        h = {} of String => ::Clear::SQL::Any
+      cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
 
-        we_loop = true
-        while we_loop
-          cnx.query("FETCH #{count} FROM #{cursor_name}") do |rs|
-            we_loop = fetch_result_set(h, rs) { |x| yield(x) }
-          end
-        end
+      Clear::SQL.log_query(cursor_declaration) { cnx.exec(cursor_declaration) }
+
+      n = count
+
+      h = {} of String => ::Clear::SQL::Any
+
+      we_loop = true
+      while we_loop
+        fetch_query = "FETCH #{count} FROM #{cursor_name}"
+
+        rs = uninitialized PG::ResultSet
+
+        Clear::SQL.log_query(fetch_query) { rs = cnx.query(fetch_query) }
+
+        break unless fetch_result_set(h, rs) { |x| yield(x) }
       end
     end
   end
@@ -42,6 +49,8 @@ module Clear::SQL::Query::Fetch
   # Get a scalar (EG count)
   #
   def scalar(type : T.class) forall T
+    trigger_before_query
+
     Clear::SQL.log_query to_sql do
       Clear::SQL.connection.scalar(to_sql).as(T)
     end
@@ -62,12 +71,15 @@ module Clear::SQL::Query::Fetch
   end
 
   def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)
-    Clear::SQL.log_query to_sql do
-      h = {} of String => ::Clear::SQL::Any
+    trigger_before_query
 
-      Clear::SQL.connection.query(to_sql) do |rs|
-        fetch_result_set(h, rs) { |x| yield(x) }
-      end
-    end
+    h = {} of String => ::Clear::SQL::Any
+
+    to_sql = self.to_sql
+
+    rs = uninitialized PG::ResultSet
+    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection.query(to_sql) }
+
+    fetch_result_set(h, rs) { |x| yield(x) }
   end
 end

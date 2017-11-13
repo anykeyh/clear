@@ -23,10 +23,10 @@
 #
 module Clear::Migration
   struct Direction
-    UP   = Direction.new(:up)
-    DOWN = Direction.new(:down)
+    UP   = Direction.new(true)
+    DOWN = Direction.new(false)
 
-    @dir : Symbol
+    @dir : Bool
 
     # :nodoc:
     protected def initialize(@dir)
@@ -34,27 +34,27 @@ module Clear::Migration
 
     # Run the block if the direction is up
     def up(&block)
-      yield if @dir == :up
+      yield if @dir
     end
 
     # check if the direction is up
     def up?
-      @dir == :up
+      @dir
     end
 
     # Run the block if the direction is down
     def down(&block)
-      yield if @dir == :down
+      yield unless @dir
     end
 
     # check if the direction is down
     def down?
-      @dir == :down
+      !@dir
     end
 
     # :nodoc:
     def to_s
-      @dir == :up ? "Migration::Up" : "Migration::Down"
+      @dir ? "Migration::Up" : "Migration::Down"
     end
   end
 end

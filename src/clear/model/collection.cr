@@ -15,7 +15,8 @@ module Clear::Model
     @offset : Int64?
     @lock : String?
 
-    def initialize(@columns = [] of SQL::Column,
+    def initialize(
+                   @columns = [] of SQL::Column,
                    @froms = [] of SQL::From,
                    @joins = [] of SQL::Join,
                    @wheres = [] of Clear::Expression::Node,
@@ -25,7 +26,8 @@ module Clear::Model
                    @limit = nil,
                    @offset = nil,
                    @lock = nil,
-                   @tags = {} of String => Clear::SQL::Any)
+                   @tags = {} of String => Clear::SQL::Any,
+                   @before_query_triggers = [] of -> Void)
     end
 
     # Tags are used for building

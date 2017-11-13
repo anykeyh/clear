@@ -49,13 +49,40 @@ module Clear::Model::HasRelations
     column {{foreign_key.id}} : {{key_type}}
 
     def {{name.var.id}} : {{t}}?
-      @{{foreign_key.id}} ||
-        {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first
+      Clear::Model::Cache.instance.hit( "{{t.id}}.{{name.var.id}}",
+        self.{{foreign_key.id}}, {{t}}
+      ) do
+        [ {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ]
+      end.first?
+    end
+
+    def {{name.var.id}}! : {{t}}
+      {{name.var.id}}.not_nil!
     end
 
     def {{name.var.id}}=(x : {{t}}?)
       @{{foreign_key.id}} = x
       @{{foreign_key.id}}_field.value = x.pkey
+    end
+
+    # Adding the eager loading
+    class Collection
+
+      def with_{{name.var.id}} : self
+        before_query do
+          sub_query = self.dup.clear_select.select("{{foreign_key.id}}")
+          #{{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ]
+          #SELECT * FROM users WHERE id IN ( SELECT user_id FROM posts )
+          {{t}}.query.where{ raw({{t}}.pkey).in?(sub_query) }.each do |mdl|
+            Clear::Model::Cache.instance.add(
+              "{{t.id}}.{{name.var.id}}", mdl.pkey, [mdl]
+            )
+          end
+        end
+
+        self
+      end
+
     end
   end
 end

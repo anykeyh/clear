@@ -115,7 +115,6 @@ class Clear::SQL::InsertQuery
   end
 
   def returning(str : String)
-    puts "set returning = #{str}"
     @returning = str
 
     self

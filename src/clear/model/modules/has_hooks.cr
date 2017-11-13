@@ -36,6 +36,6 @@ module Clear::Model::HasHooks
         end
       end
 
-    end #Included in concrete model
-  end # Included in model module
+    end
+  end
 end

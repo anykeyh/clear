@@ -1,19 +1,26 @@
 # Clear
 
-Clear ORM is currently in development by myself ( github: _anykeyh_ ).
-The goal is to provide an advanced ORM for postgreSQL.
+Clear ORM is an ORM built on top of PostgreSQL.
+There's no will to make it multi-database at all. Thus to allow it to offer
+more functionality than other ORM around.
 
-Instead of working on adapter for differents database, I wanted to offer the
-maximum features for a specific platform.
+And about functionality, Clear is definitely on top:
 
-It's not every day we chose a database layout, and there's few reasons for you
-to change your database during the development cycle (at least, from SQL to SQL).
+- Expressive where query building (like Sequel!)
+- N+1 query caching
+- Colored request outputed in the log on debug level ! :-)
+- CTE, locks, cursors and other advanced PG features are packed in !
+- Migration system with integrated PostgreSQL subtilities (e.g. Foreign Key)
+- Automatic presence validator through the columns declaration: Using `Type?`
+  notation tell Clear that your column doesn't need to be present
+- Mostly based on modules and not inheritance: Plug in your project and play!
+- Customizable fields converter ("serializer") DB <-> Crystal
+- Native integration of different PG structures (Thank's to PG gem !)
 
-Postgres offers a lot of features in a very performant engine, and seems suitable
-for large projects in Crystal.
+Now you get our attention, well, the bad part is it's still a work in progress.
+Some basic and advanced features are in, others are just in my head.
+Others are just in the process "ok I'm gonna think about it later".
 
-And here you have ! The ORM made for Postgres and Crystal, simple to use, full
-of ideas stolen to ActiveRecord or Sequel :-).
 
 ## Architecture
 
@@ -43,14 +50,15 @@ ORM:
 - [X] Field mapping
 - [X] Basic SQL: Select/Insert/Update/Delete
 - [X] Cursored fetching
-- [X] Debug Queries & Pretty Print (sort of)
+- [X] Debug Queries & Pretty Print
 - [X] Scope
 - [X] Locks
+- [ ] Relations => Done `belongs_to`, `has` and `has_many`, in progress on `has_many_through`
 - [ ] Having clause
 - [ ] CTE
 - [ ] All logic of transaction, update, saving...
 - [ ] DB Views
-- [ ] Caching for N+1 Queries
+- [ ] Caching for N+1 Queries => Done for `belongs_to`!
 - [ ] Model joins query
 - [X] Migrations
 - [ ] crclr tool

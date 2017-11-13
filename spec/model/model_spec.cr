@@ -10,6 +10,8 @@ module ModelSpec
     column title : String?
 
     belongs_to user : User
+
+    self.table = "posts"
   end
 
   class User
@@ -100,6 +102,7 @@ module ModelSpec
       end
 
       it "can read through cursor" do
+        puts "WTF?!!!"
         User.query.each_with_cursor(batch: 50) do |u|
           u.id.should_not eq(nil)
         end
@@ -110,7 +113,28 @@ module ModelSpec
         pp p.to_h
       end
 
-      it "can read and write json" do
+      it "can encache N+1 query on belongs_to" do
+        User.create [
+          {id: 100, first_name: "Yacine"},
+          {id: 101, first_name: "Olivier"},
+          {id: 102, first_name: "Kevin"},
+          {id: 103, first_name: "Matz"},
+        ]
+
+        Post.create [
+          {id: 100, user_id: 100, title: "Cool Post 1"},
+          {id: 101, user_id: 100, title: "Cool Post 2"},
+          {id: 102, user_id: 100, title: "Cool Post 3"},
+          {id: 103, user_id: 100, title: "Cool Post 4"},
+        ]
+
+        Post.query.with_user.each do |u|
+          u.user # Must trigger the cache
+        end
+        puts "DONE !?"
+      end
+
+      it "can read and write jsonb" do
         u = User.query.first!
 
         u.first_name = "Yacine"
