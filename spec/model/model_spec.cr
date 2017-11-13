@@ -129,10 +129,9 @@ module ModelSpec
 
       it "define constraints on has-many to build object" do
         p = User.query.first!.posts.build
-        pp p.to_h
       end
 
-      it "can encache N+1 query on belongs_to, has_one, has_many" do
+      it "can encache N+1 query on belongs_to, has_one" do
         User.create [
           {id: 100, first_name: "Yacine"},
           {id: 101, first_name: "Olivier"},
@@ -169,7 +168,13 @@ module ModelSpec
         cache.miss.should eq 4
 
         cache.clear
+        User.query.where { id == 100 }.first!.info
+        cache.hit.should eq 0
+        cache.miss.should eq 1
+
+        cache.clear
         cache.with_cache do
+          User.query.with_info.where { id == 100 }.first!.info
           cache.hit.should eq 1
           cache.miss.should eq 0
         end

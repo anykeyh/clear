@@ -49,7 +49,6 @@ class Clear::Reflection::Table
              .where { t.relname == self.table_name }
              .order_by("t.relname", "i.relname")
              .fetch do |h|
-      pp h
       col = h["column_name"].to_s
       v = h["name"].to_s
 
