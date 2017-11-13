@@ -8,7 +8,7 @@ module Clear::Migration
       using : String? = nil, unique : Bool = false
 
     record FkeyOperation, fields : Array(String), table : String,
-      foreign_fields : Array(String), on_delete : String
+      foreign_fields : Array(String), on_delete : String, primary : Bool
 
     getter name : String
     getter? is_create : Bool
@@ -29,20 +29,20 @@ module Clear::Migration
       add_index(:updated_at)
     end
 
-    def references(to, name = nil, on_delete = "restrict", type = "integer",
-                   null = false, foreign_key = "id")
+    def references(to, name : String? = nil, on_delete = "restrict", type = "integer",
+                   null = false, foreign_key = "id", primary = false)
       name ||= to.singularize.underscore + "_id"
 
       add_column(name, "integer")
 
       add_fkey(fields: [name.to_s], table: to.to_s, foreign_fields: [foreign_key.to_s],
-        on_delete: on_delete.to_s)
+        on_delete: on_delete.to_s, primary: primary)
     end
 
     def add_fkey(fields : Array(String), table : String,
-                 foreign_fields : Array(String), on_delete : String)
+                 foreign_fields : Array(String), on_delete : String, primary : Bool)
       self.fkey_operations << FkeyOperation.new(fields: fields, table: table,
-        foreign_fields: foreign_fields, on_delete: on_delete)
+        foreign_fields: foreign_fields, on_delete: on_delete, primary: primary)
     end
 
     # Add/alter a column for this table.
@@ -144,6 +144,10 @@ module Clear::Migration
       type = case type
       when "string"
         "text"
+      when "int32", "integer"
+        "integer"
+      when "int64", "long"
+        "bigint"
       when "datetime"
         "timestamp without time zone"
       when "datetimetz"

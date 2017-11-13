@@ -7,7 +7,6 @@ module Clear::Model::HasRelations
   #
   #   has passport : Passport
   # ```
-  #
   macro has(name, foreign_key = nil, no_cache = false, primary_key = nil)
     {% if name.type.is_a?(Generic) && "#{name.type.name}" == "Array" %}
       {% if name.type.type_vars.size != 1 %}
@@ -26,13 +25,43 @@ module Clear::Model::HasRelations
         {{t}}.query.tags({ "#{%foreign_key}" => "#{%primary_key}" }).where{ raw(%foreign_key) == %primary_key }
       end
     {% else %}
+      # Here the has one code.
       {% t = name.type %}
       def {{name.var.id}} : {{t}}?
         %primary_key = {{(primary_key || "pkey").id}}
         %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
-        {{t}}.query.where{ raw(%foreign_key) == %primary_key }.first
+
+        Clear::Model::Cache.instance.hit( "{{t.id}}.{{name.var.id}}",
+          %primary_key, {{t}}
+        ) do
+          [ {{t}}.query.where{ raw(%foreign_key) == %primary_key }.first ].compact
+        end.first?
+
+
       end
-      # Here the has one code.
+
+      # Adding the eager loading
+      class Collection
+        def with_{{name.var.id}} : self
+          before_query do
+            %primary_key = {{(primary_key || "#{t}.pkey").id}}
+            %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
+
+            #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
+            sub_query = self.dup.clear_select.select("#{%primary_key}")
+
+            {{t}}.query.where{ raw(%foreign_key).in?(sub_query) }.each do |mdl|
+              Clear::Model::Cache.instance.set(
+                "{{t.id}}.{{name.var.id}}", mdl.pkey, [mdl]
+              )
+            end
+          end
+
+          self
+        end
+      end
+
+
     {% end %}
   end
 
@@ -52,7 +81,7 @@ module Clear::Model::HasRelations
       Clear::Model::Cache.instance.hit( "{{t.id}}.{{name.var.id}}",
         self.{{foreign_key.id}}, {{t}}
       ) do
-        [ {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ]
+        [ {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ].compact
       end.first?
     end
 
@@ -67,14 +96,13 @@ module Clear::Model::HasRelations
 
     # Adding the eager loading
     class Collection
-
       def with_{{name.var.id}} : self
         before_query do
           sub_query = self.dup.clear_select.select("{{foreign_key.id}}")
           #{{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ]
           #SELECT * FROM users WHERE id IN ( SELECT user_id FROM posts )
           {{t}}.query.where{ raw({{t}}.pkey).in?(sub_query) }.each do |mdl|
-            Clear::Model::Cache.instance.add(
+            Clear::Model::Cache.instance.set(
               "{{t.id}}.{{name.var.id}}", mdl.pkey, [mdl]
             )
           end
@@ -82,7 +110,7 @@ module Clear::Model::HasRelations
 
         self
       end
-
     end
+
   end
 end

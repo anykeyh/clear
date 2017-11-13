@@ -14,7 +14,18 @@ module ModelSpec
     self.table = "posts"
   end
 
-  class User
+  class UserInfo
+    include Clear::Model
+
+    column(id : Int32, primary: true)
+
+    belongs_to user : User
+    column registration_number : Int64
+
+    self.table = "user_infos"
+  end
+
+  struct User
     include Clear::Model
 
     before(:save) { |u| }
@@ -28,6 +39,7 @@ module ModelSpec
     column(notification_preferences : JSON::Any)
 
     has posts : Array(Post)
+    has info : UserInfo
 
     timestamps
 
@@ -44,6 +56,14 @@ module ModelSpec
         t.text "middle_name"
 
         t.jsonb "notification_preferences", index: "gin", default: Clear::Expression["{}"]
+
+        t.timestamps
+      end
+
+      create_table "user_infos" do |t|
+        t.references to: "users", name: "user_id", on_delete: "cascade"
+
+        t.int64 "registration_number", index: true
 
         t.timestamps
       end
@@ -102,7 +122,6 @@ module ModelSpec
       end
 
       it "can read through cursor" do
-        puts "WTF?!!!"
         User.query.each_with_cursor(batch: 50) do |u|
           u.id.should_not eq(nil)
         end
@@ -113,7 +132,7 @@ module ModelSpec
         pp p.to_h
       end
 
-      it "can encache N+1 query on belongs_to" do
+      it "can encache N+1 query on belongs_to, has_one, has_many" do
         User.create [
           {id: 100, first_name: "Yacine"},
           {id: 101, first_name: "Olivier"},
@@ -128,10 +147,32 @@ module ModelSpec
           {id: 103, user_id: 100, title: "Cool Post 4"},
         ]
 
+        UserInfo.create [
+          {id: 100, user_id: 100, registration_number: 123},
+        ]
+
         Post.query.with_user.each do |u|
           u.user # Must trigger the cache
         end
-        puts "DONE !?"
+
+        cache = Clear::Model::Cache.instance
+        cache.hit.should eq 4
+        cache.miss.should eq 0
+
+        cache.clear
+
+        Post.query.each do |u|
+          u.user # Do not trigger cache
+        end
+
+        cache.hit.should eq 0
+        cache.miss.should eq 4
+
+        cache.clear
+        cache.with_cache do
+          cache.hit.should eq 1
+          cache.miss.should eq 0
+        end
       end
 
       it "can read and write jsonb" do
@@ -139,7 +180,6 @@ module ModelSpec
 
         u.first_name = "Yacine"
         u.last_name = "Petitprez"
-        pp u
         u.save
 
         u.persisted?.should eq true
@@ -149,8 +189,6 @@ module ModelSpec
           end
         end)
         u.save
-
-        pp u
       end
     end
   end

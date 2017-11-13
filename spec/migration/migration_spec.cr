@@ -44,7 +44,7 @@ module MigrationSpec
 
       Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
 
-      table = Clear::Reflection::Table.public.find { table_name == "test" }
+      table = Clear::Reflection::Table.public.find! { table_name == "test" }
       columns = table.columns
 
       columns.dup.where { column_name == "first_name" }.any?.should eq true

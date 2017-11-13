@@ -17,9 +17,9 @@ And about functionality, Clear is definitely on top:
 - Customizable fields converter ("serializer") DB <-> Crystal
 - Native integration of different PG structures (Thank's to PG gem !)
 
-Now you get our attention, well, the bad part is it's still a work in progress.
-Some basic and advanced features are in, others are just in my head.
-Others are just in the process "ok I'm gonna think about it later".
+Now I get your attention, well, the bad part is it's still a work in progress.
+Some basic and advanced features are already in, others are just in my head, and
+others are just in the process "ok I'm gonna think about it later".
 
 
 ## Architecture
@@ -62,7 +62,7 @@ ORM:
 - [ ] Model joins query
 - [X] Migrations
 - [ ] crclr tool
-- [ ] Handling of compound primary key + CitusDB Support
+- [ ] CitusDB Support ?
 - [ ] Filling this checklist and drink a beer
 
 ## Licensing
