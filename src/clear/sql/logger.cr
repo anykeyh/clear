@@ -17,15 +17,16 @@ module Clear::SQL::Logger
   ))
 
   def self.colorize_query(qry : String)
-    qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
+    o = qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
       if SQL_KEYWORDS.includes?(word.upcase)
         word.colorize.bold.blue.to_s
       elsif word =~ /\d+/
         word.colorize.red
       else
-        word.colorize.dark_gray
+        word.colorize.white
       end
     end.join("")
+    o.gsub(/(--.*$)/) { |x| x.colorize.dark_gray }
   end
 
   def self.display_mn_sec(x) : String

@@ -147,8 +147,12 @@ class Clear::SQL::InsertQuery
     when SelectQuery
       o << "(" + v.to_sql + ")"
     else
-      o << "VALUES"
-      o << print_values
+      if v.empty? || (v.size == 1 && v[0].empty?) # < Case happening with model
+        o << "DEFAULT VALUES"
+      else
+        o << "VALUES"
+        o << print_values
+      end
     end
     if @returning
       o << "RETURNING"

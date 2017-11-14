@@ -36,7 +36,7 @@ module Clear::Model::HasRelations
       %primary_key = {{(primary_key || "pkey").id}}
       %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
 
-      Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
+      Clear::Model::Cache.instance.hit( "{{@type}}.{{method_name}}",
         %primary_key, {{relation_type}}
       ) do
         [ {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first ].compact
@@ -60,8 +60,10 @@ module Clear::Model::HasRelations
           sub_query = self.dup.clear_select.select("#{%primary_key}")
 
           {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }.each(fetch_columns: true) do |mdl|
+            puts "Set {{@type}}.{{method_name}}.#{mdl.pkey}"
+
             Clear::Model::Cache.instance.set(
-              "{{relation_type.id}}.{{method_name}}", mdl.pkey, [mdl]
+              "{{@type}}.{{method_name}}", mdl.attributes[%foreign_key], [mdl]
             )
           end
         end
@@ -94,7 +96,7 @@ module Clear::Model::HasRelations
     class Collection
       # Eager load the relation {{method_name}}.
       # Use it to avoid N+1 queries.
-      def with_{{method_name}}(fetch_columns = false) : self
+      def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
         before_query do
           %primary_key = {{(primary_key || "#{relation_type}.pkey").id}}
           %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
@@ -102,15 +104,21 @@ module Clear::Model::HasRelations
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
           sub_query = self.dup.clear_select.select("#{%primary_key}")
 
-          {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) } \
-            .each(fetch_columns: fetch_columns) do |mdl|
+          qry = {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }
+          yield(qry)
+
+          qry.each(fetch_columns: fetch_columns) do |mdl|
             Clear::Model::Cache.instance.set(
-              "{{relation_type.id}}.{{method_name}}", mdl.pkey, [mdl]
+              "{{relation_type}}.{{method_name}}", mdl.pkey, [mdl]
             )
           end
         end
 
         self
+      end
+
+      def with_{{method_name}}(fetch_columns = false)
+        with_{{method_name}}(fetch_columns){|q|} #empty block
       end
     end
   end
@@ -131,11 +139,12 @@ module Clear::Model::HasRelations
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type}}?
-      Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
+      x = Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
         self.{{foreign_key.id}}, {{relation_type}}
       ) do
         [ {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ].compact
-      end.first?
+      end
+      x.first?
     end
 
     def {{method_name}}! : {{relation_type}}
@@ -143,21 +152,21 @@ module Clear::Model::HasRelations
     end
 
     def {{method_name}}=(x : {{relation_type}}?)
-      @{{foreign_key.id}} = x
       @{{foreign_key.id}}_field.value = x.pkey
     end
 
     # Adding the eager loading
     class Collection
-      def with_{{name.var.id}}(fetch_columns = false) : self
+      def with_{{method_name}}(fetch_columns = false) : self
         before_query do
           sub_query = self.dup.clear_select.select({{foreign_key.stringify}})
           #{{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ]
           #SELECT * FROM users WHERE id IN ( SELECT user_id FROM posts )
           {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) } \
             .each(fetch_columns: fetch_columns) do |mdl|
+            puts "Set {{relation_type}}.{{method_name}}.#{mdl.pkey}"
             Clear::Model::Cache.instance.set(
-              "{{relation_type}}.{{name.var.id}}", mdl.pkey, [mdl]
+              "{{relation_type}}.{{method_name}}", mdl.pkey, [mdl]
             )
           end
         end

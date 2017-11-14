@@ -25,6 +25,12 @@ module InsertSpec
           "INSERT INTO users (SELECT * FROM old_users WHERE (old_users.id > 100))"
         )
       end
+
+      it "can build an empty insert?" do
+        insert_request.to_sql.should eq (
+          "INSERT INTO users DEFAULT VALUES"
+        )
+      end
     end
   end
 end

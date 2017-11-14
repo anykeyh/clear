@@ -49,6 +49,12 @@ module Clear::Model
       query.where { raw(pkey) == x }.first
     end
 
+    def self.create : self
+        mdl = self.new
+        mdl.save
+        mdl
+    end
+
     def self.create(x : Array(NamedTuple)) : Array(self)
       x.map do |nt|
         mdl = self.new(nt)

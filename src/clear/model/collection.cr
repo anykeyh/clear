@@ -7,6 +7,7 @@ module Clear::Model
   class CollectionBase(T)
     include Clear::SQL::SelectBuilder
 
+    # Used for build from collection
     @tags : Hash(String, Clear::SQL::Any)
 
     # Redefinition of the fields,
@@ -48,7 +49,7 @@ module Clear::Model
     end
 
     def each(fetch_columns = false, &block)
-      fetch do |hash|
+      fetch(fetch_all: true) do |hash|
         yield(T.new(hash, persisted: true, fetch_columns: fetch_columns))
       end
     end

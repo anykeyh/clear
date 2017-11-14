@@ -21,8 +21,8 @@ module Clear::SQL::Query::Fetch
   def fetch_with_cursor(count = 1000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
-    Clear::SQL.connection.transaction do |tx|
-      cnx = tx.connection
+    Clear::SQL.transaction do
+      cnx = Clear::SQL.connection
       cursor_name = "__cursor_#{Time.now.epoch ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
@@ -41,7 +41,11 @@ module Clear::SQL::Query::Fetch
 
         Clear::SQL.log_query(fetch_query) { rs = cnx.query(fetch_query) }
 
-        break unless fetch_result_set(h, rs) { |x| yield(x) }
+        o = Array(Hash(String, ::Clear::SQL::Any)).new(initial_capacity: count)
+
+        we_loop = fetch_result_set(h, rs) { |x| o << x.dup }
+
+        o.each { |h| yield(h) }
       end
     end
   end
@@ -57,20 +61,10 @@ module Clear::SQL::Query::Fetch
   end
 
   def first
-    limit(1).fetch { |x| return x }
+    limit(1).fetch(fetch_all: true) { |x| return x }
   end
 
   def to_a : Array(Hash(String, ::Clear::SQL::Any))
-    o = [] of Hash(String, ::Clear::SQL::Any)
-
-    fetch do |x|
-      o << x.dup
-    end
-
-    o
-  end
-
-  def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
     h = {} of String => ::Clear::SQL::Any
@@ -80,6 +74,33 @@ module Clear::SQL::Query::Fetch
     rs = uninitialized PG::ResultSet
     Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection.query(to_sql) }
 
-    fetch_result_set(h, rs) { |x| yield(x) }
+    o = [] of Hash(String, ::Clear::SQL::Any)
+    fetch_result_set(h, rs) { |x| o << x.dup }
+
+    o
+  end
+
+  # Fetch the result set row per row
+  # `fetch_all` is helpful in transactional environment, so it stores
+  # the result and close the resultset before strating to dispatch the data
+  # preventing creation of a new connection if you need to call SQL into the
+  # yielded block.
+  def fetch(fetch_all = false, &block : Hash(String, ::Clear::SQL::Any) -> Void)
+    trigger_before_query
+
+    h = {} of String => ::Clear::SQL::Any
+
+    to_sql = self.to_sql
+
+    rs = uninitialized PG::ResultSet
+    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection.query(to_sql) }
+
+    if fetch_all
+      o = [] of Hash(String, ::Clear::SQL::Any)
+      fetch_result_set(h, rs) { |x| o << x.dup }
+      o.each { |x| yield(x) }
+    else
+      fetch_result_set(h, rs) { |x| yield(x) }
+    end
   end
 end

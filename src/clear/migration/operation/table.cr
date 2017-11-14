@@ -29,11 +29,11 @@ module Clear::Migration
       add_index(:updated_at)
     end
 
-    def references(to, name : String? = nil, on_delete = "restrict", type = "integer",
+    def references(to, name : String? = nil, on_delete = "restrict", type = "bigint",
                    null = false, foreign_key = "id", primary = false)
       name ||= to.singularize.underscore + "_id"
 
-      add_column(name, "integer")
+      add_column(name, type, null: null, index: true)
 
       add_fkey(fields: [name.to_s], table: to.to_s, foreign_fields: [foreign_key.to_s],
         on_delete: on_delete.to_s, primary: primary)
@@ -227,7 +227,7 @@ module Clear::Migration
       table = Table.new(name.to_s, is_create: true)
 
       if primary
-        table.serial :id, primary: true
+        table.bigserial :id, primary: true
       end
 
       yield(table)

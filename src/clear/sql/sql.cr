@@ -12,7 +12,7 @@ module Clear
   #
   # Clear is made like an onion:
   #
-  # ```
+  # ```text
   # +------------------------------------+
   # |           THE ORM STACK            +
   # +------------------------------------+
@@ -25,6 +25,7 @@ module Clear
   # |  Crystal DB   | Crystal PG         | < Low Level connection
   # +------------------------------------+
   # ```
+  #
   # On the bottom stack, Clear offer SQL query building.
   # Theses features are then used by uppermost parts of the engine.
   #
@@ -91,8 +92,9 @@ module Clear
           yield
           execute("COMMIT")
         rescue e
-          execute("ROLLBACK") rescue nil
-          raise e unless e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
+          is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
+          execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
+          raise e unless is_rollback_error
         ensure
           @@in_transaction = false
         end
@@ -116,11 +118,16 @@ module Clear
         sp_name = "sp_#{@@savepoint_uid += 1}"
         begin
           execute("SAVEPOINT #{sp_name}")
+          yield
           execute("RELEASE SAVEPOINT #{sp_name}")
-        rescue e : Rollback
+        rescue e : RollbackError
           execute("ROLLBACK TO SAVEPOINT #{sp_name}")
         end
       end
+    end
+
+    def rollback
+      raise RollbackError.new
     end
 
     # Execute a SQL request.
@@ -132,8 +139,8 @@ module Clear
       begin
         log_query(sql) { Clear::SQL.connection.exec(sql) }
       rescue e
-        raise ExecutionError.new("Error while trying to execute SQL: `#{e.message}`\n" +
-                                 "`#{Clear::SQL::Logger.colorize_query(sql)}`")
+        raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
+                                 "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
       end
     end
 

@@ -15,4 +15,8 @@ def initdb
   {% end %}
 end
 
+def temporary(&block)
+  Clear::SQL.with_savepoint { yield; Clear::SQL.rollback }
+end
+
 initdb
