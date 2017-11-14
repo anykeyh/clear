@@ -61,14 +61,65 @@ module Clear
       @@connection = DB.open(url)
     end
 
+    @@in_transaction : Bool = false
+    @@savepoint_uid : UInt64 = 0_u64
+
+    def in_transaction?
+      @@in_transaction
+    end
+
+    # Create an unstackable transaction
+    #
+    # Example:
+    # ```
+    # Clear::SQL.transaction do
+    #   # do something
+    #   Clear::SQL.transaction do # Technically, this block do nothing, since we already are in transaction
+    #     rollback                # < Rollback the up-most `transaction` block.
+    #   end
+    # end
+    # ```
+    # see #with_savepoint to use a stackable version using savepoints.
+    #
     def transaction(&block)
-      execute("BEGIN")
-      begin
-        yield
-        execute("COMMIT")
-      rescue e
-        execute("ROLLBACK") rescue nil
-        raise e
+      if @@in_transaction
+        yield # In case we already are in transaction, we just ignore
+      else
+        @@in_transaction = true
+        execute("BEGIN")
+        begin
+          yield
+          execute("COMMIT")
+        rescue e
+          execute("ROLLBACK") rescue nil
+          raise e unless e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
+        ensure
+          @@in_transaction = false
+        end
+      end
+    end
+
+    # Create a transaction, but this one is stackable
+    # using savepoints.
+    #
+    # Example:
+    # ```
+    # Clear::SQL.with_savepoint do
+    #   # do something
+    #   Clear::SQL.with_savepoint do
+    #     rollback # < Rollback only the last `with_savepoint` block
+    #   end
+    # end
+    # ```
+    def with_savepoint(&block)
+      transaction do
+        sp_name = "sp_#{@@savepoint_uid += 1}"
+        begin
+          execute("SAVEPOINT #{sp_name}")
+          execute("RELEASE SAVEPOINT #{sp_name}")
+        rescue e : Rollback
+          execute("ROLLBACK TO SAVEPOINT #{sp_name}")
+        end
       end
     end
 

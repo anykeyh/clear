@@ -54,7 +54,12 @@ module Clear::Migration
 
     # :nodoc:
     def to_s
-      @dir ? "Migration::Up" : "Migration::Down"
+      @dir ? "Direction::Up" : "Direction::Down"
+    end
+
+    # :nodoc:
+    def to_str
+      to_s
     end
   end
 end

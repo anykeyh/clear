@@ -38,8 +38,8 @@ module ModelSpec
 
     column(notification_preferences : JSON::Any)
 
-    has posts : Array(Post)
-    has info : UserInfo
+    has_many posts : Post
+    has_one info : UserInfo
 
     timestamps
 
@@ -127,8 +127,11 @@ module ModelSpec
         end
       end
 
-      it "define constraints on has-many to build object" do
+      it "define constraints on has_many to build object" do
+        u = User.query.first!
         p = User.query.first!.posts.build
+
+        p.user_id.should eq(u.id)
       end
 
       it "can encache N+1 query on belongs_to, has_one" do

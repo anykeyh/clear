@@ -1,68 +1,118 @@
+# ```
+# class Model
+#   include Clear::Model
+#
+#   has_many posts : Post, [ foreign_key: Model.underscore_name + "_id", no_cache : false]
+#
+#   has_one passport : Passport
+#   has_many posts
+# ```
 module Clear::Model::HasRelations
-  # ```
-  # class Model
-  #   include Clear::Model
+  # The method `has_one` declare a relation
+  # 1, 1 where the current model primary key is stored in the foreign table.
+  # `primary_key` method (default: `self#pkey`) and `foreign_key` method
+  # (default: table_name in singular, plus "_id" appended)
+  # can be redefined
   #
-  #   has posts : Array(Post), [ foreign_key: Model.underscore_name + "_id", no_cache : false]
-  #
-  #   has passport : Passport
+  # Examples:
   # ```
-  macro has(name, foreign_key = nil, no_cache = false, primary_key = nil)
-    {% if name.type.is_a?(Generic) && "#{name.type.name}" == "Array" %}
-      {% if name.type.type_vars.size != 1 %}
-        {% raise "has method accept only Array(Model) for has many behavior. Unions are not accepted" %}
-      {% end %}
+  # model Passport
+  #   column id : Int32, primary : true
+  #   has_one user : User It assumes the table `users` have a field `passport_id`
+  # end
+  #
+  # model Passport
+  #   column id : Int32, primary : true
+  #   has_one owner : User, foreign_key: "" # It assumes the table `users` have a field `passport_id`
+  # end
+  # ```
+  macro has_one(name, foreign_key = nil, primary_key = nil)
+    {% relation_type = name.type %}
+    {% method_name = name.var.id %}
 
-      {% t = name.type.type_vars[0].resolve %}
+    # The method {{method_name}} is a `has_one` relation
+    #   to {{relation_type}}
+    def {{method_name}} : {{relation_type}}?
+      %primary_key = {{(primary_key || "pkey").id}}
+      %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
 
-      {% unless t < Clear::Model %}
-        {% raise "Use `has` with an Array of model, or a single model. `#{t}` is not a valid model" %}
-      {% end %}
-      # Here the has many code
-      def {{name.var.id}} : {{t}}::Collection
-        %primary_key = {{(primary_key || "pkey").id}}
-        %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
-        {{t}}.query.tags({ "#{%foreign_key}" => "#{%primary_key}" }).where{ raw(%foreign_key) == %primary_key }
-      end
-    {% else %}
-      # Here the has one code.
-      {% t = name.type %}
-      def {{name.var.id}} : {{t}}?
-        %primary_key = {{(primary_key || "pkey").id}}
-        %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
+      Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
+        %primary_key, {{relation_type}}
+      ) do
+        [ {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first ].compact
+      end.first?
+    end
 
-        Clear::Model::Cache.instance.hit( "{{t.id}}.{{name.var.id}}",
-          %primary_key, {{t}}
-        ) do
-          [ {{t}}.query.where{ raw(%foreign_key) == %primary_key }.first ].compact
-        end.first?
+    def {{method_name}}! : {{relation_type}}
+      {{method_name}}.not_nil!
+    end
 
+    # Addition of the method for eager loading and N+1 avoidance.
+    class Collection
+      # Eager load the relation {{method_name}}.
+      # Use it to avoid N+1 queries.
+      def with_{{method_name}}(fetch_columns = false) : self
+        before_query do
+          %primary_key = {{(primary_key || "#{relation_type}.pkey").id}}
+          %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
 
-      end
+          #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
+          sub_query = self.dup.clear_select.select("#{%primary_key}")
 
-      # Adding the eager loading
-      class Collection
-        def with_{{name.var.id}} : self
-          before_query do
-            %primary_key = {{(primary_key || "#{t}.pkey").id}}
-            %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
-
-            #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
-            sub_query = self.dup.clear_select.select("#{%primary_key}")
-
-            {{t}}.query.where{ raw(%foreign_key).in?(sub_query) }.each do |mdl|
-              Clear::Model::Cache.instance.set(
-                "{{t.id}}.{{name.var.id}}", mdl.pkey, [mdl]
-              )
-            end
+          {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }.each(fetch_columns: true) do |mdl|
+            Clear::Model::Cache.instance.set(
+              "{{relation_type.id}}.{{method_name}}", mdl.pkey, [mdl]
+            )
           end
-
-          self
         end
+
+        self
       end
+    end
+  end
 
+  macro has_many(name, foreign_key = nil, primary_key = nil)
+    {% relation_type = name.type %}
+    {% method_name = name.var.id %}
 
-    {% end %}
+    # The method {{method_name}} is a `has_one` relation
+    #   to {{relation_type}}
+    def {{method_name}} : {{relation_type}}::Collection
+      %primary_key = {{(primary_key || "pkey").id}}
+      %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
+
+      #Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
+      #  %primary_key, {{relation_type}}
+      #) do
+      {{relation_type}}.query \
+        .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
+        .where{ raw(%foreign_key) == %primary_key }
+      #end
+    end
+
+    # Addition of the method for eager loading and N+1 avoidance.
+    class Collection
+      # Eager load the relation {{method_name}}.
+      # Use it to avoid N+1 queries.
+      def with_{{method_name}}(fetch_columns = false) : self
+        before_query do
+          %primary_key = {{(primary_key || "#{relation_type}.pkey").id}}
+          %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
+
+          #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
+          sub_query = self.dup.clear_select.select("#{%primary_key}")
+
+          {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) } \
+            .each(fetch_columns: fetch_columns) do |mdl|
+            Clear::Model::Cache.instance.set(
+              "{{relation_type.id}}.{{method_name}}", mdl.pkey, [mdl]
+            )
+          end
+        end
+
+        self
+      end
+    end
   end
 
   # ```
@@ -72,38 +122,42 @@ module Clear::Model::HasRelations
   #
   # ```
   macro belongs_to(name, foreign_key = nil, no_cache = false, key_type = Int32?)
-    {% t = name.type %}
-    {% foreign_key = foreign_key || t.stringify.underscore + "_id" %}
+    {% relation_type = name.type %}
+    {% method_name = name.var.id %}
+    {% foreign_key = foreign_key || relation_type.stringify.underscore + "_id" %}
 
     column {{foreign_key.id}} : {{key_type}}
 
-    def {{name.var.id}} : {{t}}?
-      Clear::Model::Cache.instance.hit( "{{t.id}}.{{name.var.id}}",
-        self.{{foreign_key.id}}, {{t}}
+    # The method {{method_name}} is a `belongs_to` relation
+    #   to {{relation_type}}
+    def {{method_name}} : {{relation_type}}?
+      Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
+        self.{{foreign_key.id}}, {{relation_type}}
       ) do
-        [ {{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ].compact
+        [ {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ].compact
       end.first?
     end
 
-    def {{name.var.id}}! : {{t}}
-      {{name.var.id}}.not_nil!
+    def {{method_name}}! : {{relation_type}}
+      {{method_name}}.not_nil!
     end
 
-    def {{name.var.id}}=(x : {{t}}?)
+    def {{method_name}}=(x : {{relation_type}}?)
       @{{foreign_key.id}} = x
       @{{foreign_key.id}}_field.value = x.pkey
     end
 
     # Adding the eager loading
     class Collection
-      def with_{{name.var.id}} : self
+      def with_{{name.var.id}}(fetch_columns = false) : self
         before_query do
-          sub_query = self.dup.clear_select.select("{{foreign_key.id}}")
-          #{{t}}.query.where{ raw({{t}}.pkey) == self.{{foreign_key.id}} }.first ]
+          sub_query = self.dup.clear_select.select({{foreign_key.stringify}})
+          #{{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ]
           #SELECT * FROM users WHERE id IN ( SELECT user_id FROM posts )
-          {{t}}.query.where{ raw({{t}}.pkey).in?(sub_query) }.each do |mdl|
+          {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) } \
+            .each(fetch_columns: fetch_columns) do |mdl|
             Clear::Model::Cache.instance.set(
-              "{{t.id}}.{{name.var.id}}", mdl.pkey, [mdl]
+              "{{relation_type}}.{{name.var.id}}", mdl.pkey, [mdl]
             )
           end
         end

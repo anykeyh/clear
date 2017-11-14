@@ -15,7 +15,7 @@ class Clear::Reflection::Table
 
   scope(:public) { where { table_schema == "public" } }
 
-  has columns : Array(Clear::Reflection::Column), foreign_key: "table_name", primary_key: "table_name"
+  has_many columns : Clear::Reflection::Column, foreign_key: "table_name", primary_key: "table_name"
 
   def list_indexes : Hash(String, Array(String))
     # https://stackoverflow.com/questions/2204058/list-columns-with-indexes-in-postgresql
