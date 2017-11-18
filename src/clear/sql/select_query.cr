@@ -2,6 +2,7 @@ require "./query/*"
 require "./select_builder"
 
 # A Select Query builder
+#
 # Cf. Postgres documentation
 # [ WITH [ RECURSIVE ] with_query [, ...] ]
 # SELECT [ ALL | DISTINCT [ ON ( expression [, ...] ) ] ]

@@ -5,6 +5,7 @@ class Clear::SQL::DeleteQuery
 
   include Query::Where
   include Query::Execute
+  include Query::Change
 
   def initialize(@from = nil,
                  @wheres = [] of Clear::Expression::Node)
@@ -12,7 +13,7 @@ class Clear::SQL::DeleteQuery
 
   def from(x)
     @from = x
-    self
+    change!
   end
 
   def to_sql

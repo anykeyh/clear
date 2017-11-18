@@ -18,6 +18,8 @@ require "./query/*"
 #
 #
 class Clear::SQL::InsertQuery
+  include Query::Change
+
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
   getter values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
@@ -78,7 +80,7 @@ class Clear::SQL::InsertQuery
     v = @values = [] of Array(Inserable)
     v << row.values.to_a.map(&.as(Inserable))
 
-    self
+    change!
   end
 
   def insert(row : Hash(Symbolic, Inserable))
@@ -87,20 +89,20 @@ class Clear::SQL::InsertQuery
     v = @values = [] of Array(Inserable)
     v << row.values.to_a.map(&.as(Inserable))
 
-    self
+    change!
   end
 
   # Used with values
   def columns(*args)
     @keys = args
 
-    self
+    change!
   end
 
   def values(*args)
     @values << args
 
-    self
+    change!
   end
 
   # Insert into ... (...) SELECT
@@ -111,13 +113,13 @@ class Clear::SQL::InsertQuery
 
     @values = select_query
 
-    self
+    change!
   end
 
   def returning(str : String)
     @returning = str
 
-    self
+    change!
   end
 
   # Number of rows of this insertion request

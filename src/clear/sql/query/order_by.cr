@@ -7,13 +7,13 @@ module Clear::SQL::Query::OrderBy
     tuple.each do |k, v|
       @order_bys << "#{k} #{v.to_s.upcase}"
     end
-    self
+    change!
   end
 
   def order_by(*args)
     @order_bys += args.to_a.map(&.to_s)
 
-    self
+    change!
   end
 
   protected def print_order_bys

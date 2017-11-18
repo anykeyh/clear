@@ -7,7 +7,7 @@ module Clear::SQL::Query::Having
     x = Clear::Expression.to_node(with Clear::Expression.new yield)
     @havings << Clear::Expression.to_node(with Clear::Expression.new yield)
 
-    self
+    change!
   end
 
   def having(x : NamedTuple)
@@ -24,7 +24,7 @@ module Clear::SQL::Query::Having
 
     @havings << Clear::Expression::Node::Variable.new(sql)
 
-    self
+    change!
   end
 
   def having(str : String, parameters : Array(T)) forall T
@@ -56,13 +56,13 @@ module Clear::SQL::Query::Having
 
   def having(str : String)
     @havings << Clear::Expression::Node::Variable.new(str)
-    self
+    change!
   end
 
   def clear_havings
     @havings.clear
 
-    self
+    change!
   end
 
   protected def print_havings

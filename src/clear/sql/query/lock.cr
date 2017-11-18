@@ -10,5 +10,6 @@ module Clear::SQL::Query::Lock
 
   def with_lock(str : String = "FOR UPDATE")
     @lock = str
+    change!
   end
 end

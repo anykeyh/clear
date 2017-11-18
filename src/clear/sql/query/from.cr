@@ -12,12 +12,12 @@ module Clear::SQL
         end
       end
 
-      self
+      change!
     end
 
     def clear_from
       @froms.clear
-      self
+      change!
     end
 
     protected def print_froms

@@ -6,7 +6,7 @@ module Clear::SQL::Query::Where
   def where(node : Clear::Expression::Node)
     @wheres << node
 
-    self
+    change!
   end
 
   def where(&block)
@@ -27,7 +27,7 @@ module Clear::SQL::Query::Where
 
     @wheres << Clear::Expression::Node::Variable.new(sql)
 
-    self
+    change!
   end
 
   def where(str : String, parameters : Array(T)) forall T
@@ -59,13 +59,13 @@ module Clear::SQL::Query::Where
 
   def where(str : String)
     @wheres << Clear::Expression::Node::Variable.new(str)
-    self
+    change!
   end
 
   def clear_wheres
     @wheres.clear
 
-    self
+    change!
   end
 
   protected def print_wheres

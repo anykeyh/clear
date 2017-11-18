@@ -30,17 +30,16 @@ module Clear::Model::HasRelations
     {% relation_type = name.type %}
     {% method_name = name.var.id %}
 
-    # The method {{method_name}} is a `has_one` relation
-    #   to {{relation_type}}
+    # `{{method_name}}` is of type `has_one` relation to {{relation_type}}
     def {{method_name}} : {{relation_type}}?
       %primary_key = {{(primary_key || "pkey").id}}
       %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
 
-      Clear::Model::Cache.instance.hit( "{{@type}}.{{method_name}}",
-        %primary_key, {{relation_type}}
-      ) do
-        [ {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first ].compact
-      end.first?
+      # Clear::Model::Cache.instance.hit( "{{@type}}.{{method_name}}",
+      #   %primary_key, {{relation_type}}
+      # ) do
+
+      {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first
     end
 
     def {{method_name}}! : {{relation_type}}
@@ -77,18 +76,27 @@ module Clear::Model::HasRelations
     {% relation_type = name.type %}
     {% method_name = name.var.id %}
 
-    # The method {{method_name}} is a `has_one` relation
+    # The method {{method_name}} is a `has_many` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type}}::Collection
       %primary_key = {{(primary_key || "pkey").id}}
       %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
 
-      #Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
-      #  %primary_key, {{relation_type}}
-      #) do
-      {{relation_type}}.query \
-        .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
-        .where{ raw(%foreign_key) == %primary_key }
+
+      cache = @cache
+      if cache && cache.active?("{{method_name}}")
+        arr = cache.hit("{{method_name}}", %primary_key, {{relation_type}})
+
+        # This relation will trigger the cache if it exists
+        {{relation_type}}.query \
+          .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
+          .where{ raw(%foreign_key) == %primary_key }
+          .with_cached_result(arr)
+      else
+        {{relation_type}}.query \
+          .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
+          .where{ raw(%foreign_key) == %primary_key }
+      end
       #end
     end
 
@@ -105,11 +113,13 @@ module Clear::Model::HasRelations
           sub_query = self.dup.clear_select.select("#{%primary_key}")
 
           qry = {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }
-          yield(qry)
+          block.call(qry)
+
+          @cache.active "{{method_name}}"
 
           qry.each(fetch_columns: fetch_columns) do |mdl|
-            Clear::Model::Cache.instance.set(
-              "{{relation_type}}.{{method_name}}", mdl.pkey, [mdl]
+            @cache.set(
+              "{{method_name}}", mdl.pkey, [mdl]
             )
           end
         end
@@ -139,12 +149,14 @@ module Clear::Model::HasRelations
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type}}?
-      x = Clear::Model::Cache.instance.hit( "{{relation_type}}.{{method_name}}",
-        self.{{foreign_key.id}}, {{relation_type}}
-      ) do
-        [ {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ].compact
+
+      cache = @cache
+
+      if cache && cache.active? "{{method_name}}"
+        cache.hit("{{method_name}}", self.{{foreign_key.id}}, {{relation_type}}).first?
+      else
+        {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
       end
-      x.first?
     end
 
     def {{method_name}}! : {{relation_type}}
@@ -157,22 +169,29 @@ module Clear::Model::HasRelations
 
     # Adding the eager loading
     class Collection
-      def with_{{method_name}}(fetch_columns = false) : self
+      def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
         before_query do
-          sub_query = self.dup.clear_select.select({{foreign_key.stringify}})
-          #{{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first ]
-          #SELECT * FROM users WHERE id IN ( SELECT user_id FROM posts )
-          {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) } \
-            .each(fetch_columns: fetch_columns) do |mdl|
-            puts "Set {{relation_type}}.{{method_name}}.#{mdl.pkey}"
-            Clear::Model::Cache.instance.set(
-              "{{relation_type}}.{{method_name}}", mdl.pkey, [mdl]
-            )
+          sub_query = self.dup.clear_select.select({{foreign_key.id.stringify}})
+
+          cached_qry = {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) }
+
+          block.call(cached_qry)
+
+          @cache.active "{{method_name}}"
+
+          cached_qry.each(fetch_columns: fetch_columns) do |mdl|
+            @cache.set("{{method_name}}", mdl.pkey, [mdl])
           end
         end
 
         self
       end
+
+      def with_{{method_name}}(fetch_columns = false) : self
+        with_{{method_name}}(fetch_columns){}
+        self
+      end
+
     end
 
   end

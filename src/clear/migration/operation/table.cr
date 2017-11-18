@@ -129,7 +129,7 @@ module Clear::Migration
         [x.column,
          x.type,
          x.null ? nil : "NOT NULL",
-         x.default ? "DEFAULT #{x.default}" : nil,
+         !x.default.nil? ? "DEFAULT #{x.default}" : nil,
          x.primary ? "PRIMARY KEY" : nil]
           .compact.join(" ")
       end

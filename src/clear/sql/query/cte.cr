@@ -4,7 +4,7 @@ module Clear::SQL::Query::CTE
 
   def with_cte(request : CTEAuthorized)
     cte
-    self
+    change!
   end
 
   protected def print_ctes

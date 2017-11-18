@@ -14,6 +14,7 @@ module Clear::SQL::SelectBuilder
                  @before_query_triggers = [] of -> Void)
   end
 
+  include Query::Change
   include Query::Select
   include Query::From
   include Query::Join

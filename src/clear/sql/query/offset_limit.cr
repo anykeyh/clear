@@ -6,21 +6,22 @@ module Clear::SQL::Query::OffsetLimit
 
   def limit(x : Int?)
     @limit = Int64.new(x)
-    self
+    change!
   end
 
   def clear_limit
     @limit = nil
-    self
+    change!
   end
 
   def clear_offset
     @offset = nil
+    change!
   end
 
   def offset(x : Int?)
     @offset = Int64.new(x)
-    self
+    change!
   end
 
   protected def print_limit_offsets

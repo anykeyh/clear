@@ -9,7 +9,7 @@ module Clear::SQL::Query::Select
   # end
   def select(c : Column)
     @columns << c
-    self
+    change!
   end
 
   # Add field(s) to selection from tuple
@@ -27,11 +27,11 @@ module Clear::SQL::Query::Select
       end
     end
 
-    self
+    change!
   end
 
   def clear_select
     @columns.clear
-    self
+    change!
   end
 end

@@ -16,6 +16,9 @@ module Clear::Model
     @offset : Int64?
     @lock : String?
 
+    @cache : Clear::Model::QueryCache
+    @cached_result : Array(T)?
+
     def initialize(
                    @columns = [] of SQL::Column,
                    @froms = [] of SQL::From,
@@ -28,7 +31,36 @@ module Clear::Model
                    @offset = nil,
                    @lock = nil,
                    @tags = {} of String => Clear::SQL::Any,
-                   @before_query_triggers = [] of -> Void)
+                   @before_query_triggers = [] of -> Void,
+                   @cache = Clear::Model::QueryCache.new,
+                   @cached_result = nil)
+    end
+
+    # We can pass a cache to the models which are going to be instantiated
+    # This cache is used for relation calling of thoses models
+    def cached(cache : Clear::Model::QueryCache)
+      @cache = cache
+      self
+    end
+
+    # we can set the result of this request here.
+    def with_cached_result(r : Array(T))
+      @cached_result = r
+      self
+    end
+
+    def clear_cached_result
+      unless @cached_result.nil?
+        raise "Change?!"
+      end
+
+      @cached_result = nil
+      self
+    end
+
+    def change!
+      # In case we filter this collection, we remove the cache
+      clear_cached_result
     end
 
     # Tags are used for building
@@ -48,15 +80,33 @@ module Clear::Model
       self
     end
 
-    def each(fetch_columns = false, &block)
-      fetch(fetch_all: true) do |hash|
-        yield(T.new(hash, persisted: true, fetch_columns: fetch_columns))
+    def each(fetch_columns = false, &block : T ->)
+      cr = @cached_result
+
+      if cr
+        cr.each(&block)
+      else
+        fetch(fetch_all: true) do |hash|
+          yield(T.new(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+        end
       end
     end
 
-    def each_with_cursor(batch = 1000, fetch_columns = false, &block)
-      self.fetch_with_cursor(count: batch) do |hash|
-        yield(T.new(hash, persisted: true, fetch_columns: fetch_columns))
+    def map(fetch_columns = false, &block : T -> X) : Array(X) forall X
+      o = [] of X
+      each(fetch_columns) { |mdl| o << block.call(mdl) }
+      o
+    end
+
+    def each_with_cursor(batch = 1000, fetch_columns = false, &block : T ->)
+      cr = @cached_result
+
+      if cr
+        cr.each(&block)
+      else
+        self.fetch_with_cursor(count: batch) do |hash|
+          yield(T.new(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+        end
       end
     end
 
@@ -69,6 +119,10 @@ module Clear::Model
     end
 
     def any?
+      cr = @cached_result
+
+      return cr.any? if cr
+
       self.clear_select.select("1").limit(1).fetch do |h|
         return true
       end
@@ -81,6 +135,10 @@ module Clear::Model
     end
 
     def count : Int64
+      cr = @cached_result
+
+      return cr.size if cr
+
       self.clear_select.select("COUNT(*)").scalar(Int64)
     end
 
@@ -96,6 +154,10 @@ module Clear::Model
     {% end %}
 
     def to_a(fetch_columns = false) : Array(T)
+      cr = @cached_result
+
+      return cr if cr
+
       out = [] of T
       each(fetch_columns: fetch_columns) { |m| out << m }
       out
@@ -154,10 +216,14 @@ module Clear::Model
     end
 
     def first : T?
+      # Not sure about this one, I comment for now...
+      # cr = @cached_result
+      # return cr.first if cr
+
       order_by("#{T.pkey} ASC") unless T.pkey.nil?
 
       limit(1).fetch do |hash|
-        return T.new(hash, persisted: true)
+        return T.new(hash, persisted: true, cache: @cache)
       end
 
       return nil

@@ -10,6 +10,7 @@ class Clear::SQL::UpdateQuery
   @values : Array(UpdateInstruction) = [] of UpdateInstruction
   @table : String
 
+  include Query::Change
   include Query::Where
   include Query::Execute
 
@@ -19,17 +20,17 @@ class Clear::SQL::UpdateQuery
 
   def set(row : NamedTuple)
     set(row.to_h)
-    self
+    change!
   end
 
   def set(row : String)
     @values << row
-    self
+    change!
   end
 
   def set(row : Hash(String, Updatable))
     @values << Hash(String, Updatable).new.merge(row) # Merge to avoid a bug in crystal
-    self
+    change!
   end
 
   protected def print_value(row : Hash(String, Updatable)) : String
