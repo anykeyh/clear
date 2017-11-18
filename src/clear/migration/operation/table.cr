@@ -213,8 +213,8 @@ module Clear::Migration
     # This can be prevented using `primary: false`
     #
     # ```
-    # create_table(:users, primary: false) do |t|
-    #   t.integer :user_id, primary: true # Use custom name for the `user_id`
+    # create_table(:users, id: false) do |t|
+    #   t.integer :user_id, primary: true # Use custom name for the primary key
     #
     #   t.string :first_name
     #   t.string :last_name
@@ -223,10 +223,10 @@ module Clear::Migration
     # end
     # ```
     #
-    def create_table(name, primary = true, &block)
+    def create_table(name, id = true, &block)
       table = Table.new(name.to_s, is_create: true)
 
-      if primary
+      if id
         table.bigserial :id, primary: true
       end
 

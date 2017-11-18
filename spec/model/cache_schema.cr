@@ -1,3 +1,9 @@
+class UserInfo
+  include Clear::Model
+
+  belongs_to user : User, primary: true
+end
+
 class User
   include Clear::Model
 
@@ -16,6 +22,8 @@ class Category
   column name : String
 
   has_many posts : Post
+
+  has_many users : User, through: Post
 end
 
 class Post
@@ -46,6 +54,10 @@ class MigrateDb1
 
       create_table "categories" do |t|
         t.string "name", unique: true
+      end
+
+      create_table "user_infos", id: false do |t|
+        t.references to: "users", on_delete: "cascade", primary: true
       end
 
       create_table "posts" do |t|

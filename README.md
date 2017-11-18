@@ -55,14 +55,14 @@ ORM:
 - [X] Locks
 - [ ] Relations => Done `belongs_to`, `has` and `has_many`, in progress on `has_many_through`
 - [ ] Having clause
-- [ ] CTE
+- [X] CTE
 - [ ] All logic of transaction, update, saving...
 - [ ] DB Views
-- [ ] Caching for N+1 Queries => Done for `belongs_to`!
-- [ ] Model joins query
+- [ ] Caching for N+1 Queries => Almost done, missing cache chaining
 - [X] Migrations
-- [ ] crclr tool
-- [ ] CitusDB Support ?
+- [ ] Writing documentation
+- [ ] crclr tool => In progress
+- [ ] CitusDB Support ? => In mind
 - [ ] Filling this checklist and drink a beer
 
 ## Licensing
