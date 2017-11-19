@@ -4,6 +4,8 @@ script:
   - crystal docs
 services:
   - postgresql
+before_script:
+  - psql -v
 deploy:
   provider: pages
   skip_cleanup: true
