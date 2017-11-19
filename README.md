@@ -1,5 +1,7 @@
 # Clear
 
+[![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
+
 Clear ORM is an ORM built on top of PostgreSQL.
 There's no will to make it multi-database at all. Thus to allow it to offer
 more functionality than other ORM around.
