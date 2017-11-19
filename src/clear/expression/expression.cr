@@ -56,7 +56,8 @@ class Clear::Expression
   DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L"
   DATABASE_DATE_FORMAT      = "%Y-%m-%d"
 
-  alias AvailableLiteral = Int32 | Int64 | Float32 | Float64 |
+  alias AvailableLiteral = Int8 | Int16 | Int32 | Int64 | Float32 | Float64 |
+                           UInt8 | UInt16 | UInt32 | UInt64 |
                            String | Symbol | Time | Bool | Nil
 
   # fastest way to call self.safe_literal

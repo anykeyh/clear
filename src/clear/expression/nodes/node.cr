@@ -19,9 +19,32 @@ abstract class Clear::Expression::Node
     define_operator({{op}}, {{op}})
   {% end %}
 
+  def =~(any : Node) : Node
+    Node::DoubleOperator.new(self, any, "~")
+  end
+
+  def !~(any : Node) : Node
+    Node::DoubleOperator.new(self, any, "!~")
+  end
+
+  def =~(regexp : Regex) : Node
+    if regexp.options.ignore_case?
+      Node::DoubleOperator.new(self, Literal.new(regexp.source), "~*")
+    else
+      Node::DoubleOperator.new(self, Literal.new(regexp.source), "~")
+    end
+  end
+
+  def !~(regexp : Regex) : Node
+    if regexp.options.ignore_case?
+      Node::DoubleOperator.new(self, Literal.new(regexp.source), "!~*")
+    else
+      Node::DoubleOperator.new(self, Literal.new(regexp.source), "!~")
+    end
+  end
+
   define_operator("!=", "<>", null: "IS NOT")
   define_operator("==", "=", null: "IS")
-  define_operator("=~", "LIKE")
   define_operator("like", "LIKE")
   define_operator("ilike", "ILIKE")
   define_operator("&", "AND")

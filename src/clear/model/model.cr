@@ -59,11 +59,13 @@ module Clear::Model
     end
 
     def self.create(x : Array(NamedTuple)) : Array(self)
-      x.map do |nt|
-        mdl = self.new(nt)
-        mdl.save
-        mdl
-      end
+      x.map{ |elm| create(elm) }
+    end
+
+    def self.create(x : NamedTuple) : self
+      mdl = self.new(x)
+      mdl.save
+      mdl
     end
 
     # Default primary query is "id"

@@ -43,7 +43,8 @@ module Clear
                 Array(PG::Int64Array) | Array(PG::StringArray) | Bool | Char | Float32 |
                 Float64 | Int16 | Int32 | Int64 | JSON::Any | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
-                PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time | UInt32 | Nil
+                PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
+                UInt32 | UInt64 | Nil
 
     include Clear::SQL::Logger
     extend self

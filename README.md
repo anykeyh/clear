@@ -52,13 +52,13 @@ ORM:
 - [X] Cursored fetching
 - [X] Debug Queries & Pretty Print
 - [X] Scope
-- [X] Locks
-- [ ] Relations => Done `belongs_to`, `has` and `has_many`, in progress on `has_many_through`
-- [ ] Having clause
+- [ ] Locks
+- [X] Relations
+- [X] Having clause
 - [X] CTE
 - [ ] All logic of transaction, update, saving...
 - [ ] DB Views
-- [ ] Caching for N+1 Queries => Almost done, missing cache chaining
+- [X] Caching for N+1 Queries
 - [X] Migrations
 - [ ] Writing documentation
 - [ ] crclr tool => In progress
