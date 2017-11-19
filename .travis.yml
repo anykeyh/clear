@@ -1,18 +1,21 @@
 language: crystal
 script:
-  - crystal spec
-  - crystal docs
+- crystal spec
+- crystal docs
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -V
+- psql -V
 addons:
-  postgresql: "9.6"
+  postgresql: '9.6'
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: $GITHUB_TOKEN
+  github_token: "$GITHUB_TOKEN"
   project_name: anykeyh/clear
   on:
     branch: master
   local_dir: doc
+env:
+  global:
+    secure: Gd/l57AoD77l6esQ2ZZ3Sgwox5rN3Va7trjSTbfZJfwmnCXrznjx3nYqa3uPJT7IPxxgT7FcjyUmCXuFzNkXkDHtfpoBojvCcx97twMIVjnDQFTG02XN9lQzz2VTIdg5M7X66hYHqv/abrvDv7mfy3fxrDsJCmTdGbWR8hKx7rdL17kGXLA3DSkHQVP+5ZxX4nl/FhLu8bvaUhmkq9zRaY46hZUfcptKjg2d0JLfy3fDkDVJpkdYDf08sskv1LV9FxecoPe8t9h982shSd04dTO9R4yRLrf01A7DD5N1r1ux6eNJCk+u+VeFmGtlqd9S357l18K4ci+ba28y2U1HGB12+Nx3p0Dm04pwYiC9yvhK4CP72bYRhydU2IE14So0CkmK/4DTHvFLF5yWm4u9aPj0nqfO6fCBT/vv9qFERGe33zjplp2ZTaEFUP1djLuaIW58+ThsV2+NxUc//F5unKhxioxbktN06e7BHG+b3QJg2NiA6RQLQ6N0LNWj9hQy0ELA07w83sqsXavZ0U7UoYU5fOtGmmoVOqA5GKevRV2yeyCHHtGXf/IhQJ048+827OWvXPcJy+pKKvWaEmVsAI+KMpmmFoL6y8UIQaLvM/sSAo8/8bISNmjcCCgraeFMj8tbDdZ3CSELFl7fflhGj4L1/juSUN9NSJ5okzectnU=
