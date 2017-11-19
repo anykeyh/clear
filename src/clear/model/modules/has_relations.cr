@@ -196,10 +196,18 @@ module Clear::Model::HasRelations
 
           @cache.active "{{method_name}}"
 
-          qry.each(fetch_columns: fetch_columns) do |mdl|
-            @cache.set(
-              "{{method_name}}", mdl.pkey, [mdl]
-            )
+          h = {} of Clear::SQL::Any => Array({{relation_type}})
+
+          qry.each(fetch_columns: true) do |mdl|
+            unless h[mdl.attributes[%foreign_key]]?
+              h[mdl.attributes[%foreign_key]] = [] of {{relation_type}}
+            end
+
+            h[mdl.attributes[%foreign_key]] << mdl
+          end
+
+          h.each do |key, value|
+            @cache.set("{{method_name}}", key, value)
           end
         end
 

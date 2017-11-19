@@ -75,7 +75,7 @@ end
 # Monkey patch of QueryCache
 # For adding statistics and assert
 class Clear::Model::QueryCache
-  @@cache_hitted : Int32 = 0
+  class_getter cache_hitted : Int32 = 0
 
   def hit(relation_name, relation_value, klass : T.class) : Array(T) forall T
     @@cache_hitted += 1
