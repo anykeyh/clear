@@ -5,7 +5,9 @@ script:
 services:
   - postgresql
 before_script:
-  - psql -v
+  - psql -V
+addons:
+  postgresql: "9.6"
 deploy:
   provider: pages
   skip_cleanup: true
