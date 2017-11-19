@@ -90,7 +90,7 @@ class Post
 
   # Scope are helpers on class level, which helps to filter the query and can
   # be chained !
-  scope(published) { |qry| qry.where(published: true) }
+  scope(published) { where({published: true}) }
 end
 
 # Now we have a migration, it's time to migrate it !
@@ -170,7 +170,7 @@ pause
 
 # But wait... I want to show only published posts of the user, how can I do?
 # Answer: Filter the posts !
-User.query.with_posts { |q| q.where { published == true } }.limit(5).each do |user|
+User.query.with_posts(&.published).limit(5).each do |user|
   puts "Post of user: #{user.full_name}"
   user.posts.each do |p|
     puts p.title
