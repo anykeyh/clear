@@ -21,6 +21,9 @@ Now I get your attention, well, the bad part is it's still a work in progress.
 Some basic and advanced features are already in, others are just in my head, and
 others are just in the process "ok I'm gonna think about it later".
 
+## Getting started
+
+The best way to get started is to follow the [wiki](https://github.com/anykeyh/clear/wiki/getting_started)
 
 ## Architecture
 
