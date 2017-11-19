@@ -1,7 +1,8 @@
 module Clear::SQL::SelectBuilder
   getter havings : Array(Clear::Expression::Node)
 
-  def initialize(@columns = [] of SQL::Column,
+  def initialize(@is_distinct = false,
+                 @columns = [] of SQL::Column,
                  @froms = [] of SQL::From,
                  @joins = [] of SQL::Join,
                  @wheres = [] of Clear::Expression::Node,
@@ -39,11 +40,6 @@ module Clear::SQL::SelectBuilder
       offset: @offset,
       lock: @lock
     )
-  end
-
-  def print_columns
-    "SELECT " +
-      (@columns.any? ? @columns.map { |c| c.to_sql.as(String) }.join(", ") : "*")
   end
 
   def to_sql : String

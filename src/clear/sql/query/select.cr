@@ -1,6 +1,7 @@
 module Clear::SQL::Query::Select
   macro included
     getter columns : Array(SQL::Column) = [] of SQL::Column
+    getter is_distinct : Bool = false
   end
 
   # def select(name : Symbolic, var = nil)
@@ -9,6 +10,18 @@ module Clear::SQL::Query::Select
   # end
   def select(c : Column)
     @columns << c
+    change!
+  end
+
+  # Add distinct to the query
+  def distinct
+    @is_distinct = true
+    change!
+  end
+
+  # Remove distinct
+  def undistinct
+    @is_distinct = false
     change!
   end
 
@@ -33,5 +46,10 @@ module Clear::SQL::Query::Select
   def clear_select
     @columns.clear
     change!
+  end
+
+  protected def print_columns
+    "SELECT " + (@is_distinct ? "DISTINCT " : "") +
+      (@columns.any? ? @columns.map { |c| c.to_sql.as(String) }.join(", ") : "*")
   end
 end

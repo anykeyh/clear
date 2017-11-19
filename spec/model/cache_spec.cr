@@ -10,13 +10,16 @@ module CacheSpec
     context "cache system" do
       it "can be called in chain on the three relations" do
         temporary do
-          User.create [{id: 1, name: "User 1"}]
-          User.create [{id: 2, name: "User 2"}]
+          User.create [{id: 101, name: "User 1"}]
+          User.create [{id: 102, name: "User 2"}]
 
-          Category.create [{id: 1, name: "Test"}]
+          Category.create [{id: 201, name: "Test"}]
+          Category.create [{id: 202, name: "Test 2"}]
 
-          Post.create [{id: 1, name: "Post 1", published: true, user_id: 1, category_id: 1, content: "Lorem ipsum"}]
-          Post.create [{id: 2, name: "Post 2", user_id: 2, category_id: 1, content: "Lorem ipsum"}]
+          Post.create [{id: 301, name: "Post 1", published: true, user_id: 101, category_id: 201, content: "Lorem ipsum"}]
+          Post.create [{id: 302, name: "Post 2", user_id: 102, category_id: 201, content: "Lorem ipsum"}]
+          Post.create [{id: 303, name: "Post 2", user_id: 102, category_id: 202, content: "Lorem ipsum"}]
+          Post.create [{id: 304, name: "Post 2", user_id: 101, category_id: 202, content: "Lorem ipsum"}]
 
           # I really don't know how to assert on the cache from here.
           # Maybe I should monkey patch the cache system to count
@@ -27,13 +30,15 @@ module CacheSpec
           end
 
           # Relation has_one
-          puts "has_one"
           Post.query.with_user.each do |post|
             pp post.user.try &.id
           end
 
-          c = Category.query.first!
-          pp c.users.map &.to_s
+          Category.query.with_users { |q| q.order_by("users.id ASC") }.order_by("id ASC").each do |c|
+            c.users.each do |user|
+              puts "category = #{c.id}, user = #{user.id}"
+            end
+          end
         end
       end
     end

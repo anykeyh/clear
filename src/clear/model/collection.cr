@@ -50,10 +50,6 @@ module Clear::Model
     end
 
     def clear_cached_result
-      unless @cached_result.nil?
-        raise "Change?!"
-      end
-
       @cached_result = nil
       self
     end
@@ -134,12 +130,12 @@ module Clear::Model
       not any?
     end
 
-    def count : Int64
+    def count(what = "*") : Int64
       cr = @cached_result
 
-      return cr.size if cr
+      return Int64.new(cr.size) if cr
 
-      self.clear_select.select("COUNT(*)").scalar(Int64)
+      self.clear_select.select("COUNT(#{what})").scalar(Int64)
     end
 
     # Call an aggregation function.
