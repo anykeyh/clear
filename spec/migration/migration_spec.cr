@@ -26,46 +26,48 @@ module MigrationSpec
       add_column "test", "middle_name", "text"
       create_index "test", "middle_name DESC"
     end
-
-    # drop_index :test_first_name
   end
 
-  describe "Migration" do
-    it "can discover UID from class name" do
-      Migration1.new.uid.should eq 1
-    end
+  temporary do
+    describe "Migration" do
+      it "can discover UID from class name" do
+        Migration1.new.uid.should eq 1
+      end
 
-    it "can discover UID from file name" do
-      MigrationByFile.new.uid.should eq 12345
-    end
+      it "can discover UID from file name" do
+        MigrationByFile.new.uid.should eq 12345
+      end
 
-    it "can apply migration" do
-      Migration1.new.apply(Clear::Migration::Direction::UP)
+      it "can apply migration" do
+        temporary do
+          Migration1.new.apply(Clear::Migration::Direction::UP)
 
-      Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
+          Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
 
-      table = Clear::Reflection::Table.public.find! { table_name == "test" }
-      columns = table.columns
+          table = Clear::Reflection::Table.public.find! { table_name == "test" }
+          columns = table.columns
 
-      columns.dup.where { column_name == "first_name" }.any?.should eq true
-      columns.dup.where { column_name == "last_name" }.any?.should eq true
+          columns.dup.where { column_name == "first_name" }.any?.should eq true
+          columns.dup.where { column_name == "last_name" }.any?.should eq true
 
-      table.list_indexes.size.should eq 5
+          table.list_indexes.size.should eq 5
 
-      Migration2.new.apply(Clear::Migration::Direction::UP)
-      columns = table.columns
-      columns.dup.where { column_name == "middle_name" }.any?.should eq true
-      table.list_indexes.size.should eq 6
+          Migration2.new.apply(Clear::Migration::Direction::UP)
+          columns = table.columns
+          columns.dup.where { column_name == "middle_name" }.any?.should eq true
+          table.list_indexes.size.should eq 6
 
-      # Revert the last migration
-      Migration2.new.apply(Clear::Migration::Direction::DOWN)
-      columns = table.columns
-      columns.dup.where { column_name == "middle_name" }.any?.should eq false
-      table.list_indexes.size.should eq 5
+          # Revert the last migration
+          Migration2.new.apply(Clear::Migration::Direction::DOWN)
+          columns = table.columns
+          columns.dup.where { column_name == "middle_name" }.any?.should eq false
+          table.list_indexes.size.should eq 5
 
-      # Revert the table migration
-      Migration1.new.apply(Clear::Migration::Direction::DOWN)
-      Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq false
+          # Revert the table migration
+          Migration1.new.apply(Clear::Migration::Direction::DOWN)
+          Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq false
+        end
+      end
     end
   end
 end

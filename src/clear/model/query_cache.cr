@@ -8,10 +8,6 @@ class Clear::Model::QueryCache
   @cache : Hash(CacheKey, Pointer(Void)) = {} of CacheKey => Pointer(Void)
   @cache_activation : Set(String) = Set(String).new
 
-  getter call : Int64 = 0_i64
-  getter miss : Int64 = 0_i64
-  getter hit : Int64 = 0_i64
-
   def fetch
     query
   end
@@ -27,19 +23,9 @@ class Clear::Model::QueryCache
   # Try to hit the cache. If an array is found, it will be returned.
   # Otherwise, the block will be called and must return an array.
   def hit(relation_name, relation_value, klass : T.class) : Array(T) forall T
-    miss = false
-
-    o = @cache.fetch(CacheKey.new(relation_name, relation_value, T.name)) { miss = true }
-
-    @call += 1
-    miss ? (@miss += 1) : (@hit += 1)
-
-    if miss
+    @cache.fetch CacheKey.new(relation_name, relation_value, T.name) do
       [] of T
-    else
-      # See `set` below
-      o.unsafe_as(Array(T))
-    end
+    end.unsafe_as(Array(T))
   end
 
   # Set the cached array for a specific key `{relation_name,relation_value}`
@@ -59,8 +45,6 @@ class Clear::Model::QueryCache
 
   def clear
     @cache.clear
-    @miss = 0_i64
-    @hit = 0_i64
-    @call = 0_i64
+    @cache_activation.clear
   end
 end

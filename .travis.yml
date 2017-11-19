@@ -1,0 +1,14 @@
+language: crystal
+script:
+  - crystal spec
+  - crystal docs
+services:
+  - postgresql
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  project_name: anykeyh/clear
+  on:
+    branch: master
+  local_dir: doc

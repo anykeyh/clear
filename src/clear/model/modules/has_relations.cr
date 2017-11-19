@@ -54,10 +54,10 @@ module Clear::Model::HasRelations
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
           sub_query = self.dup.clear_select.select("#{%primary_key}")
 
-          {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }.each(fetch_columns: true) do |mdl|
-            puts "Set {{@type}}.{{method_name}}.#{mdl.pkey}"
+          @cache.active "{{method_name}}"
 
-            Clear::Model::Cache.instance.set(
+          {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }.each(fetch_columns: true) do |mdl|
+            @cache.set(
               "{{@type}}.{{method_name}}", mdl.attributes[%foreign_key], [mdl]
             )
           end

@@ -149,6 +149,11 @@ class Clear::Migration::Manager
     ensure_unicity! # << Compiler bug for now :-|
   end
 
+  def reinit
+    ensure_database_is_ready
+    self
+  end
+
   # : nodoc:
   private def check_version
     version = Clear::SQL.select("value").from("__clear_metadatas").where({metatype: "version"}).scalar(String)

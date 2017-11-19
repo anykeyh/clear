@@ -43,7 +43,7 @@ class Post
   belongs_to category : Category
 end
 
-class MigrateDb1
+class MigrateSpec1
   include Clear::Migration
 
   def change(dir)
@@ -72,4 +72,17 @@ class MigrateDb1
   end
 end
 
-MigrateDb1.new.apply(Clear::Migration::Direction::UP)
+# Monkey patch of QueryCache
+# For adding statistics and assert
+class Clear::Model::QueryCache
+  @@cache_hitted : Int32 = 0
+
+  def hit(relation_name, relation_value, klass : T.class) : Array(T) forall T
+    @@cache_hitted += 1
+    previous_def
+  end
+
+  def self.reset_counter
+    @@cache_hitted = 0
+  end
+end

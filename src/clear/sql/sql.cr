@@ -127,6 +127,7 @@ module Clear
       end
     end
 
+    # Raise a rollback, in case of transaction
     def rollback
       raise RollbackError.new
     end
@@ -145,22 +146,28 @@ module Clear
       end
     end
 
+    # :nodoc:
     def sel_str(s : Selectable)
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
     end
 
-    def delete(from = nil)
-      Clear::SQL::DeleteQuery.new(from: from)
+    # Start a DELETE table query
+    def delete(table = nil)
+      Clear::SQL::DeleteQuery.new(from: table)
     end
 
+    # Start an INSERT INTO table query
     def insert(table, *args)
       insert_into(table, *args)
     end
 
+    # Alias for insert, but for thoses who are more comfortable using the
+    # SQL syntax !
     def insert_into(table, *args)
       Clear::SQL::InsertQuery.new(table).insert(*args)
     end
 
+    # Start a UPDATE table query
     def update(table)
       Clear::SQL::UpdateQuery.new(table)
     end

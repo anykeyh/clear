@@ -21,7 +21,7 @@ module Clear::Model
   # The overload are shown in this case, but not in the case the constructors
   # are directly defined without the included block.
   macro included
-    @cache : Clear::Model::QueryCache?
+    getter cache : Clear::Model::QueryCache?
 
     def initialize
       @persisted = false
