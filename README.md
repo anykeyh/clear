@@ -305,7 +305,7 @@ end
 
 This validator will raise an exception, because first_name has never been initialized.
 To avoid this, we have many way:
-```
+```crystal
 # 1. Check presence:
 
 def validate
@@ -399,7 +399,7 @@ You can create a table:
 
 I strongly encourage to use the foreign key constraints of postgres for your references:
 
-```
+```crystal
   t.references to: "users", on_delete: "cascade", null: false
 ```
 
