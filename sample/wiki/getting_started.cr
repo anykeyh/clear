@@ -122,7 +122,7 @@ def lorem(count)
     dignissim sapien eu malesuada magna laoreet vel)
   raise "count must be > 2" unless count > 2 # Always fail fast !
   # This should do the trick!
-  "Lorem ipsum" + (count - 2).times.map { dictionnary.sample }.join(" ")
+  "Lorem ipsum" + dictionnary.sample(count - 2)
 end
 
 # Now it's time to create our users !
@@ -134,8 +134,8 @@ end
   (1..12).to_a.sample.times do # Each user own 1 to 12 posts !
     p = u.posts.build
     # As you can see, the post already have the ID of the user, so no need to make the link manually !
-    p.title = lorem((4..8).to_a.sample)
-    p.content = lorem((10..200).to_a.sample)
+    p.title = lorem(rand(4..8))
+    p.content = lorem(rand(10..200))
     p.published = [true, false].sample # Half of our posts are not published; this is to check later with the scope!
     p.save                             # We can then save the post !
   end
