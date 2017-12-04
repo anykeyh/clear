@@ -9,6 +9,7 @@ module Clear::Model
   include Clear::Model::HasColumns
   include Clear::Model::HasHooks
   include Clear::Model::HasTimestamps
+  include Clear::Model::HasSerialPkey
   include Clear::Model::HasSaving
   include Clear::Model::HasValidation
   include Clear::Model::HasRelations
