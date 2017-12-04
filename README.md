@@ -92,6 +92,32 @@ module Clear::Model::Converter::Custom::TypeConverter
 end
 ```
 
+
+##### Presence system explaination
+
+Most of the ORM around are using column type as `Type | Nil` union.
+In my opinion, it's bad. If your column type in postgres is `text NOT NULL`, it must
+be mapped to `String`, and not to `String | Nil`, since you are sure no
+column are `null`.
+
+Moreover, it can lead to issues in this case:
+
+```
+User.query.select("last_name").each do |usr|
+  puts usr.first_name #Should it be nil since we don't select it??!
+end
+```
+
+Clear offers another approach, storing each column in a wrapper.
+Wrapper can be then of the type of the column as in postgres, or in `UNKNOWN` state.
+This approach offers more flexibility:
+
+```
+User.query.select("last_name").each do |usr|
+  puts usr.first_name # << THIS WILL RAISE AN EXCEPTION, TELLING YOU first_name IS NOT INITIALIZED.
+end
+```
+
 #### Associations
 
 Clear offers `has_many`, `has_one`, `belongs_to` and `has_many through` associations:
@@ -190,7 +216,7 @@ end
 
 Object can be persisted, saved, updated:
 
-```
+```crystal
 u = User.new
 u.email = "test@example.com"
 u.save! #Save or throw if unsavable (validation failed).
@@ -198,7 +224,7 @@ u.save! #Save or throw if unsavable (validation failed).
 
 Columns can be checked:
 
-```
+```crystal
 u = User.new
 u.email = "test@example.com"
 u.email_column.changed? # < Return "true"
@@ -206,13 +232,179 @@ u.email_column.changed? # < Return "true"
 
 #### Validation
 
-Validation
+##### Presence validator
+
+Presence validator is done using the union type of the column:
+
+```crystal
+class User
+  include Clear::Model
+
+  column first_name : String # Must be present
+  column last_name : String? # Can be null
+end
+```
+
+###### `NOT NULL DEFAULT ...` CASE
+
+In the case the data cannot be null but presence should not be check in clear, your can write:
+
+```crystal
+class User
+    column id : Int64, primary: true, presence: false #id will be set using pg serial !
+end
+```
+
+##### Unique validator
+
+None. Use `unique` feature of postgres. Unique validator at crystal level is a
+non-go and lead to terrible race concurrency issues.
+It's an anti-pattern and must be avoided at any cost
+
+##### Other validators
+
+When you save your model, Clear will call first the presence validators, then
+call your custom made validators. All you have to do is to reimplement
+the `validate` method:
+
+```crystal
+class MyModel
+#...
+  def validate
+    # Your code goes here
+  end
+end
+```
+
+Validation fail if `model#errors` is not empty:
+
+```crystal
+  class MyModel
+    #...
+    def validate
+      if column != "ABCD"
+        add_error("column", "must be ABCD!")
+      end
+    end
+  end
+```
+
+##### Important note about validation and presence system
+
+In the case you try validation on a column which has not been initialized,
+Clear will complain, telling you you cannot access to the column.
+Let's see an example here:
+
+```crystal
+user = User.new
+
+def validate
+  add_error("first_name", "should not be empty") if first_name == ""
+end
+```
+
+This validator will raise an exception, because first_name has never been initialized.
+To avoid this, we have many way:
+```
+# 1. Check presence:
+
+def validate
+  if first_name_column.defined? #Ensure we have a value here.
+    add_error("first_name", "should not be empty") if first_name == ""
+  end
+end
+
+# 2. Use column object + default value
+def validate
+  add_error("first_name", "should not be empty") if first_name_column.value("") == ""
+end
+
+# 3. Use the helper macro `on_presence`
+def validate
+  on_presence(first_name) do
+    add_error("first_name", "should not be empty") if first_name == ""
+  end
+end
+
+#4. Use the helper macro `ensure_than`
+def validate
+  ensure_than(first_name, "should not be empty", &.!=(""))
+end
+
+#5. Use the `ensure_than` helper (with block notation) !
+def validate
+  ensure_than(first_name, "should not be empty") do |field|
+    field != ""
+  end
+end
 
 ```
-```
+
+I recommend the 4th method in most of the cases ;-)
 
 ### Migration
 
+Clear offer a migration system. Migration class must be named with a number at the end, to order them:
+
+```crystal
+class Migration1
+  include Clear::Migration
+
+  def change(dir)
+    #...
+  end
+end
+```
+
+#### Using filename
+
+A good practice is to write down all your migrations one file per migration, and
+naming them using the `[number]_migration_description.cr` pattern.
+In this case, the migration class name doesn't need to have a number at the end of the class name.
+
+```crystal
+# in src/db/migrations/1234_create_table.cr
+class CreateTable
+  include Clear::Migration
+
+  def change(dir)
+    #...
+  end
+end
+```
+
+#### Migration examples
+
+Migration must implement the method `change(dir : Migration::Direction)`
+
+Direction is the current direction of the migration (up or down).
+It provides few methods: `up?`, `down?`, `up(&block)`, `down(&block)`
+
+You can create a table:
+
+```crystal
+  def change(dir)
+    create_table(:test) do |t|
+      t.string :first_name, index: true
+      t.string :last_name, unique: true
+
+      t.index "lower(first_name || ' ' || last_name)", using: :btree
+
+      t.timestamps
+    end
+  end
+```
+
+#### Constraints
+
+I strongly encourage to use the foreign key constraints of postgres for your references:
+
+```
+  t.references to: "users", on_delete: "cascade", null: false
+```
+
+There's no plan to offer `dependent` system on the associations in Clear,
+but instead to use the features of postgres.
 
 ## Architecture
 
@@ -249,8 +441,8 @@ ORM:
 - [X] CTE
 - [X] Caching for N+1 Queries
 - [X] Migrations
-- [ ] Validation
-- [ ] All logic of transaction, update, saving...
+- [X] Validation
+- [X] All logic of transaction, update, saving...
 - [ ] DB Views => In progress
 - [ ] Writing documentation
 - [ ] crclr tool => In progress
