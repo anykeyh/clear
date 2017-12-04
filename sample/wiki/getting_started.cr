@@ -122,14 +122,14 @@ def lorem(count)
     dignissim sapien eu malesuada magna laoreet vel)
   raise "count must be > 2" unless count > 2 # Always fail fast !
   # This should do the trick!
-  "Lorem ipsum" + dictionnary.sample(count - 2)
+  "Lorem ipsum" + dictionnary.sample(count - 2).join(" ")
 end
 
 # Now it's time to create our users !
 # Let's create 200 users !
 200.times do |idx|
   # This is the simplest way to create and save the user in one operation
-  u = User.create({first_name: "user#{idx}", last_name: "malcom#{idx}", email: "user#{idx}@localhost"})
+  u = User.create!({first_name: "user#{idx}", last_name: "malcom#{idx}", email: "user#{idx}@localhost"})
   # We can then build posts for the users
   (1..12).to_a.sample.times do # Each user own 1 to 12 posts !
     p = u.posts.build
@@ -137,7 +137,7 @@ end
     p.title = lorem(rand(4..8))
     p.content = lorem(rand(10..200))
     p.published = [true, false].sample # Half of our posts are not published; this is to check later with the scope!
-    p.save                             # We can then save the post !
+    p.save!                            # We can then save the post !
   end
 end
 

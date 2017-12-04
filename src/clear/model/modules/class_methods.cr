@@ -23,13 +23,29 @@ module Clear::Model::ClassMethods
           mdl
       end
 
+      def self.create! : self
+          mdl = self.new
+          mdl.save!
+          mdl
+      end
+
       def self.create(x : Array(NamedTuple)) : Array(self)
         x.map{ |elm| create(elm) }
+      end
+
+      def self.create!(x : Array(NamedTuple)) : Array(self)
+        x.map{ |elm| create!(elm) }
       end
 
       def self.create(x : NamedTuple) : self
         mdl = self.new(x)
         mdl.save
+        mdl
+      end
+
+      def self.create!(x : NamedTuple) : self
+        mdl = self.new(x)
+        mdl.save!
         mdl
       end
 
