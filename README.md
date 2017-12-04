@@ -361,8 +361,6 @@ Clear will complain, telling you you cannot access to the column.
 Let's see an example here:
 
 ```crystal
-user = User.new
-
 def validate
   add_error("first_name", "should not be empty") if first_name == ""
 end
