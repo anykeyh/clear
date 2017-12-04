@@ -15,12 +15,13 @@ require "logger"
 # for large projects in Crystal.
 #
 # And here you have ! The ORM made for Postgres and Crystal, simple to use, full
-# of ideas stolen to ActiveRecord or Sequel :-).
+# of ideas stolen to ActiveRecord and Sequel :-).
 module Clear
   class_getter logger : Logger = Logger.new(STDOUT)
 end
 
 require "./clear/version"
+require "./clear/util"
 require "./clear/expression/**"
 require "./clear/sql/**"
 require "./clear/model/**"

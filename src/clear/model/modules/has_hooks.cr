@@ -1,8 +1,9 @@
 module Clear::Model::HasHooks
-  alias HookFunction = self -> Void
 
   macro included # Included in model module
     macro included #Included in concrete model
+      alias HookFunction = self -> Void
+
       EVENTS_BEFORE = {} of Symbol => Array(HookFunction)
       EVENTS_AFTER = {} of Symbol => Array(HookFunction)
 
@@ -25,15 +26,9 @@ module Clear::Model::HasHooks
       end
 
       def with_triggers(event_name, &block)
-        (EVENTS_BEFORE[event_name]? || [] of HookFunction).each do |cb|
-          cb.call(self)
-        end
-
+        (EVENTS_BEFORE[event_name]? || [] of HookFunction).each(&.call(self))
         with self yield
-
-        (EVENTS_AFTER[event_name]? || [] of HookFunction).each do |cb|
-          cb.call(self)
-        end
+        (EVENTS_AFTER[event_name]? || [] of HookFunction).each(&.call(self))
       end
 
     end

@@ -13,6 +13,7 @@ module Clear::Model
   include Clear::Model::HasValidation
   include Clear::Model::HasRelations
   include Clear::Model::HasScope
+  include Clear::Model::ClassMethods
 
   getter? persisted : Bool
   getter cache : Clear::Model::QueryCache?
@@ -23,8 +24,7 @@ module Clear::Model
   macro included
     getter cache : Clear::Model::QueryCache?
 
-    def initialize
-      @persisted = false
+    def initialize(@persisted = false)
     end
 
     def initialize(h : Hash(String, ::Clear::SQL::Any ), @cache : Clear::Model::QueryCache? = nil, @persisted = false, fetch_columns = false )
@@ -34,51 +34,6 @@ module Clear::Model
 
     def initialize(t : NamedTuple, @persisted = false)
       set(t)
-    end
-  end
-
-  # For some reasons (the class "Collection" inheriting from Generic prevent working extension...
-  # So the columns will be added manually
-  macro included
-    class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
-
-    class Collection < Clear::Model::CollectionBase({{@type}}); end
-
-    def self.query
-      Collection.new.from(table)
-    end
-
-    def self.find(x)
-      query.where { raw(pkey) == x }.first
-    end
-
-    def self.create : self
-        mdl = self.new
-        mdl.save
-        mdl
-    end
-
-    def self.create(x : Array(NamedTuple)) : Array(self)
-      x.map{ |elm| create(elm) }
-    end
-
-    def self.create(x : NamedTuple) : self
-      mdl = self.new(x)
-      mdl.save
-      mdl
-    end
-
-    # Default primary query is "id"
-    def self.pkey : String
-      "id"
-    end
-
-    def self.columns
-      @@columns
-    end
-
-    macro finished
-      __generate_columns
     end
   end
 end

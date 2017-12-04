@@ -6,16 +6,25 @@ module Clear::Model::HasSaving
       if valid?
         if persisted?
           Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
-          self.clear_change_flags
         else
           Clear::SQL.insert_into(self.class.table, to_h).returning(self.class.pkey).to_sql
           @persisted = true
           hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute
           self.set(hash)
         end
+
+        self.clear_change_flags
+      else
+        false
       end
     end
 
     true
+  end
+
+  def save!
+    with_triggers(:save) do
+      raise Clear::Model::InvalidModelError.new("Validation of the model failed") unless save
+    end
   end
 end

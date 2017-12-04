@@ -73,7 +73,8 @@ class MigrateSpec1
 end
 
 # Monkey patch of QueryCache
-# For adding statistics and assert
+# For adding statistics
+# during spec
 class Clear::Model::QueryCache
   class_getter cache_hitted : Int32 = 0
 

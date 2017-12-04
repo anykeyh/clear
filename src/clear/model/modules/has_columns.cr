@@ -6,6 +6,8 @@ module Clear::Model::HasColumns
   macro included
     macro included
       COLUMNS = {} of Nil => Nil
+
+      # Attributes, used if fetch_columns is true
       getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
     end
   end
@@ -123,6 +125,17 @@ module Clear::Model::HasColumns
 
       out
     end
+
+    def validate_field_presence
+      {% for name, settings in COLUMNS %}
+        unless persisted?
+          if !(@{{name}}_column.nilable? || @{{name}}_column.defined?)
+            add_error({{name.stringify}}, "must be present")
+          end
+        end
+      {% end %}
+    end
+
 
     # Reset the `changed?` flag on all columns
     def clear_change_flags

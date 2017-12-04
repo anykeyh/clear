@@ -41,10 +41,10 @@ module Clear
     alias Any = Array(PG::BoolArray) | Array(PG::CharArray) | Array(PG::Float32Array) |
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
                 Array(PG::Int64Array) | Array(PG::StringArray) | Bool | Char | Float32 |
-                Float64 | Int16 | Int32 | Int64 | JSON::Any | PG::Geo::Box | PG::Geo::Circle |
+                Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
                 PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
-                UInt32 | UInt64 | Nil
+                UInt8 | UInt16 | UInt32 | UInt64 | Nil
 
     include Clear::SQL::Logger
     extend self

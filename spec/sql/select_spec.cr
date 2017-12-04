@@ -219,6 +219,14 @@ module SelectSpec
                                "name ASC LIMIT 50 OFFSET 50 )"
           end
 
+          it "can build locks" do
+            r = select_request.from(:users).with_lock("FOR UPDATE")
+            r.to_sql.should eq "SELECT * FROM users FOR UPDATE"
+
+            r = select_request.from(:users).with_lock("FOR SHARE")
+            r.to_sql.should eq "SELECT * FROM users FOR SHARE"
+          end
+
           it "can use & as AND and | as OR" do
             r = select_request.from(:users).where {
               ((raw("users.id") > 100) & (raw("users.visible") == true)) | (raw("users.role") == "superadmin")

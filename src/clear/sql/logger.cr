@@ -26,7 +26,7 @@ module Clear::SQL::Logger
         word.colorize.white
       end
     end.join("")
-    o.gsub(/(--.*$)/) { |x| x.colorize.dark_gray }
+    o.gsub(/(--.*)$/) { |x| x.colorize.dark_gray }
   end
 
   def self.display_mn_sec(x) : String

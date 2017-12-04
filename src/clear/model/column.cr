@@ -72,6 +72,12 @@ struct Clear::Model::Column(T)
     @value
   end
 
+  # Return if the value can be nilable or not,
+  # to check the presence during validation
+  def nilable?
+    T.nilable?
+  end
+
   # If a column is not loaded (e.g. not defined once), it will show "#undef".
   # If a column is dirty (e.g. change hasn't be saved), it will show a "*" after the value.
   def inspect

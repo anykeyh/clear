@@ -154,59 +154,6 @@ module ModelSpec
           end
         end
 
-        it "can encache N+1 query on belongs_to, has_one" do
-          temporary do
-            User.create [
-              {id: 100, first_name: "Yacine"},
-              {id: 101, first_name: "Olivier"},
-              {id: 102, first_name: "Kevin"},
-              {id: 103, first_name: "Matz"},
-            ]
-
-            Post.create [
-              {id: 200, user_id: 100, title: "Cool Post 1"},
-              {id: 201, user_id: 100, title: "Cool Post 2"},
-              {id: 202, user_id: 100, title: "Cool Post 3"},
-              {id: 203, user_id: 100, title: "Cool Post 4"},
-            ]
-
-            UserInfo.create [
-              {id: 300, user_id: 100, registration_number: 123},
-            ]
-
-            # cache = Clear::Model::Cache.instance
-            # cache.clear
-
-            Post.query.with_user.each do |u|
-              u.user!.id.should eq 100 # Must trigger the cache
-            end
-
-            # cache.hit.should eq 4
-            # cache.miss.should eq 0
-
-            # cache.clear
-
-            Post.query.each do |p|
-              p.user!.id.should eq 100 # Do not trigger cache
-            end
-
-            # cache.hit.should eq 0
-            # cache.miss.should eq 4
-
-            # cache.clear
-
-            User.query.where { id == 100 }.first!.info
-            # cache.hit.should eq 0
-            # cache.miss.should eq 1
-
-            # cache.clear
-            User.query.where { id == 100 }.with_info.first!.info
-            # cache.hit.should eq 1
-            # cache.miss.should eq 0
-
-          end
-        end
-
         it "can read and write jsonb" do
           temporary do
             u = User.new
