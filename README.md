@@ -74,7 +74,7 @@ end
 
 Clear allows you to setup your own column types using converter:
 
-```
+```crystal
 class User
   include Clear::Model
   column my_custom_type : Custom::Type
@@ -102,7 +102,7 @@ column are `null`.
 
 Moreover, it can lead to issues in this case:
 
-```
+```crystal
 User.query.select("last_name").each do |usr|
   puts usr.first_name #Should it be nil since we don't select it??!
 end
@@ -112,7 +112,7 @@ Clear offers another approach, storing each column in a wrapper.
 Wrapper can be then of the type of the column as in postgres, or in `UNKNOWN` state.
 This approach offers more flexibility:
 
-```
+```crystal
 User.query.select("last_name").each do |usr|
   puts usr.first_name # << THIS WILL RAISE AN EXCEPTION, TELLING YOU first_name IS NOT INITIALIZED.
 end
@@ -191,7 +191,72 @@ max_id = User.query.where{ email.ilike "@gmail.com%" }.max("id", Int32)
 weighted_avg = User.query.agg( "SUM(performance_weight * performance_score) / SUM(performance_weight)", Float64 )
 ```
 
-##### Querying compound fields
+##### Fetching associations
+
+```crystal
+User.query.each do |user|
+  puts "User #{user.id} posts:"
+  user.posts.each do |post| #Works, but will trigger a request for each user.
+    puts "• #{post.id}"
+  end
+end
+```
+
+###### Caching association for N+1 request
+
+Use the generated `with_xxx` method on the collection to get the association
+cached and avoid N+1 request
+
+```crystal
+# Will call two requests only.
+User.query.with_posts.each do |user|
+  puts "User #{user.id} posts:"
+  user.posts.each do |post|
+    puts "• #{post.id}"
+  end
+end
+```
+
+###### Associations caching examples
+
+Association cache can be tweaked, to encache subassociation, filters etc...
+
+Example to cache `users => posts => category` (3 requests):
+
+```crystal
+# Will call two requests only.
+User.query.with_posts(&.with_category).each do |user|
+  puts "User #{user.id} posts:"
+  user.posts.each do |post|
+    puts "• #{post.id} @ #{post.category.name}"
+  end
+end
+```
+
+*DO / DO NOT:*
+
+```crystal
+# Will call two requests only.
+User.query.with_posts.each do |user|
+  puts "User #{user.id} published posts:"
+  # NO: It won't cache the result, since the association is mutated via `where`
+  user.posts.where({published: true}).each do |post|
+    puts "• #{post.id}"
+  end
+end
+
+#INSTEAD, DO:
+User.query.with_posts(&.where({published: true})).each do |user|
+  puts "User #{user.id} published posts:"
+  # YES: the posts collection of user is already encached with the published filter :-)
+  user.posts.each do |post|
+    puts "• #{post.id}"
+  end
+end
+```
+
+
+##### Querying computed or foreign fields
 
 In case you want fields computed by postgres, or stored in another table, you can use `fetch_column`.
 By default, for performance reasons, `fetch_column` is set to false.
