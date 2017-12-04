@@ -27,7 +27,7 @@ module Clear::Model::HasHooks
 
       def with_triggers(event_name, &block)
         (EVENTS_BEFORE[event_name]? || [] of HookFunction).each(&.call(self))
-        with self yield
+        yield
         (EVENTS_AFTER[event_name]? || [] of HookFunction).each(&.call(self))
       end
 

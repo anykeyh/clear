@@ -4,7 +4,7 @@ module ModelSpec
   class Post
     include Clear::Model
 
-    column id : Int32, primary: true
+    column id : Int32, primary: true, presence: false
 
     column title : String?
 
@@ -16,7 +16,7 @@ module ModelSpec
   class UserInfo
     include Clear::Model
 
-    column(id : Int32, primary: true)
+    column id : Int32, primary: true, presence: false
 
     belongs_to user : User
     column registration_number : Int64
@@ -27,15 +27,13 @@ module ModelSpec
   struct User
     include Clear::Model
 
-    before(:save) { |u| }
+    column id : Int32, primary: true, presence: false
 
-    column(id : Int32, primary: true)
+    column first_name : String?
+    column last_name : String?
+    column middle_name : String?
 
-    column(first_name : String?)
-    column(last_name : String?)
-    column(middle_name : String?)
-
-    column(notification_preferences : JSON::Any)
+    column notification_preferences : JSON::Any, presence: false
 
     has_many posts : Post
     has_one info : UserInfo
@@ -107,8 +105,9 @@ module ModelSpec
         it "can save the model" do
           temporary do
             u = User.new({id: 1})
+            u.notification_preferences = JSON.parse("{}")
             u.id = 2 # Force the change!
-            u.save
+            u.save!
             User.query.count.should eq 1
           end
         end
@@ -119,7 +118,7 @@ module ModelSpec
             u.persisted?.should eq false
             u.first_name = "hello"
             u.last_name = "world"
-            u.save
+            u.save!
 
             u.persisted?.should eq true
             u.id.should eq 1
@@ -160,14 +159,14 @@ module ModelSpec
 
             u.first_name = "Yacine"
             u.last_name = "Petitprez"
-            u.save
+            u.save.should eq true
 
             u.notification_preferences = JSON.parse(JSON.build do |json|
               json.object do
                 json.field "email", true
               end
             end)
-            u.save
+            u.save.should eq true
             u.persisted?.should eq true
           end
         end

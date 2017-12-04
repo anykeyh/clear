@@ -25,6 +25,8 @@ Please check the roadmap
 
 ## Getting started
 
+A full sample is available on the [wiki](https://github.com/anykeyh/clear/wiki/getting_started)
+
 ### Installation
 
 In `shards.yml`
@@ -35,9 +37,9 @@ dependencies:
     github: anykeyh/clear
 ```
 
-Then require clear to your software:
+Then:
 
-```
+```crystal
 require "clear"
 ```
 
@@ -45,9 +47,10 @@ require "clear"
 
 In Clear, most of the objects are mixins and must be included to your classes:
 
-#### Row definition
+#### Column mapping
 
-```
+```crystal
+
 class User
   include Clear::Model
 
@@ -64,11 +67,12 @@ class User
     self.encrypted_password = Encryptor.hash(x)
   end
 end
+
 ```
 
-#### Custom types
+#### Column types
 
-Clear allow you to setup your custom types:
+Clear allows you to setup your own column types using converter:
 
 ```
 class User
@@ -90,7 +94,7 @@ end
 
 #### Associations
 
-Clear offer `has_many`, `has_one`, `belongs_to` and `has_many through` associations:
+Clear offers `has_many`, `has_one`, `belongs_to` and `has_many through` associations:
 
 ```crystal
 class Security::Action
@@ -114,10 +118,6 @@ class User
 end
 ```
 
-#### Association cache
-
-Associations provide caching system. See querying section of this manual.
-
 ### Querying
 
 #### Simple query
@@ -135,10 +135,11 @@ User.find!(1) #Get the first user, or throw exception if not found.
 
 # Usage of query provide a `find_by` kind of method:
 u : User? = User.query.find{ email =~ /yacine/i }
-
 ```
 
 ##### Fetch multiple models
+
+You can use the query system to fetch multiple models.
 
 ```crystal
 # Get multiple users
@@ -153,7 +154,7 @@ User.query.where{ (id >= 1) & (id <= 20_000_000) }.each_cursor(batch: 100) do |u
 end
 ```
 
-##### Querying aggregate
+##### Aggregate functions
 
 ```crystal
 # count
@@ -183,7 +184,6 @@ end
 
 ```
 
-
 ### Save & validation
 
 #### Save
@@ -206,11 +206,12 @@ u.email_column.changed? # < Return "true"
 
 #### Validation
 
+Validation
+
+```
+```
 
 ### Migration
-
-
-The best way to get started is to follow the [wiki](https://github.com/anykeyh/clear/wiki/getting_started)
 
 
 ## Architecture

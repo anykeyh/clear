@@ -50,7 +50,7 @@ module Clear::Model::HasColumns
   # column in the SQL, you can use the parameter `column` to tell Clear ORM about
   # which column is linked to the column.
   #
-  macro column(name, primary = false, converter = nil, column = nil)
+  macro column(name, primary = false, converter = nil, column = nil, presence = true)
     {% type = name.type
        unless converter
          if type.is_a?(Path)
@@ -67,6 +67,7 @@ module Clear::Model::HasColumns
          primary:   primary,
          converter: converter,
          column:    column || name.var,
+         presence:  presence,
        } %}
 
   end
@@ -75,7 +76,9 @@ module Clear::Model::HasColumns
   macro __generate_columns
     {% for name, settings in COLUMNS %}
       {% type = settings[:type] %}
-      @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}")
+      {% has_db_default = !settings[:presence] %}
+      @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}",
+        has_db_default: {{has_db_default}} )
 
       def {{name}}_column : Clear::Model::Column({{type}})
         @{{name}}_column
@@ -129,7 +132,7 @@ module Clear::Model::HasColumns
     def validate_field_presence
       {% for name, settings in COLUMNS %}
         unless persisted?
-          if !(@{{name}}_column.nilable? || @{{name}}_column.defined?)
+          if @{{name}}_column.failed_to_be_present?
             add_error({{name.stringify}}, "must be present")
           end
         end

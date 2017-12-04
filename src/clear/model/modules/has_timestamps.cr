@@ -3,7 +3,7 @@ module Clear::Model::HasTimestamps
     column( updated_at : Time )
     column( created_at : Time )
 
-    before(:save) do |model|
+    before(:validate) do |model|
       model = model.as(self)
 
       now = Time.now

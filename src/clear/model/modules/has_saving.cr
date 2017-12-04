@@ -14,17 +14,18 @@ module Clear::Model::HasSaving
         end
 
         self.clear_change_flags
+        return true
       else
-        false
+        return false
       end
     end
 
-    true
+    return true
   end
 
   def save!
     with_triggers(:save) do
-      raise Clear::Model::InvalidModelError.new("Validation of the model failed") unless save
+      raise Clear::Model::InvalidModelError.new("Validation of the model failed:\n #{print_errors}") unless save
     end
   end
 end

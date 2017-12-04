@@ -1,5 +1,5 @@
 module Clear::Validation::Helper
-  macro _on_presence(field, &block)
+  macro on_presence(field, &block)
     if persisted?
       if {{field.id}}_column.defined?
         {{yield}}
@@ -11,7 +11,7 @@ module Clear::Validation::Helper
 
   macro ensure_than(field, message, &block)
     o = {{field.id}}
-    _on_presence({{field.id}}) do
+    on_presence({{field.id}}) do
       fn = Clear::Util.func(typeof(o), Object) {{block}}
 
       unless fn.call(o)
