@@ -2,26 +2,80 @@
 
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 
-Clear ORM is an ORM built on top of PostgreSQL.
-There's no will to make it multi-database at all. Thus to allow it to offer
-more functionality than other ORM around.
+Clear is an ORM built for PostgreSQL and Crystal.
+We do not want to make it compatible with others DBMS, so we can offers
+better experience and connect to the advanced features of PostgreSQL.
 
-And about functionality, Clear is definitely on top:
+## Features
 
-- Expressive where query building (like Sequel!)
-- N+1 query caching
-- Colored request outputed in the log on debug level ! :-)
-- CTE, locks, cursors and other advanced PG features are packed in !
-- Migration system with integrated PostgreSQL subtilities (e.g. Foreign Key)
-- Automatic presence validator through the columns declaration: Using `Type?`
+Here some (but not all!) features offered yet by Clear !
+
+* Expressive where query building (like Sequel!)
+
+```crystal
+Post.query.where{ ( title =~ /(^| )Awesome($| )/i ) & ( created_at.between(1.month.ago, Time.now) ) }
+```
+
+* N+1 query caching !
+
+```crystal
+Users.query.with_posts(&.published).each do #...
+```
+
+* CTE, locks, cursors and other advanced PG features are packed in !
+
+```crystal
+  LotsOfRecordModel.query.each_cursor(batch: 1_000) do |r| #...
+```
+
+* Migration system with integrated PostgreSQL subtilities (e.g. Foreign Key)
+
+```crystal
+  t.references to: "users", on_delete: "cascade", null: false
+```
+
+* Automatic presence validator through the columns declaration: Using `Type?`
   notation tell Clear that your column doesn't need to be present
-- Mostly based on modules and not inheritance: Plug in your project and play!
-- Customizable fields converter ("serializer") DB <-> Crystal
-- Native integration of different PG structures (Thank's to PG gem !)
 
-Some basic and advanced features are already in, others are just in my head, and
-others are just in the process "ok I'm gonna think about it later".
-Please check the roadmap
+```crystal
+class MyModel
+  include Clear::Model
+  column x : String
+end
+
+m = MyModel.new
+unless m.save
+  puts m.print_errors # x should be present
+end
+```
+
+* Mixins architecture, no class inheritance ! Include and play !
+
+* Customizable fields converter PG <=> Crystal
+
+```crystal
+  record MyRecord, a : String, b: String
+
+  class Clear::Model::Converter::CitextConverter
+    def self.to_column(x : ::Clear::SQL::Any) : MyRecord?
+      case x
+      when Nil
+        nil
+      when Slice(UInt8)
+        r = MyRecord.new
+        # Convert here !
+      else
+        raise "bad format"
+      end
+    end
+
+    def self.to_db(x : MyRecord?)
+      # Convert here !
+    end
+  end
+```
+
+Please check the roadmap for more informations.
 
 ## Getting started
 
@@ -30,8 +84,8 @@ A full sample is available on the [wiki](https://github.com/anykeyh/clear/wiki/g
 ### Installation
 
 In `shards.yml`
-```yml
 
+```yml
 dependencies:
   clear:
     github: anykeyh/clear
@@ -40,12 +94,12 @@ dependencies:
 Then:
 
 ```crystal
-require "clear"
+  require "clear"
 ```
 
 ### Model definition
 
-In Clear, most of the objects are mixins and must be included to your classes:
+Clear offers some mixins, just include them in your classes to *clear* them:
 
 #### Column mapping
 
@@ -72,7 +126,8 @@ end
 
 #### Column types
 
-Clear allows you to setup your own column types using converter:
+`Number`, `String`, `Time`, `Boolean` and `Jsonb` structures are already mapped.
+For other type of data, just create your own converter !
 
 ```crystal
 class User
@@ -92,30 +147,44 @@ module Clear::Model::Converter::Custom::TypeConverter
 end
 ```
 
+##### Column presence
 
-##### Presence system explaination
+Most of the ORM for Crystal are mapping column type as `Type | Nil` union.
+It makes sens so we allow selection of some columns only of a model.
+However, this have a caveats: Fields are still accessible, and will return nil,
+even if the real value of the field is not null !
 
-Most of the ORM around are using column type as `Type | Nil` union.
-In my opinion, it's bad. If your column type in postgres is `text NOT NULL`, it must
-be mapped to `String`, and not to `String | Nil`, since you are sure no
-column are `null`.
+Moreover, most of the developers will enforce nullity only on their programming
+language level via validation, but not on the database, leading to inconsistency.
 
-Moreover, it can lead to issues in this case:
+Therefore, we choose to throw exception whenever a field is accessed before
+it has been initialized and to enforce presence through the union system of
+Crystal.
 
-```crystal
-User.query.select("last_name").each do |usr|
-  puts usr.first_name #Should it be nil since we don't select it??!
-end
-```
-
-Clear offers another approach, storing each column in a wrapper.
-Wrapper can be then of the type of the column as in postgres, or in `UNKNOWN` state.
+Clear offers this through the use of column wrapper.
+Wrapper can be of the type of the column as in postgres, or in `UNKNOWN` state.
 This approach offers more flexibility:
 
 ```crystal
 User.query.select("last_name").each do |usr|
-  puts usr.first_name # << THIS WILL RAISE AN EXCEPTION, TELLING YOU first_name IS NOT INITIALIZED.
+  puts usr.first_name #Will raise an exception, as first_name hasn't been fetched.
 end
+
+u = User.new
+u.first_name_column.defined? #Return false
+u.first_name_column.value("") # Call the value or empty string if not defined :-)
+u.first_name = "bonjour"
+u.first_name_column.defined? #Return true now !
+```
+
+Wrapper give also some pretty useful features:
+
+```crystal
+u = User.new
+u.email = "me@fiery.tech"
+u.email_column.changed? # TRUE
+u.email_column.revert
+u.email_column.defined? # No more
 ```
 
 #### Associations
@@ -146,26 +215,31 @@ end
 
 ### Querying
 
-#### Simple query
+Clear offers a collection system for your models. The collection system
+takes origin to the lower API `Clear::SQL`, used to build requests.
 
-Most of the queries are called via the method `query` on the model class.
+#### Simple query
 
 ##### Fetch a model
 
+To fetch one model:
+
 ```crystal
-# Get the first user
+# 1. Get the first user
 User.query.first #Get the first user, ordered by primary key
 
 # Get a specific user
 User.find!(1) #Get the first user, or throw exception if not found.
 
-# Usage of query provide a `find_by` kind of method:
+# Usage of query provides a `find_by` kind of method:
 u : User? = User.query.find{ email =~ /yacine/i }
 ```
 
 ##### Fetch multiple models
 
-You can use the query system to fetch multiple models.
+To prepare a collection, juste use `Model#query`.
+Collections include `SQL::Select` object, so all the low level API
+(`where`, `join`, `group_by`, `lock`...) can be used in this context.
 
 ```crystal
 # Get multiple users
@@ -182,6 +256,10 @@ end
 
 ##### Aggregate functions
 
+Call aggregate functions from the query is possible. For complex aggregation,
+I would recommend to use the `SQL::View` API (note: Not yet developed),
+and keep the model query for _fetching_ models only
+
 ```crystal
 # count
 user_on_gmail = User.query.where{ email.ilike "@gmail.com%" }.count #Note: count return is Int64
@@ -192,6 +270,9 @@ weighted_avg = User.query.agg( "SUM(performance_weight * performance_score) / SU
 ```
 
 ##### Fetching associations
+
+Associations are basically getter which create predefined SQL.
+To access to an association, just call it !
 
 ```crystal
 User.query.each do |user|
@@ -204,8 +285,8 @@ end
 
 ###### Caching association for N+1 request
 
-Use the generated `with_xxx` method on the collection to get the association
-cached and avoid N+1 request
+For every association, you can tell Clear to encache the results to avoid
+N+1 queries, using `with_XXX` on the collection:
 
 ```crystal
 # Will call two requests only.
@@ -217,62 +298,123 @@ User.query.with_posts.each do |user|
 end
 ```
 
-###### Associations caching examples
+Note than Clear doesn't perform a join method, and the SQL produced will use
+the operator `IN` on the association.
 
-Association cache can be tweaked, to encache subassociation, filters etc...
+In the case above:
 
-Example to cache `users => posts => category` (3 requests):
+- The first request will be
 
-```crystal
-# Will call two requests only.
-User.query.with_posts(&.with_category).each do |user|
-  puts "User #{user.id} posts:"
-  user.posts.each do |post|
-    puts "• #{post.id} @ #{post.category.name}"
-  end
-end
+```
+  SELECT * FROM users;
 ```
 
-*DO / DO NOT:*
+- Thanks to the cache, a second request will be called before fetching the users:
+
+```
+  SELECT * FROM posts WHERE user_id IN ( SELECT id FROM users )
+```
+
+I have plan in a late future to offer different query strategies for the cache (e.g. joins, unions...)
+
+###### Associations caching examples
+
+When you use the caching system of the association, using filters on association will
+invalidate the cache, and N+1 query will happens.
+
+For example:
 
 ```crystal
-# Will call two requests only.
 User.query.with_posts.each do |user|
   puts "User #{user.id} published posts:"
-  # NO: It won't cache the result, since the association is mutated via `where`
+  # Here: The cache system will not work. The cache on association
+  # is invalidated by the filter `where`.
   user.posts.where({published: true}).each do |post|
     puts "• #{post.id}"
   end
 end
+```
 
-#INSTEAD, DO:
+The way to fix it is to filter on the association itself:
+
+```crystal
 User.query.with_posts(&.where({published: true})).each do |user|
   puts "User #{user.id} published posts:"
-  # YES: the posts collection of user is already encached with the published filter :-)
+  # The posts collection of user is already encached with the published filter
   user.posts.each do |post|
     puts "• #{post.id}"
   end
 end
 ```
 
+Note than, of course in this example `user.posts` are not ALL the posts but only the
+`published` posts
+
+Thanks to this system, we can stack it to encache long distance relations:
+
+```crystal
+# Will cache users<=>posts & posts<=>category
+# Total: 3 requests !
+User.query.with_posts(&.with_category).each do |user|
+  #...
+end
+```
 
 ##### Querying computed or foreign fields
 
 In case you want fields computed by postgres, or stored in another table, you can use `fetch_column`.
-By default, for performance reasons, `fetch_column` is set to false.
+By default, for performance reasons, `fetch_columns` option is set to false.
 
 ```crystal
-
 users = User.query.select(email: "users.email",
   remark: "infos.remark").join("infos"){ infos.user_id == users.id }.to_a(fetch_columns: true)
 
-# Now the column "remark" will be fetched into each user object
+# Now the column "remark" will be fetched into each user object.
+# Access can be made using `[]` operator on the model.
 
 users.each do |u|
   puts "email: `#{u.email}`, remark: `#{u["remark"]?}`"
 end
+```
+
+### Inspection & SQL logging
+
+#### Inspection
+
+I've reimplemented `inspect` on model, to offer good debugging insights:
+
+```text
+  p # => #<Post:0x10c5f6720
+          @attributes={},
+          @cache=
+           #<Clear::Model::QueryCache:0x10c6e8100
+            @cache={},
+            @cache_activation=Set{}>,
+          @content_column=
+           "...",
+          @errors=[],
+          @id_column=38,
+          @persisted=true,
+          @published_column=true,
+          @read_only=false,
+          @title_column="Lorem ipsum torquent inceptos"*,
+          @user_id_column=5>
+```
+
+In this case, the `*` means a column is changed and the object is dirty and must
+be saved on the database.
+
+#### SQL Logging
+
+One thing very important for a good ORM is to offer vision of the SQL
+called under the hood.
+Clear is offering SQL logging tools, with SQL syntax colorizing in your terminal.
+
+For activation, simply setup the logger to `DEBUG` level !
 
 
+```
+Clear.logger.level = ::Logger::DEBUG
 ```
 
 ### Save & validation
@@ -287,19 +429,20 @@ u.email = "test@example.com"
 u.save! #Save or throw if unsavable (validation failed).
 ```
 
-Columns can be checked:
+Columns can be checked & reverted:
 
 ```crystal
 u = User.new
 u.email = "test@example.com"
 u.email_column.changed? # < Return "true"
+u.email_column.revert # Return to #undef.
 ```
 
 #### Validation
 
 ##### Presence validator
 
-Presence validator is done using the union type of the column:
+Presence validator is done using the type of the column:
 
 ```crystal
 class User
@@ -312,7 +455,13 @@ end
 
 ###### `NOT NULL DEFAULT ...` CASE
 
-In the case the data cannot be null but presence should not be check in clear, your can write:
+
+There's a case when a column CAN be null inside Crystal, if not persisted,
+but CANNOT be null inside Postgres.
+
+It's for example the case of the `id` column, which take value after saving !
+
+In this case, you can write:
 
 ```crystal
 class User
@@ -320,11 +469,12 @@ class User
 end
 ```
 
-##### Unique validator
+Thus, in all case this will fail:
 
-None. Use `unique` feature of postgres. Unique validator at crystal level is a
-non-go and lead to terrible race concurrency issues.
-It's an anti-pattern and must be avoided at any cost
+```
+u = User.new
+u.id # raise error
+```
 
 ##### Other validators
 
@@ -354,7 +504,13 @@ Validation fail if `model#errors` is not empty:
   end
 ```
 
-##### Important note about validation and presence system
+##### Unique validator
+
+Please use `unique` feature of postgres. Unique validator at crystal level is a
+non-go and lead to terrible race concurrency issues if your deploy on multiple nodes/pods.
+It's an anti-pattern and must be avoided at any cost.
+
+##### The validation and the presence system
 
 In the case you try validation on a column which has not been initialized,
 Clear will complain, telling you you cannot access to the column.
@@ -394,7 +550,7 @@ def validate
   ensure_than(first_name, "should not be empty", &.!=(""))
 end
 
-#5. Use the `ensure_than` helper (with block notation) !
+#5. Use the `ensure_than` helper (but with block notation) !
 def validate
   ensure_than(first_name, "should not be empty") do |field|
     field != ""
@@ -403,11 +559,15 @@ end
 
 ```
 
-I recommend the 4th method in most of the cases ;-)
+I recommend the 4th method in most of the cases you will faces.
+Simple to write and easy to read !
 
 ### Migration
 
-Clear offer a migration system. Migration class must be named with a number at the end, to order them:
+Clear offers of course a migration system.
+
+Migration should have an `order` field set.
+This number can be wrote at the end of the class itself:
 
 ```crystal
 class Migration1
@@ -421,8 +581,8 @@ end
 
 #### Using filename
 
-A good practice is to write down all your migrations one file per migration, and
-naming them using the `[number]_migration_description.cr` pattern.
+Another way is to write down all your migrations one file per migration, and
+naming the file using the `[number]_migration_description.cr` pattern.
 In this case, the migration class name doesn't need to have a number at the end of the class name.
 
 ```crystal
@@ -466,10 +626,13 @@ I strongly encourage to use the foreign key constraints of postgres for your ref
   t.references to: "users", on_delete: "cascade", null: false
 ```
 
-There's no plan to offer `dependent` system on the associations in Clear,
-but instead to use the features of postgres.
+There's no plan to offer on Crystal level the `on_delete` feature, like
+`dependent` in ActiveRecord. That's a standard PG feature, just set it
+up in migration
 
 ## Architecture
+
+In short, here is the architecture
 
 ```text
 +---------------------------------------------+
@@ -512,6 +675,15 @@ ORM:
 - [ ] CitusDB Support ? => In mind
 - [ ] Filling this checklist and drink a beer
 
+I'm currently focusing on the DB views (nothing hard) and a CLI to
+scaffold project with Kemal and Clear, manage migrations, and others tools !
+
 ## Licensing
 
 This shard is provided under the MIT license.
+
+## Contribute
+
+All contributions are welcome ! As a specialized ORM for postgreSQL,
+be sure a great contribution on a very specific PG feature will be incorporated
+to this shard. I hope one day we will cover all the features of PG here !
