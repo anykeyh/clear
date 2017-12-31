@@ -12,7 +12,6 @@ module ValidationSpec
 
     column a : String # Must be present
 
-
     def validate
       ensure_than a, "must not be empty", &.strip.!=("")
     end

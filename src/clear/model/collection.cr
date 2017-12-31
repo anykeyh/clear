@@ -20,20 +20,21 @@ module Clear::Model
     @cached_result : Array(T)?
 
     def initialize(
-                   @columns = [] of SQL::Column,
-                   @froms = [] of SQL::From,
-                   @joins = [] of SQL::Join,
-                   @wheres = [] of Clear::Expression::Node,
-                   @havings = [] of Clear::Expression::Node,
-                   @group_bys = [] of SQL::Column,
-                   @order_bys = [] of String,
-                   @limit = nil,
-                   @offset = nil,
-                   @lock = nil,
-                   @tags = {} of String => Clear::SQL::Any,
-                   @before_query_triggers = [] of -> Void,
-                   @cache = Clear::Model::QueryCache.new,
-                   @cached_result = nil)
+      @columns = [] of SQL::Column,
+      @froms = [] of SQL::From,
+      @joins = [] of SQL::Join,
+      @wheres = [] of Clear::Expression::Node,
+      @havings = [] of Clear::Expression::Node,
+      @group_bys = [] of SQL::Column,
+      @order_bys = [] of String,
+      @limit = nil,
+      @offset = nil,
+      @lock = nil,
+      @tags = {} of String => Clear::SQL::Any,
+      @before_query_triggers = [] of -> Void,
+      @cache = Clear::Model::QueryCache.new,
+      @cached_result = nil
+    )
     end
 
     # We can pass a cache to the models which are going to be instantiated

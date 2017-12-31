@@ -41,7 +41,7 @@ module Clear::CLI
             puts Clear::VERSION
           when "-h", "--help"
             self.display_help_and_exit
-          when "-v", "--verbose"
+          when "--verbose"
             Clear.logger.level = ::Logger::DEBUG
             next
           when "migration"
