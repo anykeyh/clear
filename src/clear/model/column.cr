@@ -11,16 +11,14 @@ class Clear::Model::Column(T)
 
   UNKNOWN = UnknownClass.new
 
-  alias CustomType = T | UnknownClass
+  @value : T | UnknownClass
 
-  @value : CustomType
-
-  getter old_value : CustomType
+  getter old_value : T | UnknownClass
   getter name : String
   getter? changed : Bool = false
   getter? has_db_default : Bool = false
 
-  def initialize(@name : String, @value : CustomType = UNKNOWN, @has_db_default = false)
+  def initialize(@name : String, @value : T | UnknownClass = UNKNOWN, @has_db_default = false)
     @old_value = @value
   end
 

@@ -1,6 +1,6 @@
 require "spec"
 
-require "../src/clear/sql"
+require "../../../src/clear/sql/sql"
 
 module SelectSpec
   extend self
