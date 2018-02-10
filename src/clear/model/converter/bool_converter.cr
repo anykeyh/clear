@@ -19,7 +19,7 @@ class Clear::Model::Converter::BoolConverter
       x != 0
     when String
       x = x.downcase
-      x != "f" || x != "false" || x != "" || x != "0"
+      x != "f" && x != "false" && x != "" && x != "0"
     else
       true
     end
