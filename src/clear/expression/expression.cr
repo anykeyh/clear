@@ -53,12 +53,26 @@
 # ```
 #
 class Clear::Expression
-  DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L"
+  DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L %:z"
   DATABASE_DATE_FORMAT      = "%Y-%m-%d"
+
+  # Wrap an unsafe string. Useful to cancel-out the
+  # safe_literal function used internally.
+  # Obviously, this can lead to SQL injection, so beware!
+  class UnsafeSql
+    @value : String
+
+    def initialize(@value)
+    end
+
+    def to_s
+      @value
+    end
+  end
 
   alias AvailableLiteral = Int8 | Int16 | Int32 | Int64 | Float32 | Float64 |
                            UInt8 | UInt16 | UInt32 | UInt64 |
-                           String | Symbol | Time | Bool | Nil
+                           UnsafeSql | String | Symbol | Time | Bool | Nil
 
   # fastest way to call self.safe_literal
   # See `safe_literal(x : _)`
@@ -83,7 +97,7 @@ class Clear::Expression
   # @params date
   #   if date is passed, then only the date part of the Time is used:
   # ```
-  # Clear::Expression[Time.now]             # < "2017-04-03 23:04:43.234"
+  # Clear::Expression[Time.now]             # < "2017-04-03 23:04:43.234 +08:00"
   # Clear::Expression[Time.now, date: true] # < "2017-04-03"
   # ```
   def self.safe_literal(x : Time, date : Bool = false) : String
@@ -96,6 +110,10 @@ class Clear::Expression
 
   def self.safe_literal(x : Node) : String
     x.resolve
+  end
+
+  def self.safe_literal(x : UnsafeSql) : String
+    x.to_s
   end
 
   def self.safe_literal(x : _) : String

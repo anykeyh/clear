@@ -5,8 +5,10 @@ class Clear::Model::Converter::TimeConverter
     case x
     when Nil
       nil
+    when Time
+      x.to_local
     else
-      Time.parse(x.to_s, "%F %X")
+      Time.parse(x.to_s, "%F %X.%L").to_local
     end
   end
 
@@ -15,7 +17,7 @@ class Clear::Model::Converter::TimeConverter
     when Nil
       nil
     else
-      x.to_s(Clear::Expression::DATABASE_DATE_TIME_FORMAT)
+      x.to_utc.to_s(Clear::Expression::DATABASE_DATE_TIME_FORMAT)
     end
   end
 end

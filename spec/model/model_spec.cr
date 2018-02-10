@@ -153,6 +153,24 @@ module ModelSpec
           end
         end
 
+        it "works on date fields with different timezone" do
+          now = Time.now
+
+          temporary do
+            u = User.new
+
+            u.first_name = "A"
+            u.last_name = "B"
+            u.created_at = now
+
+            u.save
+            u.id.should_not eq nil
+
+            u = User.find! u.id
+            u.created_at.epoch.should eq(now.epoch)
+          end
+        end
+
         it "can read and write jsonb" do
           temporary do
             u = User.new

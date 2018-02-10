@@ -1,4 +1,5 @@
 module Clear::SQL::Query::Fetch
+  # :no_doc:
   protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &block) : Bool
     return false unless rs.move_next
 

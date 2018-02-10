@@ -44,7 +44,7 @@ module Clear
                 Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
                 PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
-                UInt8 | UInt16 | UInt32 | UInt64 | Nil
+                UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql | Nil
 
     include Clear::SQL::Logger
     extend self
@@ -157,14 +157,13 @@ module Clear
     end
 
     # Start an INSERT INTO table query
-    def insert(table, *args)
-      insert_into(table, *args)
-    end
-
-    # Alias for insert, but for thoses who are more comfortable using the
-    # SQL syntax !
     def insert_into(table, *args)
       Clear::SQL::InsertQuery.new(table).insert(*args)
+    end
+
+    # Alias of `insert_into`, for hurry developers
+    def insert(table, *args)
+      insert_into(table, *args)
     end
 
     # Start a UPDATE table query
@@ -172,6 +171,7 @@ module Clear
       Clear::SQL::UpdateQuery.new(table)
     end
 
+    # Start a SELECT FROM table query
     def select(*args)
       if args.size > 0
         Clear::SQL::SelectQuery.new.select(*args)
