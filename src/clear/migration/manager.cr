@@ -45,7 +45,11 @@ class Clear::Migration::Manager
   end
 
   def max_version
-    @migrations.map(&.uid).max
+    if @migrations.size > 0
+      @migrations.map(&.uid).max
+    else
+      0
+    end
   end
 
   def apply_to(version, direction = :both)
@@ -174,9 +178,11 @@ class Clear::Migration::Manager
 
   # :nodoc:
   private def ensure_unicity!
-    all_migrations = @migrations.map(&.uid)
-    r = all_migrations - all_migrations.uniq
-    raise "Some migrations UID are not unique and will cause problem (listed here): #{r.join(", ")}" if r.any?
+    if @migrations.any?
+      all_migrations = @migrations.map(&.uid)
+      r = all_migrations - all_migrations.uniq
+      raise "Some migrations UID are not unique and will cause problem (listed here): #{r.join(", ")}" if r.any?
+    end
   end
 
   # Fetch all the migrations already activated on the database.

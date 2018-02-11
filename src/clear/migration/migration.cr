@@ -1,5 +1,3 @@
-module Clear::Migration::Helper; end
-
 ###
 # # Clear's migration system
 #
@@ -62,6 +60,8 @@ module Clear::Migration::Helper; end
 #
 ###
 module Clear::Migration
+  module Helper; end
+
   include Helper
 
   # This error is throw when you try to revert a migration which is irreversible.
@@ -86,7 +86,7 @@ module Clear::Migration
   #
     @uid : Int64? = nil
 
-    def uid
+    def uid : Int64
       @uid ||= Int64.new(begin
         filename = File.basename(__FILE__)
 
@@ -155,6 +155,18 @@ module Clear::Migration
   macro included
     Clear::Migration::Manager.instance.add(self.new)
   end
+end
+
+# This class is here to prevent bug #5705
+# and will be removed at newer version of Crystal
+class Clear::DummyMigration
+  include Clear::Migration
+
+  def uid : Int64
+    -1_i64 # Use a negative migration number, to avoid positives, reserved by the application
+  end
+
+  def change(dir); end
 end
 
 require "./operation"
