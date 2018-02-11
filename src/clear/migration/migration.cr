@@ -1,3 +1,5 @@
+require "./manager.cr"
+
 ###
 # # Clear's migration system
 #
@@ -83,11 +85,10 @@ module Clear::Migration
     # `class MyMigration1234567 # << Order = 1234567`
     # `file db/1234567_my_migration.cr # << Order = 1234567`
     #
-  #
-    @uid : Int64? = nil
+    #
 
     def uid : Int64
-      @uid ||= Int64.new(begin
+      Int64.new(begin
         filename = File.basename(__FILE__)
 
         if self.class.name =~ /[0-9]+$/
@@ -127,6 +128,8 @@ module Clear::Migration
 
   # This will apply the migration in a given direction (up or down)
   def apply(dir : Direction)
+    Clear::Migration::Manager.instance.ensure_ready
+
     Clear::SQL.transaction do
       Clear.logger.info("[#{dir.to_s}] #{self.class.name}")
 
@@ -153,20 +156,22 @@ module Clear::Migration
   end
 
   macro included
-    Clear::Migration::Manager.instance.add(self.new)
+    Clear::Migration::Manager.instance.add(new)
   end
 end
 
 # This class is here to prevent bug #5705
 # and will be removed at newer version of Crystal
-class Clear::DummyMigration
+class DummyMigration
   include Clear::Migration
 
-  def uid : Int64
-    -1_i64 # Use a negative migration number, to avoid positives, reserved by the application
+  def uid
+    -0x01_i64
   end
 
-  def change(dir); end
+  def change(dir)
+    # Nothing
+  end
 end
 
 require "./operation"

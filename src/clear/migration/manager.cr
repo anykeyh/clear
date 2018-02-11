@@ -23,12 +23,17 @@ class Clear::Migration::Manager
 
   # Return the list of all the migrations loaded into the system.
   @migrations : Array(Clear::Migration) = [] of Clear::Migration
+  @loaded : Bool = false
 
   # Return a set of uid of the current up migrations.
-  getter migrations_up : Set(Int64) = Set(Int64).new
+  @migrations_up : Set(Int64) = Set(Int64).new
+
+  def migrations_up
+    ensure_ready
+    @migrations_up
+  end
 
   protected def initialize
-    ensure_database_is_ready
   end
 
   # :nodoc:
@@ -37,6 +42,8 @@ class Clear::Migration::Manager
   end
 
   def current_version
+    ensure_ready
+
     if @migrations_up.any?
       @migrations_up.max
     else
@@ -48,11 +55,13 @@ class Clear::Migration::Manager
     if @migrations.size > 0
       @migrations.map(&.uid).max
     else
-      0
+      nil
     end
   end
 
   def apply_to(version, direction = :both)
+    ensure_ready
+
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
 
     current_version = self.current_version
@@ -125,6 +134,8 @@ class Clear::Migration::Manager
 
   # Apply all the migrations not yet applied.
   def apply_all
+    ensure_ready
+
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
     list_of_migrations.reject! { |x| @migrations_up.includes?(x) }
 
@@ -138,43 +149,53 @@ class Clear::Migration::Manager
     @migrations_up.includes?(m.uid)
   end
 
-  # :nodoc:
-  private def ensure_database_is_ready
-    Clear::SQL.execute <<-SQL
-      CREATE TABLE IF NOT EXISTS __clear_metadatas ( metatype text NOT NULL, value text NOT NULL );
-    SQL
+  # Create if needed the metadata table
+  # to save the migrations.
+  def ensure_ready
+    unless @loaded
+      Clear::SQL.execute <<-SQL
+        CREATE TABLE IF NOT EXISTS __clear_metadatas ( metatype text NOT NULL, value text NOT NULL );
+      SQL
 
-    Clear::SQL.execute <<-SQL
-      CREATE UNIQUE INDEX IF NOT EXISTS __clear_metadatas_idx ON __clear_metadatas (metatype, value);
-    SQL
+      Clear::SQL.execute <<-SQL
+        CREATE UNIQUE INDEX IF NOT EXISTS __clear_metadatas_idx ON __clear_metadatas (metatype, value);
+      SQL
 
-    check_version
-    load_existing_migrations
-    ensure_unicity! # << Compiler bug for now :-|
+      load_existing_migrations
+      ensure_unicity!
+
+      @loaded = true
+    end
   end
 
-  def reinit
-    ensure_database_is_ready
+  # Force reloading the migration system
+  # Recheck all the current up migrations
+  # and the metadata table.
+  # This is useful if you access to the migration process
+  # through another program, or during specs
+  def reinit!
+    @loaded = false
+    ensure_ready
     self
   end
 
   # : nodoc:
-  private def check_version
-    version = Clear::SQL.select("value").from("__clear_metadatas").where({metatype: "version"}).scalar(String)
+  # private def check_version
+  #   version = Clear::SQL.select("value").from("__clear_metadatas").where({metatype: "version"}).scalar(String)
 
-    if version != METADATA_VERSION
-      raise "The database has been initialized with a different version of Clear.\n" +
-            " (wanted: #{METADATA_VERSION}, current: #{version})"
-    end
-  rescue e
-    #
-    # The shard `db` Must have a better exception than just "no result" in scalar fetching
-    # because it breaks here the code...
-    # TODO: Fixme
-    # Clear::SQL.insert_into("__clear_metadatas", {metatype: "version", value: METADATA_VERSION}).execute
-    #
-    # raise e
-  end
+  #   if version != METADATA_VERSION
+  #     raise "The database has been initialized with a different version of Clear.\n" +
+  #           " (wanted: #{METADATA_VERSION}, current: #{version})"
+  #   end
+  # rescue e
+  #   #
+  #   # The shard `db` Must have a better exception than just "no result" in scalar fetching
+  #   # because it breaks here the code...
+  #   # TODO: Fixme
+  #   # Clear::SQL.insert_into("__clear_metadatas", {metatype: "version", value: METADATA_VERSION}).execute
+  #   #
+  #   # raise e
+  # end
 
   # :nodoc:
   private def ensure_unicity!
@@ -198,11 +219,13 @@ class Clear::Migration::Manager
     load_existing_migrations
   end
 
+  # Fetch the migration instance with the selected number
   def find(number)
     number = Int64.new(number)
     @migrations.find(&.uid.==(number)) || raise "Migration not found: #{number}"
   end
 
+  # Force up a migration; throw error if the migration is already up
   def up(number : Int64) : Void
     m = find(number)
     if migrations_up.includes?(number)
@@ -213,6 +236,7 @@ class Clear::Migration::Manager
     end
   end
 
+  # Force down a migration; throw error if the mgiration is already down
   def down(number : Int64) : Void
     m = find(number)
     unless migrations_up.includes?(number)
@@ -225,6 +249,7 @@ class Clear::Migration::Manager
 
   # Print out the status ( up | down ) of all migrations found by the manager.
   def print_status : String
+    ensure_ready
     @migrations.sort { |a, b| a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid }.map do |m|
       active = @migrations_up.includes?(m.uid)
       "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"

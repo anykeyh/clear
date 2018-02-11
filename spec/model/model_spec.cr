@@ -72,6 +72,7 @@ module ModelSpec
     end
   end
 
+  Clear::Migration::Manager.instance.reinit!
   ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
 
   describe "Clear::Model" do
