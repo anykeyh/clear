@@ -4,6 +4,7 @@ require "./cache_schema"
 module CacheSpec
   describe "Clear::Model" do
     temporary do
+      Clear::Migration::Manager.instance.reinit!
       MigrateSpec1.new.apply(Clear::Migration::Direction::UP)
 
       User.create [{id: 101, name: "User 1"}]
