@@ -1,5 +1,3 @@
-require "./manager.cr"
-
 ###
 # # Clear's migration system
 #
