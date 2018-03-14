@@ -161,7 +161,7 @@ module Clear::Model
     end
 
     def [](off) : T
-      self.[]?(off).not_nil
+      self.[]?(off).not_nil!
     end
 
     def []?(off) : T?
