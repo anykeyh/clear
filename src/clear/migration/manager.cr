@@ -137,9 +137,12 @@ class Clear::Migration::Manager
     ensure_ready
 
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
-    list_of_migrations.reject! { |x| @migrations_up.includes?(x) }
+    list_of_migrations.reject! { |x| @migrations_up.includes?(x.uid) }
 
-    list_of_migrations.each(&.apply(Clear::Migration::Direction::UP))
+    list_of_migrations.each do |migration|
+      migration.apply(Clear::Migration::Direction::UP)
+      @migrations_up.add(migration.uid)
+    end
   end
 
   #

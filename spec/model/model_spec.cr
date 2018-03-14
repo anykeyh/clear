@@ -72,11 +72,11 @@ module ModelSpec
     end
   end
 
-  Clear::Migration::Manager.instance.reinit!
-  ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
+  temporary do
+    Clear::Migration::Manager.instance.reinit!
+    ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
 
-  describe "Clear::Model" do
-    temporary do
+    describe "Clear::Model" do
       context "fields management" do
         it "can load from array" do
           temporary do
