@@ -158,6 +158,7 @@ module Clear::Migration
   end
 end
 
+# :nodoc:
 # This class is here to prevent bug #5705
 # and will be removed at newer version of Crystal
 class DummyMigration

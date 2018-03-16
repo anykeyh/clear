@@ -42,9 +42,9 @@ module Clear::SQL::Logger
     elsif (x > 1)
       ("%.2f" % x) + "s"
     elsif (x > 0.001)
-      (1000*x).to_i.to_s + "ms"
+      (1_000*x).to_i.to_s + "ms"
     else
-      (1000000*x).to_i.to_s + "µs"
+      (1_000_000*x).to_i.to_s + "µs"
     end
   end
 
