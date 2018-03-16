@@ -70,4 +70,15 @@ module MigrationSpec
       end
     end
   end
+
+  temporary do
+    describe "Migration" do
+      it "can run migrations apply_all multiple times" do
+        Clear::Migration::Manager.instance.reinit!
+        # Ensure that multiple migration apply_all's can run without issue
+        Clear::Migration::Manager.instance.apply_all
+        Clear::Migration::Manager.instance.apply_all
+      end
+    end
+  end
 end
