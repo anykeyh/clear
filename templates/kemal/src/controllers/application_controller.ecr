@@ -1,0 +1,55 @@
+class ApplicationController
+  HTTP_METHODS = %w(get post put patch delete options)
+
+  class_property default_layout : -> TreeTemplate = ->{ View::Layouts.application }
+
+  def self.render(view : TreeTemplate, layout : Nil)
+    view.render
+  end
+
+  def self.render(view : TreeTemplate)
+    default_layout.call.render_as_layout(view)
+  end
+
+  def self.render(view : TreeTemplate, layout : TreeTemplate)
+    layout.render_as_layout(view)
+  end
+
+  # Fallback to kemal render function !
+  def self.render(file_path)
+    ::render(file_path)
+  end
+
+  macro inherited
+    class_property current_scope : Array(String) = [] of String
+
+    {% for method in HTTP_METHODS %}
+      def self.{{method.id}}(path = "", &block : HTTP::Server::Context -> _)
+        scope = {{@type}}.current_scope.join("/")
+
+        if scope.size == 0
+          scope = "/"
+        elsif scope[0] != '/'
+          scope = "/#{scope}"
+        end
+
+        if scope[-1] == "/"
+          scope = scope + path
+        else
+          scope = scope + "/" + path
+        end
+
+        # Use the DSL of Kemal
+        puts "Register route #{scope}"
+        ::{{method.id}}(scope, &block)
+      end
+    {% end %}
+
+    def self.scope(x)
+      current_scope << x
+      yield
+      current_scope.pop
+    end
+
+  end
+end

@@ -1,0 +1,8 @@
+production:
+  uri: link_to_production_db
+
+development:
+  uri: postgres://postgres@localhost/$(app_name_underscore)_development
+
+test:
+  uri: postgres://postgres@localhost/$(app_name_underscore)_test

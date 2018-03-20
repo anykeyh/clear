@@ -5,7 +5,7 @@ module CacheSpec
   describe "Clear::Model" do
     temporary do
       Clear::Migration::Manager.instance.reinit!
-      MigrateSpec1.new.apply(Clear::Migration::Direction::UP)
+      MigrateSpec10.new.apply(Clear::Migration::Direction::UP)
 
       User.create [{id: 101, name: "User 1"}]
       User.create [{id: 102, name: "User 2"}]

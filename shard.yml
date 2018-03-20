@@ -6,7 +6,12 @@ authors:
 
 description: Clear ORM is an advanced ORM focusing on PostgreSQL
 
+scripts:
+  postinstall: "./bin/install-cli"
+
 dependencies:
+  generate:
+    github: anykeyh/generate.cr
   pg:
     github: will/crystal-pg
   inflector:

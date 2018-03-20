@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if [ -z $CRYSTAL_ENV ]; then
+  export CRYSTAL_ENV="development"
+fi
+
+function server(){
+  if [ $CRYSTAL_ENV == "development" ]; then
+    if [[ ! -f sentry ]]; then
+      curl -fsSLo- https://raw.githubusercontent.com/samueleaton/sentry/master/install.cr | crystal eval
+    fi
+
+    ./sentry -i -b "crystal build  -o ./bin/app_dev ./bin/server.cr" -r "./bin/app_dev"
+  else
+    ./application
+  fi
+
+  exit
+}
+
+function build(){
+  crystal --release ./bin/server.cr -o ./bin/app_release
+
+  exit
+}
+
+function clear_cli() {
+  shift 1
+  crystal ./bin/clear_cli.cr "$@"
+
+  exit
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    s|server) server "$@";;
+    b|build) build "$@";;
+    c|clear) clear_cli "$@";;
+    *) echo "unknown option: $1" >&2; exit 1;;
+  esac
+done

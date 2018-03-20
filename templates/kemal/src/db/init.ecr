@@ -1,0 +1,12 @@
+require "yaml"
+# Initialize Clear with the database.yml file
+CLEAR_CONFIG = YAML.parse(File.read("./config/database.yml"))[Application.env]
+
+uri = CLEAR_CONFIG["uri"].as_s
+
+begin
+  Clear::SQL.init(CLEAR_CONFIG["uri"].as_s)
+rescue DB::ConnectionRefused
+  puts "FATAL: Connection to the database (#{uri}) has been refused"
+  exit
+end

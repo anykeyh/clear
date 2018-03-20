@@ -26,8 +26,26 @@ module Clear::CLI
     exit
   end
 
+  # Do not use the clear-cli binary but instead use the appctl
+  # to compile the source of the custom project
+  def self.delegate_run(args : Array(String))
+    system("./bin/appctl", "clear_cli", *args)
+  end
+
+  def self.ensure_in_custom_project
+    unless File.exists?("./bin/appctl")
+      STDERR.puts "Your current path doesn't seems to contains a clear compatible project."
+      STDERR.puts "Please run this command in a compatible project !"
+      exit 1
+    end
+  end
+
   def self.run(args = nil)
     args ||= ARGV
+
+    if File.exists?("./bin/appctl")
+      delegate_run(args)
+    end
 
     OptionParser.parse(args) do |opts|
       path = Dir.current
@@ -45,16 +63,22 @@ module Clear::CLI
             Clear.logger.level = ::Logger::DEBUG
             next
           when "migration"
+            ensure_in_custom_project
             Clear::CLI::Migration.run(args)
           when "migrate"
+            ensure_in_custom_project
             Clear::CLI::Migration.run(["set", "#{Clear::Migration::Manager.instance.max_version}"])
           when "rollback"
+            ensure_in_custom_project
             Clear::CLI::Migration.run(["set", "-1", "--down-only"])
           when "from_models"
+            ensure_in_custom_project
             Clear::CLI::FromModel.run(args)
           when "table2model"
+            ensure_in_custom_project
             Clear::CLI::TableToModel.run(args)
           when "model"
+            ensure_in_custom_project
             Clear::CLI::Model.run(args)
           else
             display_help_and_exit

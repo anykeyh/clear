@@ -40,6 +40,7 @@ module MigrationSpec
 
       it "can apply migration" do
         temporary do
+          Clear::Migration::Manager.instance.reinit!
           Migration1.new.apply(Clear::Migration::Direction::UP)
 
           Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
@@ -71,13 +72,15 @@ module MigrationSpec
     end
   end
 
-  temporary do
-    describe "Migration" do
-      it "can run migrations apply_all multiple times" do
+  describe "Migration" do
+    it "can run migrations apply_all multiple times" do
+      temporary do
         Clear::Migration::Manager.instance.reinit!
+        pp "?!"
         # Ensure that multiple migration apply_all's can run without issue
         Clear::Migration::Manager.instance.apply_all
         Clear::Migration::Manager.instance.apply_all
+        pp "Stop?"
       end
     end
   end

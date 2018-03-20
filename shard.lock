@@ -4,6 +4,10 @@ shards:
     github: crystal-lang/crystal-db
     version: 0.5.0
 
+  generate-cr:
+    github: anykeyh/generate.cr
+    commit: 44dfd81a3d13e7e375a3837fbc67dbb87e7baec6
+
   inflector:
     github: phoffer/inflector.cr
     version: 0.1.8

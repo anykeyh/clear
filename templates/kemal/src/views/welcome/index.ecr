@@ -1,0 +1,19 @@
+module WelcomeView
+  def self.index
+    TreeTemplate.new do |t|
+      t.h1 "Welcome to Clear + Kemal !"
+
+      t.hr
+
+      t.p do
+        t.unsafe <<-PAR
+        This is a simple setup for your MVC application. Feel free to explore the files generated !
+        PAR
+      end
+
+      t.hr
+
+      t.app_footer
+    end
+  end
+end

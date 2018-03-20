@@ -43,7 +43,7 @@ class Post
   belongs_to category : Category
 end
 
-class MigrateSpec1
+class MigrateSpec10
   include Clear::Migration
 
   def change(dir)

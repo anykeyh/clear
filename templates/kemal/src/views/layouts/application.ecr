@@ -1,0 +1,19 @@
+module View::Layouts
+  def self.application
+    TreeTemplate.new do |t|
+      t.doctype :html5
+      t.html do
+        t.head do
+          t.title "MyApp"
+          t.yield :head
+        end
+        t.body do
+          t.div id: "app" do
+            t.yield
+          end
+          t.app_footer("meh?")
+        end
+      end
+    end
+  end
+end

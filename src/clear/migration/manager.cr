@@ -211,11 +211,15 @@ class Clear::Migration::Manager
 
   # Fetch all the migrations already activated on the database.
   def load_existing_migrations
+    @migrations_up.clear
+
     Clear::SQL.select("*")
               .from("__clear_metadatas")
               .where({metatype: "migration"}).to_a.map { |m|
       @migrations_up.add(Int64.new(m["value"].as(String)))
     }
+
+    pp @migrations_up
   end
 
   def refresh
