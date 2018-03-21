@@ -4,7 +4,7 @@ module TreeTemplate::Components
     footer do
       p(style: "text-align: center") do
         # test
-        unsafe "&copy; $app_name - #{content}"
+        unsafe "&copy; <%= opts[:app_name] %> - #{content}"
       end
     end
   end

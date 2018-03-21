@@ -33,7 +33,7 @@ class ApplicationController
           scope = "/#{scope}"
         end
 
-        if scope[-1] == "/"
+        if scope[-1] == '/'
           scope = scope + path
         else
           scope = scope + "/" + path

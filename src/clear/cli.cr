@@ -62,6 +62,8 @@ module Clear::CLI
           when "--verbose"
             Clear.logger.level = ::Logger::DEBUG
             next
+          when "db"
+            Clear::CLI::DB.run(args)
           when "migration"
             ensure_in_custom_project
             Clear::CLI::Migration.run(args)
