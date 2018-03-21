@@ -13,9 +13,10 @@ module Clear::CLI::Migration
         down XXX             # Turn down a specific migration.
         set XXX              # Go to a specific step. Down all migration after, up all migration before.
 
-      Helpers:
-        table2model                    # Output a model based on a pg table.
-        model                          # Generate a model.
+    Other related helpers:
+      table2model                        # Output a model based on a pg table.
+      generate model                     # Generate a model + migration
+      generate migration
     HELP
 
     exit

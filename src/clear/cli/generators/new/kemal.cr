@@ -1,6 +1,6 @@
 require "generate"
 
-Clear::CLI.add_generator("kemal",
+Clear::CLI::Generate.add_generator("new/kemal",
   "Setup a minimal application with kemal and clear") do |opts|
   g = Generate::Generator.new
   g.target_directory = opts[:directory] || "."
@@ -57,5 +57,5 @@ Clear::CLI.add_generator("kemal",
   system("chmod +x #{opts[:directory]}/bin/appctl")
   system("cd #{opts[:directory]} && shards")
 
-  puts "Clear + Kemal template is now generated. Use `clear-cli server` to start the server!"
+  puts "Clear + Kemal template is now generated. `cd #{opts[:directory]} && clear-cli server` to play ! :-)"
 end
