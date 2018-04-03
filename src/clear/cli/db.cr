@@ -1,25 +1,20 @@
-# The `db` command
-#
-# # Commands
-#
-module Clear::CLI::DB
-  def self.display_help_and_exit(opts)
-    puts <<-HELP
-    clear-cli [cli-options] db [db-command]
+class Clear::CLI::DBCommand < Clear::CLI::Command
+  def get_help_string
+    <<-HELP
+      clear-cli [cli-options] db [db-command]
 
-    Commands:
+      Commands:
         create               # Create the database
     HELP
-
-    exit
   end
 
-  def self.run(args)
+  def run_impl(args)
     OptionParser.parse(args) do |opts|
       opts.unknown_args do |args, options|
         arg = args.shift
         case arg
         when "create"
+          puts "TODO"
           exit
         end
       end

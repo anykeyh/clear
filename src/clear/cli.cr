@@ -2,19 +2,26 @@ require "option_parser"
 
 module Clear::CLI
   def self.display_help_and_exit
-    puts <<-HELP
-    clear-cli [options] <command>
+    help = <<-HELP
+    clear-cli [options] <command> [...]
 
-    Commands:
+      Commands:
 
       Migration:
         migration status               # Show the current status of the database.
         migration up XXX               # Turn up a specific migration.
         migration down XXX             # Turn down a specific migration.
-        migration set                  # Go to a specific step. Down all migration after, up all migration before.
+        migration set                  # Go to a specific step.
+                                       # Down all migration after,
+                                       # up all migration before.
         migrate                        # Migrate to the newest version.
         rollback                       # Revert the last migration.
-        from_models                    # Generate a migration from all the models discovered. Good for projects bootstrapping !
+        from_models                    # Generate a migration from all the
+                                       # models discovered.
+                                       # Good for projects bootstrapping !
+
+      Generator:
+        generate XXX                   # Generate some files
 
       Helpers:
         table2model                    # Output a model based on a pg table.
@@ -23,13 +30,19 @@ module Clear::CLI
       Use --help on each command to get more informations
     HELP
 
+    puts help
+
     exit
   end
 
   # Do not use the clear-cli binary but instead use the appctl
   # to compile the source of the custom project
-  def self.delegate_run(args : Array(String))
-    system("./bin/appctl", "clear_cli", *args)
+  def self.delegate_run(args = nil)
+    if args
+      system("./bin/appctl", ["clear_cli"] + args)
+    else
+      system("./bin/appctl", ["clear_cli"])
+    end
   end
 
   def self.ensure_in_custom_project
@@ -62,6 +75,8 @@ module Clear::CLI
           when "--verbose"
             Clear.logger.level = ::Logger::DEBUG
             next
+          when "g", "generate"
+            Clear::CLI::Generate.run(args)
           when "db"
             Clear::CLI::DB.run(args)
           when "migration"
