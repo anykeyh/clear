@@ -19,6 +19,6 @@ Clear::CLI::GeneratorCommand.add("migration",
     end
   else
     puts "Please provide a name for the migration"
-    exit(1)
+    exit 1
   end
 end

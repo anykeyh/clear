@@ -1,4 +1,4 @@
-class Clear::CLI::GeneratorCommand < Clear::CLI::Command
+class Clear::CLI::MigrationCommand < Clear::CLI::Command
   def get_help_string
     <<-HELP
     clear-cli [cli-options] migration [migration-options]

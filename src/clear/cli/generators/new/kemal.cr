@@ -16,55 +16,56 @@ Clear::CLI::GeneratorCommand.add("new/kemal",
     end
   end
 
-  g["app_name"] ||= Dir.basename(`pwd #{g.target_directory}`.chomp)
+  g["app_name"] = g["app_name"]? || File.basename(g.target_directory)
   g["app_name_underscore"] = g["app_name"].underscore
+  g["app_name_camelcase"] = g["app_name"].camelcase
 
   g["git_username"] = `git config user.email`.chomp || "email@example.com"
   g["git_email"] = `git config user.name`.chomp || "Your Name"
 
   g.in_directory "bin" do
-    g.file "appctl", Clear::CLI::Generate.ecr_to_s("./templates/kemal/bin/appctl.ecr", opts)
-    g.file "clear_cli.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/bin/clear_cli.cr.ecr", opts)
-    g.file "server.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/bin/server.cr.ecr", opts)
+    g.file "appctl", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/bin/appctl.ecr", g)
+    g.file "clear_cli.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/bin/clear_cli.cr.ecr", g)
+    g.file "server.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/bin/server.cr.ecr", g)
   end
 
   g.in_directory "config" do
-    g.file "database.yml", Clear::CLI::Generate.ecr_to_s("./templates/kemal/config/database.yml.ecr", opts)
+    g.file "database.yml", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/config/database.yml.ecr", g)
   end
 
   g.in_directory "src" do
     g.in_directory "controllers" do
-      g.file "application_controller.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/controllers/application_controller.ecr", opts)
-      g.file "welcome_controller.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/controllers/welcome_controller.ecr", opts)
+      g.file "application_controller.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/controllers/application_controller.ecr", g)
+      g.file "welcome_controller.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/controllers/welcome_controller.ecr", g)
     end
 
     g.in_directory "db" do
-      g.file "init.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/db/init.ecr", opts)
+      g.file "init.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/db/init.ecr", g)
     end
 
     g.in_directory "models" do
-      g.file "init.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/models/application_model.ecr", opts)
+      g.file "init.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/models/application_model.ecr", g)
     end
 
     g.in_directory "views" do
       g.in_directory "components" do
-        g.file "footer.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/views/components/footer.ecr", opts)
+        g.file "footer.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/views/components/footer.ecr", g)
       end
 
       g.in_directory "layouts" do
-        g.file "application.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/views/layouts/application.ecr", opts)
+        g.file "application.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/views/layouts/application.ecr", g)
       end
 
       g.in_directory "welcome" do
-        g.file "index.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/views/welcome/index.ecr", opts)
+        g.file "index.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/views/welcome/index.ecr", g)
       end
     end
 
-    g.file "app.cr", Clear::CLI::Generate.ecr_to_s("./templates/kemal/src/app.ecr", opts)
+    g.file "app.cr", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/src/app.ecr", g)
   end
 
-  g.file ".gitignore", Clear::CLI::Generate.ecr_to_s("./templates/kemal/_gitignore.ecr", opts)
-  g.file "shard.yml", Clear::CLI::Generate.ecr_to_s("./templates/kemal/shard.yml.ecr", opts)
+  g.file ".gitignore", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/_gitignore.ecr", g)
+  g.file "shard.yml", Clear::CLI::GeneratorCommand.ecr_to_s("./templates/kemal/shard.yml.ecr", g)
 
   system("chmod +x #{g.target_directory}/bin/appctl")
   system("cd #{g.target_directory} && shards")

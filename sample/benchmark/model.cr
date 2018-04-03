@@ -4,9 +4,9 @@ require "benchmark"
 class TimeRange
   include Clear::Model
 
-  field user_id : Int32
-  field starts_at : Time
-  field ends_at : Time?
+  column user_id : Int32
+  column starts_at : Time
+  column ends_at : Time?
 
   self.table = "user_time_ranges"
 end

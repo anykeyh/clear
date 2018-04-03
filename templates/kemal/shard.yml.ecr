@@ -1,11 +1,11 @@
-name: clear-kemal
+name: <%= opts["app_name_underscore"] %>
 version: 0.1.0
 
 authors:
-  - $git_username <$git_email>
+  - <%= opts["git_username"] %> <<%= opts["git_email"] %>>
 
 description: |
-  This is a short description of $app_name
+  This is a short description of <%=opts["app_name_camelcase"]%>
 
 dependencies:
   kemal:

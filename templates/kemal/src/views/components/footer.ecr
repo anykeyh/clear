@@ -1,10 +1,10 @@
 module TreeTemplate::Components
   # This is just an example of component
-  def app_footer(content = "2018")
+  def app_footer(content = "<%= Time.now.year %>")
     footer do
       p(style: "text-align: center") do
         # test
-        unsafe "&copy; <%= opts[:app_name] %> - #{content}"
+        unsafe "&copy; <%= opts["app_name_camelcase"] %> - #{content}"
       end
     end
   end

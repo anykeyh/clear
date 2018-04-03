@@ -1,3 +1,5 @@
+require "ecr"
+
 record Clear::CLI::Generator, name : String, desc : String, callback : Array(String) -> Void
 
 class Clear::CLI::GeneratorCommand < Clear::CLI::Command
@@ -19,16 +21,23 @@ class Clear::CLI::GeneratorCommand < Clear::CLI::Command
     @@generators[name] = Generator.new(name, desc, block)
   end
 
-  def self.[]?(generator)
+  def self.[]?(name)
     @@generators[name]?
   end
 
-  def self.[](generator)
+  def self.[](name)
     @@generators[name]
   end
 
+  macro ecr_to_s(string, opts)
+    opts = {{opts}}
+    io = IO::Memory.new
+    ECR.embed {{string}}, io
+    io.to_s
+  end
+
   def generator_list_string
-    @generators.values.map { |v| "  #{v.name}\t#{v.desc}" }.join("\n")
+    @@generators.values.map { |v| "  #{v.name}\t\# #{v.desc}" }.join("\n")
   end
 
   def run_impl(args)
@@ -36,7 +45,7 @@ class Clear::CLI::GeneratorCommand < Clear::CLI::Command
       arg = args.shift
       case arg
       when "--list", "-l"
-        puts print_generator_list
+        puts format_output(generator_list_string)
         exit 0
       else
         generator = Clear::CLI::GeneratorCommand[arg]?
@@ -44,7 +53,7 @@ class Clear::CLI::GeneratorCommand < Clear::CLI::Command
           generator.callback.call(args)
           exit 0
         else
-          puts "I don't know how to generate `#{generator}`"
+          puts "I don't know how to generate `#{arg}`"
           exit 1
         end
       end
@@ -53,3 +62,5 @@ class Clear::CLI::GeneratorCommand < Clear::CLI::Command
     display_help_and_exit 1
   end
 end
+
+require "./generators/**"

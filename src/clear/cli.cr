@@ -1,7 +1,7 @@
 require "option_parser"
 
 module Clear::CLI
-  def self.display_help_and_exit
+  def self.display_help_and_exit(exit_code = 0)
     help = <<-HELP
     clear-cli [options] <command> [...]
 
@@ -30,18 +30,24 @@ module Clear::CLI
       Use --help on each command to get more informations
     HELP
 
-    puts help
+    puts format_output(help)
 
-    exit
+    exit exit_code
+  end
+
+  def self.format_output(string)
+    string.gsub(/\#[^\r\n]*\n/) do |match, str|
+      match.colorize.dark_gray # comment like
+    end
   end
 
   # Do not use the clear-cli binary but instead use the appctl
   # to compile the source of the custom project
   def self.delegate_run(args = nil)
     if args
-      system("./bin/appctl", ["clear_cli"] + args)
+      system("./bin/appctl", ["clear_cli"] + args) ? 0 : 1
     else
-      system("./bin/appctl", ["clear_cli"])
+      system("./bin/appctl", ["clear_cli"]) ? 0 : 1
     end
   end
 
@@ -57,7 +63,7 @@ module Clear::CLI
     args ||= ARGV
 
     if File.exists?("./bin/appctl")
-      delegate_run(args)
+      exit(delegate_run(args))
     end
 
     OptionParser.parse(args) do |opts|
@@ -71,40 +77,40 @@ module Clear::CLI
           when "-v", "--version"
             puts Clear::VERSION
           when "-h", "--help"
-            self.display_help_and_exit
+            self.display_help_and_exit 0
           when "--verbose"
             Clear.logger.level = ::Logger::DEBUG
             next
           when "g", "generate"
-            Clear::CLI::Generate.run(args)
+            Clear::CLI::GeneratorCommand.new.run(args)
           when "db"
-            Clear::CLI::DB.run(args)
+            Clear::CLI::DBCommand.new.run(args)
           when "migration"
             ensure_in_custom_project
-            Clear::CLI::Migration.run(args)
+            Clear::CLI::MigrationCommand.new.run(args)
           when "migrate"
             ensure_in_custom_project
-            Clear::CLI::Migration.run(["set", "#{Clear::Migration::Manager.instance.max_version}"])
+            Clear::CLI::MigrationCommand.new.run(["set", "#{Clear::Migration::Manager.instance.max_version}"])
           when "rollback"
             ensure_in_custom_project
-            Clear::CLI::Migration.run(["set", "-1", "--down-only"])
+            Clear::CLI::MigrationCommand.new.run(["set", "-1", "--down-only"])
           when "from_models"
             ensure_in_custom_project
-            Clear::CLI::FromModel.run(args)
+            # Clear::CLI::FromModel.new.run(args)
           when "table2model"
             ensure_in_custom_project
-            Clear::CLI::TableToModel.run(args)
+            # Clear::CLI::TableToModel.run(args)
           when "model"
             ensure_in_custom_project
-            Clear::CLI::Model.run(args)
+            # Clear::CLI::Model.run(args)
           else
-            display_help_and_exit
+            display_help_and_exit 1
           end
 
-          exit
+          exit 0
         end
 
-        display_help_and_exit
+        display_help_and_exit 0
       end
     end
   end

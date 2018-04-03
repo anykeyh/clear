@@ -1,0 +1,22 @@
+class Create<%= opts["model_class"] %><%= opts["migration_uid"] %>
+  include Clear::Migration
+
+  def change(dir)
+    create_table :<%= opts["model_table"] %> do |t|
+      <%- opts["model_fields"].split("|").each do |f| -%>
+        <%- name, type = f.split(":").map(&.underscore) -%>
+        <%- nullable = (type =~ /\?$/) -%>
+        <%- type ||= "string" -%>
+        <%- type = type.gsub(/\?$/, "") -%>
+        <%- if type == "references" -%>
+      t.references to: "<%= name %>", on_delete: "restrict", null: nullable
+        <%- else -%>
+      t.<%= type %> :<%= name %>, null: <%=nullable ? "true" : "false"%>
+        <%- end -%>
+      <%- end -%>
+
+      t.timestamps
+    end
+
+  end
+end

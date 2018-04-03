@@ -2,7 +2,7 @@ production:
   uri: link_to_production_db
 
 development:
-  uri: postgres://postgres@localhost/<%= opts[:app_name_underscore] %>_development
+  uri: postgres://postgres@localhost/<%= opts["app_name_underscore"] %>_development
 
 test:
-  uri: postgres://postgres@localhost/<%= opts[:app_name_underscore] %>_test
+  uri: postgres://postgres@localhost/<%= opts["app_name_underscore"] %>_test
