@@ -1,18 +1,17 @@
 class Clear::CLI::MigrationCommand < Clear::CLI::Command
   def get_help_string
     <<-HELP
-    clear-cli [cli-options] migration [migration-options]
+    `clear-cli` [cli-options] migration [migration-options]
 
     Commands:
-        status               # Show the current status of the database.
-        up XXX               # Turn up a specific migration.
-        down XXX             # Turn down a specific migration.
-        set XXX              # Go to a specific step. Down all migration after, up all migration before.
+        `status`               # Show the current status of the database.
+        `up` XXX               # Turn up a specific migration.
+        `down` XXX             # Turn down a specific migration.
+        `set` XXX              # Go to a specific step. Down all migration after, up all migration before.
 
-    Other related helpers:
-      table2model                        # Output a model based on a pg table.
-      generate model                     # Generate a model + migration
-      generate migration                 # Create an empty migration file
+    Other related commands:
+      `generate model` XXX                     # Generate a model + migration
+      `generate migration` XXX                 # Create an empty migration file
     HELP
   end
 

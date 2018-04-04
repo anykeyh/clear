@@ -3,7 +3,7 @@ class Create<%= opts["model_class"] %><%= opts["migration_uid"] %>
 
   def change(dir)
     create_table :<%= opts["model_table"] %> do |t|
-      <%- opts["model_fields"].split("|").each do |f| -%>
+      <%- opts["model_fields"].split("|").reject(&.empty?).each do |f| -%>
         <%- name, type = f.split(":").map(&.underscore) -%>
         <%- nullable = (type =~ /\?$/) -%>
         <%- type ||= "string" -%>

@@ -81,6 +81,9 @@ module Clear::CLI
           when "--verbose"
             Clear.logger.level = ::Logger::DEBUG
             next
+          when "--no-color"
+            Colorize.enabled = false
+            next
           when "g", "generate"
             Clear::CLI::GeneratorCommand.new.run(args)
           when "db"
@@ -100,9 +103,6 @@ module Clear::CLI
           when "table2model"
             ensure_in_custom_project
             # Clear::CLI::TableToModel.run(args)
-          when "model"
-            ensure_in_custom_project
-            # Clear::CLI::Model.run(args)
           else
             display_help_and_exit 1
           end

@@ -28,6 +28,8 @@ Clear::CLI::GeneratorCommand.add("model",
     model_file = "#{name_underscore}.cr"
     migration_file = "#{migration_uid}_create_#{name_underscore}.cr"
 
+    pp fields
+
     g.in_directory "src/models" do
       g.file(model_file, Clear::CLI::GeneratorCommand.ecr_to_s("./templates/model/model.cr.ecr", g))
       g.file(migration_file, Clear::CLI::GeneratorCommand.ecr_to_s("./templates/model/migration.cr.ecr", g))

@@ -5,13 +5,13 @@ record Clear::CLI::Generator, name : String, desc : String, callback : Array(Str
 class Clear::CLI::GeneratorCommand < Clear::CLI::Command
   def get_help_string
     <<-HELP
-      clear-cli [cli-options] generate [list | generator_name] (options)
+      `clear-cli` [cli-options] `generate` [list | generator_name] (options)
 
-      Options:
+      `Options`:
         --list # List the generators
 
-      Available generators:
-      #{generator_list_string}
+      `Available generators`:
+    #{generator_list_string}
     HELP
   end
 
@@ -37,7 +37,7 @@ class Clear::CLI::GeneratorCommand < Clear::CLI::Command
   end
 
   def generator_list_string
-    @@generators.values.map { |v| "  #{v.name}\t\# #{v.desc}" }.join("\n")
+    @@generators.values.map { |v| "    #{v.name}\t\t\# #{v.desc}" }.join("\n")
   end
 
   def run_impl(args)

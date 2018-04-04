@@ -17,8 +17,12 @@ abstract class Clear::CLI::Command
   end
 
   def format_output(string)
-    string.gsub(/\#[^\r\n]*\n/) do |match, str|
+    string = string.gsub(/\#[^\r\n]*\n/) do |match|
       match.colorize.light_gray # comment like
+    end
+
+    string = string.gsub(/\`[^\`]*\`/) do |match|
+      match[1..-2].colorize.mode(:bright)
     end
   end
 end

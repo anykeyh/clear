@@ -1,11 +1,11 @@
 class <%= opts["model_class"] %>
   include Clear::Model
 
-  self.table = <%= opts["model_table"] %>
+  self.table = "<%= opts["model_table"] %>"
 
   with_serial_pkey
 
-  <%- opts["model_fields"].split("|").each do |f| -%>
+  <%- opts["model_fields"].split("|").reject(&.empty?).each do |f| -%>
   <%- name, type = f.split(":").map(&.underscore) -%>
   <%- type ||= "string" -%>
   column <%=name%> : <%=type.camelcase%>
