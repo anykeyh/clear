@@ -1,12 +1,16 @@
 version: 1.0
 shards:
+  admiral:
+    github: jwaldrip/admiral.cr
+    version: 1.5.0
+
   db:
     github: crystal-lang/crystal-db
     version: 0.5.0
 
-  generate-cr:
+  generate:
     github: anykeyh/generate.cr
-    commit: 44dfd81a3d13e7e375a3837fbc67dbb87e7baec6
+    commit: 21b2fe1a0c4b3773f6cae83118243d3b0ada0e2c
 
   inflector:
     github: phoffer/inflector.cr

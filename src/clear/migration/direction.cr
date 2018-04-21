@@ -32,22 +32,22 @@ module Clear::Migration
     protected def initialize(@dir)
     end
 
-    # Run the block if the direction is up
+    # Run the block given in parameter if the direction is a upstream
     def up(&block)
       yield if @dir
     end
 
-    # check if the direction is up
+    # Return true whether the migration is a upstream
     def up?
       @dir
     end
 
-    # Run the block if the direction is down
+    # Run the block given in parameter if the direction is a rollback
     def down(&block)
       yield unless @dir
     end
 
-    # check if the direction is down
+    # Return true whether the migration is a rollback
     def down?
       !@dir
     end

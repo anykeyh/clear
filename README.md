@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 
 Clear is an ORM built for PostgreSQL and Crystal.
-We do not want to make it compatible with others DBMS, so we can offers
+I do not want to make it compatible with others DBMS, so I can offers
 better experience and connect to the advanced features of PostgreSQL.
 
 ## Features
@@ -51,7 +51,7 @@ end
 
 * Mixins architecture, no class inheritance ! Include and play !
 
-* Customizable fields converter PG <=> Crystal
+* Customizable columns converter PG <=> Crystal
 
 ```crystal
   record MyRecord, a : String, b: String
@@ -138,11 +138,11 @@ end
 # Just create a module following this naming convention:
 module Clear::Model::Converter::Custom::TypeConverter
   def self.to_column(x : ::Clear::SQL::Any) : Custom::Type?
-    # Deserialize your field here
+    # Deserialize your column here
   end
 
   def self.to_db(x : Custom::Type?)
-    # Serialize your field here
+    # Serialize your column here
   end
 end
 ```
@@ -151,13 +151,13 @@ end
 
 Most of the ORM for Crystal are mapping column type as `Type | Nil` union.
 It makes sens so we allow selection of some columns only of a model.
-However, this have a caveats: Fields are still accessible, and will return nil,
-even if the real value of the field is not null !
+However, this have a caveats: columns are still accessible, and will return nil,
+even if the real value of the column is not null !
 
 Moreover, most of the developers will enforce nullity only on their programming
 language level via validation, but not on the database, leading to inconsistency.
 
-Therefore, we choose to throw exception whenever a field is accessed before
+Therefore, we choose to throw exception whenever a column is accessed before
 it has been initialized and to enforce presence through the union system of
 Crystal.
 
@@ -360,9 +360,9 @@ User.query.with_posts(&.with_category).each do |user|
 end
 ```
 
-##### Querying computed or foreign fields
+##### Querying computed or foreign columns
 
-In case you want fields computed by postgres, or stored in another table, you can use `fetch_column`.
+In case you want columns computed by postgres, or stored in another table, you can use `fetch_column`.
 By default, for performance reasons, `fetch_columns` option is set to false.
 
 ```crystal
@@ -552,8 +552,8 @@ end
 
 #5. Use the `ensure_than` helper (but with block notation) !
 def validate
-  ensure_than(first_name, "should not be empty") do |field|
-    field != ""
+  ensure_than(first_name, "should not be empty") do |column|
+    column != ""
   end
 end
 
@@ -566,7 +566,7 @@ Simple to write and easy to read !
 
 Clear offers of course a migration system.
 
-Migration should have an `order` field set.
+Migration should have an `order` column set.
 This number can be wrote at the end of the class itself:
 
 ```crystal
@@ -638,9 +638,9 @@ In short, here is the architecture
 +---------------------------------------------+
 |              Clear                          +
 +---------------------------------------------+
-|  Model | DB Views | Migrations | crclr CLI  | < High Level Tools
+|  Model | DB Views | Migrations | clear-cli  | < High Level Tools
 +---------------+-----------------------------+
-|  Field | Validation | Converters            | < Mapping system
+|  column | Validation | Converters            | < Mapping system
 +---------------+-----------------------------+
 |  Clear::SQL   | Clear::Expression           | < Low Level SQL Builder
 +---------------------------------------------+
@@ -656,7 +656,7 @@ It offers advanced features for Postgres (see Roadmap)
 ORM:
 
 - [X] Hook callback
-- [X] Field mapping
+- [X] column mapping
 - [X] Basic SQL: Select/Insert/Update/Delete
 - [X] Cursored fetching
 - [X] Debug Queries & Pretty Print
@@ -671,7 +671,7 @@ ORM:
 - [X] All logic of transaction, update, saving...
 - [ ] DB Views => In progress
 - [ ] Writing documentation
-- [ ] crclr tool => In progress
+- [ ] clear-cli tool => In progress
 - [ ] CitusDB Support ? => In mind
 - [ ] Filling this checklist and drink a beer
 

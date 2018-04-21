@@ -10,6 +10,8 @@ scripts:
   postinstall: "./bin/install-cli"
 
 dependencies:
+  admiral:
+    github: jwaldrip/admiral.cr
   generate:
     github: anykeyh/generate.cr
   pg:

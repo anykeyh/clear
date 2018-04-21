@@ -16,14 +16,14 @@
 #
 # You can create a new file which will be present in `src/db/migrate` using:
 #
-# `crclr migration:g migration_name`
+# `clear-cli migration:g migration_name`
 #
 # Thus will create a migration in `src/db/migration/[:uid]_migration_name.cr`
 # (with uid number) and a class `MigrationName`
 #
 # ### Advanced options
 #
-# You can use `crclr help migration` to get advanced options.
+# You can use `clear-cli migration help` to get advanced options.
 #
 # ## Manually
 #

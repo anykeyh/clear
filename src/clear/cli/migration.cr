@@ -1,59 +1,57 @@
-class Clear::CLI::MigrationCommand < Clear::CLI::Command
-  def get_help_string
-    <<-HELP
-    `clear-cli` [cli-options] migration [migration-options]
+class Clear::CLI::Migration < Admiral::Command
+  define_help description: "Manage migration state of your database"
 
-    Commands:
-        `status`               # Show the current status of the database.
-        `up` XXX               # Turn up a specific migration.
-        `down` XXX             # Turn down a specific migration.
-        `set` XXX              # Go to a specific step. Down all migration after, up all migration before.
-
-    Other related commands:
-      `generate model` XXX                     # Generate a model + migration
-      `generate migration` XXX                 # Create an empty migration file
-    HELP
+  class Status < Admiral::Command
+    def run
+      puts Clear::Migration::Manager.instance.print_status
+    end
   end
 
-  def run_impl(args)
-    OptionParser.parse(args) do |opts|
-      direction = :both
+  class Up < Admiral::Command
+    define_argument migration_number : Int64, required: true
+    define_help description: "Upgrade your database to a specific migration version"
 
-      opts.on("--up-only", "If command need to rollback migrations, ignore them") { direction = :up }
-      opts.on("--down-only", "If command need to apply migrations, ignore them") { direction = :down }
-      opts.on("-h", "--help", "Print this help") { self.display_help_and_exit(0) }
-
-      opts.unknown_args do |args, options|
-        arg = args.shift
-        case arg
-        when "status"
-          puts Clear::Migration::Manager.instance.print_status
-        when "up", "down"
-          if args.size == 0
-            puts "`#{arg}` require a migration number"
-            self.display_help_and_exit(1)
-          end
-
-          num = Int64.new(args.shift)
-
-          if arg == "up"
-            Clear::Migration::Manager.instance.up num
-          else # "down"
-            Clear::Migration::Manager.instance.down num
-          end
-        when "set"
-          if args.size == 0
-            puts "`set` require a migration number."
-            self.display_help_and_exit(1)
-          end
-
-          num = Int64.new(args.shift)
-
-          Clear::Migration::Manager.instance.apply_to(num, direction: direction)
-        else
-          self.display_help_and_exit(1)
-        end
-      end
+    def run
+      Clear::Migration::Manager.instance.up arguments.migration_number
     end
+  end
+
+  class Down < Admiral::Command
+    define_argument migration_number : Int64, required: true
+    define_help description: "Downgrade your database to a specific migration version"
+
+    def run
+      puts "down?"
+      Clear::Migration::Manager.instance.down arguments.migration_number
+    end
+  end
+
+  class Set < Admiral::Command
+    define_flag direction : String, short: d, default: "both"
+    define_argument migration_number : Int64, required: true
+
+    def run
+      dir_symbol = case flags.direction
+                   when "up"
+                     :up
+                   when "down"
+                     :down
+                   when "both"
+                     :both
+                   else
+                     puts "Bad argument --direction : #{flags.direction}. Must be up|down|both"
+                     exit 1
+                   end
+
+      Clear::Migration::Manager.instance.apply_to(arguments.migration_number, direction: dir_symbol)
+    end
+  end
+
+  register_sub_command status, type: Status
+  register_sub_command up, type: Up
+  register_sub_command down, type: Down
+  register_sub_command set, type: Set
+
+  def run
   end
 end
