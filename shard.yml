@@ -20,4 +20,8 @@ dependencies:
     github: phoffer/inflector.cr
     version: "~> 0.1.8"
 
+development_dependencies:
+  coverage:
+    github: anykeyh/crystal-coverage
+
 license: MIT

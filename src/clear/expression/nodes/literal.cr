@@ -1,3 +1,5 @@
+require "./node"
+
 class Clear::Expression::Node::Literal < Clear::Expression::Node
   def initialize(@lit : AvailableLiteral)
   end

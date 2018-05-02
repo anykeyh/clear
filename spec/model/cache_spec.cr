@@ -35,13 +35,14 @@ module CacheSpec
             # Relation belongs_to
             Clear::Model::QueryCache.reset_counter
             Post.query.with_user.each do |post|
-              pp post.user.try &.id
+              post.user.not_nil!
             end
             Clear::Model::QueryCache.cache_hitted.should eq(4) # Number of posts
 
             Category.query.with_users { |q| q.order_by("users.id ASC") }.order_by("id ASC").each do |c|
               c.users.each do |user|
-                puts "category = #{c.id}, user = #{user.id}"
+                c.id.not_nil!
+                user.id.not_nil!
               end
             end
           end

@@ -1,3 +1,5 @@
+require "./node"
+
 class Clear::Expression::Node::InArray < Clear::Expression::Node
   def initialize(@target : Node, @array : Array(Literal)); end
 

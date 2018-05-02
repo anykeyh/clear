@@ -1,3 +1,5 @@
+require "./node"
+
 class Clear::Expression::Node::Between < Clear::Expression::Node
   alias BetweenType = Int32 | Int64 | Float32 | Float64 | String | Time | Node
 

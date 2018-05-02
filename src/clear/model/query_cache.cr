@@ -1,7 +1,7 @@
 # This is a fire-and-forget cache
 #
 # This cache can be plugged on model instance (one cache for a set of models)
-# ... (to explain and document)
+# ... (TODO: explain and document)
 class Clear::Model::QueryCache
   record CacheKey, relation_name : String, relation_value : Clear::SQL::Any, relation_model : String
 

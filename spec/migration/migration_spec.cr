@@ -76,11 +76,9 @@ module MigrationSpec
     it "can run migrations apply_all multiple times" do
       temporary do
         Clear::Migration::Manager.instance.reinit!
-        pp "?!"
         # Ensure that multiple migration apply_all's can run without issue
         Clear::Migration::Manager.instance.apply_all
         Clear::Migration::Manager.instance.apply_all
-        pp "Stop?"
       end
     end
   end

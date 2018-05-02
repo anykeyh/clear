@@ -1,3 +1,5 @@
+require "./operation"
+
 module Clear::Migration
   struct Execute < Operation
     @up : String?

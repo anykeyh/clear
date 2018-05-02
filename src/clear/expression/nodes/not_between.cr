@@ -1,3 +1,5 @@
+require "./node"
+
 ###
 #
 class Clear::Expression::Node::NotBetween < Clear::Expression::Node

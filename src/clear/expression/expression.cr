@@ -192,6 +192,3 @@ class Clear::Expression
      {% end %}
   end
 end
-
-require "./nodes/node"
-require "./nodes/*"

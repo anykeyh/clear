@@ -51,19 +51,20 @@ module Clear::Model::HasColumns
   # which column is linked to the column.
   #
   macro column(name, primary = false, converter = nil, column = nil, presence = true)
-    {% type = name.type
+    {% _type = name.type %}
+    {%
        unless converter
-         if type.is_a?(Path)
-           converter = ("Clear::Model::Converter::" + type.stringify + "Converter").id
-         elsif type.is_a?(Generic) # Union?
-           converter = ("Clear::Model::Converter::" + type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
+         if _type.is_a?(Path)
+           converter = ("Clear::Model::Converter::" + _type.stringify + "Converter").id
+         elsif _type.is_a?(Generic) # Union?
+           converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          else
-           converter = ("Clear::Model::Converter::" + type.types.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
+           converter = ("Clear::Model::Converter::" + _type.types.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          end
        end %}
 
     {% COLUMNS[name.var] = {
-         type:      type,
+         type:      _type,
          primary:   primary,
          converter: converter,
          column:    column || name.var,

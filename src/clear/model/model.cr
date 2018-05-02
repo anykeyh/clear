@@ -16,7 +16,6 @@ module Clear::Model
   include Clear::Model::HasScope
   include Clear::Model::ClassMethods
 
-  getter? persisted : Bool
   getter cache : Clear::Model::QueryCache?
 
   # We use here included for errors purpose.

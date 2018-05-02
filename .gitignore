@@ -1,6 +1,8 @@
 .shards
-lib
-tmp
-poc
-generated
-test
+/lib
+/tmp
+/poc
+/generated/
+/test
+/coverage/
+/bin/crystal-coverage*

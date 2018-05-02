@@ -1,3 +1,5 @@
+require "./node"
+
 class Clear::Expression::Node::Not < Clear::Expression::Node
   def initialize(@a : Node); end
 

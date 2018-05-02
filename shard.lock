@@ -2,7 +2,11 @@ version: 1.0
 shards:
   admiral:
     github: jwaldrip/admiral.cr
-    version: 1.5.0
+    version: 1.6.1
+
+  coverage:
+    github: anykeyh/crystal-coverage
+    commit: bd604cca80c84a33354525d5dc696cd8c9d4f038
 
   db:
     github: crystal-lang/crystal-db

@@ -3,8 +3,8 @@ require "spec"
 require "../src/clear"
 
 def initdb
-  `echo "DROP DATABASE IF EXISTS clear_spec;" | psql -U postgres`
-  `echo "CREATE DATABASE clear_spec;" | psql -U postgres`
+  system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres")
+  system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres")
 
   Clear::SQL.init("postgres://postgres@localhost/clear_spec")
 
@@ -16,7 +16,10 @@ def initdb
 end
 
 def temporary(&block)
-  Clear::SQL.with_savepoint { yield; Clear::SQL.rollback }
+  Clear::SQL.with_savepoint do
+    yield
+    Clear::SQL.rollback
+  end
 end
 
 initdb

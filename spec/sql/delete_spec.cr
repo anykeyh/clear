@@ -1,6 +1,6 @@
 require "spec"
 
-require "../../../src/clear/sql/sql"
+require "../../src/clear/sql/sql"
 
 module DeleteSpec
   extend self

@@ -1,3 +1,5 @@
+require "./node"
+
 ###
 # A simple NULL node.
 #

@@ -205,7 +205,7 @@ class Clear::Migration::Manager
     if @migrations.any?
       all_migrations = @migrations.map(&.uid)
       r = all_migrations - all_migrations.uniq
-      raise "Some migrations UID are not unique and will cause problem (listed here): #{r.join(", ")}" if r.any?
+      raise "Some migrations UID are not unique and will cause problem (ids listed here): #{r.join(", ")}" if r.any?
     end
   end
 
@@ -218,8 +218,6 @@ class Clear::Migration::Manager
               .where({metatype: "migration"}).to_a.map { |m|
       @migrations_up.add(Int64.new(m["value"].as(String)))
     }
-
-    pp @migrations_up
   end
 
   def refresh

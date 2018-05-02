@@ -108,6 +108,7 @@ module Clear::Model
     end
 
     def build : T
+      pp @tags
       T.new(@tags, persisted: false)
     end
 
