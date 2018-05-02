@@ -201,6 +201,26 @@ module ModelSpec
           u.persisted?.should eq true
         end
       end
+
+      it "can delete a model" do
+        temporary do
+          reinit
+
+          User.create({first_name: "Malcom", last_name: "X"})
+
+          u = User.new
+          u.first_name = "LeBron"
+          u.last_name = "James"
+          u.save.should eq true
+
+          User.query.count.should eq 2
+          u.persisted?.should eq true
+
+          u.delete.should eq true
+          u.persisted?.should eq false
+          User.query.count.should eq 1
+        end
+      end
     end
   end
 end
