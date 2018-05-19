@@ -15,7 +15,7 @@ module Clear::Model::HasValidation
     @errors << Error.new(reason: reason, field: field.to_s)
   end
 
-  def has_error?
+  def error?
     @errors.any?
   end
 
@@ -49,7 +49,7 @@ module Clear::Model::HasValidation
       validate
     }
 
-    !has_error?
+    !error?
   end
 
   include Clear::Validation::Helper
