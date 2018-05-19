@@ -33,7 +33,7 @@ module Clear::SQL::Query::Where
   def where(str : String, parameters : Array(T)) forall T
     idx = -1
 
-    clause = str.gsub(/\?/) do |question_mark|
+    clause = str.gsub(/\?/) do
       begin
         Clear::Expression[parameters[idx += 1]]
       rescue e : IndexError

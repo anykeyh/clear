@@ -29,17 +29,16 @@ module Clear::SQL::SelectBuilder
   include Query::BeforeQuery
 
   def dup : self
-    d = self.class.new(columns: @columns.dup,
-      froms: @froms.dup,
-      joins: @joins.dup,
-      wheres: @wheres.dup,
-      havings: @havings.dup,
-      group_bys: @group_bys.dup,
-      order_bys: @order_bys.dup,
-      limit: @limit,
-      offset: @offset,
-      lock: @lock
-    )
+    self.class.new(columns: @columns.dup,
+                   froms: @froms.dup,
+                   joins: @joins.dup,
+                   wheres: @wheres.dup,
+                   havings: @havings.dup,
+                   group_bys: @group_bys.dup,
+                   order_bys: @order_bys.dup,
+                   limit: @limit,
+                   offset: @offset,
+                   lock: @lock)
   end
 
   def to_sql : String

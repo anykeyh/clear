@@ -10,7 +10,7 @@ class Clear::CLI::DBCommand < Clear::CLI::Command
 
   def run_impl(args)
     OptionParser.parse(args) do |opts|
-      opts.unknown_args do |args, options|
+      opts.unknown_args do |args, _options|
         arg = args.shift
         case arg
         when "create"

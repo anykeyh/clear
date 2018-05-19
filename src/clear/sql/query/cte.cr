@@ -9,7 +9,6 @@ module Clear::SQL::Query::CTE
 
   protected def print_ctes
     if cte.any?
-      o = "WITH "
       cte.map do |name, cte_declaration|
         cte_string = case cte_declaration
                      when String

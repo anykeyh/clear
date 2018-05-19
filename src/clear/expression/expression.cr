@@ -148,7 +148,7 @@ class Clear::Expression
   def self.where(&block) : Node
     expression_engine = self.new
 
-    node = to_node(with expression_engine yield)
+    to_node(with expression_engine yield)
   end
 
   # Not operator

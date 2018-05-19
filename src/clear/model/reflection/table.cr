@@ -39,23 +39,23 @@ class Clear::Reflection::Table
     #     i.relname;
     o = {} of String => Array(String)
 
-    req = SQL.select({name: "i.relname", column_name: "a.attname"})
-             .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
-             .where { t.oid == ix.indrelid }
-             .where { i.oid == ix.indexrelid }
-             .where { a.attrelid == t.oid }
-             .where { a.attnum == raw("ANY(ix.indkey)") }
-             .where { t.relkind == "r" }
-             .where { t.relname == self.table_name }
-             .order_by("t.relname", "i.relname")
-             .fetch do |h|
-      col = h["column_name"].to_s
-      v = h["name"].to_s
+    SQL.select({name: "i.relname", column_name: "a.attname"})
+       .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
+       .where { t.oid == ix.indrelid }
+       .where { i.oid == ix.indexrelid }
+       .where { a.attrelid == t.oid }
+       .where { a.attnum == raw("ANY(ix.indkey)") }
+       .where { t.relkind == "r" }
+       .where { t.relname == self.table_name }
+       .order_by("t.relname", "i.relname")
+       .fetch do |h|
+         col = h["column_name"].to_s
+         v = h["name"].to_s
 
-      arr = o[col]? ? o[col] : (o[col] = [] of String)
+         arr = o[col]? ? o[col] : (o[col] = [] of String)
 
-      arr << v
-    end
+         arr << v
+       end
 
     return o
   end

@@ -138,12 +138,10 @@ module Clear
     # Clear::SQL.execute("SELECT 1 FROM users")
     #
     def execute(sql)
-      begin
-        log_query(sql) { Clear::SQL.connection.exec(sql) }
+      log_query(sql) { Clear::SQL.connection.exec(sql) }
       rescue e
         raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
                                  "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
-      end
     end
 
     # :nodoc:

@@ -21,7 +21,7 @@ abstract class Clear::CLI::Command
       match.colorize.light_gray # comment like
     end
 
-    string = string.gsub(/\`[^\`]*\`/) do |match|
+    string.gsub(/\`[^\`]*\`/) do |match|
       match[1..-2].colorize.mode(:bright)
     end
   end
