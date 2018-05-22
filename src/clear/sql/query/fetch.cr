@@ -30,8 +30,6 @@ module Clear::SQL::Query::Fetch
 
       Clear::SQL.log_query(cursor_declaration) { cnx.exec(cursor_declaration) }
 
-      n = count
-
       h = {} of String => ::Clear::SQL::Any
 
       we_loop = true

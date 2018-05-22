@@ -121,7 +121,7 @@ module Clear::Model
 
       return cr.any? if cr
 
-      self.clear_select.select("1").limit(1).fetch do |h|
+      self.clear_select.select("1").limit(1).fetch do
         return true
       end
 

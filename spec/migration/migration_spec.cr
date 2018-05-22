@@ -35,7 +35,7 @@ module MigrationSpec
       end
 
       it "can discover UID from file name" do
-        MigrationByFile.new.uid.should eq 12345
+        MigrationByFile.new.uid.should eq 12_345
       end
 
       it "can apply migration" do
