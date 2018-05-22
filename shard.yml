@@ -6,8 +6,8 @@ authors:
 
 description: Clear ORM is an advanced ORM focusing on PostgreSQL
 
-scripts:
-  postinstall: "./bin/install-cli"
+# scripts:
+#   postinstall: "./bin/install-cli"
 
 dependencies:
   admiral:
