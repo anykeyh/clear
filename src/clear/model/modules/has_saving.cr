@@ -13,7 +13,7 @@ module Clear::Model::HasSaving
     raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
 
     with_triggers(:save) do
-      if valid?
+      if valid? && changed?
         if persisted?
           Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
         else

@@ -197,7 +197,7 @@ module ModelSpec
           u.id.should eq(1)
 
           u = User.query.find_or_create({last_name: "Henry"}) do |u|
-            u.first_name = "King" #<< This should not be triggered since we found the row
+            u.first_name = "Thierry" #<< This should not be triggered since we found the row
           end
           u.first_name.should eq("Thierry")
           u.last_name.should eq("Henry")
