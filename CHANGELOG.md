@@ -9,10 +9,11 @@ In column method helper:
 ## Bugfixes
 
 - Fix issue with delete if the primary key is not `id`
+- Add watchdog to disallow inclusion of `Clear::Model` on struct objects, which
+  is not intended to work
 
 ## New features
 
-- Add watchdog to disallow inclusion of `Clear::Model` on struct objects (which can cause unexpected behaviors on copy...)
+- Bundle with a binary `clear-cli`. Allow you to scaffold projects easily !
 - Add specs for `find_or_create` function.
-- Finalization of the code for `clear-cli`. Allow you to scaffold projects
 - Add CHANGELOG.md file !
