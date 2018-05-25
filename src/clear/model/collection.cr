@@ -190,7 +190,7 @@ module Clear::Model
     def find_or_build(tuple : NamedTuple, &block : T -> Void) : T
       r = where(tuple).first
 
-      return r unless r.nil?
+      return r if r
 
       str_hash = {} of String => Clear::SQL::Any
 
@@ -214,10 +214,6 @@ module Clear::Model
     end
 
     def first : T?
-      # Not sure about this one, I comment for now...
-      # cr = @cached_result
-      # return cr.first if cr
-
       order_by("#{T.pkey} ASC") unless T.pkey.nil?
 
       limit(1).fetch do |hash|

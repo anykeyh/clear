@@ -24,7 +24,7 @@ module ModelSpec
     self.table = "model_user_infos"
   end
 
-  struct User
+  class User
     include Clear::Model
 
     column id : Int32, primary: true, presence: false
@@ -180,6 +180,23 @@ module ModelSpec
 
           u = User.find! u.id
           u.created_at.epoch.should eq(now.epoch)
+        end
+      end
+
+      it "can get first or create" do
+        temporary do
+          reinit
+
+          u = User.query.find_or_create({last_name: "Henry"}) do |u2|
+            u2.first_name = "Thierry"
+            u2.save
+          end
+
+          u.first_name.should eq("Thierry")
+          u.last_name.should eq("Henry")
+          u.id.should eq(1)
+
+
         end
       end
 

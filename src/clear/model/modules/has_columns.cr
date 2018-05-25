@@ -168,15 +168,6 @@ module Clear::Model::HasColumns
       return false
     end
 
-    def persist!(pkey : ::Clear::SQL::Any)
-      @persisted = true
-      {% for name, settings in COLUMNS %}
-        {% if settings[:primary] %}
-          @{{name}}_column.reset({{settings[:converter]}}.to_column(pkey))
-        {% end %}
-      {% end %}
-    end
-
     def set( h : Hash(String, ::Clear::SQL::Any) )
       {% for name, settings in COLUMNS %}
         if h.has_key?("{{settings[:column]}}")

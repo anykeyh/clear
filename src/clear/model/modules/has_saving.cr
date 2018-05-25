@@ -12,6 +12,7 @@ module Clear::Model::HasSaving
         else
           Clear::SQL.insert_into(self.class.table, to_h).returning(self.class.pkey).to_sql
           @persisted = true
+
           hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute
           self.set(hash)
         end
@@ -24,6 +25,15 @@ module Clear::Model::HasSaving
     end
 
     return true
+  end
+
+  def save!
+    with_triggers(:save) do
+      raise Clear::Model::InvalidModelError.new(
+        "Validation of the model failed:\n #{print_errors}") unless save
+    end
+
+    return self
   end
 
   def delete
@@ -39,11 +49,4 @@ module Clear::Model::HasSaving
     return true
   end
 
-  def save!
-    with_triggers(:save) do
-      raise Clear::Model::InvalidModelError.new("Validation of the model failed:\n #{print_errors}") unless save
-    end
-
-    return self
-  end
 end
