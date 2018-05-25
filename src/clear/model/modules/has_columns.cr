@@ -172,7 +172,7 @@ module Clear::Model::HasColumns
       out
     end
 
-    # Return `true` if the model is dirty (e.g. one or more fields 
+    # Return `true` if the model is dirty (e.g. one or more fields
     #   have been changed.). Return `false` otherwise.
     def changed?
       {% for name, settings in COLUMNS %}

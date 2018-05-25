@@ -6,7 +6,7 @@ module ReflectionSpec
       it "can list the tables" do
         temporary do
           first_table = Clear::Reflection::Table.query.first!
-          first_column = first_table.columns.first!
+          first_table.columns.first!
         end
       end
 

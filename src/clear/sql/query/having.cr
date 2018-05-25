@@ -30,7 +30,7 @@ module Clear::SQL::Query::Having
   def having(str : String, parameters : Array(T)) forall T
     idx = -1
 
-    clause = str.gsub(/\?/) do |question_mark|
+    clause = str.gsub(/\?/) do |_|
       begin
         Clear::Expression[parameters[idx += 1]]
       rescue e : IndexError

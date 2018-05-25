@@ -4,6 +4,10 @@ shards:
     github: jwaldrip/admiral.cr
     version: 1.6.1
 
+  ameba:
+    github: veelenga/ameba
+    version: 0.6.0
+
   coverage:
     github: anykeyh/crystal-coverage
     commit: bd604cca80c84a33354525d5dc696cd8c9d4f038

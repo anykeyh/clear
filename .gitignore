@@ -6,4 +6,6 @@
 /generated/
 /test
 /coverage/
+
 /bin/crystal-coverage*
+/bin/ameba

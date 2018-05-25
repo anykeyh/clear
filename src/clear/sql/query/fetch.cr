@@ -19,7 +19,7 @@ module Clear::SQL::Query::Fetch
   end
 
   # Use a cursor to fetch the data
-  def fetch_with_cursor(count = 1000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
     Clear::SQL.transaction do
@@ -29,8 +29,6 @@ module Clear::SQL::Query::Fetch
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
 
       Clear::SQL.log_query(cursor_declaration) { cnx.exec(cursor_declaration) }
-
-      n = count
 
       h = {} of String => ::Clear::SQL::Any
 

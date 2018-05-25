@@ -244,12 +244,11 @@ class Clear::Migration::Manager
   # Force down a migration; throw error if the mgiration is already down
   def down(number : Int64) : Void
     m = find(number)
-    unless migrations_up.includes?(number)
-      raise "Migration already down: #{number}"
-    else
-      m.apply(Clear::Migration::Direction::DOWN)
-      @migrations_up.delete(m.uid)
-    end
+
+    raise "Migration already down: #{number}" unless migrations_up.includes?(number)
+
+    m.apply(Clear::Migration::Direction::DOWN)
+    @migrations_up.delete(m.uid)
   end
 
   # Print out the status ( up | down ) of all migrations found by the manager.

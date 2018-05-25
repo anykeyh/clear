@@ -9,8 +9,8 @@ module Clear::SQL::Query::CTE
 
   protected def print_ctes
     if cte.any?
-      o = "WITH "
-      cte.map do |name, cte_declaration|
+      o = ["WITH "]
+      (o + cte.map do |name, cte_declaration|
         cte_string = case cte_declaration
                      when String
                        cte
@@ -18,7 +18,7 @@ module Clear::SQL::Query::CTE
                        cte.to_sql
                      end
         [name, "AS", "(", cte_string, ")"]
-      end.join(", ")
+      end).join(", ")
     end
   end
 end

@@ -142,7 +142,7 @@ module SelectSpec
 
           it "raises exception with prepared query" do
             expect_raises Clear::SQL::QueryBuildingError do
-              r = select_request.from(:users).where("a LIKE ? AND b = ?", ["hello"])
+              select_request.from(:users).where("a LIKE ? AND b = ?", ["hello"])
             end
           end
 
@@ -154,7 +154,7 @@ module SelectSpec
 
           it "raises exception if a tuple element is not found" do
             expect_raises Clear::SQL::QueryBuildingError do
-              r = select_request.from(:users).where("a LIKE :halo AND b LIKE :world",
+              select_request.from(:users).where("a LIKE :halo AND b LIKE :world",
                 {hello: "h", world: "w"})
             end
           end

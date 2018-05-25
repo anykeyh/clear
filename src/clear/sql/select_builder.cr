@@ -29,7 +29,7 @@ module Clear::SQL::SelectBuilder
   include Query::BeforeQuery
 
   def dup : self
-    d = self.class.new(columns: @columns.dup,
+    self.class.new(columns: @columns.dup,
       froms: @froms.dup,
       joins: @joins.dup,
       wheres: @wheres.dup,

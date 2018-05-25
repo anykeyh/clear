@@ -35,7 +35,7 @@ module MigrationSpec
       end
 
       it "can discover UID from file name" do
-        MigrationByFile.new.uid.should eq 12345
+        MigrationByFile.new.uid.should eq 12345 # ameba:disable LargeNumbers
       end
 
       it "can apply migration" do
