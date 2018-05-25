@@ -183,20 +183,25 @@ module ModelSpec
         end
       end
 
-      it "can get first or create" do
+      it "can find_or_create" do
         temporary do
           reinit
 
-          u = User.query.find_or_create({last_name: "Henry"}) do |u2|
-            u2.first_name = "Thierry"
-            u2.save
+          u = User.query.find_or_create({last_name: "Henry"}) do |u|
+            u.first_name = "Thierry"
+            u.save
           end
 
           u.first_name.should eq("Thierry")
           u.last_name.should eq("Henry")
           u.id.should eq(1)
 
-
+          u = User.query.find_or_create({last_name: "Henry"}) do |u|
+            u.first_name = "King" #<< This should not be triggered since we found the row
+          end
+          u.first_name.should eq("Thierry")
+          u.last_name.should eq("Henry")
+          u.id.should eq(1)
         end
       end
 

@@ -1,21 +1,21 @@
 require "../validation/helper"
 
 module Clear::Model::HasValidation
-  record Error, reason : String, field : String?
+  record Error, reason : String, column : String?
 
   getter errors : Array(Error) = [] of Error
 
   # Add validation error not related to a specific column
   def add_error(reason)
-    @errors << Error.new(reason: reason, field: nil)
+    @errors << Error.new(reason: reason, column: nil)
   end
 
   # Add validation error related to a specific column
-  def add_error(field, reason)
-    @errors << Error.new(reason: reason, field: field.to_s)
+  def add_error(column, reason)
+    @errors << Error.new(reason: reason, column: column.to_s)
   end
 
-  def has_error?
+  def error?
     @errors.any?
   end
 
@@ -24,21 +24,18 @@ module Clear::Model::HasValidation
   end
 
   def print_errors
-    @errors.group_by(&.field).to_a.sort { |(f1, _), (f2, _)| (f1 || "") <=> (f2 || "") }.map do |field, errors|
-      if field
-        "#{field}: #{errors.map(&.reason).join(", ")}"
-      else
-        errors.map(&.reason).join(", ")
-      end
+    @errors.group_by(&.column).to_a.sort { |(f1, _), (f2, _)| (f1 || "") <=> (f2 || "") }.map do |column, errors|
+      [column, errors.map(&.reason).join(", ")].compact.join(": ")
     end.join("\n")
   end
 
   def validate
-    # Must be overwritten
+    # Can be overwritten
   end
 
   def valid!
-    valid? || raise InvalidModelError.new("Model is invalid: #{print_errors}")
+    raise InvalidModelError.new("Model is invalid: #{print_errors}") unless valid?
+    self
   end
 
   def valid?
@@ -49,7 +46,7 @@ module Clear::Model::HasValidation
       validate
     }
 
-    !has_error?
+    !error?
   end
 
   include Clear::Validation::Helper

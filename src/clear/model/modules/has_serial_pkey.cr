@@ -1,5 +1,6 @@
 module Clear::Model::HasSerialPkey
-  macro with_serial_pkey(x = "id")
-    column {{x.id}} : UInt64, primary: true, presence: false
+  # Helper for lazy developers, to add longint primary key.
+  macro with_serial_pkey(name = "id")
+    column {{name.id}} : UInt64, primary: true, presence: false
   end
 end

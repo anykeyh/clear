@@ -19,7 +19,7 @@ module Clear::Validation::Helper
   macro ensure_than(field, message, &block)
     o = {{field.id}}
     on_presence({{field.id}}) do
-      fn = Clear::Util.func(typeof(o), Object) {{block}}
+      fn = Clear::Util.lambda(typeof(o), Object) {{block}}
 
       unless fn.call(o)
         add_error({{field.stringify}}, {{message}})

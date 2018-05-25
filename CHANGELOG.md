@@ -3,8 +3,9 @@
 
 ## Breaking changes
 
-In column method helper:
-  - Renaming of column `column` attribute to `column_name`
+- Renaming of column `column` attribute to `column_name` in `column` method helper
+- Renaming of `field` by `column` in validation `Error` record
+- Renaming of `Clear::Util.func` to `Clear::Util.lambda`
 
 ## Bugfixes
 
@@ -15,5 +16,6 @@ In column method helper:
 ## New features
 
 - Bundle with a binary `clear-cli`. Allow you to scaffold projects easily !
-- Add specs for `find_or_create` function.
 - Add CHANGELOG.md file !
+- Add specs for `find_or_create` function. Fix issue #XXX
+- `model.valid!` return itself and can be chained
