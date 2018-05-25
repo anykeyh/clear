@@ -212,6 +212,7 @@ module ModelSpec
 
           u.first_name = "Yacine"
           u.last_name = "Petitprez"
+          pp u.changed?
           u.save.should eq true
 
           u.notification_preferences = JSON.parse(JSON.build do |json|

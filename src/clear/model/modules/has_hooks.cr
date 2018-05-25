@@ -21,14 +21,14 @@ module Clear::Model::HasHooks
       end
 
       def self.after(event_name, &block : HookFunction)
-        EVENTS_AFTER[event_name] = [] of HookFunction unless EVENTS_BEFORE[event_name]?
+        EVENTS_AFTER[event_name] = [] of HookFunction unless EVENTS_AFTER[event_name]?
         EVENTS_AFTER[event_name] << block
       end
 
       def with_triggers(event_name, &block)
-        (EVENTS_BEFORE[event_name]? || [] of HookFunction).each(&.call(self))
+        EVENTS_BEFORE[event_name]?.try(&.each(&.call(self)))
         yield
-        (EVENTS_AFTER[event_name]? || [] of HookFunction).each(&.call(self))
+        EVENTS_AFTER[event_name]?.try(&.each(&.call(self)))
       end
 
     end
