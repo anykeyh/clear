@@ -15,7 +15,6 @@
 
 ## New features
 
-- Bundle with a binary `clear-cli`. Allow you to scaffold projects easily !
 - Add CHANGELOG.md file !
 - Add specs for `find_or_create` function. Fix issue #XXX
 - `model.valid!` return itself and can be chained
