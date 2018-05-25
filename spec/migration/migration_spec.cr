@@ -51,18 +51,18 @@ module MigrationSpec
           columns.dup.where { column_name == "first_name" }.any?.should eq true
           columns.dup.where { column_name == "last_name" }.any?.should eq true
 
-          table.list_indexes.size.should eq 5
+          table.indexes.size.should eq 5
 
           Migration2.new.apply(Clear::Migration::Direction::UP)
           columns = table.columns
           columns.dup.where { column_name == "middle_name" }.any?.should eq true
-          table.list_indexes.size.should eq 6
+          table.indexes.size.should eq 6
 
           # Revert the last migration
           Migration2.new.apply(Clear::Migration::Direction::DOWN)
           columns = table.columns
           columns.dup.where { column_name == "middle_name" }.any?.should eq false
-          table.list_indexes.size.should eq 5
+          table.indexes.size.should eq 5
 
           # Revert the table migration
           Migration1.new.apply(Clear::Migration::Direction::DOWN)

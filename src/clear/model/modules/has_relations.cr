@@ -227,7 +227,7 @@ module Clear::Model::HasRelations
   #   belongs_to user : User, foreign_key: "the_user_id"
   #
   # ```
-  macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int32?)
+  macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int64?)
     {% relation_type = name.type %}
     {% method_name = name.var.id %}
     {% foreign_key = foreign_key || relation_type.stringify.underscore + "_id" %}

@@ -3,5 +3,5 @@ module Clear::Model
 
   class InvalidModelError < Error; end
 
-  class ReadOnlyModel < Error; end
+  class ReadOnlyModelError < Error; end
 end

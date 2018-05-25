@@ -4,20 +4,32 @@ class Clear::Reflection::Table
   include Clear::Model
 
   self.table = "information_schema.tables"
+  self.read_only = true
 
   def self.pkey
-    nil
+    # FIX ME: Clear doesn't allow multi-columns primary key.
+    #   here we have a risk of collision since the primary key
+    #   is a compound (`table_catalog`, `table_schema`, `table_name`)
+    "table_name"
   end
 
   column table_catalog : String
   column table_schema : String
   column table_name : String
+  column table_type : String
 
   scope(:public) { where { table_schema == "public" } }
 
+  scope(:tables_only) { where { table_type == "BASE TABLE" } }
+  scope(:views_only) { where{ table_type == "VIEW" } }
+
   has_many columns : Clear::Reflection::Column, foreign_key: "table_name", primary_key: "table_name"
 
-  def list_indexes : Hash(String, Array(String))
+  # List all the indexes related to the current table.
+  # return an hash where the key is the name of the column
+  # and the value is an array containing all the indexes related to this specific
+  # field.
+  def indexes : Hash(String, Array(String))
     # https://stackoverflow.com/questions/2204058/list-columns-with-indexes-in-postgresql
     # select
     #     t.relname as table_name,
@@ -39,18 +51,23 @@ class Clear::Reflection::Table
     #     i.relname;
     o = {} of String => Array(String)
 
-    req = SQL.select({name: "i.relname", column_name: "a.attname"})
-             .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
-             .where { t.oid == ix.indrelid }
-             .where { i.oid == ix.indexrelid }
-             .where { a.attrelid == t.oid }
-             .where { a.attnum == raw("ANY(ix.indkey)") }
-             .where { t.relkind == "r" }
-             .where { t.relname == self.table_name }
-             .order_by("t.relname", "i.relname")
-             .fetch do |h|
+    SQL.select({
+      index_name: "i.relname",
+      column_name: "a.attname"
+    })
+    .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
+    .where {
+      (t.oid == ix.indrelid) &
+      (i.oid == ix.indexrelid) &
+      (a.attrelid == t.oid) &
+      (a.attnum == raw("ANY(ix.indkey)")) &
+      (t.relkind == "r") &
+      (t.relname == self.table_name)
+    }
+    .order_by("t.relname", "i.relname")
+    .fetch do |h|
       col = h["column_name"].to_s
-      v = h["name"].to_s
+      v = h["index_name"].to_s
 
       arr = o[col]? ? o[col] : (o[col] = [] of String)
 

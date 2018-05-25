@@ -1,9 +1,16 @@
 module Clear::Model::HasSaving
-  getter? read_only : Bool = false
+
+  # Default class-wise read_only? method is `false`
+  macro included # When included into Model
+    macro included # When included into final Model
+      class_property? read_only : Bool = false
+    end
+  end
+
   getter? persisted : Bool
 
   def save
-    raise Clear::Model::ReadOnlyModel.new("The model is read-only") if read_only?
+    raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
 
     with_triggers(:save) do
       if valid?

@@ -73,7 +73,7 @@ module Clear::Model::HasColumns
          type:      _type,
          primary:   primary,
          converter: converter,
-         column_name: (column_name || name.var).to_s,
+         column_name: "#{(column_name || name.var)}",
          presence:  presence,
        } %}
 
@@ -117,7 +117,7 @@ module Clear::Model::HasColumns
     # Set the columns from hash
     def set( h : Hash(Symbol, ::Clear::SQL::Any) )
       {% for name, settings in COLUMNS %}
-        v = h.fetch(:"{{settings[:column_name]}}"){ Column::UNKNOWN }
+        v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
         @{{name}}_column.reset({{settings[:converter]}}.to_column(v)) unless v.is_a?(Column::UnknownClass)
       {% end %}
     end
