@@ -8,5 +8,6 @@ def self.init_db
     Clear::SQL.init(CLEAR_DB_CONFIG["uri"].as_s)
   rescue DB::ConnectionRefused
     puts "FATAL: Connection to the database (#{uri}) has been refused"
+    exit
   end
 end
