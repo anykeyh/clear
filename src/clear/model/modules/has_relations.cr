@@ -85,6 +85,7 @@ module Clear::Model::HasRelations
       qry = {{relation_type}}.query.join(%through_table){
           var("#{%through_table}.#{%through_key}") == var("#{%final_table}.#{%final_pkey}")
         }.where{
+          # FIXME: self.id or self.pkey ?
           var("#{%through_table}.#{%own_key}") == self.id
         }.distinct.select("#{%final_table}.*")
 

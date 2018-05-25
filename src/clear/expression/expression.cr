@@ -133,8 +133,8 @@ class Clear::Expression
                               "It happens when a test is done with values on both sides.\n" +
                               "Maybe a local variable is breaking the expression engine like here:\n" +
                               "id = 1\n" +
-                              "Users.where{ id == nil }\n" +
-                              "In this case, please use `raw(\"id == nil\")` to allow the expression.")
+                              "Users.where{ id == nil }\n\n" +
+                              "In this case, please use `raw(\"id IS NULL\")` to allow the expression.")
       # node = Node::Variable.new(node ? "TRUE" : "FALSE")
     else
       raise ArgumentError.new("Node is incorrect, it must be an ExpressionNode")
@@ -148,7 +148,7 @@ class Clear::Expression
   def self.where(&block) : Node
     expression_engine = self.new
 
-    node = to_node(with expression_engine yield)
+    to_node(with expression_engine yield)
   end
 
   # Not operator
