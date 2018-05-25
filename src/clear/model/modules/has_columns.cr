@@ -136,7 +136,10 @@ module Clear::Model::HasColumns
       out
     end
 
-    def validate_field_presence
+    # For each column, ensure than when needed the column has present
+    # information into it.
+    # This method is called on validation.
+    def validate_fields_presence
       {% for name, settings in COLUMNS %}
         unless persisted?
           if @{{name}}_column.failed_to_be_present?
@@ -146,14 +149,17 @@ module Clear::Model::HasColumns
       {% end %}
     end
 
-
     # Reset the `changed?` flag on all columns
+    #
+    # The model behave like its not dirty anymore
+    # and call to save would apply no changes.
     def clear_change_flags
       {% for name, settings in COLUMNS %}
         @{{name}}_column.clear_change_flag
       {% end %}
     end
 
+    # Return a hash version of the columns of this model.
     def to_h : Hash(String, ::Clear::SQL::Any)
       out = {} of String => ::Clear::SQL::Any
 
@@ -166,6 +172,8 @@ module Clear::Model::HasColumns
       out
     end
 
+    # Return `true` if the model is dirty (e.g. one or more fields 
+    #   have been changed.). Return `false` otherwise.
     def changed?
       {% for name, settings in COLUMNS %}
           return true if @{{name}}_column.changed?
@@ -174,6 +182,7 @@ module Clear::Model::HasColumns
       return false
     end
 
+    # Set the model fields from hash
     def set( h : Hash(String, ::Clear::SQL::Any) )
       {% for name, settings in COLUMNS %}
         if h.has_key?({{settings[:column_name]}})

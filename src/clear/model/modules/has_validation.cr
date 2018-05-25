@@ -45,7 +45,7 @@ module Clear::Model::HasValidation
     clear_errors
 
     with_triggers(:validate) {
-      validate_field_presence # < This is built by the column system
+      validate_fields_presence # < This is built by the column system using Union type !!
       validate
     }
 
