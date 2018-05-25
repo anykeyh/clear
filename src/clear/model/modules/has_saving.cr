@@ -40,7 +40,7 @@ module Clear::Model::HasSaving
     return false unless persisted?
 
     with_triggers(:delete) do
-      Clear::SQL::DeleteQuery.new.from(self.class.table).where({id: id}).execute
+      Clear::SQL::DeleteQuery.new.from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute
 
       @persisted = false
       clear_change_flags
