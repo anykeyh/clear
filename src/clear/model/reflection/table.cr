@@ -6,16 +6,9 @@ class Clear::Reflection::Table
   self.table = "information_schema.tables"
   self.read_only = true
 
-  def self.pkey
-    # FIX ME: Clear doesn't allow multi-columns primary key.
-    #   here we have a risk of collision since the primary key
-    #   is a compound (`table_catalog`, `table_schema`, `table_name`)
-    "table_name"
-  end
-
   column table_catalog : String
   column table_schema : String
-  column table_name : String
+  column table_name : String, primary: true
   column table_type : String
 
   scope(:public) { where { table_schema == "public" } }
