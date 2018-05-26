@@ -58,7 +58,7 @@ module ModelSpec
       end
 
       create_table "model_user_infos" do |t|
-        t.references to: "model_users", name: "user_id", on_delete: "cascade"
+        t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
 
         t.int64 "registration_number", index: true
 
@@ -197,11 +197,24 @@ module ModelSpec
           u.id.should eq(1)
 
           u = User.query.find_or_create({last_name: "Henry"}) do |u|
-            u.first_name = "Thierry" #<< This should not be triggered since we found the row
+            u.first_name = "King" #<< This should not be triggered since we found the row
           end
           u.first_name.should eq("Thierry")
           u.last_name.should eq("Henry")
           u.id.should eq(1)
+        end
+      end
+
+      it "can set back a field to nil" do
+        temporary do
+          reinit
+
+          u = User.create({first_name: "Rudolf"})
+
+          ui = UserInfo.create({registration_number: 123, user_id: u.id})
+
+          ui.user_id = nil #Remove user_id, just to see what's going on !
+          ui.save!
         end
       end
 

@@ -3,7 +3,6 @@ module Clear::Model::HasTimestamps
     column( updated_at : Time )
     column( created_at : Time )
 
-    puts "HERE?"
     before(:validate) do |model|
       model = model.as(self)
 
@@ -14,7 +13,6 @@ module Clear::Model::HasTimestamps
       end
     end
 
-    puts "OR HERE?"
     after(:validate) do |model|
       model = model.as(self)
 
@@ -25,7 +23,6 @@ module Clear::Model::HasTimestamps
       end
 
     end
-    puts "MEH?"
 
   end
 end

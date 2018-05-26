@@ -102,6 +102,10 @@ class Clear::Model::Column(T)
     @old_value = UNKNOWN
   end
 
+  def dirty!
+    @changed = true
+  end
+
   def clear_change_flag
     @changed = false
   end

@@ -84,6 +84,10 @@ class Clear::Expression
     x.to_s
   end
 
+  def self.safe_literal(x : Nil) : String
+    "NULL"
+  end
+
   def self.safe_literal(x : String) : String
     "'" + x.gsub(/\'/, "''") + "'"
   end
