@@ -17,6 +17,10 @@ module ReflectionSpec
           expect_raises Clear::Model::ReadOnlyModelError do
             first_table.save
           end
+
+          expect_raises Clear::Model::ReadOnlyModelError do
+            first_table.columns.first!.save
+          end
         end
       end
     end

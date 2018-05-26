@@ -1,6 +1,6 @@
 require "spec"
 
-require "../../src/clear/sql/sql"
+require "../spec_helper"
 
 module InsertSpec
   extend self

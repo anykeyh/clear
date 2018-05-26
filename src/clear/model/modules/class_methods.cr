@@ -2,6 +2,7 @@ module Clear::Model::ClassMethods
   macro included # When included into Model
     macro included # When included into final Model
       class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
+      class_property pkey : String = "id"
 
       class Collection < Clear::Model::CollectionBase(\{{@type}}); end
 
@@ -47,11 +48,6 @@ module Clear::Model::ClassMethods
         mdl = self.new(x)
         mdl.save!
         mdl
-      end
-
-      # Default primary query is "id"
-      def self.pkey : String
-        "id"
       end
 
       def self.columns

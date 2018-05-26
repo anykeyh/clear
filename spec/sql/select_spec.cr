@@ -1,6 +1,6 @@
 require "spec"
 
-require "../../src/clear/sql/sql"
+require "../spec_helper"
 
 module SelectSpec
   extend self
@@ -118,6 +118,23 @@ module SelectSpec
         end
       end
 
+      describe "cte" do
+        it "can build request with CTE" do
+          # Simple CTE
+          cte = select_request.from(:users_info).where("x > 10")
+          sql = select_request.from(:ui).with_cte("ui",cte).to_sql
+          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE x > 10) SELECT * FROM ui"
+
+          #Complex CTE
+          cte1 = select_request.from(:users_info).where{a == b}
+          cte2 = select_request.from(:just_another_table).where{ users_infos.x == just_another_table.w }
+          sql = select_request.with_cte({ui: cte1, at: cte2}).from(:at).to_sql
+          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE (a = b)),"+
+                        " at AS (SELECT * FROM just_another_table WHERE ("+
+                        "users_infos.x = just_another_table.w)) SELECT * FROM at"
+        end
+      end
+
       describe "the WHERE clause" do
         context "using simple engine" do
           it "can use simple equals" do
@@ -204,7 +221,8 @@ module SelectSpec
 
           it "can stack with `AND` operator" do
             now = Time.now
-            r = select_request.from(:users).where { users.id == nil }.where { var("users.updated_at") >= now }
+            r = select_request.from(:users).where { users.id == nil }.where {
+              var("users.updated_at") >= now }
             r.to_sql.should eq "SELECT * FROM users WHERE (users.id IS NULL) " +
                                "AND (users.updated_at >= #{Clear::Expression[now]})"
           end
@@ -229,7 +247,8 @@ module SelectSpec
 
           it "can use & as AND and | as OR" do
             r = select_request.from(:users).where {
-              ((raw("users.id") > 100) & (raw("users.visible") == true)) | (raw("users.role") == "superadmin")
+              ((raw("users.id") > 100) & (raw("users.visible") == true)) |
+                (raw("users.role") == "superadmin")
             }
 
             r.to_sql.should eq "SELECT * FROM users WHERE (((users.id > 100) " +

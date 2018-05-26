@@ -20,6 +20,7 @@ module Clear::Model
     @cached_result : Array(T)?
 
     def initialize(
+      @cte = {} of String => Clear::SQL::Query::CTE::CTEAuthorized,
       @columns = [] of SQL::Column,
       @froms = [] of SQL::From,
       @joins = [] of SQL::Join,
@@ -214,6 +215,8 @@ module Clear::Model
     end
 
     def first : T?
+      pp T
+      pp T.pkey
       order_by("#{T.pkey} ASC") unless T.pkey.nil?
 
       limit(1).fetch do |hash|

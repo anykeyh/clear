@@ -6,14 +6,10 @@ class Clear::Reflection::Column
   self.table = "information_schema.columns"
   self.read_only = true
 
-  def self.pkey
-    nil
-  end
-
   column table_catalog : String
   column table_schema : String
   column table_name : String
-  column column_name : String
+  column column_name : String, primary: true
 
   belongs_to table : Clear::Reflection::Table, foreign_key: "table_name", key_type: String
   # def table : Clear::Reflection::Table

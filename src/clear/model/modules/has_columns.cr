@@ -100,9 +100,7 @@ module Clear::Model::HasColumns
       end
 
       {% if settings[:primary] %}
-        def self.pkey
-          "{{name}}"
-        end
+        @@pkey = "{{name}}"
 
         def pkey
           @{{name}}_column.value

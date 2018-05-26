@@ -2,6 +2,7 @@ module Clear::SQL::SelectBuilder
   getter havings : Array(Clear::Expression::Node)
 
   def initialize(@is_distinct = false,
+                 @cte = {} of String => Query::CTE::CTEAuthorized,
                  @columns = [] of SQL::Column,
                  @froms = [] of SQL::From,
                  @joins = [] of SQL::Join,
@@ -27,6 +28,7 @@ module Clear::SQL::SelectBuilder
   include Query::Lock
   include Query::Fetch
   include Query::BeforeQuery
+  include Query::CTE
 
   def dup : self
     self.class.new(columns: @columns.dup,
@@ -43,7 +45,8 @@ module Clear::SQL::SelectBuilder
   end
 
   def to_sql : String
-    [print_columns,
+    [print_ctes,
+     print_columns,
      print_froms,
      print_joins,
      print_wheres,

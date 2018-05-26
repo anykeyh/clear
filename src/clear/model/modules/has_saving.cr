@@ -21,11 +21,8 @@ module Clear::Model::HasSaving
           if h.any?
             Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
           end
-
         else
-          Clear::SQL.insert_into(self.class.table, to_h).returning(self.class.pkey).to_sql
           @persisted = true
-
           hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute
           self.set(hash)
         end
