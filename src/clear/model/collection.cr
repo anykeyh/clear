@@ -223,5 +223,21 @@ module Clear::Model
 
       return nil
     end
+
+    def last! : T
+      last.not_nil!
+    end
+
+    def last : T?
+      order_by("#{T.pkey} DESC")
+
+      limit(1).fetch do |hash|
+        return T.factory.build(hash, persisted: true, cache: @cache)
+      end
+
+      return nil
+    end
+
+
   end
 end

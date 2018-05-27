@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module ModelSpec
+module PolymorphismSpec
   abstract class AbstractClass
     include Clear::Model
 
@@ -46,18 +46,22 @@ module ModelSpec
     end
   end
 
+  def self.reinit
+    reinit_migration_manager
+    PolymorphicMigration4321.new.apply(Clear::Migration::Direction::UP)
+  end
+
   describe "Clear::Model::IsPolymorphic" do
     it "has a field telling you if the model class is polymorphic" do
-      ModelSpec::AbstractClass.polymorphic?.should eq true
-      ModelSpec::ConcreteClass1.polymorphic?.should eq true
-      ModelSpec::ConcreteClass2.polymorphic?.should eq true
-      ModelSpec::OtherModel.polymorphic?.should eq false
+      AbstractClass.polymorphic?.should eq true
+      ConcreteClass1.polymorphic?.should eq true
+      ConcreteClass2.polymorphic?.should eq true
+      OtherModel.polymorphic?.should eq false
     end
 
     it "properly save and load a concrete model" do
       temporary do
-        reinit_migration_manager
-        PolymorphicMigration4321.new.apply(Clear::Migration::Direction::UP)
+        reinit
 
         c = ConcreteClass1.new
         c.integer_value = 1
@@ -66,6 +70,25 @@ module ModelSpec
         AbstractClass.query.count.should eq 1
         AbstractClass.query.first!.is_a?(ConcreteClass1).should eq true
         AbstractClass.query.first!.print_value.should eq "1"
+      end
+    end
+
+    it "filter the subclass using the type column" do
+      temporary do
+        reinit
+
+        5.times do
+          ConcreteClass1.create({integer_value: 1})
+        end
+
+        10.times do
+          ConcreteClass2.create({string_value: "Yey"})
+        end
+
+        ConcreteClass1.query.count.should eq 5
+        ConcreteClass2.query.count.should eq 10
+        AbstractClass.query.count.should eq 15
+
       end
     end
 

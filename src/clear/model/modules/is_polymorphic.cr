@@ -38,6 +38,7 @@ module Clear::Model::IsPolymorphic
 
   # Define a polymorphic factory, if the model is tagged as polymorphic
   macro polymorphic(*class_list, through = "type")
+    {% SETTINGS[:has_factory] = true %}
     {% if class_list.size == 0 %}
       {% raise "Please setup subclass list for polymorphism." %}
     {% end %}
@@ -48,6 +49,21 @@ module Clear::Model::IsPolymorphic
       model = model.as(self)
       model.{{through.id}} = model.class.name
     end
+
+    # Subclasses are refined using a default scope
+    # to filter by type.
+    macro inherited
+      def self.query
+        Collection.new.from(table).where{ {{through.id}} == self.name }
+      end
+    end
+
+    # Base class can be refined too, only if the baseclass is not abstract.
+    {% unless @type.abstract? %}
+      def self.query
+        Collection.new.from(table).where{ {{through.id}} == self.name }
+      end
+    {% end %}
 
     def self.polymorphic?
       true
@@ -74,7 +90,6 @@ module Clear::Model::IsPolymorphic
       end
     end
 
-    {% SETTINGS[:has_factory] = true; %}
     @@factory = Factory.new({{through}})
   end
 
