@@ -69,7 +69,7 @@ module Clear::Model::IsPolymorphic
         when Nil
           raise "No data in column #{@through}, impossible to instantiate !"
         else
-          raise "Unknown class: #{h[@through]?}"
+          raise "Unknown class: #{h[@through]}"
         end
       end
     end

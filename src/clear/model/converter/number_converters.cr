@@ -1,5 +1,7 @@
+require "pg"
+
 module Clear::Model::Converter
-  # Macro used to generate fast all conversion for
+  # Macro used to generate conveniently all conversion for
   # numbers (different bitsize, signed/unsigned etc...)
   macro number_converter(t)
     class ::Clear::Model::Converter::{{t}}Converter

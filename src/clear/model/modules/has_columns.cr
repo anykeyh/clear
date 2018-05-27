@@ -6,19 +6,17 @@ module Clear::Model::HasColumns
 
   macro included # In Clear::Model
     macro included # In RealModel
-      macro inherited # In case the model is polymorph !
+      COLUMNS = {} of Nil => Nil
+      # Attributes, used when fetch_columns is true
+      getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
+
+      # Special reinitialization if we detect inheritance (meaning polymorphism)
+      macro inherited
         # Reset COLUMNS constants
         COLUMNS = {} of Nil => Nil
         # Table is same than parent table
         self.table = \\{{@type.ancestors.first}}.table
       end
-    end
-
-    macro included
-      COLUMNS = {} of Nil => Nil
-
-      # Attributes, used when fetch_columns is true
-      getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
     end
   end
 

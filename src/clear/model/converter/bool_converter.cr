@@ -1,13 +1,12 @@
 require "pg"
 
 # Convert the column to a boolean
-# Boolean are true if:
+# If value is not boolean (e.g. string or number), rules of `falsey` 
+# value is used:
 #
-# They are boolean and true (obviously)
-# They are number and not `0`
-# They are string and downcased value is not `f`, `false`, empty or `0`
+# falsey's values are:
+# false, null, 0, "0", "" (empty string), "false", "f"
 # Anything else is considered true
-#
 class Clear::Model::Converter::BoolConverter
   def self.to_column(x : ::Clear::SQL::Any) : Bool?
     case x
