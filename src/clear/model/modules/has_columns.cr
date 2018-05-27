@@ -101,7 +101,6 @@ module Clear::Model::HasColumns
   # Used internally to gather the columns
   macro __generate_columns
     {% for name, settings in COLUMNS %}
-      {% pp "#{name} #{@type}" %}
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
       @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}",
@@ -144,8 +143,6 @@ module Clear::Model::HasColumns
     def update_h : Hash(String, ::Clear::SQL::Any)
       o = super
 
-      pp o
-
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined? &&
            @{{name}}_column.changed?
@@ -162,7 +159,6 @@ module Clear::Model::HasColumns
     def validate_fields_presence
       {% for name, settings in COLUMNS %}
         unless persisted?
-          puts "Check for {{settings[:column_name].id}} @ #{self.class.name}"
           if @{{name}}_column.failed_to_be_present?
             add_error({{name.stringify}}, "must be present")
           end

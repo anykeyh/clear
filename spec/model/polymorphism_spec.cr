@@ -6,8 +6,8 @@ module ModelSpec
 
     self.table = "polymorphs"
 
-    polymorphic   ::ModelSpec::ConcreteClass1,
-                  ::ModelSpec::ConcreteClass2,
+    polymorphic   ConcreteClass1,
+                  ConcreteClass2,
                   through: "type"
 
     abstract def print_value : String

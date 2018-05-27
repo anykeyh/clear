@@ -215,8 +215,6 @@ module Clear::Model
     end
 
     def first : T?
-      pp T
-      pp T.pkey
       order_by("#{T.pkey} ASC") unless T.pkey.nil?
 
       limit(1).fetch do |hash|
