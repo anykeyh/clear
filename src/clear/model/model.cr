@@ -15,6 +15,7 @@ module Clear::Model
   include Clear::Model::HasRelations
   include Clear::Model::HasScope
   include Clear::Model::ClassMethods
+  include Clear::Model::IsPolymorphic
 
   getter cache : Clear::Model::QueryCache?
 
@@ -26,6 +27,7 @@ module Clear::Model
       "It would behave very strangely otherwise." unless @type < Reference %}
 
     getter cache : Clear::Model::QueryCache?
+
 
     def initialize(@persisted = false)
     end

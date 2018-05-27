@@ -73,7 +73,7 @@ module ModelSpec
   end
 
   def self.reinit
-    Clear::Migration::Manager.instance.reinit!
+    reinit_migration_manager
     ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
   end
 

@@ -1,6 +1,19 @@
 module Clear::Model::ClassMethods
   macro included # When included into Model
     macro included # When included into final Model
+      macro inherited #Polymorphism
+        macro finished
+        __generate_columns
+        __init_default_factory
+        end
+      end
+
+      macro finished
+        __generate_columns
+        __init_default_factory
+      end
+
+
       class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
       class_property pkey : String = "id"
 
@@ -18,14 +31,24 @@ module Clear::Model::ClassMethods
         find(x).not_nil!
       end
 
+      # Build methods are used as factory and can
+      #   be redefined in case of polymorphism
+      def self.build : self
+        mdl = self.new
+      end
+
+      def self.build(x) : self
+        mdl = self.new(x)
+      end
+
       def self.create : self
-          mdl = self.new
+          mdl = build
           mdl.save
           mdl
       end
 
       def self.create! : self
-          mdl = self.new
+          mdl = build
           mdl.save!
           mdl
       end
@@ -39,23 +62,19 @@ module Clear::Model::ClassMethods
       end
 
       def self.create(x : NamedTuple) : self
-        mdl = self.new(x)
+        mdl = build(x)
         mdl.save
         mdl
       end
 
       def self.create!(x : NamedTuple) : self
-        mdl = self.new(x)
+        mdl = build(x)
         mdl.save!
         mdl
       end
 
       def self.columns
         @@columns
-      end
-
-      macro finished
-        __generate_columns
       end
     end
   end

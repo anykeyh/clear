@@ -85,7 +85,7 @@ module Clear::Model
         cr.each(&block)
       else
         fetch(fetch_all: true) do |hash|
-          yield(T.new(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+          yield(T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
         end
       end
     end
@@ -103,18 +103,18 @@ module Clear::Model
         cr.each(&block)
       else
         self.fetch_with_cursor(count: batch) do |hash|
-          yield(T.new(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+          yield(T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
         end
       end
     end
 
     def build : T
       pp @tags
-      T.new(@tags, persisted: false)
+      T.factory.build(@tags, persisted: false)
     end
 
     def build(x : NamedTuple) : T
-      T.new(@tags.merge(x.to_h), persisted: false)
+      T.factory.build(@tags.merge(x.to_h), persisted: false)
     end
 
     def any?
@@ -198,7 +198,7 @@ module Clear::Model
       tuple.map { |k, v| str_hash[k.to_s] = v }
       str_hash.merge!(@tags)
 
-      r = T.new(str_hash)
+      r = T.factory.build(str_hash)
       yield(r)
 
       r
@@ -220,7 +220,7 @@ module Clear::Model
       order_by("#{T.pkey} ASC") unless T.pkey.nil?
 
       limit(1).fetch do |hash|
-        return T.new(hash, persisted: true, cache: @cache)
+        return T.factory.build(hash, persisted: true, cache: @cache)
       end
 
       return nil

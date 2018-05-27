@@ -21,7 +21,6 @@ class Clear::CLI::Migration < Admiral::Command
     define_help description: "Downgrade your database to a specific migration version"
 
     def run
-      puts "down?"
       Clear::Migration::Manager.instance.down arguments.migration_number
     end
   end

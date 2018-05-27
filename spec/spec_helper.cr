@@ -15,6 +15,10 @@ def initdb
   {% end %}
 end
 
+def reinit_migration_manager
+    Clear::Migration::Manager.instance.reinit!
+end
+
 def temporary(&block)
   Clear::SQL.with_savepoint do
     yield

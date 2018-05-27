@@ -3,11 +3,21 @@ require "pg"
 
 # This module declare all the methods and macro related to columns in `Clear::Model`
 module Clear::Model::HasColumns
-  macro included
+
+  macro included # In Clear::Model
+    macro included # In RealModel
+      macro inherited # In case the model is polymorph !
+        # Reset COLUMNS constants
+        COLUMNS = {} of Nil => Nil
+        # Table is same than parent table
+        self.table = \\{{@type.ancestors.first}}.table
+      end
+    end
+
     macro included
       COLUMNS = {} of Nil => Nil
 
-      # Attributes, used if fetch_columns is true
+      # Attributes, used when fetch_columns is true
       getter attributes : Hash(String, ::Clear::SQL::Any) = {} of String => ::Clear::SQL::Any
     end
   end
@@ -23,6 +33,15 @@ module Clear::Model::HasColumns
   # Access is read only and updating the model columns will not apply change to theses columns.
   def []?(x) : ::Clear::SQL::Any
     attributes[x]?
+  end
+
+
+  def update_h
+    {} of String => ::Clear::SQL::Any
+  end
+
+  def to_h
+    {} of String => ::Clear::SQL::Any
   end
 
   # Bind a column to the model.
@@ -82,6 +101,7 @@ module Clear::Model::HasColumns
   # Used internally to gather the columns
   macro __generate_columns
     {% for name, settings in COLUMNS %}
+      {% pp "#{name} #{@type}" %}
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
       @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}",
@@ -122,16 +142,18 @@ module Clear::Model::HasColumns
 
     # Generate the hash for update request (like during save)
     def update_h : Hash(String, ::Clear::SQL::Any)
-      out = {} of String => ::Clear::SQL::Any
+      o = super
+
+      pp o
 
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined? &&
            @{{name}}_column.changed?
-          out[{{settings[:column_name]}}] = {{settings[:converter]}}.to_db(@{{name}}_column.value)
+          o[{{settings[:column_name]}}] = {{settings[:converter]}}.to_db(@{{name}}_column.value)
         end
       {% end %}
 
-      out
+      o
     end
 
     # For each column, ensure than when needed the column has present
@@ -140,6 +162,7 @@ module Clear::Model::HasColumns
     def validate_fields_presence
       {% for name, settings in COLUMNS %}
         unless persisted?
+          puts "Check for {{settings[:column_name].id}} @ #{self.class.name}"
           if @{{name}}_column.failed_to_be_present?
             add_error({{name.stringify}}, "must be present")
           end
@@ -159,7 +182,7 @@ module Clear::Model::HasColumns
 
     # Return a hash version of the columns of this model.
     def to_h : Hash(String, ::Clear::SQL::Any)
-      out = {} of String => ::Clear::SQL::Any
+      out = super
 
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined?
