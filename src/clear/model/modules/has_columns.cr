@@ -206,5 +206,24 @@ module Clear::Model::HasColumns
       {% end %}
     end
 
+    def to_json(json : JSON::Builder)
+      json.object do
+        {% for name, settings in COLUMNS %}
+          json.field "{{name}}", @{{name}}_column.value
+        {% end %}
+      end
+    end
+
+    def to_s
+      String.build do |str|
+        str << typeof(self).to_s << "("
+        {% for name, settings in COLUMNS %}
+          str << "@{{name}}=" << @{{name}}_column.value.to_s << ","
+        {% end %}
+        str.back(1)
+        str << ")"
+      end
+    end
+
   end
 end
