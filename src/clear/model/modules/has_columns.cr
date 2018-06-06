@@ -117,7 +117,7 @@ module Clear::Model::HasColumns
       end
 
       {% if settings[:primary] %}
-        @@pkey = "{{name}}"
+        class_property pkey : String = "{{name}}"
 
         def pkey
           @{{name}}_column.value

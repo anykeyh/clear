@@ -107,6 +107,19 @@ module ModelSpec
         end
       end
 
+      it "should not try to update the model if there's not update" do
+        temporary do
+          reinit
+          u = User.new({id: 1})
+          u.save!
+          u.id = 2
+          u.update_h.should eq({"id" => 2})
+          u.id = 1
+          u.update_h.should eq({} of String => ::DB::Any) # no more change, because id is back to the same !
+          u.save! #Nothing should happens
+        end
+      end
+
       it "can save the model" do
         temporary do
           reinit

@@ -34,11 +34,11 @@ module Clear::Model::ClassMethods
       # Build methods are used as factory and can
       #   be redefined in case of polymorphism
       def self.build : self
-        mdl = self.new
+        self.new
       end
 
-      def self.build(x) : self
-        mdl = self.new(x)
+      def self.build(x : NamedTuple) : self
+        self.new(x)
       end
 
       def self.create : self

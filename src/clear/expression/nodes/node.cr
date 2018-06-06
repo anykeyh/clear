@@ -56,6 +56,10 @@ abstract class Clear::Expression::Node
     Node::InArray.new(self, arr.map { |x| Literal.new(x) })
   end
 
+  def in?(tuple : Tuple(*T)) forall T
+    in?(tuple.to_a)
+  end
+
   def in?(request : ::Clear::SQL::SelectBuilder)
     Node::InSelect.new(self, request)
   end

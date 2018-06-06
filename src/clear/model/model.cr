@@ -19,6 +19,10 @@ module Clear::Model
 
   getter cache : Clear::Model::QueryCache?
 
+  def pkey
+    raise "Please implement primary key for `#{self.class.name}`"
+  end
+
   # We use here included for errors purpose.
   # The overload are shown in this case, but not in the case the constructors
   # are directly defined without the included block.
