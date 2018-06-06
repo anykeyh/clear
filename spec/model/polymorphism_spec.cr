@@ -95,4 +95,3 @@ module PolymorphismSpec
   end
 
 end
-

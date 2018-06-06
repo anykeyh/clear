@@ -58,4 +58,3 @@ module ScopeSpec
   end
 
 end
-
