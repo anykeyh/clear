@@ -9,11 +9,20 @@
 
 ## Bugfixes
 
+- Patching segfault caused by weird architecture choice of mine over the `pkey` method.
 - Fix issue with delete if the primary key is not `id`
 - Add watchdog to disallow inclusion of `Clear::Model` on struct objects, which
-  is not intended to work
+  is not intended to work.
+- Issue #8: `find_or_create` and generally update without any field failed to generate good SQL.
 
-## New features
+### Small features
+
+- Add CHANGELOG.md file !
+- `model.valid!` return itself and can be chained
+- Issue #10: `scope` allow block with multiple arguments.
+- Add tuple support for `in?` method in Expression Engine.
+
+## Big features
 
 ### Polymorphism (experimental)
 
@@ -48,7 +57,7 @@ end
 class TextDocument < Document
   def to_html
     <<-HTML
-      <p src='#{content}'></p>
+      <p>#{content}</p>
     HTML
   end
 
@@ -65,10 +74,3 @@ Document.query.all.each do |document|
 end
 
 ```
-
-
-### Others features
-
-- Add CHANGELOG.md file !
-- Add specs for `find_or_create` function. Fix issue #8
-- `model.valid!` return itself and can be chained

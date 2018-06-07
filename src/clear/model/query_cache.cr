@@ -1,8 +1,7 @@
-# This is a fire-and-forget cache
-#
-# This cache can be plugged on model instance (one cache for a set of models)
-# ... (TODO: explain and document)
+# This is a "fire-and-forget" cache used to cache over associations to
+# prevent N+1 queries
 class Clear::Model::QueryCache
+  # :nodoc:
   record CacheKey, relation_name : String, relation_value : Clear::SQL::Any, relation_model : String
 
   @cache : Hash(CacheKey, Pointer(Void)) = {} of CacheKey => Pointer(Void)
@@ -12,16 +11,18 @@ class Clear::Model::QueryCache
     query
   end
 
+  # Flag the caching as active on a certain model.
   def active(relation_name)
     @cache_activation.add(relation_name)
   end
 
+  # Check whether the cache is active on a certain association.
   def active?(relation_name)
     @cache_activation.includes?(relation_name)
   end
 
   # Try to hit the cache. If an array is found, it will be returned.
-  # Otherwise, the block will be called and must return an array.
+  # Otherwise, empty array is returned.
   def hit(relation_name, relation_value, klass : T.class) : Array(T) forall T
     @cache.fetch CacheKey.new(relation_name, relation_value, T.name) do
       [] of T

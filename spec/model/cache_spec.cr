@@ -30,7 +30,23 @@ module CacheSpec
           end
         end
 
-        it "can be called in chain on the three relations" do
+        it "can be chained" do
+          temporary do
+            Clear::Model::QueryCache.reset_counter
+            User.query.with_posts(&.with_category).each do |user|
+              user.posts.each do |p|
+                case p.id
+                when 301, 302
+                  (p.category.not_nil!.id == 201).should eq(true)
+                when 303, 304
+                  (p.category.not_nil!.id == 202).should eq(true)
+                end
+              end
+            end
+          end
+        end
+
+        it "can be called in chain on the through relations" do
           temporary do
             # Relation belongs_to
             Clear::Model::QueryCache.reset_counter
