@@ -26,7 +26,7 @@ module Clear::Model::HasHooks
       end
 
       def with_triggers(event_name, &block)
-        EVENTS_BEFORE[event_name]?.try &.each &.call self
+        EVENTS_BEFORE[event_name]?.try &.reverse.try(&.each &.call self)
         yield
         EVENTS_AFTER[event_name]?.try &.each &.call self
       end

@@ -3,8 +3,15 @@
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 
 Clear is an ORM built for PostgreSQL and Crystal.
-I do not want to make it compatible with others DBMS, so I can offers
-better experience and connect to the advanced features of PostgreSQL.
+
+## Resources
+
+|   |   |
+|---|---|
+| Wiki Guide      | https://github.com/anykeyh/clear/wiki |
+| Simple Example  | https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr |
+| Documentation   | https://anykeyh.github.io/clear/ |
+| Source code     | https://github.com/anykeyh/clear |
 
 ## Features
 

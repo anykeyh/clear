@@ -16,9 +16,13 @@ module Clear::Model
     @offset : Int64?
     @lock : String?
 
+    # :nodoc:
     @cache : Clear::Model::QueryCache
+
+    # :nodoc:
     @cached_result : Array(T)?
 
+    # :nodoc:
     def initialize(
       @cte = {} of String => Clear::SQL::Query::CTE::CTEAuthorized,
       @columns = [] of SQL::Column,
@@ -273,7 +277,8 @@ module Clear::Model
 
     # Get the last row from the collection query.
     # if not found, return `nil`
-    # TODO: NOT WORKING YET. Must handle order_by differently
+    # TODO: NOT WORKING YET IF ORDER BY MANUALLY SET.
+    # Must handle order_by clauses differently
     def last : T?
       order_by("#{T.pkey} DESC") unless T.pkey.nil? || order_bys.any?
 
