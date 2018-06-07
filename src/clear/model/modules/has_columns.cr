@@ -122,6 +122,10 @@ module Clear::Model::HasColumns
         def pkey
           @{{name}}_column.value
         end
+
+        def pkey_column
+          @{{name}}_column
+        end
       {% end %}
     {% end %}
 

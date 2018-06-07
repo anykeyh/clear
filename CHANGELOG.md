@@ -14,6 +14,7 @@
 - Add watchdog to disallow inclusion of `Clear::Model` on struct objects, which
   is not intended to work.
 - Issue #8: `find_or_create` and generally update without any field failed to generate good SQL.
+- Issue with `belongs_to` assignment fixed.
 
 ### Small features
 
@@ -21,6 +22,7 @@
 - `model.valid!` return itself and can be chained
 - Issue #10: `scope` allow block with multiple arguments.
 - Add tuple support for `in?` method in Expression Engine.
+- Creation of the Wiki manual
 
 ## Big features
 

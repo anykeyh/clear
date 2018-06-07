@@ -18,12 +18,12 @@ module Clear::Model::HasRelations
   # ```
   # model Passport
   #   column id : Int32, primary : true
-  #   has_one user : User It assumes the table `users` have a field `passport_id`
+  #   has_one user : User It assumes the table `users` have a column `passport_id`
   # end
   #
   # model Passport
   #   column id : Int32, primary : true
-  #   has_one owner : User # It assumes the table `users` have a field `passport_id`
+  #   has_one owner : User # It assumes the table `users` have a column `passport_id`
   # end
   # ```
   macro has_one(name, foreign_key = nil, primary_key = nil)
@@ -233,17 +233,22 @@ module Clear::Model::HasRelations
     {% foreign_key = foreign_key || relation_type.stringify.underscore + "_id" %}
 
     column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}
+    getter _cached_{{method_name}} : {{relation_type}}?
 
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type}}?
-
-      cache = @cache
-
-      if cache && cache.active? "{{method_name}}"
-        cache.hit("{{method_name}}", self.{{foreign_key.id}}, {{relation_type}}).first?
+      if @cached_{{method_name}}
+        @cached_{{method_name}}
       else
-        {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
+        cache = @cache
+
+        if cache && cache.active? "{{method_name}}"
+          @cached_{{method_name}} = cache.hit("{{method_name}}", self.{{foreign_key.id}}, {{relation_type}}).first?
+        else
+          @cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
+        end
+
       end
     end
 
@@ -252,9 +257,31 @@ module Clear::Model::HasRelations
     end
 
     def {{method_name}}=(x : {{relation_type}}?)
-      @{{foreign_key.id}}_field.value = x.pkey
+      if x.persisted?
+        raise "#{x.pkey_column.name} must be defined when assigning a belongs_to relation." unless x.pkey_column.defined?
+        @cached_{{method_name}} = x
+        @{{foreign_key.id}}_column.value = x.pkey
+      else
+        @cached_{{method_name}} = x
+      end
     end
 
+    # :nodoc:
+    # save the belongs_to model first if needed
+    def _bt_save_{{method_name}}
+      c = @cached_{{method_name}}
+      return if c.nil?
+
+      unless c.persisted?
+        if c.save
+          @{{foreign_key.id}}_column.value = c.pkey
+        else
+          add_error("{{method_name}}", c.print_errors)
+        end
+      end
+    end
+
+    before(:validate, _bt_save_{{method_name}})
     # Adding the eager loading
     class Collection
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self

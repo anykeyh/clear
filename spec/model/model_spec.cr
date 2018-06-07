@@ -6,9 +6,13 @@ module ModelSpec
 
     column id : Int32, primary: true, presence: false
 
-    column title : String?
+    column title : String
 
-    belongs_to user : User
+    def validate
+      ensure_than( title, "is not empty", &.size.>(0) )
+    end
+
+    belongs_to user : User, key_type: Int32?
 
     self.table = "models_posts"
   end
@@ -18,7 +22,7 @@ module ModelSpec
 
     column id : Int32, primary: true, presence: false
 
-    belongs_to user : User
+    belongs_to user : User, key_type: Int32?
     column registration_number : Int64
 
     self.table = "model_user_infos"
@@ -29,7 +33,7 @@ module ModelSpec
 
     column id : Int32, primary: true, presence: false
 
-    column first_name : String?
+    column first_name : String
     column last_name : String?
     column middle_name : String?
 
@@ -110,7 +114,7 @@ module ModelSpec
       it "should not try to update the model if there's not update" do
         temporary do
           reinit
-          u = User.new({id: 1})
+          u = User.new({id: 1, first_name: "x"})
           u.save!
           u.id = 2
           u.update_h.should eq({"id" => 2})
@@ -123,11 +127,28 @@ module ModelSpec
       it "can save the model" do
         temporary do
           reinit
-          u = User.new({id: 1})
+          u = User.new({id: 1, first_name: "x"})
           u.notification_preferences = JSON.parse("{}")
           u.id = 2 # Force the change!
           u.save!
           User.query.count.should eq 1
+        end
+      end
+
+      it "save in good order the belongs_to models" do
+        temporary do
+          reinit
+          u = User.new
+          p = Post.new({title: "some post"})
+          p.user = u
+          p.save.should eq(false) #< Must save the user first. but user is missing is first name !
+
+          p.user!.first_name = "I fix the issue!" #< Fix the issue
+
+          p.save.should eq(true) #Should save now
+
+          u.id.should eq(1) #Should be set
+          p.user!.id.should eq(1) #And should be set
         end
       end
 
@@ -168,7 +189,7 @@ module ModelSpec
       it "define constraints on has_many to build object" do
         temporary do
           reinit
-          User.create
+          User.create({first_name: "x"})
           u = User.query.first!
           p = User.query.first!.posts.build
 

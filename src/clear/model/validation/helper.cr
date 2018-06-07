@@ -17,14 +17,17 @@ module Clear::Validation::Helper
   #  end
   # ```
   macro ensure_than(field, message, &block)
-    o = {{field.id}}
-    on_presence({{field.id}}) do
+
+    if {{field.id}}_column.defined?
+      pp {{field.id}}
+      o = {{field.id}}
       fn = Clear::Util.lambda(typeof(o), Object) {{block}}
 
       unless fn.call(o)
         add_error({{field.stringify}}, {{message}})
       end
     end
+
   end
 
 end

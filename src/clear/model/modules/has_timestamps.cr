@@ -21,7 +21,6 @@ module Clear::Model::HasTimestamps
       if model.changed? && !model.updated_at_column.changed?
         model.updated_at = Time.now
       end
-
     end
 
   end
