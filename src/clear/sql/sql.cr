@@ -50,7 +50,7 @@ module Clear
     extend self
 
     class_getter! connection : DB::Database
-
+    
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectQuery
 
@@ -139,9 +139,6 @@ module Clear
     #
     def execute(sql)
       log_query(sql) { Clear::SQL.connection.exec(sql) }
-    rescue e
-      raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
-                               "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
     end
 
     # :nodoc:

@@ -6,6 +6,7 @@
 - Renaming of column `column` attribute to `column_name` in `column` method helper
 - Renaming of `field` by `column` in validation `Error` record
 - Renaming of `Clear::Util.func` to `Clear::Util.lambda`
+- `order_by` don't allow full string anymore, and will cause error in case you put string.
 
 ## Bugfixes
 
@@ -15,16 +16,20 @@
   is not intended to work.
 - Issue #8: `find_or_create` and generally update without any field failed to generate good SQL.
 - Issue with `belongs_to` assignment fixed.
+- Fix error message when a query fail to compile, giving better insights for the developer.
+- Issue #12: Fix `Collection(Model)#last`.
+- Allow `fetch_columns` on last, first etc...
 
-### Small features
+## Small features
 
 - Add CHANGELOG.md file !
 - `model.valid!` return itself and can be chained
 - Issue #10: `scope` allow block with multiple arguments.
 - Add tuple support for `in?` method in Expression Engine.
-- Creation of the Wiki manual
 
 ## Big features
+
+- Creation of the Wiki manual ! Check it out !
 
 ### Polymorphism (experimental)
 

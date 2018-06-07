@@ -57,7 +57,7 @@ class Clear::Reflection::Table
       (t.relkind == "r") &
       (t.relname == self.table_name)
     }
-    .order_by("t.relname", "i.relname")
+    .order_by("t.relname": :asc, "i.relname": :asc)
     .fetch do |h|
       col = h["column_name"].to_s
       v = h["index_name"].to_s

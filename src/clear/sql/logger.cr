@@ -50,9 +50,14 @@ module Clear::SQL::Logger
 
   def log_query(sql, &block)
     time = Time.now.epoch_f
-    yield
-  ensure
-    time = Time.now.epoch_f - time.not_nil!
+    o = yield
+    time = Time.now.epoch_f - time
+
     Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
+
+    return o
+  rescue e
+    raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
+                             "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
   end
 end

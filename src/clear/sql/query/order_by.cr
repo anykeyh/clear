@@ -1,23 +1,52 @@
 module Clear::SQL::Query::OrderBy
+  record Record, op : String, dir : Symbol
+
   macro included
-    getter order_bys : Array(String) = [] of String
+    getter order_bys : Array(Record) = [] of Record
   end
 
-  def order_by(tuple : NamedTuple)
+  private def _order_by_to_symbol(str)
+    case str.upcase
+    when "DESC"
+      :desc
+    when "ASC"
+      :asc
+    else
+      raise "Direction for order_by must be asc or desc"
+    end
+  end
+
+  def clear_order_bys
+    @order_bys.clear
+    change!
+  end
+
+  def order_by( x : Array(Record) )
+    @order_bys = x
+    change!
+  end
+
+  def order_by(**tuple)
     tuple.each do |k, v|
-      @order_bys << "#{k} #{v.to_s.upcase}"
+      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s))
     end
     change!
   end
 
-  def order_by(*args)
-    @order_bys += args.to_a.map(&.to_s)
+  def order_by(tuple : NamedTuple)
+    tuple.each do |k, v|
+      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s))
+    end
+    change!
+  end
 
+  def order_by(expression, direction="ASC")
+    @order_bys << Record.new(expression, _order_by_to_symbol(direction))
     change!
   end
 
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map(&.to_s).join(", ")
+    "ORDER BY " + @order_bys.map{ |r| [r.op, r.dir.to_s.upcase].join(" ") }.join(", ")
   end
 end

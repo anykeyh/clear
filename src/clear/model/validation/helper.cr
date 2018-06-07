@@ -19,7 +19,6 @@ module Clear::Validation::Helper
   macro ensure_than(field, message, &block)
 
     if {{field.id}}_column.defined?
-      pp {{field.id}}
       o = {{field.id}}
       fn = Clear::Util.lambda(typeof(o), Object) {{block}}
 

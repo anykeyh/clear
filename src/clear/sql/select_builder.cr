@@ -9,7 +9,7 @@ module Clear::SQL::SelectBuilder
                  @wheres = [] of Clear::Expression::Node,
                  @havings = [] of Clear::Expression::Node,
                  @group_bys = [] of SQL::Column,
-                 @order_bys = [] of String,
+                 @order_bys = [] of Clear::SQL::Query::OrderBy::Record,
                  @limit = nil,
                  @offset = nil,
                  @lock = nil,

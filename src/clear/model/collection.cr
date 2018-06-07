@@ -31,7 +31,7 @@ module Clear::Model
       @wheres = [] of Clear::Expression::Node,
       @havings = [] of Clear::Expression::Node,
       @group_bys = [] of SQL::Column,
-      @order_bys = [] of String,
+      @order_bys = [] of Clear::SQL::Query::OrderBy::Record,
       @limit = nil,
       @offset = nil,
       @lock = nil,
@@ -127,7 +127,6 @@ module Clear::Model
     # the primary key of `my_model` will be setup by default, preventing you
     # to forget it.
     def build : T
-      pp @tags
       T.factory.build(@tags, persisted: false)
     end
 
@@ -187,41 +186,51 @@ module Clear::Model
 
       return cr if cr
 
-      out = [] of T
-      each(fetch_columns: fetch_columns) { |m| out << m }
-      out
+      o = [] of T
+      each(fetch_columns: fetch_columns) { |m| o << m }
+      o
     end
 
     # Basically a custom way to write `OFFSET x LIMIT 1`
-    def [](off) : T
-      self.[]?(off).not_nil!
+    def [](off,  fetch_columns = false ) : T
+      self[off, fetch_columns]?.not_nil!
     end
 
     # Basically a custom way to write `OFFSET x LIMIT 1`
-    def []?(off) : T?
-      self.offset(off).first
+    def []?(off,  fetch_columns = false ) : T?
+      self.offset(off).first(fetch_columns)
+    end
+
+    # Get a range of models
+    def []( range : Range(Int64),  fetch_columns = false ) : Array(T)
+      self[range, fetch_columns]?.not_nil
+    end
+
+    # Get a range of models
+    def []?( range : Range(Int64), fetch_columns = false ) : Array(T)
+      self.offset(range.start).limit(range.end - range.start).to_a(fetch_columns)
     end
 
     # A convenient way to write `where{ condition }.first`
-    def find(&block) : T?
+    def find(fetch_columns, &block) : T?
       x = Clear::Expression.to_node(with Clear::Expression.new yield)
-      where(x).first
+      where(x).first(fetch_columns)
     end
 
     # A convenient way to write `where({any_column: "any_value"}).first`
-    def find(tuple : NamedTuple) : T?
-      where(tuple).first
+    def find(tuple : NamedTuple, fetch_columns = false) : T?
+      where(tuple).first(fetch_columns)
     end
 
     # A convenient way to write `where({any_column: "any_value"}).first!`
-    def find!(&block) : T
+    def find!(fetch_columns = false, &block) : T
       x = Clear::Expression.to_node(with Clear::Expression.new yield)
-      where(x).first!
+      where(x).first!(fetch_columns)
     end
 
     # A convenient way to write `where{ condition }.first!`
-    def find!(tuple : NamedTuple) : T
-      where(tuple).first.not_nil!
+    def find!(tuple : NamedTuple, fetch_columns = false) : T
+      where(tuple).first(fetch_columns).not_nil!
     end
 
     # Try to fetch a row. If not found, build a new object and setup
@@ -253,17 +262,17 @@ module Clear::Model
 
     # Get the first row from the collection query.
     # if not found, throw an error
-    def first! : T
-      first.not_nil!
+    def first!(fetch_columns = false) : T
+      first(fetch_columns).not_nil!
     end
 
     # Get the first row from the collection query.
     # if not found, return `nil`
-    def first : T?
-      order_by("#{T.pkey} ASC") unless T.pkey.nil? || order_bys.any?
+    def first(fetch_columns = false) : T?
+      order_by("#{T.pkey}", "ASC") unless T.pkey.nil? || order_bys.any?
 
       limit(1).fetch do |hash|
-        return T.factory.build(hash, persisted: true, cache: @cache)
+        return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
       end
 
       return nil
@@ -271,22 +280,34 @@ module Clear::Model
 
     # Get the last row from the collection query.
     # if not found, return `nil`
-    def last! : T
-      last.not_nil!
+    def last!(fetch_columns = false) : T
+      last(fetch_columns).not_nil!
     end
 
     # Get the last row from the collection query.
     # if not found, return `nil`
-    # TODO: NOT WORKING YET IF ORDER BY MANUALLY SET.
-    # Must handle order_by clauses differently
-    def last : T?
-      order_by("#{T.pkey} DESC") unless T.pkey.nil? || order_bys.any?
+    def last(fetch_columns = false) : T?
+      order_by("#{T.pkey}", "ASC") unless T.pkey.nil? || order_bys.any?
 
-      limit(1).fetch do |hash|
-        return T.factory.build(hash, persisted: true, cache: @cache)
+      arr = order_bys.dup #Save current order by
+
+      begin
+
+        new_order = arr.map do |x|
+          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc) )
+        end
+
+        clear_order_bys.order_by(new_order)
+
+        limit(1).fetch do |hash|
+          return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
+        end
+
+        return nil
+      ensure
+        # reset the order by in case we want to reuse the query
+        clear_order_bys.order_by(order_bys)
       end
-
-      return nil
     end
 
   end

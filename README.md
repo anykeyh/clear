@@ -8,6 +8,7 @@ Clear is an ORM built for PostgreSQL and Crystal.
 
 |Resources| |
 |---|---|
+| Changelog | https://github.com/anykeyh/clear/blob/master/CHANGELOG.md |
 | Wiki Guide      | https://github.com/anykeyh/clear/wiki |
 | Simple Example  | https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr |
 | Documentation   | https://anykeyh.github.io/clear/ |

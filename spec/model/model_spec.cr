@@ -272,6 +272,19 @@ module ModelSpec
         end
       end
 
+      it "can query the last model" do
+        temporary do
+          reinit
+          User.create({first_name: "Yacine"})
+          User.create({first_name: "Joan"})
+          User.create({first_name: "Mary"})
+          User.create({first_name: "Lianna"})
+
+          x = User.query.order_by("first_name").last!
+          x.first_name.should eq("Yacine")
+        end
+      end
+
       it "can delete a model" do
         temporary do
           reinit
