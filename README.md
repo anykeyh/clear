@@ -6,7 +6,6 @@ Clear is an ORM built for PostgreSQL and Crystal.
 
 ## Resources
 
-|   |   |
 |---|---|
 | Wiki Guide      | https://github.com/anykeyh/clear/wiki |
 | Simple Example  | https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr |
