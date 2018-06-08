@@ -1,22 +1,41 @@
-require "../src/clear"
+require "../../src/clear"
 require "benchmark"
 
-class TimeRange
+# Initialize the connection
+`echo "DROP DATABASE IF EXISTS benchmark_clear;" | psql -U postgres`
+`echo "CREATE DATABASE benchmark_clear;" | psql -U postgres`
+Clear::SQL.init("postgres://postgres@localhost/benchmark_clear")
+# Setting log level to DEBUG will allow you to see the requests made by the system
+# Clear.logger.level = ::Logger::DEBUG
+
+init = <<-SQL
+  CREATE TABLE benchmark (id serial PRIMARY KEY NOT NULL, y int);
+  CREATE INDEX benchmark_y ON benchmark (y);
+
+  INSERT INTO benchmark
+  SELECT i AS x, 2*i as y
+  FROM generate_series(1, 1000000) AS i;
+end
+SQL
+
+init.split(";").each{ |sql| Clear::SQL.execute(sql) }
+
+class BenchmarkModel
   include Clear::Model
 
-  column user_id : Int32
-  column starts_at : Time
-  column ends_at : Time?
+  self.table = "benchmark"
 
-  self.table = "user_time_ranges"
+  with_serial_pkey
+
+  column y : Int32
 end
 
 puts "Starting benchmarking, total to fetch =" +
-     " #{Clear::SQL.select("COUNT(*) as c").from("user_time_ranges").scalar(Int64)} records"
+     " #{BenchmarkModel.query.count} records"
 Benchmark.ips(warmup: 2, calculation: 5) do |x|
-  x.report("Simple load") { TimeRange.query.limit(100_000).to_a }
-  x.report("With cursor") { a = [] of TimeRange; TimeRange.query.limit(100_000).each_with_cursor { |x| a << x } }
-  x.report("With attributes") { TimeRange.query.limit(100_000).to_a(fetch_columns: true) }
-  x.report("With attributes and cursor") { a = [] of TimeRange; TimeRange.query.limit(100_000).each_with_cursor(fetch_columns: true) { |x| a << x } }
-  x.report("SQL only") { a = [] of Hash(String, ::Clear::SQL::Any); TimeRange.query.limit(100_000).fetch { |h| a << h } }
+  x.report("Simple load 100k") { BenchmarkModel.query.limit(100_000).to_a }
+  x.report("With cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor { |x| a << x } }
+  x.report("With attributes") { BenchmarkModel.query.limit(100_000).to_a(fetch_columns: true) }
+  x.report("With attributes and cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor(fetch_columns: true) { |x| a << x } }
+  x.report("SQL only") { a = [] of Hash(String, ::Clear::SQL::Any); BenchmarkModel.query.limit(100_000).fetch { |h| a << h } }
 end

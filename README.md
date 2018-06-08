@@ -14,6 +14,7 @@ Clear is an ORM built for PostgreSQL and Crystal.
 | Documentation   | https://anykeyh.github.io/clear/ |
 | Source code     | https://github.com/anykeyh/clear |
 
+
 ## Features
 
 Here some (but not all!) features offered yet by Clear !
@@ -658,6 +659,31 @@ In short, here is the architecture
 
 The ORM is freely inspired by Sequel and ActiveRecord.
 It offers advanced features for Postgres (see Roadmap)
+
+## Performances
+
+Models add a layer of computation. Below is a sample with a very simple model
+(two integer column ), with fetching of 100k rows over 1M rows database, using --release flag:
+
+
+ Method                    |        | Total time            | Speed
+ -------------------------*|-------*|-----------------------|------------*
+          Simple load 100k |  12.04 |  ( 83.03ms) (± 3.87%) | 2.28× slower
+               With cursor |   8.26 |  ( 121.0ms) (± 1.25%) | 3.32× slower
+           With attributes |  10.30 |  ( 97.12ms) (± 4.07%) | 2.67× slower
+With attributes and cursor |   7.55 |  (132.52ms) (± 2.39%) | 3.64× slower
+                  SQL only |  27.46 |  ( 36.42ms) (± 5.05%) |      fastest
+
+
+- `Simple load 100k` is using an array to fetch the 100k rows.
+- `With cursor` is querying 1000 rows at a time
+- `With attribute` setup a hash to deal with unknown attributes in the model (e.g. aggregates)
+- `With attribute and cursor` is doing cursored fetch with hash attributes created
+- `SQL only` build and execute SQL using SQL::Builder
+
+As you can see, it takes around 100ms to fetch 100k rows for this simple model (SQL included).
+If for more complex model, it would take a bit more of time, I think the performances
+are quite reasonable, and tenfold or plus faster than Rails's ActiveRecord.
 
 ## Roadmap
 
