@@ -649,7 +649,7 @@ In short, here is the architecture
 +---------------------------------------------+
 |  Model | DB Views | Migrations | clear-cli  | < High Level Tools
 +---------------+-----------------------------+
-|  column | Validation | Converters            | < Mapping system
+|  column | Validation | Converters           | < Mapping system
 +---------------+-----------------------------+
 |  Clear::SQL   | Clear::Expression           | < Low Level SQL Builder
 +---------------------------------------------+
@@ -666,13 +666,13 @@ Models add a layer of computation. Below is a sample with a very simple model
 (two integer column ), with fetching of 100k rows over 1M rows database, using --release flag:
 
 
- Method                    |        | Total time            | Speed
- -------------------------*|-------*|-----------------------|------------*
-          Simple load 100k |  12.04 |  ( 83.03ms) (± 3.87%) | 2.28× slower
-               With cursor |   8.26 |  ( 121.0ms) (± 1.25%) | 3.32× slower
-           With attributes |  10.30 |  ( 97.12ms) (± 4.07%) | 2.67× slower
-With attributes and cursor |   7.55 |  (132.52ms) (± 2.39%) | 3.64× slower
-                  SQL only |  27.46 |  ( 36.42ms) (± 5.05%) |      fastest
+| Method                     |        | Total time            | Speed        |
+| --------------------------:|-------:|-----------------------|-------------:|
+|          Simple load 100k  |  12.04 |  ( 83.03ms) (± 3.87%) | 2.28× slower |
+|               With cursor  |   8.26 |  ( 121.0ms) (± 1.25%) | 3.32× slower |
+|           With attributes  |  10.30 |  ( 97.12ms) (± 4.07%) | 2.67× slower |
+| With attributes and cursor |   7.55 |  (132.52ms) (± 2.39%) | 3.64× slower |
+|                  SQL only  |  27.46 |  ( 36.42ms) (± 5.05%) |      fastest |
 
 
 - `Simple load 100k` is using an array to fetch the 100k rows.
