@@ -1,31 +1,29 @@
 require "admiral"
 
-class Clear::CLI < Admiral::Command; end
+module Clear::CLI
+  def self.run(args = nil)
+    Clear::CLI::Base.run
+  end
+end
 
+require "./cli/command"
 require "./cli/migration"
 
-class Clear::CLI < Admiral::Command
-  define_flag verbose : Bool,
-    default: false,
-    long: verbose,
-    short: v,
-    description: "Display verbose informations during execution"
-
-  define_flag no_color : Bool,
-    default: false,
-    description: "Cancel color output"
+class Clear::CLI::Base < Admiral::Command
+  include Clear::CLI::Command
 
   define_version Clear::VERSION
-
   define_help
 
   register_sub_command migration, type: Clear::CLI::Migration
+  register_sub_command migrate, type: Clear::CLI::Migration
 
-  def run
-    Colorize.enabled = !flags.no_color
-    Clear.logger.level = ::Logger::DEBUG if flags.verbose
+  def run_impl
+    STDOUT.puts help
   end
 end
+
+require "./cli/migration"
 
 # module Clear::CLI
 #   def self.display_help_and_exit(exit_code = 0)

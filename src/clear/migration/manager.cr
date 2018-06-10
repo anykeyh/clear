@@ -70,7 +70,7 @@ class Clear::Migration::Manager
     if version < 0
       raise "Cannot revert HEAD-#{version}, because no migrations are loaded yet." if current_version.nil?
 
-      if list_of_migrations.size == 1
+      if list_of_migrations.size + version <= 0
         version = 0
       else
         version = list_of_migrations[version - 1].uid
@@ -116,9 +116,14 @@ class Clear::Migration::Manager
       end
     end
 
+    if operations.empty?
+      Clear.logger.debug("Nothing to do.")
+      return
+    end
+
     Clear.logger.debug("Migrations will be applied (in this order):")
     operations.each do |(uid, d)|
-      Clear.logger.debug("#{d.up? ? "^" : "V"} #{uid}")
+      Clear.logger.debug("#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}")
     end
 
     operations.each do |(uid, d)|

@@ -57,7 +57,9 @@ module Clear::SQL::Logger
 
     return o
   rescue e
-    raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
-                             "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
+    STDERR.puts "Error catched, last request was:\n#{Clear::SQL::Logger.colorize_query(sql)}"
+    raise e
+    # raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
+    #                          "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
   end
 end

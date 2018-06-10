@@ -5,6 +5,8 @@ echo "CREATE DATABASE clear_spec;" | psql -U postgres
 
 CMD="sample/cli/cli.cr -- --verbose"
 
+crystal sample/cli/cli.cr -- --verbose migrate
+
 crystal $CMD migrate #Go to the version 3
 
 crystal $CMD migration status # Version 1,2,3 loaded

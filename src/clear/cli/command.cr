@@ -1,28 +1,21 @@
-abstract class Clear::CLI::Command
-  def initialize
-  end
 
-  # Run the selected command with specific arguments
-  abstract def run_impl(args)
-  abstract def get_help_string : String
+module Clear::CLI::Command
+  macro included
+    define_flag verbose : Bool,
+      default: false,
+      long: verbose,
+      short: v,
+      description: "Display verbose informations during execution"
 
-  def run(args)
-    run_impl(args)
-  end
+    define_flag no_color : Bool,
+      default: false,
+      description: "Cancel color output"
 
-  def display_help_and_exit(exit_code = 1)
-    help = get_help_string()
-    puts format_output(help)
-    exit exit_code
-  end
+    def run
+      Colorize.enabled = !flags.no_color
+      Clear.logger.level = ::Logger::DEBUG if flags.verbose
 
-  def format_output(string)
-    string = string.gsub(/\#[^\r\n]*\n/) do |match|
-      match.colorize.light_gray # comment like
-    end
-
-    string.gsub(/\`[^\`]*\`/) do |match|
-      match[1..-2].colorize.mode(:bright)
+      run_impl
     end
   end
 end

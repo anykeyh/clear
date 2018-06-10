@@ -49,8 +49,16 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    class_getter! connection : DB::Database
-    
+    @@connection : DB::Database?
+
+    def self.connection : DB::Database
+      if @@connection
+        @@connection.not_nil!
+      else
+        raise "The database connection is not initialized"
+      end
+    end
+
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectQuery
 
