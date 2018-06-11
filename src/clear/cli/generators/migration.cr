@@ -1,4 +1,6 @@
-Clear::CLI::GeneratorCommand.add("migration",
+
+
+Clear::CLI::Generator.add("migration",
   "Create a new migration") do |opts|
   g = Generate::Generator.new
   g.target_directory = "."

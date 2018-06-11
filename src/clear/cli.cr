@@ -1,29 +1,28 @@
 require "admiral"
 
+require "./cli/command"
+require "./cli/migration"
+require "./cli/generator"
+
 module Clear::CLI
   def self.run(args = nil)
     Clear::CLI::Base.run
   end
-end
 
-require "./cli/command"
-require "./cli/migration"
+  class Base < Admiral::Command
+    include Clear::CLI::Command
 
-class Clear::CLI::Base < Admiral::Command
-  include Clear::CLI::Command
+    define_version Clear::VERSION
+    define_help
 
-  define_version Clear::VERSION
-  define_help
+    register_sub_command migrate, type: Clear::CLI::Migration
+    register_sub_command generate,  type: Clear::CLI::Generator
 
-  register_sub_command migration, type: Clear::CLI::Migration
-  register_sub_command migrate, type: Clear::CLI::Migration
-
-  def run_impl
-    STDOUT.puts help
+    def run_impl
+      STDOUT.puts help
+    end
   end
 end
-
-require "./cli/migration"
 
 # module Clear::CLI
 #   def self.display_help_and_exit(exit_code = 0)
@@ -33,33 +32,33 @@ require "./cli/migration"
 #       Commands:
 
 #       Migration:
-#         migration status               # Show the current status of the database.
-#         migration up XXX               # Turn up a specific migration.
-#         migration down XXX             # Turn down a specific migration.
-#         migration set                  # Go to a specific step.
+#         migrate status               # Show the current status of the database.
+#         migrate up XXX               # Turn up a specific migration.
+#         migrate down XXX             # Turn down a specific migration.
+#         migrate set                  # Go to a specific step.
 #                                        # Down all migration after,
 #                                        # up all migration before.
 #         migrate                        # Migrate to the newest version.
-#         rollback                       # Revert the last migration.
+#         migrate rollback               # Revert the last migration.
 #         from_models                    # Generate a migration from all the
 #                                        # models discovered.
 #                                        # Good for projects bootstrapping !
-
+#
 #       Generator:
 #         generate XXX                   # Generate some files
-
+#
 #       Helpers:
 #         table2model                    # Output a model based on a pg table.
 #         model                          # Generate a model.
-
+#
 #       Use --help on each command to get more informations
 #     HELP
-
+#
 #     puts format_output(help)
-
+#
 #     exit exit_code
 #   end
-
+#
 #   def self.format_output(string)
 #     string.gsub(/\#[^\r\n]*\n/) do |match, str|
 #       match.colorize.dark_gray # comment like
