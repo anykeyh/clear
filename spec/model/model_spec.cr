@@ -226,7 +226,7 @@ module ModelSpec
           end
 
           User.query.limit(5).count.should eq(5)
-          User.query.limit(5).offset(5).count.should eq(4)
+          User.query.limit(5).offset(5).count(Int32).should eq(4)
         end
       end
 

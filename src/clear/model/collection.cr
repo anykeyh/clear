@@ -159,22 +159,23 @@ module Clear::Model
     end
 
     # Use SQL `COUNT` over your query, and return this number as a Int64
-    def count(what = "*") : Int64
+    def count(type : X.class = Int64, what = "*") forall X
       cr = @cached_result
 
-      return Int64.new(cr.size) if cr
+      return X.new(cr.size) if cr
 
       if(@offset || @limit)
-        Clear::SQL.select("COUNT(#{what})").from({query_count: self.clear_select.select("1")}).scalar(Int64)
+        what = "1" if(what == "*") # Optimization in case what is a wildcard.
+        X.new(Clear::SQL.select("COUNT(*)").from({query_count: self.clear_select.select(what)}).scalar(Int64))
       else
-        self.clear_select.select("COUNT(#{what})").scalar(Int64)
+        X.new(self.clear_select.select("COUNT(#{what})").scalar(Int64))
       end
     end
 
     # Call an custom aggregation function, like MEDIAN or other
     # Note than COUNT, MIN, MAX and AVG are conveniently mapped.
     def agg(field, x : T.class) forall T
-      self.clear_select.select(field).scalar.as(T)
+      self.clear_select.select(field).scalar(T)
     end
 
     {% for x in %w(min max avg) %}
