@@ -60,7 +60,7 @@ module Clear
     end
 
     alias Symbolic = String | Symbol
-    alias Selectable = Symbolic | Clear::SQL::SelectQuery
+    alias Selectable = Symbolic | Clear::SQL::SelectBuilder
 
     # Sanitize the
     def sanitize(x : String, delimiter = "''")

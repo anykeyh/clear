@@ -21,7 +21,7 @@ class Clear::SQL::InsertQuery
 
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
-  getter values : SelectQuery | Array(Array(Inserable)) = [] of Array(Inserable)
+  getter values : SelectBuilder | Array(Array(Inserable)) = [] of Array(Inserable)
   getter table : Selectable
   getter returning : String?
 
@@ -105,7 +105,7 @@ class Clear::SQL::InsertQuery
   end
 
   # Insert into ... (...) SELECT
-  def values(select_query : SelectQuery)
+  def values(select_query : SelectBuilder)
     if @values.is_a?(Array) && @values.as(Array).any?
       raise QueryBuildingError.new "Cannot insert both from SELECT and from data"
     end
@@ -145,7 +145,7 @@ class Clear::SQL::InsertQuery
     o = ["INSERT INTO", @table, print_keys]
     v = @values
     case v
-    when SelectQuery
+    when SelectBuilder
       o << "(" + v.to_sql + ")"
     else
       if v.empty? || (v.size == 1 && v[0].empty?) # < Case happening with model

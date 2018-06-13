@@ -19,7 +19,7 @@ module Clear::SQL
       case v
       when Symbolic
         [v, @var].compact.join(" AS ")
-      when SQL::SelectQuery
+      when SQL::SelectBuilder
         ["( #{v.to_sql} )", @var].compact.join(" AS ")
       else
         raise QueryBuildingError.new("Only String and SelectQuery are allowed as column declaration")

@@ -1,3 +1,8 @@
+# v0.1.4alpha
+
+- Fix #13 Calling count on paginated query
+- SQL Builder can now be used with model collection as subqueries.
+
 # v0.1.3alpha
 
 

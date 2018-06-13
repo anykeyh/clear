@@ -213,7 +213,20 @@ module ModelSpec
           u.id.should_not eq nil
 
           u = User.find! u.id
-          u.created_at.epoch.should eq(now.epoch)
+          u.created_at.epoch.should be_close(now.epoch, 1)
+        end
+      end
+
+      it "can count using offset and limit" do
+        temporary do
+          reinit
+
+          9.times do |x|
+            User.create!({first_name: "user#{x}"})
+          end
+
+          User.query.limit(5).count.should eq(5)
+          User.query.limit(5).offset(5).count.should eq(4)
         end
       end
 

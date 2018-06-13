@@ -15,7 +15,7 @@ module Clear::SQL::Query::Having
       case v
       when Array
         "#{k} IN (#{v.map { |x| Clear::Expression[x] }.join(", ")})"
-      when SelectQuery
+      when SelectBuilder
         "#{k} IN (#{v.to_sql})"
       else
         "#{k} = #{Clear::Expression[v]}"

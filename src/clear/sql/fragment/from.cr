@@ -13,7 +13,7 @@ module Clear::SQL
       case v
       when Symbolic
         [v, @var].compact.join(" AS ")
-      when SQL::SelectQuery
+      when SQL::SelectBuilder
         raise QueryBuildingError.new("Subquery `from` clause must have variable name") if @var.nil?
         ["( #{v.to_sql} )", @var].compact.join(" ")
       else

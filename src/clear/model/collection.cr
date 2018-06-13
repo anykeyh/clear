@@ -164,7 +164,11 @@ module Clear::Model
 
       return Int64.new(cr.size) if cr
 
-      self.clear_select.select("COUNT(#{what})").scalar(Int64)
+      if(@offset || @limit)
+        Clear::SQL.select("COUNT(#{what})").from({query_count: self.clear_select.select("1")}).scalar(Int64)
+      else
+        self.clear_select.select("COUNT(#{what})").scalar(Int64)
+      end
     end
 
     # Call an custom aggregation function, like MEDIAN or other
