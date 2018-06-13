@@ -174,14 +174,14 @@ module Clear::Model
 
     # Call an custom aggregation function, like MEDIAN or other
     # Note than COUNT, MIN, MAX and AVG are conveniently mapped.
-    def agg(field, x : T.class) forall T
-      self.clear_select.select(field).scalar(T)
+    def agg(field, x : X.class) forall X
+      self.clear_select.select(field).scalar(X)
     end
 
     {% for x in %w(min max avg) %}
       # Call the SQL aggregation function {{x.upcase}}
-      def {{x.id}}(field, x : T.class) forall T
-        agg("{{x.id.upcase}}(#{field})", T)
+      def {{x.id}}(field, x : X.class) forall X
+        agg("{{x.id.upcase}}(#{field})", X)
       end
     {% end %}
 
