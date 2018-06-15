@@ -186,6 +186,17 @@ module ModelSpec
         end
       end
 
+
+      it "can fetch computed column" do
+        temporary do
+          reinit
+          User.create({first_name: "a", last_name: "b"})
+
+          u = User.query.select({full_name: "first_name || ' ' || last_name"}).first!(fetch_columns: true)
+          u["full_name"].should eq "a b"
+        end
+      end
+
       it "define constraints on has_many to build object" do
         temporary do
           reinit
