@@ -29,6 +29,7 @@ module Clear::SQL::SelectBuilder
   include Query::Fetch
   include Query::BeforeQuery
   include Query::CTE
+  include Query::WithPagination
 
   def dup : self
     self.class.new(columns: @columns.dup,
