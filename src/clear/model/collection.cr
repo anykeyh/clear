@@ -159,31 +159,12 @@ module Clear::Model
     end
 
     # Use SQL `COUNT` over your query, and return this number as a Int64
-    def count(type : X.class = Int64, what = "*") forall X
+    def count(type : X.class = Int64) forall X
       cr = @cached_result
+      return X.new(cr.size) unless cr.nil?
 
-      return X.new(cr.size) if cr
-
-      if(@offset || @limit)
-        what = "1" if(what == "*") # Optimization in case what is a wildcard.
-        X.new(Clear::SQL.select("COUNT(*)").from({query_count: self.clear_select.select(what)}).scalar(Int64))
-      else
-        X.new(self.clear_select.select("COUNT(#{what})").scalar(Int64))
-      end
+      super(type)
     end
-
-    # Call an custom aggregation function, like MEDIAN or other
-    # Note than COUNT, MIN, MAX and AVG are conveniently mapped.
-    def agg(field, x : X.class) forall X
-      self.clear_select.select(field).scalar(X)
-    end
-
-    {% for x in %w(min max avg) %}
-      # Call the SQL aggregation function {{x.upcase}}
-      def {{x.id}}(field, x : X.class) forall X
-        agg("{{x.id.upcase}}(#{field})", X)
-      end
-    {% end %}
 
     # Create an array from the query.
     def to_a(fetch_columns = false) : Array(T)
@@ -197,22 +178,22 @@ module Clear::Model
     end
 
     # Basically a custom way to write `OFFSET x LIMIT 1`
-    def [](off,  fetch_columns = false ) : T
+    def [](off, fetch_columns = false) : T
       self[off, fetch_columns]?.not_nil!
     end
 
     # Basically a custom way to write `OFFSET x LIMIT 1`
-    def []?(off,  fetch_columns = false ) : T?
+    def []?(off, fetch_columns = false) : T?
       self.offset(off).first(fetch_columns)
     end
 
     # Get a range of models
-    def []( range : Range(Int64),  fetch_columns = false ) : Array(T)
+    def [](range : Range(Int64), fetch_columns = false) : Array(T)
       self[range, fetch_columns]?.not_nil
     end
 
     # Get a range of models
-    def []?( range : Range(Int64), fetch_columns = false ) : Array(T)
+    def []?(range : Range(Int64), fetch_columns = false) : Array(T)
       self.offset(range.start).limit(range.end - range.start).to_a(fetch_columns)
     end
 
@@ -294,12 +275,11 @@ module Clear::Model
     def last(fetch_columns = false) : T?
       order_by("#{T.pkey}", "ASC") unless T.pkey.nil? || order_bys.any?
 
-      arr = order_bys.dup #Save current order by
+      arr = order_bys.dup # Save current order by
 
       begin
-
         new_order = arr.map do |x|
-          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc) )
+          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc))
         end
 
         clear_order_bys.order_by(new_order)
@@ -314,6 +294,5 @@ module Clear::Model
         clear_order_bys.order_by(order_bys)
       end
     end
-
   end
 end

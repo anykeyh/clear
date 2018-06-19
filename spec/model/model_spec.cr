@@ -9,7 +9,7 @@ module ModelSpec
     column title : String
 
     def validate
-      ensure_than( title, "is not empty", &.size.>(0) )
+      ensure_than(title, "is not empty", &.size.>(0))
     end
 
     belongs_to user : User, key_type: Int32?
@@ -120,7 +120,7 @@ module ModelSpec
           u.update_h.should eq({"id" => 2})
           u.id = 1
           u.update_h.should eq({} of String => ::DB::Any) # no more change, because id is back to the same !
-          u.save! #Nothing should happens
+          u.save!                                         # Nothing should happens
         end
       end
 
@@ -141,14 +141,14 @@ module ModelSpec
           u = User.new
           p = Post.new({title: "some post"})
           p.user = u
-          p.save.should eq(false) #< Must save the user first. but user is missing is first name !
+          p.save.should eq(false) # < Must save the user first. but user is missing is first name !
 
-          p.user!.first_name = "I fix the issue!" #< Fix the issue
+          p.user!.first_name = "I fix the issue!" # < Fix the issue
 
-          p.save.should eq(true) #Should save now
+          p.save.should eq(true) # Should save now
 
-          u.id.should eq(1) #Should be set
-          p.user!.id.should eq(1) #And should be set
+          u.id.should eq(1)       # Should be set
+          p.user!.id.should eq(1) # And should be set
         end
       end
 
@@ -183,6 +183,16 @@ module ModelSpec
           User.query.each_with_cursor(batch: 50) do |u|
             u.id.should_not eq nil
           end
+        end
+      end
+
+      it "can fetch computed column" do
+        temporary do
+          reinit
+          User.create({first_name: "a", last_name: "b"})
+
+          u = User.query.select({full_name: "first_name || ' ' || last_name"}).first!(fetch_columns: true)
+          u["full_name"].should eq "a b"
         end
       end
 
@@ -234,17 +244,17 @@ module ModelSpec
         temporary do
           reinit
 
-          u = User.query.find_or_create({last_name: "Henry"}) do |u|
-            u.first_name = "Thierry"
-            u.save
+          u = User.query.find_or_create({last_name: "Henry"}) do |user|
+            user.first_name = "Thierry"
+            user.save
           end
 
           u.first_name.should eq("Thierry")
           u.last_name.should eq("Henry")
           u.id.should eq(1)
 
-          u = User.query.find_or_create({last_name: "Henry"}) do |u|
-            u.first_name = "King" #<< This should not be triggered since we found the row
+          u = User.query.find_or_create({last_name: "Henry"}) do |user|
+            user.first_name = "King" # << This should not be triggered since we found the row
           end
           u.first_name.should eq("Thierry")
           u.last_name.should eq("Henry")
@@ -260,7 +270,7 @@ module ModelSpec
 
           ui = UserInfo.create({registration_number: 123, user_id: u.id})
 
-          ui.user_id = nil #Remove user_id, just to see what's going on !
+          ui.user_id = nil # Remove user_id, just to see what's going on !
           ui.save!
         end
       end

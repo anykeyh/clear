@@ -30,6 +30,7 @@ module Clear::SQL::SelectBuilder
   include Query::BeforeQuery
   include Query::CTE
   include Query::WithPagination
+  include Query::Aggregate
 
   def dup : self
     self.class.new(columns: @columns.dup,

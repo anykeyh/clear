@@ -25,6 +25,6 @@ development_dependencies:
     github: anykeyh/crystal-coverage
   ameba:
     github: veelenga/ameba
-    version: 0.6.0
+    version: 0.7.0
 
 license: MIT

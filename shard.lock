@@ -2,15 +2,15 @@ version: 1.0
 shards:
   admiral:
     github: jwaldrip/admiral.cr
-    version: 1.6.1
+    version: 1.7.2
 
   ameba:
     github: veelenga/ameba
-    version: 0.6.0
+    version: 0.7.0
 
   coverage:
     github: anykeyh/crystal-coverage
-    commit: bd604cca80c84a33354525d5dc696cd8c9d4f038
+    commit: af5246dde152b6e42352ce6e759bb07e9bed09ed
 
   db:
     github: crystal-lang/crystal-db
@@ -26,5 +26,5 @@ shards:
 
   pg:
     github: will/crystal-pg
-    version: 0.14.1
+    version: 0.15.0
 
