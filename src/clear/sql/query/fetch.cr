@@ -44,7 +44,7 @@ module Clear::SQL::Query::Fetch
 
         we_loop = fetch_result_set(h, rs) { |x| o << x.dup }
 
-        o.each { |h| yield(h) }
+        o.each { |hash| yield(hash) }
       end
     end
   end

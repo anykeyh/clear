@@ -14,7 +14,7 @@ module Clear::SQL::Query::Having
     sql = x.map do |k, v|
       case v
       when Array
-        "#{k} IN (#{v.map { |x| Clear::Expression[x] }.join(", ")})"
+        "#{k} IN (#{v.map { |it| Clear::Expression[it] }.join(", ")})"
       when SelectBuilder
         "#{k} IN (#{v.to_sql})"
       else
