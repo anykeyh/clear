@@ -23,7 +23,7 @@ module Clear::SQL::Query::Fetch
     trigger_before_query
 
     Clear::SQL.transaction do
-      cnx = Clear::SQL.connection
+      cnx = Clear::SQL.connection(self.connection_name)
       cursor_name = "__cursor_#{Time.now.epoch ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
@@ -55,7 +55,7 @@ module Clear::SQL::Query::Fetch
     trigger_before_query
 
     Clear::SQL.log_query to_sql do
-      Clear::SQL.connection.scalar(to_sql).as(T)
+      Clear::SQL.connection(self.connection_name).scalar(to_sql).as(T)
     end
   end
 
@@ -71,7 +71,7 @@ module Clear::SQL::Query::Fetch
     to_sql = self.to_sql
 
     rs = uninitialized PG::ResultSet
-    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection.query(to_sql) }
+    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection(self.connection_name).query(to_sql) }
 
     o = [] of Hash(String, ::Clear::SQL::Any)
     fetch_result_set(h, rs) { |x| o << x.dup }
@@ -92,7 +92,8 @@ module Clear::SQL::Query::Fetch
     to_sql = self.to_sql
 
     rs = uninitialized PG::ResultSet
-    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection.query(to_sql) }
+
+    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection(connection_name).query(to_sql) }
 
     if fetch_all
       o = [] of Hash(String, ::Clear::SQL::Any)

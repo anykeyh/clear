@@ -18,6 +18,7 @@ require "./query/*"
 #
 class Clear::SQL::InsertQuery
   include Query::Change
+  include Query::Connection
 
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
@@ -32,7 +33,7 @@ class Clear::SQL::InsertQuery
     Clear::SQL.log_query to_sql do
       h = {} of String => ::Clear::SQL::Any
 
-      Clear::SQL.connection.query(to_sql) do |rs|
+      Clear::SQL.connection(self.connection_name).query(to_sql) do |rs|
         fetch_result_set(h, rs) { |x| yield(x) }
       end
     end

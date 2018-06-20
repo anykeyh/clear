@@ -49,13 +49,17 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    @@connection : DB::Database?
+    @@connections : Hash(Symbolic, DB::Database?)?
 
-    def self.connection : DB::Database
-      if @@connection
-        @@connection.not_nil!
+    def self.connection(connection) : DB::Database
+      if @@connections.nil?
+        raise "No database connections have been defined"
       else
-        raise "The database connection is not initialized"
+        if connection = @@connections.not_nil![connection]
+          connection.not_nil!
+        else
+          raise "The database connection is not initialized"
+        end
       end
     end
 
@@ -68,7 +72,15 @@ module Clear
     end
 
     def init(url : String)
-      @@connection = DB.open(url)
+      @@connections ||= {} of Symbolic => DB::Database?
+      @@connections.not_nil!["default"] = DB.open(url)
+    end
+
+    def init(connections : Hash(Symbolic, String))
+      @@connections ||= {} of Symbolic => DB::Database?
+      connections.each do |key, connection_string|
+        @@connections.not_nil![key] = DB.open(connection_string)
+      end
     end
 
     @@in_transaction : Bool = false
@@ -146,7 +158,7 @@ module Clear
     # Clear::SQL.execute("SELECT 1 FROM users")
     #
     def execute(sql)
-      log_query(sql) { Clear::SQL.connection.exec(sql) }
+      log_query(sql) { Clear::SQL.connection("default").exec(sql) }
     end
 
     # :nodoc:
