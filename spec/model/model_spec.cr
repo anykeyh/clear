@@ -328,5 +328,36 @@ module ModelSpec
         end
       end
     end
+
+    context "with pagination" do
+      it "can pull the next 5 users from page 2" do
+        temporary do
+          reinit
+
+          15.times do |x|
+            User.create!({first_name: "user#{x}"})
+          end
+
+          users = User.query.paginate(page: 2, per_page: 5)
+          users.map(&.first_name).should eq ["user5", "user6", "user7", "user8", "user9"]
+          users.total_entries.should eq 15
+        end
+      end
+
+      it "can paginate with where clause" do
+        temporary do
+          reinit
+          last_names = ["smith", "jones"]
+          15.times do |x|
+            last_name = last_names[x % 2]?
+            User.create!({first_name: "user#{x}", last_name: last_name})
+          end
+
+          users = User.query.where { last_name == "smith" }.paginate(page: 1, per_page: 5)
+          users.map(&.first_name).should eq ["user0", "user2", "user4", "user6", "user8"]
+          users.total_entries.should eq 8
+        end
+      end
+    end
   end
 end
