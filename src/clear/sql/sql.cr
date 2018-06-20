@@ -161,6 +161,14 @@ module Clear
       log_query(sql) { Clear::SQL.connection("default").exec(sql) }
     end
 
+    # Execute a SQL request on a specific connection.
+    #
+    # Usage:
+    # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
+    def execute(connection : Symbolic, sql)
+      log_query(sql) { Clear::SQL.connection(connection).exec(sql) }
+    end
+
     # :nodoc:
     def sel_str(s : Selectable)
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
