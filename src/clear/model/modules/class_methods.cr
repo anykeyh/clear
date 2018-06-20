@@ -20,7 +20,7 @@ module Clear::Model::ClassMethods
       class Collection < Clear::Model::CollectionBase(\{{@type}}); end
 
       def self.query
-        Collection.new.from(table)
+        Collection.new.use_connection(connection).from(table)
       end
 
       def self.find(x)

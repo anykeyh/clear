@@ -17,6 +17,7 @@ module Clear::SQL::SelectBuilder
   end
 
   include Query::Change
+  include Query::Connection
   include Query::Select
   include Query::From
   include Query::Join
