@@ -26,7 +26,7 @@ module Clear::Model::HasSaving
         else
           with_triggers(:create) do
             @persisted = true
-            hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute
+            hash = Clear::SQL.insert_into(@@connection, self.class.table, to_h).returning("*").execute
             self.set(hash)
           end
         end
