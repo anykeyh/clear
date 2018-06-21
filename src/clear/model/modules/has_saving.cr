@@ -20,7 +20,7 @@ module Clear::Model::HasSaving
 
           if h.any?
             with_triggers(:update) do
-              Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
+              Clear::SQL.update(@@connection, self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
             end
           end
         else
@@ -54,7 +54,7 @@ module Clear::Model::HasSaving
     return false unless persisted?
 
     with_triggers(:delete) do
-      Clear::SQL::DeleteQuery.new.from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute
+      Clear::SQL::DeleteQuery.new(@@connection).from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute
 
       @persisted = false
       clear_change_flags

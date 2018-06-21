@@ -8,14 +8,23 @@ class Clear::SQL::UpdateQuery
   alias UpdateInstruction = Hash(String, Updatable) | String
 
   @values : Array(UpdateInstruction) = [] of UpdateInstruction
+  @connection : Symbolic
   @table : String
 
+  include Query::Connection
   include Query::Change
   include Query::Where
   include Query::Execute
 
   def initialize(table, @wheres = [] of Clear::Expression::Node)
     @table = table.to_s
+    @connection = "default"
+    @connection_name = "default"
+  end
+
+  def initialize(@connection : Symbolic, table, @wheres = [] of Clear::Expression::Node)
+    @table = table.to_s
+    @connection_name = @connection
   end
 
   def set(row : NamedTuple)
