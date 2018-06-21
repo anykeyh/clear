@@ -176,7 +176,11 @@ module Clear
 
     # Start a DELETE table query
     def delete(table = nil)
-      Clear::SQL::DeleteQuery.new(from: table)
+      Clear::SQL::DeleteQuery.new("default", from: table)
+    end
+
+    def delete(connection : Symbolic, table = nil)
+      Clear::SQL::DeleteQuery.new(connection, from: table)
     end
 
     # Start an INSERT INTO table query
@@ -203,7 +207,11 @@ module Clear
 
     # Start a UPDATE table query
     def update(table)
-      Clear::SQL::UpdateQuery.new(table)
+      Clear::SQL::UpdateQuery.new("default", table)
+    end
+
+    def update(connection : Symbolic, table)
+      Clear::SQL::UpdateQuery.new(connection, table)
     end
 
     # Start a SELECT FROM table query

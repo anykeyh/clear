@@ -3,12 +3,21 @@ require "./query/*"
 class Clear::SQL::DeleteQuery
   getter from : Symbolic?
 
+  include Query::Connection
   include Query::Where
   include Query::Execute
   include Query::Change
 
   def initialize(@from = nil,
                  @wheres = [] of Clear::Expression::Node)
+    @connection = "default"
+    @connection_name = "default"
+  end
+
+  def initialize(@connection : Symbolic,
+                 @from = nil,
+                 @wheres = [] of Clear::Expression::Node)
+    @connection_name = @connection
   end
 
   def from(x)
