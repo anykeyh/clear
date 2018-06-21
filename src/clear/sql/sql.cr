@@ -181,12 +181,24 @@ module Clear
 
     # Start an INSERT INTO table query
     def insert_into(table, *args)
-      Clear::SQL::InsertQuery.new(table).insert(*args)
+      Clear::SQL::InsertQuery.new("default", table).insert(*args)
+    end
+
+    def insert_into(connection : Symbolic, table, *args)
+      Clear::SQL::InsertQuery.new(connection, table).insert(*args)
     end
 
     # Alias of `insert_into`, for hurry developers
     def insert(table, *args)
-      insert_into(table, *args)
+      insert_into("default", table, *args)
+    end
+
+    def insert(table, args : NamedTuple)
+      insert_into("default", table, args)
+    end
+
+    def insert(connection : Symbolic, table, *args)
+      insert_into(connection, table, *args)
     end
 
     # Start a UPDATE table query

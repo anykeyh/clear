@@ -6,6 +6,7 @@ require "./converter/**"
 require "./validation/**"
 
 module Clear::Model
+  include Clear::Model::Connection
   include Clear::Model::HasColumns
   include Clear::Model::HasHooks
   include Clear::Model::HasTimestamps
@@ -14,7 +15,6 @@ module Clear::Model
   include Clear::Model::HasValidation
   include Clear::Model::HasRelations
   include Clear::Model::HasScope
-  include Clear::Model::Connection
   include Clear::Model::ClassMethods
   include Clear::Model::IsPolymorphic
 
