@@ -176,11 +176,11 @@ module Clear
 
     # Start a DELETE table query
     def delete(table = nil)
-      Clear::SQL::DeleteQuery.new("default", from: table)
+      Clear::SQL::DeleteQuery.new("default").from(table)
     end
 
     def delete(connection : Symbolic, table = nil)
-      Clear::SQL::DeleteQuery.new(connection, from: table)
+      Clear::SQL::DeleteQuery.new(connection).from(table)
     end
 
     # Start an INSERT INTO table query
