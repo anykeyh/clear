@@ -4,7 +4,7 @@ module MultipleConnectionsSpec
   class Post
     include Clear::Model
 
-    self.table = "models_posts"
+    self.table = "models_posts_two"
 
     column id : Int32, primary: true, presence: false
     column title : String
@@ -24,7 +24,7 @@ module MultipleConnectionsSpec
     include Clear::Migration
 
     def change(dir)
-      create_table "models_posts" do |t|
+      create_table "models_posts_two" do |t|
         t.string "title", index: true
       end
     end
