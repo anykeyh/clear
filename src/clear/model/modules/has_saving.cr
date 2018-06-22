@@ -20,13 +20,13 @@ module Clear::Model::HasSaving
 
           if h.any?
             with_triggers(:update) do
-              Clear::SQL.update(@@connection, self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute
+              Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
             end
           end
         else
           with_triggers(:create) do
             @persisted = true
-            hash = Clear::SQL.insert_into(@@connection, self.class.table, to_h).returning("*").execute
+            hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute(@@connection)
             self.set(hash)
           end
         end
@@ -54,7 +54,7 @@ module Clear::Model::HasSaving
     return false unless persisted?
 
     with_triggers(:delete) do
-      Clear::SQL::DeleteQuery.new(@@connection).from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute
+      Clear::SQL::DeleteQuery.new.from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute(@@connection)
 
       @persisted = false
       clear_change_flags
