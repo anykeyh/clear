@@ -14,7 +14,7 @@ class Clear::SQL::DeleteQuery
     @connection_name = "default"
   end
 
-  def initialize(@connection : Symbolic,
+  def initialize(@connection : String,
                  @from = nil,
                  @wheres = [] of Clear::Expression::Node)
     @connection_name = @connection
