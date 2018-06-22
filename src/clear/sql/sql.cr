@@ -72,14 +72,16 @@ module Clear
     end
 
     def init(url : String)
-      @@connections ||= {} of Symbolic => DB::Database?
       @@connections.not_nil!["default"] = DB.open(url)
     end
 
+    def init(name : String, url : String)
+      @@connections[name] = DB.open(url)
+    end
+
     def init(connections : Hash(Symbolic, String))
-      @@connections ||= {} of Symbolic => DB::Database?
-      connections.each do |key, connection_string|
-        @@connections.not_nil![key] = DB.open(connection_string)
+      connections.each do |name, url|
+        @@connections.not_nil![name] = DB.open(url)
       end
     end
 
