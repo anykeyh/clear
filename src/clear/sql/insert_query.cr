@@ -27,17 +27,13 @@ class Clear::SQL::InsertQuery
   getter returning : String?
 
   def initialize(@table : Selectable)
-    @connection = "default"
   end
 
-  def initialize(@connection : String, @table : Selectable)
-  end
-
-  def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Void)
     Clear::SQL.log_query to_sql do
       h = {} of String => ::Clear::SQL::Any
 
-      Clear::SQL.connection(@connection).query(to_sql) do |rs|
+      Clear::SQL.connection(connection_name).query(to_sql) do |rs|
         fetch_result_set(h, rs) { |x| yield(x) }
       end
     end
@@ -61,14 +57,14 @@ class Clear::SQL::InsertQuery
     rs.close
   end
 
-  def execute : Hash(String, ::Clear::SQL::Any)
+  def execute(connection_name : String = "default") : Hash(String, ::Clear::SQL::Any)
     o = {} of String => ::Clear::SQL::Any
 
     if @returning.nil?
-      Clear::SQL.execute(self.connection_name, to_sql)
+      Clear::SQL.execute(connection_name, to_sql)
     else
       # return {} of String => ::Clear::SQL::Any
-      fetch { |x| o = x; break }
+      fetch(connection_name) { |x| o = x; break }
     end
 
     o

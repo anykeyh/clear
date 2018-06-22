@@ -163,8 +163,8 @@ module Clear
     #
     # Usage:
     # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
-    def execute(connection : Symbolic, sql)
-      log_query(sql) { Clear::SQL.connection(connection).exec(sql) }
+    def execute(connection_name : String, sql)
+      log_query(sql) { Clear::SQL.connection(connection_name).exec(sql) }
     end
 
     # :nodoc:
@@ -183,33 +183,21 @@ module Clear
 
     # Start an INSERT INTO table query
     def insert_into(table, *args)
-      Clear::SQL::InsertQuery.new("default", table).insert(*args)
-    end
-
-    def insert_into(connection : Symbolic, table, *args)
-      Clear::SQL::InsertQuery.new(connection, table).insert(*args)
+      Clear::SQL::InsertQuery.new(table).insert(*args)
     end
 
     # Alias of `insert_into`, for hurry developers
     def insert(table, *args)
-      insert_into("default", table, *args)
+      insert_into(table, *args)
     end
 
     def insert(table, args : NamedTuple)
-      insert_into("default", table, args)
-    end
-
-    def insert(connection : Symbolic, table, *args)
-      insert_into(connection, table, *args)
+      insert_into(table, args)
     end
 
     # Start a UPDATE table query
     def update(table)
-      Clear::SQL::UpdateQuery.new("default", table)
-    end
-
-    def update(connection : Symbolic, table)
-      Clear::SQL::UpdateQuery.new(connection, table)
+      Clear::SQL::UpdateQuery.new(table)
     end
 
     # Start a SELECT FROM table query

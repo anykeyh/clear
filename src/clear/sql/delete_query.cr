@@ -10,14 +10,6 @@ class Clear::SQL::DeleteQuery
 
   def initialize(@from = nil,
                  @wheres = [] of Clear::Expression::Node)
-    @connection = "default"
-    @connection_name = "default"
-  end
-
-  def initialize(@connection : String,
-                 @from = nil,
-                 @wheres = [] of Clear::Expression::Node)
-    @connection_name = @connection
   end
 
   def from(x)
