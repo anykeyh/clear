@@ -49,17 +49,13 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    @@connections : Hash(Symbolic, DB::Database?)?
+    @@connections = {} of String => DB::Database?
 
     def self.connection(connection) : DB::Database
-      if @@connections.nil?
-        raise "No database connections have been defined"
+      if connection = @@connections.not_nil![connection]
+        connection.not_nil!
       else
-        if connection = @@connections.not_nil![connection]
-          connection.not_nil!
-        else
-          raise "The database connection is not initialized"
-        end
+        raise "The database connection is not initialized"
       end
     end
 

@@ -30,7 +30,7 @@ class Clear::SQL::InsertQuery
     @connection = "default"
   end
 
-  def initialize(@connection : Symbolic, @table : Selectable)
+  def initialize(@connection : String, @table : Selectable)
   end
 
   def fetch(&block : Hash(String, ::Clear::SQL::Any) -> Void)

@@ -8,7 +8,7 @@ class Clear::SQL::UpdateQuery
   alias UpdateInstruction = Hash(String, Updatable) | String
 
   @values : Array(UpdateInstruction) = [] of UpdateInstruction
-  @connection : Symbolic
+  @connection : String
   @table : String
 
   include Query::Connection
@@ -22,7 +22,7 @@ class Clear::SQL::UpdateQuery
     @connection_name = "default"
   end
 
-  def initialize(@connection : Symbolic, table, @wheres = [] of Clear::Expression::Node)
+  def initialize(@connection : String, table, @wheres = [] of Clear::Expression::Node)
     @table = table.to_s
     @connection_name = @connection
   end

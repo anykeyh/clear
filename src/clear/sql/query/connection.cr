@@ -1,8 +1,8 @@
 module Clear::SQL
   module Query::Connection
-    getter connection_name : Symbolic = "default"
+    getter connection_name : String = "default"
 
-    def use_connection(@connection_name : Symbolic)
+    def use_connection(@connection_name : String)
       self
     end
   end
