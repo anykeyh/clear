@@ -17,12 +17,12 @@ module SelectSpec
 
   def complex_query
     select_request.from(:users)
-                  .join(:role_users) { var("role_users.user_id") == users.id }
-                  .join(:roles) { var("role_users.role_id") == var("roles.id") }
-                  .where({role: ["admin", "superadmin"]})
-                  .order_by({priority: :desc, name: :asc})
-                  .limit(50)
-                  .offset(50)
+      .join(:role_users) { var("role_users.user_id") == users.id }
+      .join(:roles) { var("role_users.role_id") == var("roles.id") }
+      .where({role: ["admin", "superadmin"]})
+      .order_by({priority: :desc, name: :asc})
+      .limit(50)
+      .offset(50)
   end
 
   describe "Clear::SQL" do
@@ -122,15 +122,15 @@ module SelectSpec
         it "can build request with CTE" do
           # Simple CTE
           cte = select_request.from(:users_info).where("x > 10")
-          sql = select_request.from(:ui).with_cte("ui",cte).to_sql
+          sql = select_request.from(:ui).with_cte("ui", cte).to_sql
           sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE x > 10) SELECT * FROM ui"
 
-          #Complex CTE
-          cte1 = select_request.from(:users_info).where{a == b}
-          cte2 = select_request.from(:just_another_table).where{ users_infos.x == just_another_table.w }
+          # Complex CTE
+          cte1 = select_request.from(:users_info).where { a == b }
+          cte2 = select_request.from(:just_another_table).where { users_infos.x == just_another_table.w }
           sql = select_request.with_cte({ui: cte1, at: cte2}).from(:at).to_sql
-          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE (a = b)),"+
-                        " at AS (SELECT * FROM just_another_table WHERE ("+
+          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE (a = b))," +
+                        " at AS (SELECT * FROM just_another_table WHERE (" +
                         "users_infos.x = just_another_table.w)) SELECT * FROM at"
         end
       end
@@ -174,6 +174,11 @@ module SelectSpec
               select_request.from(:users).where("a LIKE :halo AND b LIKE :world",
                 {hello: "h", world: "w"})
             end
+          end
+
+          it "can prepare group by query" do
+            select_request.select("role").from(:users).group_by("role").order_by("role").to_sql.should eq \
+              "SELECT role FROM users GROUP BY role ORDER BY role ASC"
           end
         end
 
@@ -222,7 +227,8 @@ module SelectSpec
           it "can stack with `AND` operator" do
             now = Time.now
             r = select_request.from(:users).where { users.id == nil }.where {
-              var("users.updated_at") >= now }
+              var("users.updated_at") >= now
+            }
             r.to_sql.should eq "SELECT * FROM users WHERE (users.id IS NULL) " +
                                "AND (users.updated_at >= #{Clear::Expression[now]})"
           end
