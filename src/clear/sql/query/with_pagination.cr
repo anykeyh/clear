@@ -10,9 +10,7 @@ module Clear::SQL::Query::WithPagination
   def paginate(page : Int32 = DEFAULT_PAGE, per_page : Int32 = DEFAULT_LIMIT)
     # Need to clear these values to get total count first
     clear_limit.clear_offset
-    # TODO: this fails. Maybe something with clear_select? 
-    # @total_entries = count
-    @total_entries = Clear::SQL.connection.scalar("SELECT COUNT(*) #{print_froms} #{print_wheres}").as(Int64)
+    @total_entries = count
     
     # Calculate proper offset and set limit
     page = page < 1 ? 1 : page
