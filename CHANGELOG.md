@@ -1,7 +1,19 @@
 # v0.1.4alpha
 
+## Breaking changes
+- Migration to crystal 0.25.
+
+## Bug fixes
 - Fix #13 Calling count on paginated query
+- Fix #17 and implement `group_by` method.
+
+## Features
 - SQL Builder can now be used with model collection as subqueries.
+- Add methods for pagination (PR #16, thanks @jwoertink)
+- Add multi-connections system (PR #18, thanks @russ)
+- Add JSONB helpers
+- Migrating the wiki to the sources of the project, to make easy to have PR for
+  updating the documentation !
 
 # v0.1.3alpha
 

@@ -49,14 +49,11 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    @@connections = {} of String => DB::Database?
+    @@connections = {} of String => DB::Database
 
     def self.connection(connection) : DB::Database
-      if connection = @@connections.not_nil![connection]
-        connection.not_nil!
-      else
-        raise "The database connection is not initialized"
-      end
+      @@connections[connection]? || raise "The database connection " +
+                                          "`#{connection}` is not initialized"
     end
 
     alias Symbolic = String | Symbol
@@ -68,7 +65,7 @@ module Clear
     end
 
     def init(url : String)
-      @@connections.not_nil!["default"] = DB.open(url)
+      @@connections["default"] = DB.open(url)
     end
 
     def init(name : String, url : String)
@@ -77,7 +74,7 @@ module Clear
 
     def init(connections : Hash(Symbolic, String))
       connections.each do |name, url|
-        @@connections.not_nil![name] = DB.open(url)
+        @@connections[name.to_s] = DB.open(url)
       end
     end
 
