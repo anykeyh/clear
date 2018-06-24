@@ -1,17 +1,17 @@
 module Clear::SQL::Query::WithPagination
   DEFAULT_LIMIT = 50
-  DEFAULT_PAGE = 1
-  
+  DEFAULT_PAGE  =  1
+
   macro included
-    property total_entries : Int64? = nil  
-  end
+    property total_entries : Int64? = nil
+      end
 
   # Maybe this goes on the Collection?
   def paginate(page : Int32 = DEFAULT_PAGE, per_page : Int32 = DEFAULT_LIMIT)
     # Need to clear these values to get total count first
     clear_limit.clear_offset
     @total_entries = count
-    
+
     # Calculate proper offset and set limit
     page = page < 1 ? 1 : page
     @limit = per_page.to_i64
@@ -30,7 +30,7 @@ module Clear::SQL::Query::WithPagination
       (offset.as(Int64) / limit.as(Int64)) + 1
     end
   end
- 
+
   def total_pages
     if limit.nil? || total_entries.nil?
       1
