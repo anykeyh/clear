@@ -8,12 +8,11 @@ Clear is an ORM built for PostgreSQL and Crystal.
 
 |Resources| |
 |---|---|
-| Changelog | https://github.com/anykeyh/clear/blob/master/CHANGELOG.md |
-| Wiki Guide      | https://github.com/anykeyh/clear/wiki |
+| Changelog       | https://github.com/anykeyh/clear/blob/master/CHANGELOG.md |
+| Guide           | https://github.com/anykeyh/clear/tree/master/manual |
 | Simple Example  | https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr |
 | Documentation   | https://anykeyh.github.io/clear/ |
 | Source code     | https://github.com/anykeyh/clear |
-
 
 ## Features
 
@@ -704,7 +703,7 @@ ORM:
 - [X] Validation
 - [X] All logic of transaction, update, saving...
 - [ ] DB Views => In progress
-- [ ] Writing documentation
+- [X] Writing documentation
 - [ ] clear-cli tool => In progress
 - [ ] CitusDB Support ? => In mind
 - [ ] Filling this checklist and drink a beer
@@ -720,4 +719,5 @@ This shard is provided under the MIT license.
 
 All contributions are welcome ! As a specialized ORM for postgreSQL,
 be sure a great contribution on a very specific PG feature will be incorporated
-to this shard. I hope one day we will cover all the features of PG here !
+to this shard.
+I hope one day we will cover all the features of PG here !
