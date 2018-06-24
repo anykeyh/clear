@@ -4,7 +4,7 @@ module Clear::SQL::Query::WithPagination
 
   macro included
     property total_entries : Int64? = nil
-      end
+  end
 
   # Maybe this goes on the Collection?
   def paginate(page : Int32 = DEFAULT_PAGE, per_page : Int32 = DEFAULT_LIMIT)
@@ -47,6 +47,14 @@ module Clear::SQL::Query::WithPagination
   # current_page + 1 or nil if there is no next page
   def next_page
     current_page < total_pages ? (current_page + 1) : nil
+  end
+
+  def last_page?
+    next_page.nil?
+  end
+
+  def first_page?
+    current_page <= 1
   end
 
   # Helper method that is true when someone tries to fetch a page with a

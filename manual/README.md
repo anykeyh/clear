@@ -20,6 +20,7 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Event Hooks](model/Hooks.md)
 - [Migrations](migration/Migration.md)
 - [Polymorphism](model/Polymorphism.md)
+- [Different database connections](model/MultiConnection.md)
 
 ## Querying
 
@@ -29,4 +30,4 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Expression engine](querying/ExpressionEngine.md)
 - [Usage of SQL builder](querying/RequestBuilding.md)
 - [Transactions And savepoints](querying/Transaction.md)
-
+- [Pagination](querying/Pagination.md)
