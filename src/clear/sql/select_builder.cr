@@ -29,6 +29,7 @@ module Clear::SQL::SelectBuilder
   include Query::Fetch
   include Query::BeforeQuery
   include Query::CTE
+  include Query::WithPagination
   include Query::Aggregate
 
   def dup : self
