@@ -14,7 +14,7 @@ they are covered in other articles of this wiki !
 `echo "CREATE DATABASE sample_for_wiki;" | psql -U postgres`
 
 # Unleash the kraken !!!
-require "../../src/clear"
+require "clear"
 
 # Initialize the connection
 Clear::SQL.init("postgres://postgres@localhost/sample_for_wiki")

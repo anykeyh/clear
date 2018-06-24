@@ -1,4 +1,4 @@
-# v0.1.4alpha
+# master/HEAD
 
 ## Breaking changes
 - Migration to crystal 0.25.
