@@ -1,4 +1,4 @@
-Welcome to the Clear!
+Welcome to Clear!
 
 Clear is currently in alpha stage, but already used by the author in some applications.
 A lot of features have yet to be discovered, don't hesitate to make a pull request if something is impossible now, so I'll fix it.

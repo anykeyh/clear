@@ -2,9 +2,19 @@
 
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 
-Clear is an ORM built for PostgreSQL and Crystal.
+Clear is an ORM built specifically for PostgreSQL in Crystal.
+It follows Active Record design pattern, with emphasis on readability and
+a coverage of postgres advanced features like jsonb.
 
-## Resources
+## Getting started
+
+- [Please check the manual which cover most of the library here](https://github.com/anykeyh/clear/tree/master/manual)
+- [API Documentations](https://anykeyh.github.io/clear/)
+- [Source Code](https://github.com/anykeyh/clear)
+- [A simple example is available here](https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr)
+
+- [Changelog](https://github.com/anykeyh/clear/blob/master/CHANGELOG.md)
+
 
 |Resources| |
 |---|---|
@@ -717,7 +727,7 @@ This shard is provided under the MIT license.
 
 ## Contribute
 
-All contributions are welcome ! As a specialized ORM for postgreSQL,
+All contributions are welcome ! As a specialized ORM for PostgreSQL,
 be sure a great contribution on a very specific PG feature will be incorporated
 to this shard.
 I hope one day we will cover all the features of PG here !

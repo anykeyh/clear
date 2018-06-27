@@ -4,33 +4,38 @@ module Clear::SQL::Query::Having
   end
 
   def having(&block)
-    x = Clear::Expression.to_node(with Clear::Expression.new yield)
-    @havings << Clear::Expression.to_node(with Clear::Expression.new yield)
+    @havings << Clear::Expression.ensure_node!(with Clear::Expression.new yield)
 
     change!
   end
 
   def having(x : NamedTuple)
-    sql = x.map do |k, v|
-      case v
-      when Array
-        "#{k} IN (#{v.map { |it| Clear::Expression[it] }.join(", ")})"
-      when SelectBuilder
-        "#{k} IN (#{v.to_sql})"
-      else
-        "#{k} = #{Clear::Expression[v]}"
-      end
-    end.join(" AND ")
+    x.each do |k, v|
+      k = Clear::Expression::Node::Variable.new(k.to_s)
 
-    @havings << Clear::Expression::Node::Variable.new(sql)
+      @havings <<
+        case v
+        when Array
+          Clear::Expression::Node::InArray.new(k, v.map { |it| Clear::Expression[it] })
+        when SelectBuilder
+          Clear::Expression::Node::InSelect.new(k, v)
+        when Range
+          Clear::Expression::Node::InRange.new(k,
+            Clear::Expression[v.begin]..Clear::Expression[v.end],
+            v.exclusive?)
+        else
+          v = Clear::Expression::Node::Literal.new(v)
+          Clear::Expression::Node::DoubleOperator.new(k, v, "=")
+        end
+    end
 
     change!
   end
 
-  def having(str : String, parameters : Array(T)) forall T
+  def having(str : String, parameters : Array(T) | Tuple) forall T
     idx = -1
 
-    clause = str.gsub(/\?/) do |_|
+    clause = str.gsub("?") do |_|
       begin
         Clear::Expression[parameters[idx += 1]]
       rescue e : IndexError
@@ -66,8 +71,6 @@ module Clear::SQL::Query::Having
   end
 
   protected def print_havings
-    if @havings.any?
-      "HAVING " + @havings.map(&.resolve).join(" AND ")
-    end
+    {"HAVING ", @havings.map(&.resolve).join(" AND ")}.join if @havings.any?
   end
 end

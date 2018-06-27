@@ -9,6 +9,14 @@ class Clear::Expression::Node::NotBetween < Clear::Expression::Node
   end
 
   def resolve
-    "(#{@target.resolve} NOT BETWEEN #{Clear::Expression.safe_literal(@starts)} AND #{Clear::Expression.safe_literal(@ends)})"
+    {
+      "(",
+      @target.resolve,
+      " NOT BETWEEN ",
+      Clear::Expression[@starts],
+      " AND ",
+      Clear::Expression[@ends],
+      ")",
+    }.join
   end
 end

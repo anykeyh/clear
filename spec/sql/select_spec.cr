@@ -139,7 +139,7 @@ module SelectSpec
         context "using simple engine" do
           it "can use simple equals" do
             r = select_request.from(:users).where({user_id: 1})
-            r.to_sql.should eq "SELECT * FROM users WHERE user_id = 1"
+            r.to_sql.should eq "SELECT * FROM users WHERE (user_id = 1)"
           end
 
           it "can use `in` operators in case of array" do
@@ -152,8 +152,19 @@ module SelectSpec
             r.to_sql.should eq "SELECT * FROM users WHERE a = b"
           end
 
+          it "manages ranges" do
+            select_request.from(:users).where({x: 1..4}).to_sql
+              .should eq "SELECT * FROM users WHERE (x >= 1 AND x <= 4)"
+
+            select_request.from(:users).where({x: 1...4}).to_sql
+              .should eq "SELECT * FROM users WHERE (x >= 1 AND x < 4)"
+          end
+
           it "can prepare query" do
             r = select_request.from(:users).where("a LIKE ?", ["hello"])
+            r.to_sql.should eq "SELECT * FROM users WHERE a LIKE 'hello'"
+
+            r = select_request.from(:users).where("a LIKE ?", {"hello"})
             r.to_sql.should eq "SELECT * FROM users WHERE a LIKE 'hello'"
           end
 
@@ -235,12 +246,12 @@ module SelectSpec
 
           it "can use subquery into where clause" do
             r = select_request.from(:users).where { users.id.in?(complex_query.clear_select.select(:id)) }
-            r.to_sql.should eq "SELECT * FROM users WHERE users.id IN ( " +
+            r.to_sql.should eq "SELECT * FROM users WHERE users.id IN (" +
                                "SELECT id FROM users INNER JOIN role_users ON " +
                                "((role_users.user_id = users.id)) INNER JOIN roles" +
                                " ON ((role_users.role_id = roles.id)) WHERE role IN" +
                                " ('admin', 'superadmin') ORDER BY priority DESC, " +
-                               "name ASC LIMIT 50 OFFSET 50 )"
+                               "name ASC LIMIT 50 OFFSET 50)"
           end
 
           it "can build locks" do
@@ -264,6 +275,24 @@ module SelectSpec
           it "can check presence into array" do
             r = select_request.from(:users).where { raw("users.id").in?([1, 2, 3, 4]) }
             r.to_sql.should eq "SELECT * FROM users WHERE users.id IN (1, 2, 3, 4)"
+          end
+
+          it "can check presence into range" do
+            # Simple number
+            select_request.from(:users).where { users.id.in?(1..3) }.to_sql
+              .should eq "SELECT * FROM users WHERE (users.id >= 1 AND users.id <= 3)"
+
+            # Date range.
+            range = 2.day.ago..1.day.ago
+
+            select_request.from(:users).where { created_at.in?(range) }.to_sql
+              .should eq "SELECT * FROM users WHERE " +
+                         "(created_at >= #{Clear::Expression[range.begin]} AND" +
+                         " created_at <= #{Clear::Expression[range.end]})"
+
+            # Exclusive range
+            select_request.from(:users).where { users.id.in?(1...3) }.to_sql
+              .should eq "SELECT * FROM users WHERE (users.id >= 1 AND users.id < 3)"
           end
         end
       end

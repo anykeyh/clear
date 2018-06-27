@@ -14,6 +14,11 @@
 - Add JSONB helpers
 - Migrating the wiki to the sources of the project, to make easy to have PR for
   updating the documentation !
+- Add range support for `Sql::Node#in?` method:
+  ```crystal
+    last_week_users = User.query.where{ created_at.in?(7.day.ago..Time.now) }.count
+  ```
+- Refactoring of the nodes and clause of the SQL builder, avoiding array instantiation (usage of tuple instead) and starting to use Node as much as possible to build clauses.
 
 # v0.1.3alpha
 

@@ -52,8 +52,14 @@ abstract class Clear::Expression::Node
   define_operator("&", "AND")
   define_operator("|", "OR")
 
+  def in?(range : Range(B, E)) forall B, E
+    Node::InRange.new(self,
+      Clear::Expression[range.begin]..Clear::Expression[range.end],
+      range.exclusive?)
+  end
+
   def in?(arr : Array(T)) forall T
-    Node::InArray.new(self, arr.map { |x| Literal.new(x) })
+    Node::InArray.new(self, arr.map { |x| Clear::Expression[x] })
   end
 
   def in?(tuple : Tuple(*T)) forall T

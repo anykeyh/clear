@@ -8,7 +8,7 @@ module Clear::SQL::Query::CTE
   end
 
   def with_cte(tuple : NamedTuple)
-    tuple.each do |k,v|
+    tuple.each do |k, v|
       cte[k.to_s] = v
     end
     change!
@@ -16,20 +16,17 @@ module Clear::SQL::Query::CTE
 
   protected def print_ctes
     if cte.any?
-      o = "WITH "
+      {"WITH ",
+       cte.map do |name, cte_declaration|
+         value = if cte_declaration.responds_to?(:to_sql)
+                   cte_declaration.to_sql
+                 else
+                   cte_declaration.to_s
+                 end
 
-      o += cte.map do |name, cte_declaration|
-
-        value = if cte_declaration.responds_to?(:to_sql)
-          cte_declaration.to_sql
-        else
-          cte_declaration.to_s
-        end
-
-        "#{name} AS (#{value})"
-      end.join(", ")
-
-      o
+         {name, " AS (", value, ")"}.join
+       end.join(", "),
+      }.join
     end
   end
 end

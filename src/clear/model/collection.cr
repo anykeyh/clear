@@ -24,19 +24,21 @@ module Clear::Model
 
     # :nodoc:
     def initialize(
-      @cte = {} of String => Clear::SQL::Query::CTE::CTEAuthorized,
+      @is_distinct = false,
+      @cte = {} of String => Clear::SQL::SelectBuilder | String,
       @columns = [] of SQL::Column,
       @froms = [] of SQL::From,
       @joins = [] of SQL::Join,
       @wheres = [] of Clear::Expression::Node,
       @havings = [] of Clear::Expression::Node,
+      @windows = [] of {String, String},
       @group_bys = [] of String,
       @order_bys = [] of Clear::SQL::Query::OrderBy::Record,
       @limit = nil,
       @offset = nil,
       @lock = nil,
-      @tags = {} of String => Clear::SQL::Any,
       @before_query_triggers = [] of -> Void,
+      @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
       @cached_result = nil
     )
@@ -199,7 +201,7 @@ module Clear::Model
 
     # A convenient way to write `where{ condition }.first`
     def find(fetch_columns, &block) : T?
-      x = Clear::Expression.to_node(with Clear::Expression.new yield)
+      x = Clear::Expression.ensure_node!(with Clear::Expression.new yield)
       where(x).first(fetch_columns)
     end
 
@@ -210,7 +212,7 @@ module Clear::Model
 
     # A convenient way to write `where({any_column: "any_value"}).first!`
     def find!(fetch_columns = false, &block) : T
-      x = Clear::Expression.to_node(with Clear::Expression.new yield)
+      x = Clear::Expression.ensure_node!(with Clear::Expression.new yield)
       where(x).first!(fetch_columns)
     end
 

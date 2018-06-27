@@ -31,7 +31,7 @@ class Clear::Expression::Node::Variable < Clear::Expression::Node
   def resolve
     parent = @parent
     if parent
-      [parent.resolve, @name].join(".")
+      {parent.resolve, ".", @name}.join
     else # nil
       @name
     end

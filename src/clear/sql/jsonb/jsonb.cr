@@ -82,12 +82,12 @@ module Clear::SQL::JSONB
   # jsonb_eq("data.sub.key", "value")
   # ```
   #
-  # => `data @> '{"sub": {key: "value"}}' `
+  # => `data @> '{"sub": {"key": "value"}}' `
   def jsonb_eq(key, value)
     arr = jsonb_k2a(key)
 
     if arr.size == 1
-      return [arr[0], Clear::Expression[value]].join("=")
+      return [arr[0], Clear::Expression[value]].join(" = ")
     else
       return [arr[0], Clear::Expression[jsonb_arr2h(arr[1..-1], value).to_json]].join(" @> ")
     end

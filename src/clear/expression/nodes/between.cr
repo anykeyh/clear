@@ -7,7 +7,12 @@ class Clear::Expression::Node::Between < Clear::Expression::Node
   end
 
   def resolve
-    "(#{@target.resolve} BETWEEN " +
-      "#{Clear::Expression.safe_literal(@starts)} AND #{Clear::Expression.safe_literal(@ends)})"
+    {"(",
+     @target.resolve,
+     " BETWEEN ",
+     Clear::Expression.safe_literal(@starts),
+     " AND ",
+     Clear::Expression.safe_literal(@ends),
+     ")"}.join
   end
 end

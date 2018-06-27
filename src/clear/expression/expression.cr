@@ -89,11 +89,11 @@ class Clear::Expression
   end
 
   def self.safe_literal(x : String) : String
-    "'" + x.gsub(/\'/, "''") + "'"
+    {"'", x.gsub('\'', "''"), "'"}.join
   end
 
   def self.safe_literal(x : ::Clear::SQL::SelectBuilder)
-    "(#{x.to_sql})"
+    {"(", x.to_sql, ")"}
   end
 
   #
@@ -105,7 +105,7 @@ class Clear::Expression
   # Clear::Expression[Time.now, date: true] # < "2017-04-03"
   # ```
   def self.safe_literal(x : Time, date : Bool = false) : String
-    "'" + x.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT) + "'"
+    {"'", x.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT), "'"}.join
   end
 
   def self.safe_literal(x : Bool) : String
@@ -124,25 +124,22 @@ class Clear::Expression
     self.safe_literal(x.to_s)
   end
 
-  def self.to_node(node) : Node
-    case node
-    when Node
-      node
-    when Bool
-      # UPDATE: Having precomputed boolean return is
-      # probably a mistake using the Expression engine
-      # It is advisable to raise an error in this case,
-      # because a developer mistake can create a boolean where he doesn't want to.
-      raise ArgumentError.new("The expression engine discovered a runtime-evaluable condition.\n" +
-                              "It happens when a test is done with values on both sides.\n" +
-                              "Maybe a local variable is breaking the expression engine like here:\n" +
-                              "id = 1\n" +
-                              "Users.where{ id == nil }\n\n" +
-                              "In this case, please use `raw(\"id IS NULL\")` to allow the expression.")
-      # node = Node::Variable.new(node ? "TRUE" : "FALSE")
-    else
-      raise ArgumentError.new("Node is incorrect, it must be an ExpressionNode")
-    end
+  def self.ensure_node!(bool : Bool)
+    # UPDATE: Having precomputed boolean return is
+    # probably a mistake using the Expression engine
+    # It is advisable to raise an error in this case,
+    # because a developer mistake can create a boolean where he doesn't want to.
+    {% raise \
+         "The expression engine discovered a runtime-evaluable condition.\n" +
+         "It happens when a test is done with values on both sides.\n" +
+         "Maybe a local variable is breaking the expression engine like here:\n" +
+         "id = 1\n" +
+         "Users.where{ id == nil }\n\n" +
+         "In this case, please use `raw(\"id IS NULL\")` to allow the expression." %}
+  end
+
+  def self.ensure_node!(node : Node) : Node
+    node
   end
 
   # Return a node of the expression engine
@@ -152,7 +149,7 @@ class Clear::Expression
   def self.where(&block) : Node
     expression_engine = self.new
 
-    to_node(with expression_engine yield)
+    ensure_node!(with expression_engine yield)
   end
 
   # Not operator
