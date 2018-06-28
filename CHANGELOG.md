@@ -4,8 +4,9 @@
 - Migration to crystal 0.25.
 
 ## Bug fixes
-- Fix #13 Calling count on paginated query
+- Fix #13 Calling count on paginated query.
 - Fix #17 and implement `group_by` method.
+- Fix #18 ambiguous column with joins.
 
 ## Features
 - SQL Builder can now be used with model collection as subqueries.

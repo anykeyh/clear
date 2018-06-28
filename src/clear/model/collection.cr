@@ -94,9 +94,13 @@ module Clear::Model
       if cr
         cr.each(&block)
       else
-        fetch(fetch_all: true) do |hash|
-          yield(T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+        o = [] of T
+
+        fetch(fetch_all: false) do |hash|
+          o << T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
         end
+
+        o.each { |it| yield(it) }
       end
     end
 
