@@ -3,24 +3,26 @@ module Clear::SQL::Query::Join
     getter joins : Array(SQL::Join)
   end
 
-  def join(name : Symbolic, type = :inner, &block)
-    joins << Clear::SQL::Join.new(name, Clear::Expression.ensure_node!(with Clear::Expression.new yield), type)
+  protected def join_impl(name : Symbolic, type, clear_expr)
+    joins << Clear::SQL::Join.new(name, clear_expr, type)
     change!
+  end
+
+  def join(name : Symbolic, type = :inner, &block)
+    join_impl(name, type, Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
   def join(name : Symbolic, type = :inner)
-    joins << Clear::SQL::Join.new(name, nil, type)
-    change!
+    join_impl(name, type, nil)
   end
 
   def cross_join(name : Symbolic)
-    join(name, type: :cross)
+    join(name, :cross)
   end
 
   {% for j in ["left", "right", "full_outer"] %}
     def {{j.id}}_join(name : Symbolic, &block)
-      joins << Clear::SQL::Join.new(name, Clear::Expression.ensure_node!(with Clear::Expression.new yield), :{{j.id}})
-      change!
+      join_impl(name, :{{j.id}}, Clear::Expression.ensure_node!(with Clear::Expression.new yield))
     end
   {% end %}
 

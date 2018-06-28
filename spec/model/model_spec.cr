@@ -14,7 +14,7 @@ module ModelSpec
 
     belongs_to user : User, key_type: Int32?
 
-    self.table = "models_posts"
+    self.table = "model_posts"
   end
 
   class UserInfo
@@ -69,7 +69,7 @@ module ModelSpec
         t.timestamps
       end
 
-      create_table "models_posts" do |t|
+      create_table "model_posts" do |t|
         t.string "title", index: true
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
       end
@@ -325,6 +325,38 @@ module ModelSpec
           u.delete.should eq true
           u.persisted?.should eq false
           User.query.count.should eq 1
+        end
+      end
+    end
+
+    context "with join" do
+      it "resolves by default ambiguous columns in joins" do
+        temporary do
+          reinit
+
+          u = User.create!({first_name: "Join User"})
+          p = Post.create!({title: "A Post", user_id: u.id})
+
+          Post.query.join("model_users") { model_posts.user_id == model_users.id }.to_sql
+            .should eq "SELECT model_posts.* FROM model_posts INNER JOIN model_users " +
+                       "ON ((model_posts.user_id = model_users.id))"
+        end
+      end
+
+      it "resolve ambiguous columns in with_* methods" do
+        temporary do
+          reinit
+          u = User.create!({first_name: "Join User"})
+          p = Post.create!({title: "A Post", user_id: u.id})
+
+          user_with_a_post_minimum = User.query.distinct.join("model_posts") { model_posts.user_id == model_users.id }
+
+          user_with_a_post_minimum.to_sql.should eq \
+            "SELECT DISTINCT model_users.* FROM model_users INNER JOIN " +
+            "model_posts ON ((model_posts.user_id = model_users.id))"
+
+          user_with_a_post_minimum.with_posts.each do |u|
+          end
         end
       end
     end

@@ -52,7 +52,7 @@ module Clear::Model::HasRelations
           %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
 
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
-          sub_query = self.dup.clear_select.select("#{%primary_key}")
+          sub_query = self.dup.clear_select.select("#{{{@type}}.table}.#{%primary_key}")
 
           @cache.active "{{method_name}}"
 
@@ -113,7 +113,7 @@ module Clear::Model::HasRelations
 
           @cache.active "{{method_name}}"
 
-          sub_query = self.dup.clear_select.select(self_type.pkey)
+          sub_query = self.dup.clear_select.select("#{{{@type}}.table}.#{self_type.pkey}")
 
           qry = {{relation_type}}.query.join(%through_table){
             var("#{%through_table}.#{%through_key}") == var("#{%final_table}.#{%final_pkey}")
@@ -190,7 +190,7 @@ module Clear::Model::HasRelations
           %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
 
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
-          sub_query = self.dup.clear_select.select("#{%primary_key}")
+          sub_query = self.dup.clear_select.select("#{{{@type}}.table}.#{%primary_key}")
 
           qry = {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }
           block.call(qry)
@@ -286,7 +286,7 @@ module Clear::Model::HasRelations
     class Collection
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
         before_query do
-          sub_query = self.dup.clear_select.select({{foreign_key.id.stringify}})
+          sub_query = self.dup.clear_select.select("#{{{@type}}.table}.{{foreign_key.id}}")
 
           cached_qry = {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) }
 
