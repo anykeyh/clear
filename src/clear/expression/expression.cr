@@ -68,6 +68,10 @@ class Clear::Expression
     def to_s
       @value
     end
+
+    def to_json(b = nil)
+      @value
+    end
   end
 
   alias AvailableLiteral = Int8 | Int16 | Int32 | Int64 | Float32 | Float64 |

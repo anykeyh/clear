@@ -12,14 +12,15 @@ module Clear::Validation::Helper
   # Usage example:
   #
   # ```crystal
-  #  ensure_than email, "must be an email" do |v|
-  #     EmailRegexp.valid?(v)
-  #  end
+  # ensure_than email, "must be an email" do |v|
+  #   EmailRegexp.valid?(v)
+  # end
   # ```
   macro ensure_than(field, message, &block)
 
     if {{field.id}}_column.defined?
       o = {{field.id}}
+
       fn = Clear::Util.lambda(typeof(o), Object) {{block}}
 
       unless fn.call(o)
@@ -28,5 +29,4 @@ module Clear::Validation::Helper
     end
 
   end
-
 end

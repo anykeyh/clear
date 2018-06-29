@@ -20,10 +20,9 @@ module JSONBSpec
       end
 
       it "can generate arrow writing" do
-        jsonb_text("data.x.y.z").should eq("data->'x'->'y'->'z'::text")
-        jsonb_text("data.x.\\.y.z").should eq("data->'x'->'.y'->'z'::text")
-        jsonb_text("data.x.y'b.z").should eq("data->'x'->'y''b'->'z'::text")
-        jsonb_text("data").should eq("data::text")
+        jsonb_resolve("data", "x.y.z").should eq("data->'x'->'y'->>'z'")
+        jsonb_resolve("data", "x.\\.y.z").should eq("data->'x'->'.y'->>'z'")
+        jsonb_resolve("data", "x.y'b.z").should eq("data->'x'->'y''b'->>'z'")
       end
 
       it "can use `?|` operator" do
@@ -39,18 +38,31 @@ module JSONBSpec
       end
 
       it "can use @> operator" do
-        jsonb_eq("data.x.y", "value").should eq("data @> '{\"x\":{\"y\":\"value\"}}'")
-        jsonb_eq("data.x.y", 1).should eq("data @> '{\"x\":{\"y\":1}}'")
+        jsonb_eq("data", "x.y", "value").should eq("data @> '{\"x\":{\"y\":\"value\"}}'")
+        jsonb_eq("data", "x.y", 1).should eq("data @> '{\"x\":{\"y\":1}}'")
       end
 
-      it "fits with the expression engine" do
-        Clear::SQL.select("*").from("users")
-          .where { jsonb_eq("data.security.role", "admin") }.to_sql
-          .should eq %(SELECT * FROM users WHERE data @> '{"security":{"role":"admin"}}')
+      describe "Expression engine" do
+        it "use -> operator when it cannot test presence" do
+          Clear::SQL.select("*").from("users")
+            .where { data.jsonb("personal email").like "%@gmail.com" }.to_sql
+            .should eq %(SELECT * FROM users WHERE (data->>'personal email' LIKE '%@gmail.com'))
 
-        Clear::SQL.select("*").from("users")
-          .where { jsonb_text("data.personal email").like "%@gmail.com" }.to_sql
-          .should eq %(SELECT * FROM users WHERE (data->'personal email'::text LIKE '%@gmail.com'))
+          # v-- Usage of 'raw' should trigger usage of arrow, since it's not a literal.
+          Clear::SQL.select.from("users")
+            .where { data.jsonb("test") == raw("afunction()") }.to_sql
+            .should eq %(SELECT * FROM users WHERE (data->>'test' = afunction()))
+        end
+
+        it "merges the jsonb instructions (optimization)" do
+          Clear::SQL.select("*").from("users")
+            .where {
+              (data.jsonb("security.role") == "admin") &
+                (data.jsonb("security.level") == 1)
+            }.to_sql
+            .should eq "SELECT * FROM users WHERE (data @> '{\"security\":{\"role\":\"admin\"}}') OR " +
+                       "(data @> '{\"security\":{\"role\":1}}')"
+        end
       end
     end
   end

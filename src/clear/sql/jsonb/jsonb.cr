@@ -1,34 +1,61 @@
-# List of helpers for JSONB
+#
+# ## JSONB Integration with Clear
+#
+# Clear supports natively postgres jsonb columns
+#
+# Functions can be used calling or including Clear::SQL::JSONB methods as helper methods:
+#
+# ```crystal
+# class MyClass
+#   include Clear::SQL::JSONB
+#
+#   def create_sql_with_json
+#     Clear::SQL.select.where(jsonb_any_exists?("attributes", ["a", "b", "c"]))
+#     # ^-- operator `?|`, if the keys a, b or c exists in the jsonb table 'attributes'
+#   end
+# end
+# ```
+# Moreover, jsonb is directly integrated into the Expression Engine.
+# For that, just call `jsonb` after a variable to activate the methods:
+#
+# ### Filter by jsonb
+#
+# ```crystal
+# Product.query.where { (attributes.jsonb("category") == "Book") & (attributes.jsonb("author.name") == "Philip K. Dick") }
+# # ^-- Will produce optimized for gin index jsonb filter query:
+# # WHERE attributes @> '{"category": "Book", "author": {"name": "Philip K. Dick"} }'::jsonb
+# ```
+#
 #
 require "json"
 
 module Clear::SQL::JSONB
   extend self
 
-  alias JSONBKey = JSONBHash | String | Int32 | Int64
+  alias JSONBKey = JSONBHash | Clear::Expression::AvailableLiteral
   alias JSONBHash = Hash(String, JSONBKey)
 
   # Transform a key to a hash
-  def jsonb_k2h(key : String) : JSONBHash
-    jsonb_arr2h(jsonb_k2a(key))
+  def jsonb_k2h(key : String, value : JSONBKey) : JSONBHash
+    jsonb_arr2h(jsonb_k2a(key), value)
   end
 
   # jsonb `?|` operator
   # Do any of these array strings exist as top-level keys?
   #
   def jsonb_any_exists?(field, keys : Array(String))
-    [field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"].join(" ?| ")
+    {field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"}.join(" ?| ")
   end
 
   # Does the string exist as a top-level key within the JSON value?
   def jsonb_exists?(field, value)
-    [field, Clear::SQL.sanitize(value)].join(" ? ")
+    {field, Clear::SQL.sanitize(value)}.join(" ? ")
   end
 
   # jsonb `?&` operator
   # Do all of these array strings exist as top-level keys?
   def jsonb_all_exists?(field, keys : Array(String))
-    [field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"].join(" ?& ")
+    {field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"}.join(" ?& ")
   end
 
   # :nodoc:
@@ -83,13 +110,25 @@ module Clear::SQL::JSONB
   # ```
   #
   # => `data @> '{"sub": {"key": "value"}}' `
-  def jsonb_eq(key, value)
+  def jsonb_eq(field, key, value)
     arr = jsonb_k2a(key)
 
-    if arr.size == 1
-      return [arr[0], Clear::Expression[value]].join(" = ")
+    if arr.empty?
+      return {field, Clear::Expression[value]}.join(" = ")
     else
-      return [arr[0], Clear::Expression[jsonb_arr2h(arr[1..-1], value).to_json]].join(" @> ")
+      return {field, Clear::Expression[jsonb_arr2h(arr, value).to_json]}.join(" @> ")
+    end
+  end
+
+  def jsonb_resolve(field, arr : Array(String)) : String
+    return field if arr.empty?
+
+    arr = arr.map { |x| Clear::Expression[x] }
+
+    if arr.size == 1
+      {field, arr[0]}.join("->>")
+    else
+      {([field] + arr[0..-2]).join("->"), arr[-1]}.join("->>")
     end
   end
 
@@ -97,27 +136,11 @@ module Clear::SQL::JSONB
   #
   # ```crystal
   # jsonb_text("data", "sub.key").like("user%")
-  # # => "data->'sub'->'key'::text LIKE 'user%'"
+  # # => "data->'sub'->>'key' LIKE 'user%'"
   # ```
   #
-  def jsonb_text(key)
+  def jsonb_resolve(field, key : String)
     arr = jsonb_k2a(key)
-    arr.map_with_index do |v, idx|
-      idx == 0 ? v : Clear::Expression[v]
-    end.join("->") + "::text"
+    jsonb_resolve(field, arr)
   end
-end
-
-# Add json helpers methods into expression engine.
-class Clear::Expression
-  # Delegate all the methods of Clear::SQL::JSONB methods
-  {% for method in Clear::SQL::JSONB.methods %}
-    def {{method.name}}({{method.args.join(", ").id}})
-      {% arg_names = [] of String %}
-      {% for arg in method.args %}
-        {% arg_names << arg.name %}
-      {% end %}
-      raw(Clear::SQL::JSONB.{{method.name}}({{arg_names.join(", ").id}}))
-    end
-  {% end %}
 end

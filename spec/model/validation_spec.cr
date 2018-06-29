@@ -25,13 +25,13 @@ module ValidationSpec
     def validate
       ensure_than email, "must be email", &.strip.=~(/^[a-z0-9_+\.]+@[a-z0-9_\.]+$/i)
       ensure_than email, "must not be a free email" do |value|
-        value = value.strip
+        v = value.strip
 
         ![
           /gmail\.com$/,
           /hotmail\.[A-Za-z\.]+$/,
           /yahoo.[A-Za-z\.]+$/,
-        ].any? { |x| value =~ x }
+        ].any? { |x| v =~ x }
       end
     end
   end
