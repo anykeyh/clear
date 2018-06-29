@@ -83,7 +83,7 @@ module ModelSpec
 
   describe "Clear::Model" do
     context "fields management" do
-      it "can load from array" do
+      it "can load from tuple" do
         temporary do
           reinit
           u = User.new({id: 123})

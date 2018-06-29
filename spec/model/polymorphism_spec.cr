@@ -6,9 +6,9 @@ module PolymorphismSpec
 
     self.table = "polymorphs"
 
-    polymorphic   ConcreteClass1,
-                  ConcreteClass2,
-                  through: "type"
+    polymorphic ConcreteClass1,
+      ConcreteClass2,
+      through: "type"
 
     abstract def print_value : String
   end
@@ -73,25 +73,38 @@ module PolymorphismSpec
       end
     end
 
-    it "filter the subclass using the type column" do
+    it "filters the subclass using the type column" do
       temporary do
         reinit
 
-        5.times do
-          ConcreteClass1.create({integer_value: 1})
-        end
-
-        10.times do
-          ConcreteClass2.create({string_value: "Yey"})
-        end
+        5.times { ConcreteClass1.create({integer_value: 1}) }
+        10.times { ConcreteClass2.create({string_value: "Yey"}) }
 
         ConcreteClass1.query.count.should eq 5
         ConcreteClass2.query.count.should eq 10
         AbstractClass.query.count.should eq 15
-
       end
     end
 
-  end
+    it "loads the model correctly" do
+      temporary do
+        reinit
 
+        5.times { ConcreteClass1.create({integer_value: 1}) }
+        10.times { ConcreteClass2.create({string_value: "Yey"}) }
+
+        c1, c2 = 0, 0
+        AbstractClass.query.each do |mdl|
+          if mdl.is_a? ConcreteClass1
+            c1 += 1
+          elsif mdl.is_a? ConcreteClass2
+            c2 += 1
+          end
+        end
+
+        c1.should eq 5
+        c2.should eq 10
+      end
+    end
+  end
 end
