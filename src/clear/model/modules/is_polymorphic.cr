@@ -6,10 +6,10 @@ module Clear::Model::IsPolymorphic
   end
 
   abstract class Factory
-    abstract def build(h : Hash(String, ::Clear::SQL::Any ),
-      cache : Clear::Model::QueryCache? = nil,
-      persisted = false,
-      fetch_columns = false ) : Clear::Model
+    abstract def build(h : Hash(String, ::Clear::SQL::Any),
+                       cache : Clear::Model::QueryCache? = nil,
+                       persisted = false,
+                       fetch_columns = false) : Clear::Model
   end
 
   macro included
@@ -82,7 +82,7 @@ module Clear::Model::IsPolymorphic
           when {{c.id}}.name
             {{c.id}}.new(h, cache, persisted, fetch_columns)
         {% end %}
-        when Nil
+        when nil
           raise "No data in column #{@through}, impossible to instantiate !"
         else
           raise "Unknown class: #{h[@through]}"
@@ -92,5 +92,4 @@ module Clear::Model::IsPolymorphic
 
     @@factory = Factory.new({{through}})
   end
-
 end

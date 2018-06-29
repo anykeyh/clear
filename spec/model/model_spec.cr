@@ -335,7 +335,8 @@ module ModelSpec
           reinit
 
           u = User.create!({first_name: "Join User"})
-          p = Post.create!({title: "A Post", user_id: u.id})
+
+          Post.create!({title: "A Post", user_id: u.id})
 
           Post.query.join("model_users") { model_posts.user_id == model_users.id }.to_sql
             .should eq "SELECT model_posts.* FROM model_posts INNER JOIN model_users " +
@@ -347,7 +348,7 @@ module ModelSpec
         temporary do
           reinit
           u = User.create!({first_name: "Join User"})
-          p = Post.create!({title: "A Post", user_id: u.id})
+          Post.create!({title: "A Post", user_id: u.id})
 
           user_with_a_post_minimum = User.query.distinct.join("model_posts") { model_posts.user_id == model_users.id }
 
@@ -355,8 +356,7 @@ module ModelSpec
             "SELECT DISTINCT model_users.* FROM model_users INNER JOIN " +
             "model_posts ON ((model_posts.user_id = model_users.id))"
 
-          user_with_a_post_minimum.with_posts.each do |u|
-          end
+          user_with_a_post_minimum.with_posts.each { } # Should just execute
         end
       end
     end
