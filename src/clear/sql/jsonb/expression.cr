@@ -5,12 +5,17 @@ class Clear::Expression::Node::JSONB::Field < Clear::Expression::Node
 
   getter field : Node
   getter key : String
+  getter cast : String?
 
-  def initialize(@field, @key)
+  def initialize(@field, @key, @cast = nil)
   end
 
   def resolve
-    jsonb_resolve(@field.resolve, jsonb_k2a(key))
+    jsonb_resolve(@field.resolve, jsonb_k2a(key), @cast)
+  end
+
+  def cast(@cast)
+    self
   end
 
   def ==(value : Clear::Expression::Node)
@@ -35,35 +40,26 @@ class Clear::Expression::Node::JSONB::Equality < Clear::Expression::Node
   def resolve
     {@jsonb_field, Clear::Expression[@value.to_json]}.join(" @> ")
   end
-
-  # In case of AND with another JSON equality test
-  #   we merge both expression in only one !
-  def &(other : self)
-    if (other.jsonb_field == jsonb_field)
-      Clear::Expression::Node::JSONB::Equality.new(jsonb_field,
-        Clear::Util.hash_union(value, other.value)
-      )
-    else
-      super(other)
-    end
-  end
 end
 
-class Clear::Expression::Node::Variable < Clear::Expression::Node
+class Clear::Expression::Node
   def jsonb_key_exists?(key : String)
     Clear::Expression::Node::DoubleOperator.new(self, Clear::Expression::Node::Literal.new(key), "?")
   end
 
-  def jsonb_any_key_exists?(keys : Array(String))
+  # :no_doc:
+  private def _jsonb_keys_exists(keys : Array(T), op) forall T
     Clear::Expression::Node::DoubleOperator.new(self,
-      {"array[", keys.join(", "), "]"}.join
-    ,"?|")
+      Clear::Expression::Node::PGArray(T).new(keys)
+    ,op)
   end
 
-  def jsonb_all_keys_exists?(keys : Array(String))
-    Clear::Expression::Node::DoubleOperator.new(self,
-      {"array[", keys.join(", "), "]"}.join
-    ,"?&")
+  def jsonb_any_key_exists?(keys : Array(T)) forall T
+    _jsonb_keys_exists(keys, "?|")
+  end
+
+  def jsonb_all_keys_exists?(keys : Array(T)) forall T
+    _jsonb_keys_exists(keys, "?&")
   end
 
   def jsonb(key : String)

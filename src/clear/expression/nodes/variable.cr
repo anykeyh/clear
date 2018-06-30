@@ -21,8 +21,8 @@ class Clear::Expression::Node::Variable < Clear::Expression::Node
 
   macro method_missing(call)
     {% if call.args.size > 0 %}
-      args = {{call.args}}.map{|x| Clear::Expression[x] }.join(", ")
-      return Node::Variable.new("{{call.name.id}}( #{args} )", self)
+      args = Clear::Expression[{{call.args}}].join(", ")
+      return Node::Variable.new("{{call.name.id}}(#{args})", self)
     {% else %}
       return Node::Variable.new({{call.name.id.stringify}}, self)
     {% end %}

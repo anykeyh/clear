@@ -12,7 +12,7 @@
 - SQL Builder can now be used with model collection as subqueries.
 - Add methods for pagination (PR #16, thanks @jwoertink)
 - Add multi-connections system (PR #18, thanks @russ)
-- Add JSONB helpers
+- Add JSONB helpers in expression engine. Check the manual
 - Migrating the wiki to the sources of the project, to make easy to have PR for
   updating the documentation !
 - Add range support for `Sql::Node#in?` method:

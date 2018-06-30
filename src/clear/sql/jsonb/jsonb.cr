@@ -120,16 +120,11 @@ module Clear::SQL::JSONB
     end
   end
 
-  def jsonb_resolve(field, arr : Array(String)) : String
+  def jsonb_resolve(field, arr : Array(String), cast = nil) : String
     return field if arr.empty?
-
-    arr = arr.map { |x| Clear::Expression[x] }
-
-    if arr.size == 1
-      {field, arr[0]}.join("->>")
-    else
-      {([field] + arr[0..-2]).join("->"), arr[-1]}.join("->>")
-    end
+    o = ([field] + Clear::Expression[arr]).join("->")
+    o += "::#{cast}" if cast
+    o
   end
 
   # Return text selector for the field/key :
@@ -139,8 +134,8 @@ module Clear::SQL::JSONB
   # # => "data->'sub'->>'key' LIKE 'user%'"
   # ```
   #
-  def jsonb_resolve(field, key : String)
+  def jsonb_resolve(field, key : String, cast = nil)
     arr = jsonb_k2a(key)
-    jsonb_resolve(field, arr)
+    jsonb_resolve(field, arr, cast)
   end
 end

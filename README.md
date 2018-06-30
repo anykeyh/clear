@@ -3,8 +3,55 @@
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 
 Clear is an ORM built specifically for PostgreSQL in Crystal.
-It follows Active Record design pattern, with emphasis on readability and
-a coverage of postgres advanced features like jsonb.
+
+It follows Active Record design pattern, with emphasis on readability and a
+native coverage of Postgres advanced features like jsonb, hstore, ts-vector....
+
+It is in active development and actively maintained !
+
+## Why to use Clear ?
+
+You want to use Clear if:
+
+- [X] You want an expressive ORM. Put straight your thought to your code !
+- [X] You'd like to use advanced Postgres features without hassle
+- [X] You'd like to have your issue fixed in a day or two (we are active !)
+
+You don't want to use Clear if:
+
+- [ ] You need pure performance. Or you can use just the SQL builder API.
+- [ ] You're obviously not on PostgreSQL
+- [ ] You need something which doesn't evolve (e.g. production ready).
+      Clear is still in alpha (but starting to mature !).
+
+## Features
+
+- Active Record pattern based ORM
+- Expressiveness as mantra - even with advanced features like jsonb, regexp... -
+```crystal
+  # Like ...
+  Product.query.where{ ( type == "Book" ) & ( metadata.jsonb("author.full_name") == "Philip K. Dick" ) }
+  # ^--- will use @> operator, to relay on your gin index. For real.
+
+  Product.query.where{ ( products.type == "Book" ) & ( products.metadata.jsonb("author.full_name") != "Philip K. Dick" ) }
+  # ^--- this time will use ->> notation, because no optimizations possible :/
+
+  # Or...
+  User.query.where{ created_at.in? 5.days.ago .. 1.day.ago }
+
+  # Or even...
+  ORM.query.where{ ( description =~ /(^| )awesome($| )/i ) }.first!.name # Clear! :-)
+```
+- Proper debug information
+  - Log and colorize query. Show you the last query when your code crash !
+  - If failing on compile for a good reason, give proper explaination !
+- Migration system
+- Validation system
+- N+1 query avoidance strategy
+- Class polymorphism (table only, not in relations yet)
+- Transaction, rollback, savepoint
+- Access to CTE, locks, cursors, scope, pagination, join, window, multi-connection and many others features
+- Advanced model lifecycle
 
 ## Getting started
 
@@ -12,7 +59,6 @@ a coverage of postgres advanced features like jsonb.
 - [API Documentations](https://anykeyh.github.io/clear/)
 - [Source Code](https://github.com/anykeyh/clear)
 - [A simple example is available here](https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr)
-
 - [Changelog](https://github.com/anykeyh/clear/blob/master/CHANGELOG.md)
 
 

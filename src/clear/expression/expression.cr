@@ -80,8 +80,8 @@ class Clear::Expression
 
   # fastest way to call self.safe_literal
   # See `safe_literal(x : _)`
-  def self.[](*args) : String
-    safe_literal(*args)
+  def self.[](arg)
+    safe_literal(arg)
   end
 
   def self.safe_literal(x : Number) : String
@@ -98,6 +98,14 @@ class Clear::Expression
 
   def self.safe_literal(x : ::Clear::SQL::SelectBuilder)
     {"(", x.to_sql, ")"}
+  end
+
+  def self.safe_literal(x : ::Clear::Expression::Node)
+    x.resolve
+  end
+
+  def self.safe_literal(x : Array(AvailableLiteral)) : Array(String)
+    x.map { |item| self.safe_literal(item) }
   end
 
   #
@@ -190,8 +198,8 @@ class Clear::Expression
 
   macro method_missing(call)
      {% if call.args.size > 0 %}
-       args = {{call.args}}.map{|x| Clear::Expression[x] }.join(", ")
-       return Node::Variable.new("{{call.name.id}}( #{args} )")
+       args = {{call.args}}.map{ |x| Clear::Expression[x] }.join(", ")
+       return Node::Variable.new("{{call.name.id}}(#{args})")
      {% else %}
        return Node::Variable.new({{call.name.id.stringify}})
      {% end %}
