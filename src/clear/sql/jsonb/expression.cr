@@ -23,7 +23,11 @@ class Clear::Expression::Node::JSONB::Field < Clear::Expression::Node
   end
 
   def ==(value : _) # << For other type, literalize and use smart JSONB equality
-    Clear::Expression::Node::JSONB::Equality.new(field.resolve, jsonb_k2h(key, value))
+    if @cast
+      super(value)
+    else
+      Clear::Expression::Node::JSONB::Equality.new(field.resolve, jsonb_k2h(key, value))
+    end
   end
 end
 

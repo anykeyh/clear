@@ -31,3 +31,7 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Usage of SQL builder](querying/RequestBuilding.md)
 - [Transactions And savepoints](querying/Transaction.md)
 - [Pagination](querying/Pagination.md)
+
+## Advanced
+
+- [JSONB integration](querying/Jsonb.md)
