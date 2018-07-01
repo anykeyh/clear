@@ -16,8 +16,9 @@ module Clear::Migration
     getter column_operations : Array(ColumnOperation) = [] of ColumnOperation
     getter index_operations : Array(IndexOperation) = [] of IndexOperation
     getter fkey_operations : Array(FkeyOperation) = [] of FkeyOperation
+    getter migration : Clear::Migration
 
-    def initialize(@name, @is_create)
+    def initialize(@migration, @name, @is_create)
       raise "Not yet implemented" unless is_create?
     end
 
@@ -224,14 +225,14 @@ module Clear::Migration
     # ```
     #
     def create_table(name, id = true, &block)
-      table = Table.new(name.to_s, is_create: true)
+      table = Table.new(self.as(Clear::Migration), name.to_s, is_create: true)
 
       if id
         table.bigserial :id, primary: true
       end
 
-      yield(table)
       self.add_operation(table)
+      yield(table)
     end
   end
 end

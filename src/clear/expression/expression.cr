@@ -202,6 +202,18 @@ class Clear::Expression
     raw(x)
   end
 
+  # Because many postgresql operators are not transcriptable in Crystal lang,
+  # this helpers helps to write the expressions:
+  # ```crystal
+  # where { op(jsonb_field, "something", "?") } #<< Return "jsonb_field ? 'something'"
+  #
+  def op(a : (Node | AvailableLiteral), b : (Node | AvailableLiteral), op : String)
+    a = Node::Literal.new(a) if a.is_a?(AvailableLiteral)
+    b = Node::Literal.new(b) if b.is_a?(AvailableLiteral)
+
+    Node::DoubleOperator.new(a, b, op)
+  end
+
   macro method_missing(call)
      {% if call.args.size > 0 %}
        args = {{call.args}}.map{ |x| Clear::Expression[x] }.join(", ")

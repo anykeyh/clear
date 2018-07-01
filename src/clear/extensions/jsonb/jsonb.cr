@@ -29,6 +29,8 @@
 #
 require "json"
 
+require "./**"
+
 module Clear::SQL::JSONB
   extend self
 
@@ -138,4 +140,8 @@ module Clear::SQL::JSONB
     arr = jsonb_k2a(key)
     jsonb_resolve(field, arr, cast)
   end
+end
+
+class Clear::Expression::Node
+  include Clear::Expression::JSONB::Node
 end
