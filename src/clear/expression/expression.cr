@@ -108,6 +108,12 @@ class Clear::Expression
     x.map { |item| self.safe_literal(item) }
   end
 
+  # Return unsafe string injected to the query.
+  #   can be used for example in `insert` query building
+  def self.unsafe(x)
+    Clear::Expression::UnsafeSql.new(x)
+  end
+
   #
   # Safe literal of a time is the time in the database format
   # @params date

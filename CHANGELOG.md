@@ -12,7 +12,7 @@
 - SQL Builder can now be used with model collection as subqueries.
 - Add methods for pagination (PR #16, thanks @jwoertink)
 - Add multi-connections system (PR #18, thanks @russ)
-- Add JSONB helpers in expression engine. Check the manual
+- Add JSONB helpers in expression engine. Check the manual !
 - Migrating the wiki to the sources of the project, to make easy to have PR for
   updating the documentation !
 - Add range support for `Sql::Node#in?` method:
@@ -20,6 +20,11 @@
     last_week_users = User.query.where{ created_at.in?(7.day.ago..Time.now) }.count
   ```
 - Refactoring of the nodes and clause of the SQL builder, avoiding array instantiation (usage of tuple instead) and starting to use Node as much as possible to build clauses.
+- Add `Clear::Expression.unsafe` which does exactly what it says:
+  ```crystal
+  where("a = :a AND b = :b", {a: "test", b: Clear::Expression.unsafe("NOW()") })
+  # -> WHERE a = 'test' AND b = NOW()
+  ```
 
 # v0.1.3alpha
 

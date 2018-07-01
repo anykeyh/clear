@@ -43,9 +43,17 @@ Using equality testing between a jsonb path and a literal will use the indexable
 notation `@>` :
 
 ```crystal
-where{ data.jsonb('a.b.c') = 1 }
+where{ data.jsonb('a.b.c') == 1 }
 #output:
 # data @> '{"a":{"b":{"c":1}}}'
+```
+
+In the case the operation is not indexable (e.g. the value is variable, operator is not equality...), Clear will automatically switch back  to the arrow `->` notation:
+
+```crystal
+where{ data.jsonb('a.b.c') == raw("NOW()") }
+# output:
+# data->'a'->'b'->'c' = NOW()
 ```
 
 #### Casting
