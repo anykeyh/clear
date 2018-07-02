@@ -23,4 +23,3 @@ module Clear::Expression::JSONB::Node
     Clear::Expression::Node::JSONB::Field.new(self, key)
   end
 end
-

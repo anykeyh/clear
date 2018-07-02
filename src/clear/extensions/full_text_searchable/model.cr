@@ -22,7 +22,7 @@ module Clear::Model::FullTextSearchable
     currtoken = [] of Char
     arr_tokens = [] of {Symbol?, String}
 
-    text.chars.each_with_index do |c, idx|
+    text.chars.each do |c|
       case c
       when '\''
         if quote_char.nil?

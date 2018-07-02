@@ -7,10 +7,13 @@ It's the case currently for example for `inet`
 
 But you can convert and old theses type easily!
 
-In your column definition:
+All you need to do is to pass to your column definition line the optional argument
+`converter` with a module or class which provide the methods `to_column` and `to_db` (see example below).
+
+### Example
 
 ```crystal
-
+# A special type not mapped by Clear
 struct InetAddress
   initialize(s : Slice(UInt8))
     # do the convertion here
@@ -39,6 +42,7 @@ struct InetAddress
   end
 end
 
+# In your model
 column ip_address : InetAddress, converter: InetAddress::Converter
 
 ```

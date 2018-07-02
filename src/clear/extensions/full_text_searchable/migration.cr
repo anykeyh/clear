@@ -12,11 +12,10 @@ struct Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operati
   getter catalog : String
   getter dest_field : String
 
-  getter multi_lang : String?
   getter src_fields : Array({String, Char})
 
   def initialize(@table, @src_fields, @catalog = "pg_catalog.english",
-                 @multi_lang = nil, trigger_name = nil, function_name = nil,
+                 trigger_name = nil, function_name = nil,
                  @dest_field = "full_text_vector")
     raise "Source fields cannot be empty" if @src_fields.empty?
 
@@ -42,11 +41,7 @@ struct Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operati
   end
 
   private def print_trigger : Array(String)
-    op = if ml = @multi_lang
-           raise "TODO"
-         else
-           "new.#{dest_field} := #{print_concat_rules};"
-         end
+    op = "new.#{dest_field} := #{print_concat_rules};"
 
     cr_fn = <<-SQL
       CREATE OR REPLACE FUNCTION #{function_name}() RETURNS trigger AS $$
@@ -66,11 +61,7 @@ struct Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operati
   end
 
   private def print_udpate_current_data
-    op = if ml = @multi_lang
-           raise "TODO"
-         else
-           print_concat_rules(use_new: false)
-         end
+    op = print_concat_rules(use_new: false)
 
     return [Clear::SQL.update(table)
       .set({"#{dest_field}" => Clear::Expression.unsafe(op)}).to_sql]
@@ -92,26 +83,26 @@ end
 module Clear::Migration::FullTextSearchableTableHelpers
   def full_text_searchable(on : Array(Tuple(String, Char)),
                            column_name = "full_text_vector", catalog = "pg_catalog.english",
-                           multi_lang = nil, trigger_name = nil, function_name = nil)
+                           trigger_name = nil, function_name = nil)
     tsvector(column_name, index: "gin")
 
     migration.add_operation(Clear::Migration::FullTextSearchableOperation.new(self.name,
-      on, catalog, multi_lang, trigger_name, function_name, column_name))
+      on, catalog, trigger_name, function_name, column_name))
   end
 
   def full_text_searchable(on : String, column_name = "full_text_vector",
                            catalog = "pg_catalog.english",
-                           multi_lang = nil, trigger_name = nil, function_name = nil)
-    full_text_searchable([{on, 'C'}], column_name, catalog, multi_lang, trigger_name, function_name)
+                           trigger_name = nil, function_name = nil)
+    full_text_searchable([{on, 'C'}], column_name, catalog, trigger_name, function_name)
   end
 
   def full_text_searchable(on : Array(String), column_name = "full_text_vector",
                            catalog = "pg_catalog.english",
-                           multi_lang = nil, trigger_name = nil, function_name = nil)
+                           trigger_name = nil, function_name = nil)
     raise "cannot implement tsv_searchable because empty array was given" if on.empty?
 
     fields = on.map { |name| {name, 'C'} }
 
-    full_text_searchable(fields, column_name, catalog, multi_lang, trigger_name, function_name)
+    full_text_searchable(fields, column_name, catalog, trigger_name, function_name)
   end
 end

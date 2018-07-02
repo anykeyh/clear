@@ -61,7 +61,7 @@ class Clear::TSVector
     size |= io.read_byte.not_nil! << 8
     size |= io.read_byte.not_nil! << 0
 
-    size.times.each do |x|
+    size.times.each do
       l = Lexem.new(io)
       @lexems[l.value] = l
     end
