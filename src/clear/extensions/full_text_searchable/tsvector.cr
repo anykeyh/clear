@@ -75,12 +75,8 @@ class Clear::TSVector
   module Converter
     def self.to_column(x) : Clear::TSVector?
       case x
-      when String
-        data = x
-        s = Slice(UInt8).new(data.to_unsafe, data.size)
-        return Clear::TSVector.decode(s)
-      when Slice(UInt8)
-        return Clear::TSVector.decode(x)
+      when Slice # < Here bug of the crystal compiler with Slice(UInt8), do not want to compile
+        return Clear::TSVector.decode(x.as(Slice(UInt8)))
       when Clear::TSVector
         return x
       when Nil

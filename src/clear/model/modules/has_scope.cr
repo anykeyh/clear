@@ -39,6 +39,8 @@ module Clear::Model::HasScope
       class Collection < Clear::Model::CollectionBase(\{{@type}});
         def \{{name.id}}(\{{parameters}})
           \{{yield}}
+
+          return self
         end
       end
     end

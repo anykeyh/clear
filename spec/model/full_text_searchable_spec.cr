@@ -45,7 +45,7 @@ module FullTextSearchableSpec
       Clear::Model::FullTextSearchable.to_tsq("'l'usine").should eq("'l''usine'")
     end
 
-    it "Can search through TS vector" do
+    it "Can search through tsvector" do
       temporary do
         reinit
 
@@ -62,6 +62,25 @@ module FullTextSearchableSpec
         Series.query.search("break & !prison").count.should eq 2
         Series.query.search("break | throne").count.should eq 4
       end
+    end
+  end
+
+  it "Can convert tsvector" do
+    temporary do
+      reinit
+
+      Series.create!({title: "Breaking bad", description: "Follow a dying badass " +
+                                                          "professor diving into cooking some meth."})
+      Series.create!({title: "Game of thrones", description: "Winter is coming."})
+      Series.create!({title:       "Better call saul",
+                      description: "Follow Saul Goodman," +
+                                   "the sketchy lawyer from breaking bad"})
+      Series.create!({title:       "Prison break",
+                      description: "Going in jail and escape with his innocent brother"})
+      Series.create!({title:       "",
+                      description: ""})
+
+      Series.query.each { |s| pp s.tsv.to_db }
     end
   end
 

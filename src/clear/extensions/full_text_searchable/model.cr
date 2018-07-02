@@ -2,11 +2,11 @@ require "./tsvector"
 
 module Clear::Model::FullTextSearchable
   # Set this model as searchable using tsvector
-  macro full_text_searchable(through = "full_text_vector", catalog = "pg_catalog.english")
+  macro full_text_searchable(through = "full_text_vector", catalog = "pg_catalog.english", scope_name = "search")
     # TODO: Use converter and tsv structure
     column( {{through.id}} : Clear::TSVector, presence: false, converter: Clear::TSVector::Converter )
 
-    scope "search" do |str|
+    scope "#{scope_name.id}" do |str|
       where{ op({{through.id}}, to_tsquery({{catalog}},
         Clear::Model::FullTextSearchable.to_tsq(str)), "@@") }
     end
@@ -41,6 +41,7 @@ module Clear::Model::FullTextSearchable
   # Author note: pg `to_tsquery` is awesome but can easily fail to parse.
   #   `search` method use then a wrapper text_to_search used to ensure than
   #   request is understood and produce ALWAYS legal string for `to_tsquery`
+  # This is a good helper then to use with the input of your end-users !
   def self.to_tsq(text)
     return text
     current_str = ""

@@ -21,6 +21,7 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Migrations](migration/Migration.md)
 - [Polymorphism](model/Polymorphism.md)
 - [Different database connections](model/MultiConnection.md)
+- [Column data type management](model/TypeConversion.md)
 
 ## Querying
 
