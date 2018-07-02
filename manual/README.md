@@ -32,6 +32,7 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Transactions And savepoints](querying/Transaction.md)
 - [Pagination](querying/Pagination.md)
 
-## Advanced
+## Extensions
 
-- [JSONB integration](querying/Jsonb.md)
+- [JSONB integration](extensions/jsonb/Jsonb.md)
+- [TSVector and Full Text Search](extensions/full_text_searchable/FullTextSearchable.md)

@@ -50,7 +50,7 @@ class Clear::Model::Column(T)
       @value = x.as(T)
     else
       raise "Your field `#{@name}` is declared as `#{T}` but `NULL` value has been found in the database.\n" +
-            "Maybe declaring it as `#{T}?` would fix the mess !" if x.nil?
+            "Maybe declaring it as `#{T}?` would fix the error." if x.nil?
       @value = x.not_nil!
     end
 
