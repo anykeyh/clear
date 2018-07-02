@@ -4,7 +4,6 @@ struct Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operati
     IMPORTANT      = 'B'
     NORMAL         = 'C'
     LOW            = 'D'
-    VERY_LOW       = 'E'
   end
 
   getter table : String
@@ -27,8 +26,16 @@ struct Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operati
     @function_name = function_name || "tsv_trigger_#{table}"
   end
 
+  private def ensure_priority!(field_priority : Char)
+    unless field_priority >= 'A' && field_priority <= 'D'
+      raise "Priority level for tsvector range from 'A' (higher) to 'D' (lower)"
+    end
+  end
+
   private def print_concat_rules(use_new = true)
     src_fields.map do |(field_name, field_priority)|
+      ensure_priority!(field_priority)
+
       "setweight(to_tsvector(#{Clear::Expression[catalog]}, coalesce(#{use_new && "new." || ""}#{field_name}, ''))," +
         " #{Clear::Expression[field_priority]})"
     end.join(" || ")

@@ -33,16 +33,16 @@ module FullTextSearchableSpec
 
   describe "test tsv searchable" do
     it "Can translate client query to ts_query" do
-      Clear::Model::FullTextSearchable.to_tsq("rick & morty").should eq("'rick & morty'")
-      Clear::Model::FullTextSearchable.to_tsq("rick+morty").should eq("'rick morty'")
+      Clear::Model::FullTextSearchable.to_tsq("rick & morty").should eq("'rick' & '&' & 'morty'")
+      Clear::Model::FullTextSearchable.to_tsq("rick+morty").should eq("'rick' & 'morty'")
       Clear::Model::FullTextSearchable.to_tsq("\"rick morty\"").should eq("'rick morty'")
       Clear::Model::FullTextSearchable.to_tsq("'rick morty'").should eq("'rick morty'")
-      Clear::Model::FullTextSearchable.to_tsq("rick morty").should eq("'rick' | 'morty'")
+      Clear::Model::FullTextSearchable.to_tsq("rick morty").should eq("'rick' & 'morty'")
       Clear::Model::FullTextSearchable.to_tsq("rick -morty").should eq("'rick' & !'morty'")
-      Clear::Model::FullTextSearchable.to_tsq("rick -'rick hunter'").should eq("'rick' & !'rick hunter' ")
+      Clear::Model::FullTextSearchable.to_tsq("rick -'rick hunter'").should eq("'rick' & !'rick hunter'")
       Clear::Model::FullTextSearchable.to_tsq("l'esplanade").should eq("'l''esplanade'")
-      Clear::Model::FullTextSearchable.to_tsq("'l''usine'").should eq("'l''usine'")
-      Clear::Model::FullTextSearchable.to_tsq("'l'usine").should eq("'l''usine'")
+      Clear::Model::FullTextSearchable.to_tsq("'l''usine'").should eq("'l' & 'usine'")
+      Clear::Model::FullTextSearchable.to_tsq("'l'usine").should eq("'l' & 'usine'")
     end
 
     it "Can search through tsvector" do
@@ -59,8 +59,8 @@ module FullTextSearchableSpec
                         description: "Going in jail and escape with his innocent brother"})
 
         Series.query.search("breaking").count.should eq 3
-        Series.query.search("break & !prison").count.should eq 2
-        Series.query.search("break | throne").count.should eq 4
+        Series.query.search("break -prison").count.should eq 2
+        Series.query.search("break throne").count.should eq 0
       end
     end
   end

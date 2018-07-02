@@ -19,7 +19,7 @@ Let's assume we have a blog and want to implement full text search over title an
 This migration will create a 3rd column named `full_text_vector` of type `tsvector`,
 a gin index, a trigger and a function to update automatically this column.
 
-Over the `on` keyword, '{"title", 'A'}' means it allows search of the content of "title", with level of priority (weight) "A", which tells postgres than title content is more meaningful than the article content itself.
+Over the `on` keyword, `'{"title", 'A'}'` means it allows search of the content of "title", with level of priority (weight) "A", which tells postgres than title content is more meaningful than the article content itself.
 
 Now, let's build some models:
 
