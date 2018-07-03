@@ -3,7 +3,12 @@ require "./node"
 class Clear::Expression::Node::Literal < Clear::Expression::Node
   getter value : AvailableLiteral
 
-  def initialize(@value : AvailableLiteral)
+  def initialize(value)
+    if (value.is_a?(AvailableLiteral))
+      @value = value
+    else
+      @value = value.to_s
+    end
   end
 
   def resolve : String

@@ -10,7 +10,7 @@ module Clear::Model::HasSaving
   getter? persisted : Bool
 
   def save
-    raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
+    return false if self.class.read_only?
 
     with_triggers(:save) do
       if valid?
@@ -26,6 +26,7 @@ module Clear::Model::HasSaving
         else
           with_triggers(:create) do
             @persisted = true
+            pp "Execute insert?"
             hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute(@@connection)
             self.set(hash)
           end
@@ -42,10 +43,10 @@ module Clear::Model::HasSaving
   end
 
   def save!
-    with_triggers(:save) do
-      raise Clear::Model::InvalidModelError.new(
-        "Validation of the model failed:\n #{print_errors}") unless save
-    end
+    raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
+
+    raise Clear::Model::InvalidModelError.new(
+      "Validation of the model failed:\n #{print_errors}") unless save
 
     return self
   end

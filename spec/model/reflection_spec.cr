@@ -15,15 +15,16 @@ module ReflectionSpec
           first_table = Clear::Reflection::Table.query.first!
 
           expect_raises Clear::Model::ReadOnlyModelError do
-            first_table.save
+            first_table.save!
           end
 
+          first_table.columns.first!.save.should eq false
+
           expect_raises Clear::Model::ReadOnlyModelError do
-            first_table.columns.first!.save
+            first_table.columns.first!.save!
           end
         end
       end
     end
   end
-
 end

@@ -1,7 +1,11 @@
 # master/HEAD
 
 ## Features
-- Add support to pg Enum.
+- Add support to pg Enum
+- Add support for UUID primary key
+
+## Breaking changes
+- `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)
 
 # v0.2
 

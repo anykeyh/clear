@@ -22,6 +22,7 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 - [Polymorphism](model/Polymorphism.md)
 - [Different database connections](model/MultiConnection.md)
 - [Column data type management](model/TypeConversion.md)
+- [Primary Key Tweaking (Serial, UUID...)](model/PrimaryKeyTweaking.md)
 - [SQL Debugging Info](model/DebuggingInfo.md)
 
 ## Querying

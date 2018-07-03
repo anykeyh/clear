@@ -61,10 +61,13 @@ class Clear::SQL::InsertQuery
     o = {} of String => ::Clear::SQL::Any
 
     if @returning.nil?
-      Clear::SQL.execute(connection_name, to_sql)
+      s = to_sql
+      Clear::SQL.log_query(s) do
+        Clear::SQL.execute(connection_name, s)
+      end
     else
       # return {} of String => ::Clear::SQL::Any
-      fetch(connection_name) { |x| o = x; break }
+      fetch(connection_name) { |x| o = x }
     end
 
     o

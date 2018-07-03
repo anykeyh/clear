@@ -224,11 +224,16 @@ module Clear::Migration
     # end
     # ```
     #
-    def create_table(name, id = true, &block)
+    def create_table(name, id : Symbol | Bool = true, &block)
       table = Table.new(self.as(Clear::Migration), name.to_s, is_create: true)
 
-      if id
-        table.bigserial :id, primary: true
+      case id
+      when true, :bigserial
+        table.bigserial :id, primary: true, null: false
+      when :serial
+        table.serial :id, primary: true, null: false
+      when :uuid
+        table.uuid :id, primary: true, null: false
       end
 
       self.add_operation(table)
