@@ -1,5 +1,7 @@
 # master/HEAD
 
+# v0.2
+
 ## Breaking changes
 - Migration to crystal 0.25.
 
@@ -9,6 +11,7 @@
 - Fix #18 ambiguous column with joins.
 
 ## Features
+- Full Text Searchable module using tsvector to simplify... full text search !
 - SQL Builder can now be used with model collection as subqueries.
 - Add methods for pagination (PR #16, thanks @jwoertink)
 - Add multi-connections system (PR #18, thanks @russ)

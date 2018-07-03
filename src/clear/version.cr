@@ -1,3 +1,3 @@
 module Clear
-  VERSION = "v0.1.3alpha"
+  VERSION = "v0.2"
 end
