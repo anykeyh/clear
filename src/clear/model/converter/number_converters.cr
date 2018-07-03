@@ -5,7 +5,7 @@ module Clear::Model::Converter
   # numbers (different bitsize, signed/unsigned etc...)
   macro number_converter(t)
     class ::Clear::Model::Converter::{{t}}Converter
-      def self.to_column(x : ::Clear::SQL::Any) : {{t}}?
+      def self.to_column(x) : {{t}}?
         case x
         when Nil
           nil

@@ -1,5 +1,8 @@
 # master/HEAD
 
+## Features
+- Add support to pg Enum.
+
 # v0.2
 
 ## Breaking changes

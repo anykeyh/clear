@@ -78,7 +78,7 @@ module Clear::Model::HasColumns
     {%
        unless converter
          if _type.is_a?(Path)
-           converter = ("Clear::Model::Converter::" + _type.stringify + "Converter").id
+           converter = ("Clear::Model::Converter::" + _type.resolve.stringify + "Converter").id
          elsif _type.is_a?(Generic) # Union?
            converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          else
@@ -93,7 +93,6 @@ module Clear::Model::HasColumns
          column_name: "#{(column_name || name.var)}",
          presence:  presence,
        } %}
-
   end
 
   # Used internally to gather the columns
@@ -134,7 +133,7 @@ module Clear::Model::HasColumns
     end
 
     # Set the columns from hash
-    def set( h : Hash(Symbol, ::Clear::SQL::Any) )
+    def set( h : Hash(Symbol, _) )
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
         @{{name}}_column.reset({{settings[:converter]}}.to_column(v)) unless v.is_a?(Column::UnknownClass)

@@ -8,7 +8,7 @@ require "pg"
 # false, null, 0, "0", "" (empty string), "false", "f"
 # Anything else is considered true
 class Clear::Model::Converter::BoolConverter
-  def self.to_column(x : ::Clear::SQL::Any) : Bool?
+  def self.to_column(x) : Bool?
     case x
     when Nil
       nil

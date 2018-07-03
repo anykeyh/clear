@@ -56,16 +56,30 @@ class Clear::Expression
   DATABASE_DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S.%L %:z"
   DATABASE_DATE_FORMAT      = "%Y-%m-%d"
 
+  # Allow any type to be used into the expression engine
+  #   by including the module Clear::Expression::Literal
+  #   and defining the method `to_sql`.
+  module Literal
+    abstract def to_sql
+    abstract def to_json(x)
+  end
+
   # Wrap an unsafe string. Useful to cancel-out the
   # safe_literal function used internally.
   # Obviously, this can lead to SQL injection, so beware!
   class UnsafeSql
+    include Literal
+
     @value : String
 
     def initialize(@value)
     end
 
     def to_s
+      @value
+    end
+
+    def to_sql
       @value
     end
 
@@ -76,7 +90,7 @@ class Clear::Expression
 
   alias AvailableLiteral = Int8 | Int16 | Int32 | Int64 | Float32 | Float64 |
                            UInt8 | UInt16 | UInt32 | UInt64 |
-                           UnsafeSql | String | Symbol | Time | Bool | Nil
+                           Literal | String | Symbol | Time | Bool | Nil
 
   # fastest way to call self.safe_literal
   # See `safe_literal(x : _)`

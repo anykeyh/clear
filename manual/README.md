@@ -37,3 +37,4 @@ If you're in hurry and already at ease with Active Record pattern, a simple stan
 
 - [JSONB integration](extensions/jsonb/Jsonb.md)
 - [TSVector and Full Text Search](extensions/full_text_searchable/FullTextSearchable.md)
+- [PG enum integration](extensions/enum/Enum.md)
