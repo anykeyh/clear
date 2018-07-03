@@ -61,8 +61,7 @@ You don't want to use Clear if:
 - [Source Code](https://github.com/anykeyh/clear)
 - [A simple example is available here](https://github.com/anykeyh/clear/blob/master/sample/wiki/getting_started.cr)
 - [Changelog](https://github.com/anykeyh/clear/blob/master/CHANGELOG.md)
-
-
+- [Credits](https://github.com/anykeyh/clear/tree/master/CONTRIBUTORS.md)
 
 ## Getting started
 

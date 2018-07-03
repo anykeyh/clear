@@ -53,7 +53,7 @@ module Clear
   # ```
   macro enum(name, *values)
     struct {{name.id}} < ::Clear::Enum
-      AUTHORIZED_VALUES = {} of String => {{name.id}}
+      private AUTHORIZED_VALUES = {} of String => {{name.id}}
 
       {% for i in values %}
         {{i.camelcase.id}} = {{name.id}}.new("{{i.id}}")
@@ -73,6 +73,10 @@ module Clear
 
       def self.all
         AUTHORIZED_VALUES.values
+      end
+
+      def self.valid?(x)
+        AUTHORIZED_VALUES[x]?
       end
 
       macro finished
