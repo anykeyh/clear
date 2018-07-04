@@ -1,3 +1,5 @@
+require "await_async"
+
 module Clear::SQL::Query::Fetch
   # :no_doc:
   protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &block) : Bool
@@ -33,16 +35,15 @@ module Clear::SQL::Query::Fetch
       h = {} of String => ::Clear::SQL::Any
 
       we_loop = true
+
       while we_loop
         fetch_query = "FETCH #{count} FROM #{cursor_name}"
 
-        rs = uninitialized PG::ResultSet
-
-        Clear::SQL.log_query(fetch_query) { rs = cnx.query(fetch_query) }
+        rs = Clear::SQL.log_query(fetch_query) { async cnx.query(fetch_query) }
 
         o = Array(Hash(String, ::Clear::SQL::Any)).new(initial_capacity: count)
 
-        we_loop = fetch_result_set(h, rs) { |x| o << x.dup }
+        we_loop = fetch_result_set(h, await rs) { |x| o << x.dup }
 
         o.each { |hash| yield(hash) }
       end
@@ -54,8 +55,10 @@ module Clear::SQL::Query::Fetch
   def scalar(type : T.class) forall T
     trigger_before_query
 
-    Clear::SQL.log_query to_sql do
-      Clear::SQL.connection(connection_name).scalar(to_sql).as(T)
+    sql = to_sql
+
+    Clear::SQL.log_query sql do
+      Clear::SQL.connection(connection_name).scalar(sql).as(T)
     end
   end
 
@@ -68,13 +71,13 @@ module Clear::SQL::Query::Fetch
 
     h = {} of String => ::Clear::SQL::Any
 
-    to_sql = self.to_sql
+    sql = self.to_sql
 
-    rs = uninitialized PG::ResultSet
-    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection(connection_name).query(to_sql) }
+    rs = uninitialized MiniFuture(PG::ResultSet)
+    Clear::SQL.log_query(sql) { rs = async Clear::SQL.connection(connection_name).query(sql) }
 
     o = [] of Hash(String, ::Clear::SQL::Any)
-    fetch_result_set(h, rs) { |x| o << x.dup }
+    fetch_result_set(h, await rs) { |x| o << x.dup }
 
     o
   end
@@ -89,18 +92,18 @@ module Clear::SQL::Query::Fetch
 
     h = {} of String => ::Clear::SQL::Any
 
-    to_sql = self.to_sql
+    sql = self.to_sql
 
-    rs = uninitialized PG::ResultSet
+    rs = uninitialized MiniFuture(PG::ResultSet)
 
-    Clear::SQL.log_query(to_sql) { rs = Clear::SQL.connection(connection_name).query(to_sql) }
+    Clear::SQL.log_query(sql) { rs = async Clear::SQL.connection(connection_name).query(sql) }
 
     if fetch_all
       o = [] of Hash(String, ::Clear::SQL::Any)
-      fetch_result_set(h, rs) { |x| o << x.dup }
+      fetch_result_set(h, await rs) { |x| o << x.dup }
       o.each { |x| yield(x) }
     else
-      fetch_result_set(h, rs) { |x| yield(x) }
+      fetch_result_set(h, await rs) { |x| yield(x) }
     end
   end
 end

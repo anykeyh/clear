@@ -19,6 +19,8 @@ dependencies:
   inflector:
     github: phoffer/inflector.cr
     version: "~> 0.1.8"
+  await_async:
+    github: anykeyh/await_async
 
 development_dependencies:
   coverage:

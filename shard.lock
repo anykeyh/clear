@@ -8,6 +8,10 @@ shards:
     github: veelenga/ameba
     version: 0.7.0
 
+  await_async:
+    github: anykeyh/await_async
+    commit: 740b086cf587624e26e8c6bb18939c79b4a19277
+
   coverage:
     github: anykeyh/crystal-coverage
     commit: af5246dde152b6e42352ce6e759bb07e9bed09ed
