@@ -10,20 +10,8 @@ class Clear::CLI::Generator < Admiral::Command
 
   class_getter generators = {} of String => Record
 
-  class List < Admiral::Command
-    include Clear::CLI::Command
-
-    define_help description: "List the available generators"
-
-    def run_impl
-      Clear::CLI::Generator.generators.each do |_, rec|
-        puts "- #{rec.name}\t\t#{rec.desc}"
-      end
-    end
-  end
-
   def self.add(name, desc, &block : Array(String) -> Void)
-      @@generators[name] = Record.new(name, desc, block)
+    @@generators[name] = Record.new(name, desc, block)
   end
 
   def self.[]?(name)
@@ -31,13 +19,11 @@ class Clear::CLI::Generator < Admiral::Command
   end
 
   def self.[](name)
-   @@generators[name]
+    @@generators[name]
   end
 
-  register_sub_command list, type: List
-
   def run_impl
-    pp "TODO: Generate"
+    puts help
   end
 
   macro ecr_to_s(string, opts)
@@ -46,7 +32,6 @@ class Clear::CLI::Generator < Admiral::Command
     ECR.embed {{string}}, io
     io.to_s
   end
-
 end
 
 require "./generators/**"

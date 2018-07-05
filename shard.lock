@@ -8,10 +8,6 @@ shards:
     github: veelenga/ameba
     version: 0.7.0
 
-  await_async:
-    github: anykeyh/await_async
-    commit: 740b086cf587624e26e8c6bb18939c79b4a19277
-
   coverage:
     github: anykeyh/crystal-coverage
     commit: af5246dde152b6e42352ce6e759bb07e9bed09ed
@@ -22,7 +18,7 @@ shards:
 
   generate:
     github: anykeyh/generate.cr
-    commit: 21b2fe1a0c4b3773f6cae83118243d3b0ada0e2c
+    commit: f374acb340ea92a79fba97c7deb2f0a0ff4be62f
 
   inflector:
     github: phoffer/inflector.cr

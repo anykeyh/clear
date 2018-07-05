@@ -1,5 +1,5 @@
 name: clear
-version: 0.1.0
+version: 0.2.0
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -19,8 +19,6 @@ dependencies:
   inflector:
     github: phoffer/inflector.cr
     version: "~> 0.1.8"
-  await_async:
-    github: anykeyh/await_async
 
 development_dependencies:
   coverage:

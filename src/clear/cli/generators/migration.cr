@@ -1,26 +1,49 @@
+require "generate"
 
+class Clear::CLI::Generator
+  register_sub_command migration, type: Migration, description: "Generate a new migration"
 
-# Clear::CLI::Generator.add("migration",
-#   "Create a new migration") do |opts|
-#   g = Generate::Generator.new
-#   g.target_directory = "."
+  class Migration < Admiral::Command
+    include Clear::CLI::Command
 
-#   timestamp = Time.now.epoch.to_s.rjust(10, '0')
+    define_help description: "Generate a new migration"
 
-#   name = opts.shift?
+    define_flag directory : String,
+      default: ".",
+      long: directory,
+      short: d,
+      description: "Set target directory"
 
-#   if name
-#     name_underscore = name.underscore
-#     class_name = name.camelcase
+    define_argument name : String
 
-#     file_name = "#{timestamp}_#{name_underscore}.cr"
-#     g["class_name"] = "#{class_name}#{timestamp}"
+    def run_impl
+      g = Generate::Generator.new
 
-#     g.in_directory "src/db/migrations" do
-#       g.file(file_name, "./templates/migration.ecr")
-#     end
-#   else
-#     puts "Please provide a name for the migration"
-#     exit 1
-#   end
-# end
+      g.target_directory = flags.directory
+      name = arguments.name
+
+      if name
+        name_underscore = name.underscore
+        class_name = name.camelcase
+        migration_uid = Time.now.epoch.to_s.rjust(10, '0')
+
+        g["migration_uid"] = migration_uid
+        g["class_name"] = class_name
+
+        migration_file = "#{migration_uid}_#{name_underscore}.cr"
+
+        if Dir[File.join(g.target_directory, "src/db/migrations/*_#{name_underscore}.cr")].any?
+          puts "Migration file `*_#{name_underscore}.cr` already exists"
+          exit 1
+        end
+
+        g.in_directory "src/db/migrations" do
+          g.file(migration_file, Clear::CLI::Generator.ecr_to_s("./templates/migration.cr.ecr", g))
+        end
+      else
+        puts "Please provide a name for the migration"
+        exit(1)
+      end
+    end
+  end
+end

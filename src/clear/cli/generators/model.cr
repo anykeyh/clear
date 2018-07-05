@@ -1,3 +1,5 @@
+require "generate"
+
 class Clear::CLI::Generator
   register_sub_command model, type: Model, description: "Create a new model and the first migration"
 
@@ -40,14 +42,13 @@ class Clear::CLI::Generator
           g.file(model_file, Clear::CLI::Generator.ecr_to_s("./templates/model/model.cr.ecr", g))
         end
 
-        g.in_directory "src/db/migration" do
+        g.in_directory "src/db/migrations" do
           g.file(migration_file, Clear::CLI::Generator.ecr_to_s("./templates/model/migration.cr.ecr", g))
         end
       else
-        puts "Please provide a name for the migration"
+        puts "Please provide a name for the model"
         exit(1)
       end
     end
   end
-
 end
