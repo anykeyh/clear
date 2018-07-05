@@ -82,7 +82,7 @@ module Clear::Model::HasColumns
          elsif _type.is_a?(Generic) # Union?
            converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
          else
-           converter = ("Clear::Model::Converter::" + _type.types.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
+           converter = ("Clear::Model::Converter::" + _type.types.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" }.join("") + "Converter").id
          end
        end %}
 

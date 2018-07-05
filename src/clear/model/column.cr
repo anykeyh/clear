@@ -7,7 +7,8 @@ require "db"
 #     which is not gathered through the query system (uninitialized column).
 #     Or use the `get_def` to get with default value
 class Clear::Model::Column(T)
-  struct UnknownClass; end
+  struct UnknownClass
+  end
 
   UNKNOWN = UnknownClass.new
 
@@ -63,7 +64,7 @@ class Clear::Model::Column(T)
   end
 
   def value=(x : T)
-    if @value != x
+    if @value == UNKNOWN || x != @value
       @value = x
       @changed = (@old_value != @value)
     end
@@ -88,7 +89,7 @@ class Clear::Model::Column(T)
   end
 
   def defined?
-    @value != UNKNOWN
+    UNKNOWN != @value
   end
 
   def failed_to_be_present?

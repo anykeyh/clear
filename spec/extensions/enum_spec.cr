@@ -24,7 +24,7 @@ module EnumSpec
     include Clear::Model
     self.table = "enum_users"
 
-    column gender : GenderType
+    column gender : GenderType?
     column name : String
   end
 
