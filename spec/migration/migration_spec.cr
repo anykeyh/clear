@@ -12,6 +12,8 @@ module MigrationSpec
         t.string :first_name, index: true
         t.string :last_name, unique: true
 
+        t.string :tags, array: true, index: "gin"
+
         t.index "lower(first_name || ' ' || last_name)", using: :btree
 
         t.timestamps
@@ -51,18 +53,18 @@ module MigrationSpec
           columns.dup.where { column_name == "first_name" }.any?.should eq true
           columns.dup.where { column_name == "last_name" }.any?.should eq true
 
-          table.indexes.size.should eq 5
+          table.indexes.size.should eq 6
 
           Migration2.new.apply(Clear::Migration::Direction::UP)
           columns = table.columns
           columns.dup.where { column_name == "middle_name" }.any?.should eq true
-          table.indexes.size.should eq 6
+          table.indexes.size.should eq 7
 
           # Revert the last migration
           Migration2.new.apply(Clear::Migration::Direction::DOWN)
           columns = table.columns
           columns.dup.where { column_name == "middle_name" }.any?.should eq false
-          table.indexes.size.should eq 5
+          table.indexes.size.should eq 6
 
           # Revert the table migration
           Migration1.new.apply(Clear::Migration::Direction::DOWN)

@@ -2,7 +2,8 @@ module Clear::Migration
   # Helper to create or alter table.
   struct Table < Operation
     record ColumnOperation, column : String, type : String,
-      null : Bool = false, default : SQL::Any = nil, primary : Bool = false
+      null : Bool = false, default : SQL::Any = nil, primary : Bool = false,
+      array : Bool = false
 
     record IndexOperation, field : String, name : String,
       using : String? = nil, unique : Bool = false
@@ -47,14 +48,19 @@ module Clear::Migration
     end
 
     # Add/alter a column for this table.
-    def add_column(column, type, default = nil, null = true, primary = false, index = false, unique = false)
+    def add_column(column, type, default = nil, null = true, primary = false,
+                   index = false, unique = false, array = false)
       self.column_operations << ColumnOperation.new(column: column.to_s, type: type.to_s,
-        default: default, null: null, primary: primary)
+        default: default, null: null, primary: primary, array: array)
 
       if unique
         add_index(field: column, unique: true)
       elsif index
-        add_index(field: column, unique: false)
+        if index.is_a?(Bool)
+          add_index(field: column, unique: false)
+        else
+          add_index(field: column, unique: false, using: index)
+        end
       end
     end
 
@@ -128,7 +134,7 @@ module Clear::Migration
     private def print_columns
       column_operations.map do |x|
         [x.column,
-         x.type,
+         x.type + (x.array ? "[]" : ""),
          x.null ? nil : "NOT NULL",
          !x.default.nil? ? "DEFAULT #{x.default}" : nil,
          x.primary ? "PRIMARY KEY" : nil]
@@ -151,8 +157,6 @@ module Clear::Migration
         "bigint"
       when "datetime"
         "timestamp without time zone"
-      when "datetimetz"
-        "timestamp with time zone"
       else
         type
       end
