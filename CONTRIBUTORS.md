@@ -10,6 +10,6 @@
 - Russ Smith (russ@bashme.org)
 - Troy A. Sornson (troyasornson37@gmail.com)
 
-Logo design by (batarian71)[https://github.com/batarian71] under CC4.0 (See License.md in /design directory).
+Logo design by [batarian71](https://github.com/batarian71) under CC4.0 (See License.md in /design directory).
 
 For contributing to a better ~world~ ORM.
