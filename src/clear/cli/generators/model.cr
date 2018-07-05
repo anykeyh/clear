@@ -39,11 +39,11 @@ class Clear::CLI::Generator
         migration_file = "#{migration_uid}_create_#{name_underscore}.cr"
 
         g.in_directory "src/models" do
-          g.file(model_file, Clear::CLI::Generator.ecr_to_s("./templates/model/model.cr.ecr", g))
+          g.file(model_file, Clear::CLI::Generator.ecr_to_s("#{__DIR__}/../../../../templates/model/model.cr.ecr", g))
         end
 
         g.in_directory "src/db/migrations" do
-          g.file(migration_file, Clear::CLI::Generator.ecr_to_s("./templates/model/migration.cr.ecr", g))
+          g.file(migration_file, Clear::CLI::Generator.ecr_to_s("#{__DIR__}/../../../../templates/model/migration.cr.ecr", g))
         end
       else
         puts "Please provide a name for the model"

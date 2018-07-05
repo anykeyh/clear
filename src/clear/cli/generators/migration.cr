@@ -38,7 +38,11 @@ class Clear::CLI::Generator
         end
 
         g.in_directory "src/db/migrations" do
-          g.file(migration_file, Clear::CLI::Generator.ecr_to_s("./templates/migration.cr.ecr", g))
+          g.file(migration_file,
+            Clear::CLI::Generator.ecr_to_s(
+              "#{__DIR__}/../../../../templates/migration.cr.ecr", g
+            )
+          )
         end
       else
         puts "Please provide a name for the migration"
