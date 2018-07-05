@@ -36,7 +36,12 @@ class Clear::CLI::Generator
         g["model_fields"] = fields
 
         model_file = "#{name_underscore}.cr"
-        migration_file = "#{migration_uid}_create_#{name_underscore}.cr"
+        migration_file = "#{migration_uid}_create_#{name_underscore.pluralize}.cr"
+
+        if Dir[File.join(g.target_directory, "src/db/migrations/*_create_#{name_underscore.pluralize}.cr")].any?
+          puts "A migration file `xxxx__create_#{name_underscore.pluralize}.cr` already exists"
+          exit 1
+        end
 
         g.in_directory "src/models" do
           g.file(model_file, Clear::CLI::Generator.ecr_to_s("#{__DIR__}/../../../../templates/model/model.cr.ecr", g))
