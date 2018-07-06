@@ -18,7 +18,7 @@ class Clear::CLI::Migration < Admiral::Command
 
     define_help description: "Call the seeds data"
 
-    def seed
+    def run_impl
       Clear.apply_seeds
     end
   end
