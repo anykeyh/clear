@@ -22,6 +22,7 @@ end
 
 require "./clear/version"
 require "./clear/util"
+require "./clear/seed"
 require "./clear/expression/**"
 require "./clear/sql/**"
 require "./clear/model/**"

@@ -6,8 +6,20 @@ class Clear::CLI::Migration < Admiral::Command
   class Status < Admiral::Command
     include Clear::CLI::Command
 
+    define_help description: "Return the current state of the database"
+
     def run_impl
       puts Clear::Migration::Manager.instance.print_status
+    end
+  end
+
+  class Seed < Admiral::Command
+    include Clear::CLI::Command
+
+    define_help description: "Call the seeds data"
+
+    def seed
+      Clear.apply_seeds
     end
   end
 
@@ -73,20 +85,20 @@ class Clear::CLI::Migration < Admiral::Command
     def run_impl
       array = Clear::Migration::Manager.instance.migrations_up.to_a.sort
       num = if arguments.num.nil?
-        2
-      else
-        arguments.num.not_nil!.to_i + 1
-      end
+              2
+            else
+              arguments.num.not_nil!.to_i + 1
+            end
 
-      if(num > array.size)
-        num = array.size-1
+      if (num > array.size)
+        num = array.size - 1
       end
 
       pp array[-num]
 
       Clear::Migration::Manager.instance.apply_to(
-       array[-num],
-       direction: :down)
+        array[-num],
+        direction: :down)
     end
   end
 
@@ -96,6 +108,7 @@ class Clear::CLI::Migration < Admiral::Command
   register_sub_command set, type: Set
   register_sub_command rollback, type: Rollback
   register_sub_command migrate, type: Migrate
+  register_sub_command seed, type: Seed
 
   def run_impl
     Clear::Migration::Manager.instance.apply_all
