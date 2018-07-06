@@ -4,9 +4,9 @@ module Clear::Model::HasSerialPkey
   # Helper for lazy developers, to add longint primary key.
   macro with_serial_pkey(name = "id", type = :bigserial)
     {% if type == :bigserial %}
-      column {{name.id}} : UInt64, primary: true, presence: false
+      column {{name.id}} : Int64, primary: true, presence: false
     {% elsif type == :serial %}
-      column {{name.id}} : UInt32, primary: true, presence: false
+      column {{name.id}} : Int32, primary: true, presence: false
     {% elsif type == :uuid %}
       column {{name.id}} : UUID, primary: true, presence: true
 

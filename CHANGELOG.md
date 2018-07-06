@@ -2,10 +2,15 @@
 
 ## Features
 - Add support to pg Enum
-- Add support for UUID primary key
+- Add support for UUID primary key, with uuid autogeneration
+- Add support for BCrypt fields, like passwords
+- Finalization of CLI !
+- Add `Clear.seed(&block)`
+  `Clear.seed` goes in pair with `bin/clear migrate seed` which will call the seed blocks.
 
 ## Breaking changes
 - `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)
+- `with_serial_pkey` use Int32 (type `:serial`) and Int64 (type `:longserial`) pkey instead of UInt32 and UInt64. This would prevent issue with default `belongs_to` behavior and simplify static number assignation.
 
 # v0.2
 

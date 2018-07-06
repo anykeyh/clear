@@ -76,15 +76,23 @@ module Clear::Model::HasColumns
   macro column(name, primary = false, converter = nil, column_name = nil, presence = true)
     {% _type = name.type %}
     {%
-       unless converter
-         if _type.is_a?(Path)
-           converter = ("Clear::Model::Converter::" + _type.resolve.stringify + "Converter").id
-         elsif _type.is_a?(Generic) # Union?
-           converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
-         else
-           converter = ("Clear::Model::Converter::" + _type.types.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" }.join("") + "Converter").id
-         end
-       end %}
+      unless converter
+        if _type.is_a?(Path)
+          if _type.resolve.stringify =~ /\(/
+            converter = ("Clear::Model::Converter::" + _type.stringify + "Converter").id
+          else
+            converter = ("Clear::Model::Converter::" + _type.resolve.stringify + "Converter").id
+          end
+        elsif _type.is_a?(Generic) # Union?
+          if _type.name.resolve == Union
+            converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
+          else
+            converter = ("Clear::Model::Converter::#{_type.name.id}Converter_" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join(", ") + "_").id
+          end
+        else
+            converter = ("Clear::Model::Converter::" + _type.types.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" }.join("") + "Converter").id
+        end
+      end %}
 
     {% COLUMNS[name.var] = {
          type:      _type,

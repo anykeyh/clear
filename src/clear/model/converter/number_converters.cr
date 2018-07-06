@@ -3,7 +3,8 @@ require "pg"
 module Clear::Model::Converter
   # Macro used to generate conveniently all conversion for
   # numbers (different bitsize, signed/unsigned etc...)
-  macro number_converter(t)
+  private macro number_converter(t)
+    # Convert from and to {{t}}
     class ::Clear::Model::Converter::{{t}}Converter
       def self.to_column(x) : {{t}}?
         case x

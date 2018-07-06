@@ -8,6 +8,9 @@ module ModelSpec
 
     column title : String
 
+    column tags : Array(String), presence: false
+    column flags : Array(Int32), presence: false
+
     def validate
       ensure_than(title, "is not empty", &.size.>(0))
     end
@@ -56,7 +59,7 @@ module ModelSpec
         t.text "last_name"
         t.text "middle_name"
 
-        t.jsonb "notification_preferences", index: "gin", default: Clear::Expression["{}"]
+        t.jsonb "notification_preferences", index: "gin", default: "'{}'"
 
         t.timestamps
       end
@@ -71,6 +74,10 @@ module ModelSpec
 
       create_table "model_posts" do |t|
         t.string "title", index: true
+
+        t.string "tags", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
+        t.int "flags", array: true, index: "gin", default: "'{}'::int[]"
+
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
       end
     end
@@ -326,6 +333,23 @@ module ModelSpec
           u.persisted?.should eq false
           User.query.count.should eq 1
         end
+      end
+    end
+
+    it "can load a column of type Array" do
+      temporary do
+        reinit
+
+        u = User.create!({first_name: "John"})
+        p = Post.create!({title: "A post", user_id: u.id})
+
+        p.tags = ["a", "b", "c"]
+        p.flags = [1, 2, 3, 4]
+        p.save!
+
+        p = Post.query.first!
+        p.tags.should eq ["a", "b", "c"]
+        p.flags.should eq [1, 2, 3, 4]
       end
     end
 

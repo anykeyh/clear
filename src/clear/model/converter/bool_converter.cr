@@ -17,8 +17,6 @@ class Clear::Model::Converter::JSON::AnyConverter
   end
 end
 
-require "pg"
-
 # Convert the column to a boolean
 # If value is not boolean (e.g. string or number), rules of `falsey`
 # value is used:
