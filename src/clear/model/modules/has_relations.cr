@@ -230,7 +230,7 @@ module Clear::Model::HasRelations
   macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int64?)
     {% relation_type = name.type %}
     {% method_name = name.var.id %}
-    {% foreign_key = foreign_key || relation_type.stringify.underscore + "_id" %}
+    {% foreign_key = foreign_key || method_name.stringify.underscore + "_id" %}
 
     column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}
     getter _cached_{{method_name}} : {{relation_type}}?
