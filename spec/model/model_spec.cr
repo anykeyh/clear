@@ -247,6 +247,17 @@ module ModelSpec
         end
       end
 
+      it "can count using group_by" do
+        temporary do
+          reinit
+          9.times do |x|
+            User.create!({first_name: "user#{x}", last_name: "Doe"})
+          end
+
+          User.query.group_by("last_name").count.should eq(1)
+        end
+      end
+
       it "can find_or_create" do
         temporary do
           reinit
