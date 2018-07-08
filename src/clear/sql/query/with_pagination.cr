@@ -6,23 +6,30 @@ module Clear::SQL::Query::WithPagination
     property total_entries : Int64? = nil
   end
 
-  # Maybe this goes on the Collection?
+  # Enter pagination mode.
+  # This is helpful to manage paginated table.
+  # Pagination will handle the page progression automatically and update
+  # `offset` and `limit` parameters by his own.
+  #
+  # ```crystal
+  # page = query.paginate(2, 50)
+  # ```
   def paginate(page : Int32 = DEFAULT_PAGE, per_page : Int32 = DEFAULT_LIMIT)
-    # Need to clear these values to get total count first
     clear_limit.clear_offset
     @total_entries = count
 
-    # Calculate proper offset and set limit
     page = page < 1 ? 1 : page
     @limit = per_page.to_i64
     @offset = (per_page * (page - 1)).to_i64
     change!
   end
 
+  # Return the number of items maximum per page.
   def per_page
     limit
   end
 
+  # Return the current page
   def current_page
     if offset.nil? || limit.nil?
       1
@@ -31,6 +38,7 @@ module Clear::SQL::Query::WithPagination
     end
   end
 
+  # Return the total number of pages.
   def total_pages
     if limit.nil? || total_entries.nil?
       1
@@ -39,12 +47,12 @@ module Clear::SQL::Query::WithPagination
     end
   end
 
-  # current_page - 1 or nil if there is no previous page
+  # Return `current_page - 1` or `nil` if there is no previous page
   def previous_page
     current_page > 1 ? (current_page - 1) : nil
   end
 
-  # current_page + 1 or nil if there is no next page
+  # Return `current_page + 1` or `nil` if there is no next page
   def next_page
     current_page < total_pages ? (current_page + 1) : nil
   end

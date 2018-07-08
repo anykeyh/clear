@@ -1,12 +1,29 @@
+# Allow usage of Common Table Expressions (CTE) in the query building
 module Clear::SQL::Query::CTE
+  # :nodoc:
   alias CTEAuthorized = Clear::SQL::SelectBuilder | String
+
   getter cte : Hash(String, CTEAuthorized)
 
+  # Add a CTE to the query.
+  #
+  # ```crystal
+  # Clear::SQL.select.with_cte("full_year",
+  #   "SELECT DATE(date)"
+  #   "FROM generate_series(NOW() - INTERVAL '1 year', NOW(), '1 day'::interval) date")
+  #   .select("*").from("full_year")
+  # # WITH full_year AS ( SELECT DATE(date) ... ) SELECT * FROM full_year;
+  # ```
   def with_cte(name, request : CTEAuthorized)
     cte[name] = request
     change!
   end
 
+  # Add a CTE to the query. Use NamedTuple convention:
+  # ```crystal
+  # Clear::SQL.select.with_cte(cte: "xxx")
+  # # WITH cte AS xxx SELECT...
+  # ```
   def with_cte(tuple : NamedTuple)
     tuple.each do |k, v|
       cte[k.to_s] = v
@@ -14,6 +31,7 @@ module Clear::SQL::Query::CTE
     change!
   end
 
+  # :nodoc:
   protected def print_ctes
     if cte.any?
       {"WITH ",

@@ -1,7 +1,9 @@
 module Clear::SQL::Query::Change
-  # Call back called when the query is changed
-  # Just here for being reimplemented
-  # (e.g. by collection for caching purpose)
+  # This method is called everytime the request has been changed
+  # By default, this do nothing and return `self`. However, it can be
+  # reimplemented to change some behavior when the query is changed
+  #
+  # (eg. it is by `Clear::Model::Collection`, to discard cache over collection)
   def change! : self
     self
   end

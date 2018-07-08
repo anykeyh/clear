@@ -18,7 +18,9 @@ module Clear::SQL::Query::Fetch
     rs.close
   end
 
-  # Use a cursor to fetch the data
+  # Fetch the data using CURSOR.
+  # This will prevent Clear to load all the data from the database into memory.
+  # This is useful if you need to retrieve and update a large dataset.
   def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
@@ -48,8 +50,7 @@ module Clear::SQL::Query::Fetch
     end
   end
 
-  # Get a scalar (EG count)
-  #
+  # Helpers to fetch a SELECT with only one row and one column return.
   def scalar(type : T.class) forall T
     trigger_before_query
 
@@ -60,10 +61,12 @@ module Clear::SQL::Query::Fetch
     end
   end
 
+  # Return the first line of the query as Hash(String, ::Clear::SQL::Any)
   def first
     limit(1).fetch(fetch_all: true) { |x| return x }
   end
 
+  # Return an array with all the rows fetched.
   def to_a : Array(Hash(String, ::Clear::SQL::Any))
     trigger_before_query
 
@@ -80,10 +83,25 @@ module Clear::SQL::Query::Fetch
   end
 
   # Fetch the result set row per row
-  # `fetch_all` is helpful in transactional environment, so it stores
-  # the result and close the resultset before strating to dispatch the data
+  # `fetch_all` optional parameter is helpful in transactional environment, so it stores
+  # the result and close the resultset before starting to call yield over the data
   # preventing creation of a new connection if you need to call SQL into the
   # yielded block.
+  #
+  # ```crystal
+  # # This is wrong: The connection is still busy retrieving the users:
+  # Clear::SQL.select.from("users").fetch do |u|
+  #   Clear::SQL.select.from("posts").where { u["id"] == posts.id }
+  # end
+  #
+  # # Instead, use `fetch_all`
+  # # Clear will store the value of the result set in memory
+  # # before calling the block, and the connection is now ready to handle
+  # # another query.
+  # Clear::SQL.select.from("users").fetch(fetch_all:true) do |u|
+  #   Clear::SQL.select.from("posts").where { u["id"] == posts.id }
+  # end
+  # ```
   def fetch(fetch_all = false, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
