@@ -16,7 +16,6 @@ module Clear::SQL::Query::Aggregate
 
       # Optimize returning 1 if found, as we count only...
       # ... except if the subquery has distinct, otherwise will always returns "1"...
-      pp self.is_distinct?
       subquery = self.is_distinct? ? self : self.dup.clear_order_bys.clear_select.select("1")
 
       o = X.new(Clear::SQL.select("COUNT(*)").from({query_count: subquery}).scalar(Int64))
