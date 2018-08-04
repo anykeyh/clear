@@ -1,8 +1,14 @@
 module Clear::SQL::Query::Select
   macro included
     getter columns : Array(SQL::Column) = [] of SQL::Column
-    getter is_distinct : Bool = false
+
+    def is_distinct?
+      !!@distinct_value
+    end
   end
+
+  @columns : Array(SQL::Column)
+  getter distinct_value : String?
 
   # def select(name : Symbolic, var = nil)
   #  @columns << Column.new(name, var)
@@ -13,16 +19,20 @@ module Clear::SQL::Query::Select
     change!
   end
 
-  # Add distinct to the query
-  def distinct
-    @is_distinct = true
+  # Add DISTINCT to the SELECT part of the query
+  #
+  # - If on is blank (empty string, default), will call a simple `SELECT DISTINCT ...`
+  # - If on is nil, will remove the distinct (see `undistinct`)
+  # - If on is a non empty string, will call `SELECT DISTINCT ON (on) ...`
+  #
+  def distinct(on : String? = "")
+    @distinct_value = on
     change!
   end
 
   # Remove distinct
   def undistinct
-    @is_distinct = false
-    change!
+    distinct nil
   end
 
   # Add field(s) to selection from tuple
@@ -48,8 +58,22 @@ module Clear::SQL::Query::Select
     change!
   end
 
+  protected def print_distinct
+    case @distinct_value
+    when nil
+      ""
+    when ""
+      "DISTINCT "
+    else
+      {"DISTINCT ON (", @distinct_value, ") "}.join
+    end
+  end
+
   protected def print_columns
-    "SELECT " + (@is_distinct ? "DISTINCT " : "") +
-      (@columns.any? ? @columns.map { |c| c.to_sql.as(String) }.join(", ") : "*")
+    (@columns.any? ? @columns.map(&.to_sql.as(String)).join(", ") : "*")
+  end
+
+  protected def print_select
+    {"SELECT ", print_distinct, print_columns}.join
   end
 end

@@ -68,7 +68,7 @@ module Clear::Model::HasRelations
     end
   end
 
-  # has_many through \o/
+  # has_many through
   macro has_many(name, through, own_key = nil, foreign_key = nil)
     {% relation_type = name.type %}
     {% method_name = name.var.id %}
@@ -76,18 +76,24 @@ module Clear::Model::HasRelations
     def {{method_name}} : {{relation_type}}::Collection
       %final_table = {{relation_type}}.table
       %final_pkey = {{relation_type}}.pkey
-      %through_table = {{through}}.table
+      %through_table = {% if through.is_a?(SymbolLiteral) || through.is_a?(StringLiteral) %}
+        {{through.id.stringify}}
+      {% else %}
+        {{through}}.table
+      {% end %}
+
       %through_key = {{foreign_key}} || {{relation_type}}.table.to_s.singularize + "_id"
       %own_key = {{own_key}} || {{@type}}.table.to_s.singularize + "_id"
 
       cache = @cache
 
-      qry = {{relation_type}}.query.join(%through_table){
+      qry = {{relation_type}}.query.select("#{%final_table}.*")
+        .join(%through_table){
           var("#{%through_table}.#{%through_key}") == var("#{%final_table}.#{%final_pkey}")
         }.where{
           # FIXME: self.id or self.pkey ?
           var("#{%through_table}.#{%own_key}") == self.id
-        }.distinct.select("#{%final_table}.*")
+        }.distinct("#{%final_table}.#{%final_pkey}")
 
 
       if cache && cache.active?("{{method_name}}")

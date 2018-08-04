@@ -20,7 +20,7 @@ module Clear::SQL::SelectBuilder
   include Query::WithPagination
   include Query::Aggregate
 
-  def initialize(@is_distinct = false,
+  def initialize(@distinct_value = nil,
                  @cte = {} of String => Clear::SQL::SelectBuilder | String,
                  @columns = [] of SQL::Column,
                  @froms = [] of SQL::From,
@@ -39,7 +39,7 @@ module Clear::SQL::SelectBuilder
   # Duplicate the query
   def dup : self
     self.class.new(
-      is_distinct: @is_distinct,
+      distinct_value: @distinct_value,
       cte: @cte.dup,
       columns: @columns.dup,
       froms: @froms.dup,
@@ -58,7 +58,7 @@ module Clear::SQL::SelectBuilder
 
   def to_sql : String
     [print_ctes,
-     print_columns,
+     print_select,
      print_froms,
      print_joins,
      print_wheres,

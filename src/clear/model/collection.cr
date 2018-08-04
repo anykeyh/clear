@@ -11,10 +11,12 @@ module Clear::Model
     @tags : Hash(String, Clear::SQL::Any)
 
     # Redefinition of the fields,
-    # because of a bug in the compiler (crystal issue #5281)
+    # because of a bug in the compiler
+    # https://github.com/crystal-lang/crystal/issues/5281
     @limit : Int64?
     @offset : Int64?
     @lock : String?
+    @distinct_value : String?
 
     # :nodoc:
     @cache : Clear::Model::QueryCache
@@ -24,7 +26,7 @@ module Clear::Model
 
     # :nodoc:
     def initialize(
-      @is_distinct = false,
+      @distinct_value = nil,
       @cte = {} of String => Clear::SQL::SelectBuilder | String,
       @columns = [] of SQL::Column,
       @froms = [] of SQL::From,
@@ -277,6 +279,7 @@ module Clear::Model
     end
 
     protected def join_impl(name, type, clear_expr)
+      # TODO: not sure about that...
       if @columns.empty?
         self.select("#{T.table}.*")
       end

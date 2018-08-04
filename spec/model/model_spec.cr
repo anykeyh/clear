@@ -1,6 +1,21 @@
 require "../spec_helper"
 
 module ModelSpec
+  class Category
+    include Clear::Model
+
+    column id : Int32, primary: true, presence: false
+
+    column name : String
+
+    has_many posts : Post
+    has_many users : User, through: :model_posts, foreign_key: :post_id, own_key: :category_id
+
+    timestamps
+
+    self.table = "model_categories"
+  end
+
   class Post
     include Clear::Model
 
@@ -16,6 +31,7 @@ module ModelSpec
     end
 
     belongs_to user : User, key_type: Int32?
+    belongs_to category : Category, key_type: Int32?
 
     self.table = "model_posts"
   end
@@ -44,6 +60,8 @@ module ModelSpec
 
     has_many posts : Post, foreign_key: "user_id"
     has_one info : UserInfo, foreign_key: "user_id"
+    has_many categories : Category, through: :model_posts,
+      own_key: :user_id, foreign_key: :category_id
 
     timestamps
 
@@ -54,6 +72,12 @@ module ModelSpec
     include Clear::Migration
 
     def change(dir)
+      create_table "model_categories" do |t|
+        t.text "name"
+
+        t.timestamps
+      end
+
       create_table "model_users" do |t|
         t.text "first_name"
         t.text "last_name"
@@ -79,6 +103,7 @@ module ModelSpec
         t.int "flags", array: true, index: "gin", default: "'{}'::int[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
+        t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
       end
     end
   end
@@ -361,6 +386,30 @@ module ModelSpec
         p = Post.query.first!
         p.tags.should eq ["a", "b", "c"]
         p.flags.should eq [1, 2, 3, 4]
+      end
+    end
+
+    context "with has_many through relation" do
+      it "can query has_many through" do
+        temporary do
+          reinit
+
+          u = User.create!({first_name: "John"})
+
+          c = Category.create!({name: "Nature"})
+          p = Post.create!({title: "Post about Poneys", user_id: u.id, category_id: c.id})
+
+          # Create a second post, with same category.
+          p = Post.create!({title: "Post about Dogs", user_id: u.id, category_id: c.id})
+
+          # Categories should return 1, as we remove duplicate
+          u.categories.count.should eq(1)
+          u.categories.to_sql.should eq "SELECT DISTINCT ON (model_categories.id) model_categories.* " +
+                                        "FROM model_categories " +
+                                        "INNER JOIN model_posts ON " +
+                                        "((model_posts.category_id = model_categories.id)) " +
+                                        "WHERE (model_posts.user_id = 1)"
+        end
       end
     end
 
