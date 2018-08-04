@@ -7,6 +7,14 @@
 - Finalization of CLI !
 - Add `Clear.seed(&block)`
   `Clear.seed` goes in pair with `bin/clear migrate seed` which will call the seed blocks.
+- Add possibility to use has_many through without having to declare the model doing the relation
+  For example, if A belongs to B, B belongs to C, then A has_many C through B. You can
+  perform this now without declaring any class for B; see the guide about relations for
+  more informations.
+
+## Bug fixes
+- Fix #23 bug with `has_many through:` and select
+- Add support for `DISTINCT ON` feature.
 
 ## Breaking changes
 - `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)
