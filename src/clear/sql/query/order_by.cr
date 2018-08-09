@@ -12,7 +12,7 @@ module Clear::SQL::Query::OrderBy
     when "ASC"
       :asc
     else
-      raise "Direction for order_by must be asc or desc"
+      raise Clear::ErrorMessages.order_by_error_invalid_order(str)
     end
   end
 

@@ -446,6 +446,9 @@ module ModelSpec
     end
 
     context "with pagination" do
+      it "test array" do
+      end
+
       it "can pull the next 5 users from page 2" do
         temporary do
           reinit

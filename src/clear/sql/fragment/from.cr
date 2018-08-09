@@ -14,10 +14,10 @@ module Clear::SQL
       when Symbolic
         [v, @var].compact.join(" AS ")
       when SQL::SelectBuilder
-        raise QueryBuildingError.new("Subquery `from` clause must have variable name") if @var.nil?
+        raise Clear::ErrorMessages.query_building_error("Subquery `from` clause must have variable name") if @var.nil?
         ["( #{v.to_sql} )", @var].compact.join(" ")
       else
-        raise QueryBuildingError.new("Only String and SelectQuery are allowed as column declaration")
+        raise Clear::ErrorMessages.query_building_error("Only String and SelectQuery objects are allowed as `from` declaration")
       end
     end
   end

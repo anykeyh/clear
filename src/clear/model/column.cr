@@ -7,6 +7,8 @@ require "db"
 #     which is not gathered through the query system (uninitialized column).
 #     Or use the `get_def` to get with default value
 class Clear::Model::Column(T)
+  include Clear::ErrorMessages
+
   struct UnknownClass
   end
 
@@ -24,8 +26,9 @@ class Clear::Model::Column(T)
   end
 
   def value : T
-    raise "You cannot access to the field `#{name}` " +
-          "because it never has been initialized" unless defined?
+    unless defined?
+      raise illegal_setter_access_to_undefined_column(@name)
+    end
 
     @value.as(T)
   end
@@ -50,8 +53,7 @@ class Clear::Model::Column(T)
     if T.nilable?
       @value = x.as(T)
     else
-      raise "Your field `#{@name}` is declared as `#{T}` but `NULL` value has been found in the database.\n" +
-            "Maybe declaring it as `#{T}?` would fix the error." if x.nil?
+      raise null_column_mapping_error(@name, T) if x.nil?
       @value = x.not_nil!
     end
 

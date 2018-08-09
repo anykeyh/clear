@@ -60,6 +60,7 @@
 #
 ###
 module Clear::Migration
+  include Clear::ErrorMessages
   module Helper; end
 
   include Helper
@@ -94,11 +95,7 @@ module Clear::Migration
         elsif filename =~ /^[0-9]+/
           filename[/^[0-9]+/]
         else
-          raise \
-              "I don't know how to order this migration.\n" +
-              "– Rename your migration class to have the migration UID at the end of the classname\n" +
-              "– Rename your file to have the migration UID in front of the filename\n" +
-              "– Override the method uid ! Be sure the number is immutable\n"
+          raise uid_not_found(self.class.name)
         end
       end)
     end
@@ -121,7 +118,7 @@ module Clear::Migration
   end
 
   def irreversible!
-    raise IrreversibleMigration.new("Migration #{@name} is irreversible!")
+    raise IrreversibleMigration.new(migration_irreversible(@name))
   end
 
   # This will apply the migration in a given direction (up or down)

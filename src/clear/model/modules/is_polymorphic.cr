@@ -83,9 +83,9 @@ module Clear::Model::IsPolymorphic
             {{c.id}}.new(h, cache, persisted, fetch_columns)
         {% end %}
         when nil
-          raise "No data in column #{@through}, impossible to instantiate !"
+          raise Clear::ErrorMessages.polymorphic_nil(@through)
         else
-          raise "Unknown class: #{h[@through]}"
+          raise Clear::ErrorMessages.polymorphic_unknown_class(h[@through])
         end
       end
     end

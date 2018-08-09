@@ -14,7 +14,7 @@ module Clear::SQL
 
     def initialize(@from, @condition = nil, type : Symbolic = :inner)
       @type = if type.is_a?(Symbol)
-                TYPE[type] || raise QueryBuildingError.new("Type of join unknown: `#{type}`")
+                TYPE[type] || raise Clear::ErrorMessages.query_building_error("Type of join unknown: `#{type}`")
               else
                 type
               end

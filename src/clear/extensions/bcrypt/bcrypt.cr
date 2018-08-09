@@ -23,7 +23,7 @@ module Clear::Model::Converter::Crypto::Bcrypt::PasswordConverter
     when Nil
       return nil
     else
-      raise "Cannot convert #{x.class} to Crypto::Bcrypt::Password"
+      raise Clear::ErrorMessages.converter_error(x.class.name, "Crypto::Bcrypt::Password")
     end
   end
 

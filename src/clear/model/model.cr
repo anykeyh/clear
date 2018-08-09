@@ -6,6 +6,7 @@ require "./converter/**"
 require "./validation/**"
 
 module Clear::Model
+  include Clear::ErrorMessages
   include Clear::Model::Connection
   include Clear::Model::HasColumns
   include Clear::Model::HasHooks
@@ -21,7 +22,7 @@ module Clear::Model
   getter cache : Clear::Model::QueryCache?
 
   def pkey
-    raise "Please implement primary key for `#{self.class.name}`"
+    raise lack_of_primary_key(self.class.name)
   end
 
   # We use here included for errors purpose.

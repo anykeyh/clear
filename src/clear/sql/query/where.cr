@@ -91,7 +91,7 @@ module Clear::SQL::Query::Where
       begin
         Clear::Expression[parameters[idx += 1]]
       rescue e : IndexError
-        raise QueryBuildingError.new(e.message)
+        raise Clear::ErrorMessages.query_building_error(e.message)
       end
     end
 
@@ -109,7 +109,7 @@ module Clear::SQL::Query::Where
         sym = question_mark[1..-1]
         Clear::Expression[parameters[sym]]
       rescue e : KeyError
-        raise QueryBuildingError.new(e.message)
+        raise Clear::ErrorMessages.query_building_error(e.message)
       end
     end
 

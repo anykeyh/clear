@@ -11,10 +11,12 @@
   For example, if A belongs to B, B belongs to C, then A has_many C through B. You can
   perform this now without declaring any class for B; see the guide about relations for
   more informations.
+- Add error messages so cool you want your code to crash 😉
 
 ## Bug fixes
 - Fix #23 bug with `has_many through:` and select
 - Add support for `DISTINCT ON` feature.
+- Array(String), Array(Int64) columns type are working now works
 
 ## Breaking changes
 - `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)

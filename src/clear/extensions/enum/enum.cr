@@ -35,7 +35,7 @@ module Clear
         when Nil
           return nil
         else
-          raise "Cannot convert #{x.class} to Enum : #{T.class}"
+          raise converter_error(x.class.name, "Enum: #{T.class.name}")
         end
       end
     end
@@ -92,7 +92,7 @@ module Clear
             when Slice(UInt8)
               ::\{{@type}}.from_string(String.new(x))
             else
-              raise "Cannot convert #{x.class} to ::{{@type}}"
+              raise Clear::ErrorMessages.converter_error(x.class.name, "::{{@type}}")
             end
           end
 

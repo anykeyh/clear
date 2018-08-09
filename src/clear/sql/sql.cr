@@ -52,8 +52,7 @@ module Clear
     @@connections = {} of String => DB::Database
 
     def self.connection(connection) : DB::Database
-      @@connections[connection]? || raise "The database connection " +
-                                          "`#{connection}` is not initialized"
+      @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
     end
 
     alias Symbolic = String | Symbol

@@ -18,7 +18,7 @@ class Clear::SQL::DeleteQuery
   end
 
   def to_sql
-    raise QueryBuildingError.new("Delete Query must have a `from` clause.") if @from.nil?
+    raise Clear::ErrorMessages.query_building_error("Delete Query must have a `from` clause.") if @from.nil?
     ["DELETE FROM #{@from}", print_wheres].compact.join(" ")
   end
 end

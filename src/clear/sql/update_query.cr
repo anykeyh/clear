@@ -52,7 +52,7 @@ class Clear::SQL::UpdateQuery
   end
 
   def to_sql
-    raise Clear::SQL::QueryBuildingError.new("Update Query must have a table clause.") if @table.nil?
+    raise Clear::ErrorMessages.query_building_error("Update Query must have a table clause.") if @table.nil?
     ["UPDATE #{@table} SET", print_values, print_wheres].compact.join(" ")
   end
 end

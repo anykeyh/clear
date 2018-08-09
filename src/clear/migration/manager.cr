@@ -10,6 +10,8 @@ require "./migration"
 # initialization of the Migration Manager.
 #
 class Clear::Migration::Manager
+  include Clear::ErrorMessages
+
   # Used to migrate between metadata version, in case we need it in the future.
   METADATA_VERSION = "1"
 
@@ -68,7 +70,7 @@ class Clear::Migration::Manager
 
     # Apply negative version
     if version < 0
-      raise "Cannot revert HEAD-#{version}, because no migrations are loaded yet." if current_version.nil?
+      raise no_migration_yet(version) if current_version.nil?
 
       if list_of_migrations.size + version <= 0
         version = 0
@@ -210,7 +212,7 @@ class Clear::Migration::Manager
     if @migrations.any?
       all_migrations = @migrations.map(&.uid)
       r = all_migrations - all_migrations.uniq
-      raise "Some migrations UID are not unique and will cause problem (ids listed here): #{r.join(", ")}" if r.any?
+      raise migration_not_unique(r) unless r.empty?
     end
   end
 
@@ -232,25 +234,24 @@ class Clear::Migration::Manager
   # Fetch the migration instance with the selected number
   def find(number)
     number = Int64.new(number)
-    @migrations.find(&.uid.==(number)) || raise "Migration not found: #{number}"
+    @migrations.find(&.uid.==(number)) || raise migration_not_found(number)
   end
 
   # Force up a migration; throw error if the migration is already up
   def up(number : Int64) : Void
     m = find(number)
-    if migrations_up.includes?(number)
-      raise "Migration already up: #{number}"
-    else
-      m.apply(Clear::Migration::Direction::UP)
-      @migrations_up.add(m.uid)
-    end
+
+    raise migration_already_up if migrations_up.includes?(number)
+
+    m.apply(Clear::Migration::Direction::UP)
+    @migrations_up.add(m.uid)
   end
 
   # Force down a migration; throw error if the mgiration is already down
   def down(number : Int64) : Void
     m = find(number)
 
-    raise "Migration already down: #{number}" unless migrations_up.includes?(number)
+    raise migration_already_down unless migrations_up.includes?(number)
 
     m.apply(Clear::Migration::Direction::DOWN)
     @migrations_up.delete(m.uid)
