@@ -65,16 +65,20 @@ module Clear::ErrorMessages
   end
 
   def build_error_message(message : String, ways_to_resolve : Tuple = Tuple.new, manual_pages : Tuple = Tuple.new)
-    format_width({
-      build_message(message),
-      build_tips(ways_to_resolve),
-      build_manual(manual_pages),
-      (
-        "Your may also have encountered a bug. \n"+
-        "Feel free to fill an issue: \n#{build_url("https://github.com/anykeyh/clear/issues/new")}"
-      ),
-      "\n\nStack trace:\n"
-    }.join)
+    {% if flag?(:release) %}
+      message
+    {% else %}
+      format_width({
+        build_message(message),
+        build_tips(ways_to_resolve),
+        build_manual(manual_pages),
+        (
+          "Your may also have encountered a bug. \n"+
+          "Feel free to fill an issue: \n#{build_url("https://github.com/anykeyh/clear/issues/new")}"
+        ),
+        "\n\nStack trace:\n"
+      }.join)
+    {%end %}
   end
 
   def migration_already_up(number)

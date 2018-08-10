@@ -7,8 +7,8 @@
 
 Clear is an ORM built specifically for PostgreSQL in Crystal.
 
-It's probably the most advanced ORM in term of features offered. It features
-Active Record pattern models, and low-level SQL builder.
+It's probably the most advanced ORM for PG on Crystal in term of features offered.
+It features Active Record pattern models, and low-level SQL builder.
 
 You can deal out of the box with jsonb, tsvectors, cursors, CTE, bcrypt password,
 array, uuid primary key, foreign constraints... and other things !
