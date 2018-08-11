@@ -81,7 +81,7 @@ module ModelSpec
       create_table "model_users" do |t|
         t.text "first_name"
         t.text "last_name"
-        t.text "middle_name"
+        t.add_column "middle_name", type: "varchar(32)"
 
         t.jsonb "notification_preferences", index: "gin", default: "'{}'"
 
@@ -121,6 +121,16 @@ module ModelSpec
           u = User.new({id: 123})
           u.id.should eq 123
           u.persisted?.should be_false
+        end
+      end
+
+      it "can load link string <-> varchar" do
+        temporary do
+          reinit
+          u = User.new({id: 1, first_name: "John", middle_name: "William"})
+          u.save!
+
+          User.query.first!.middle_name.should eq "William"
         end
       end
 
