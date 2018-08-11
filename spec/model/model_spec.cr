@@ -130,7 +130,9 @@ module ModelSpec
           u = User.new({id: 1, first_name: "John", middle_name: "William"})
           u.save!
 
-          User.query.first!.middle_name.should eq "William"
+          User.query.each do |u|
+            u.middle_name.should eq "William"
+          end
         end
       end
 
