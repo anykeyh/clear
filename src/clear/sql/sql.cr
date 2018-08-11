@@ -177,9 +177,18 @@ module Clear
       Clear::SQL::DeleteQuery.new(connection).from(table)
     end
 
+    def insert_into(table)
+      Clear::SQL::InsertQuery.new(table)
+    end
+
     # Start an INSERT INTO table query
     def insert_into(table, *args)
-      Clear::SQL::InsertQuery.new(table).insert(*args)
+      Clear::SQL::InsertQuery.new(table).values(*args)
+    end
+
+    # Create a new INSERT query
+    def insert
+      Clear::SQL::InsertQuery.new
     end
 
     # Alias of `insert_into`, for hurry developers

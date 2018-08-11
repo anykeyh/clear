@@ -12,7 +12,7 @@ module InsertSpec
   describe "Clear::SQL" do
     describe "InsertQuery" do
       it "can build an insert" do
-        insert_request.insert({a: "c", b: 12}).to_sql.should eq(
+        insert_request.values({a: "c", b: 12}).to_sql.should eq(
           "INSERT INTO users (a, b) VALUES ('c', 12)"
         )
       end
@@ -33,7 +33,7 @@ module InsertSpec
       end
 
       it "can insert unsafe values" do
-        insert_request.insert({created_at: Clear::Expression.unsafe("NOW()")})
+        insert_request.values({created_at: Clear::Expression.unsafe("NOW()")})
           .to_sql
           .should eq "INSERT INTO users (created_at) VALUES (NOW())"
       end

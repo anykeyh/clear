@@ -23,10 +23,17 @@ class Clear::SQL::InsertQuery
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
   getter values : SelectBuilder | Array(Array(Inserable)) = [] of Array(Inserable)
-  getter table : Selectable
+  getter! table : Selectable
   getter returning : String?
 
   def initialize(@table : Selectable)
+  end
+
+  def initialize(@table : Selectable, values)
+    self.values(values)
+  end
+
+  def into(@table : Selectable)
   end
 
   def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Void)
@@ -77,7 +84,7 @@ class Clear::SQL::InsertQuery
   #
   # insert({field: "value"}).into(:table)
   #
-  def insert(row : NamedTuple)
+  def values(row : NamedTuple)
     @keys = row.keys.to_a.map(&.as(Symbolic))
 
     v = @values = [] of Array(Inserable)
@@ -86,13 +93,25 @@ class Clear::SQL::InsertQuery
     change!
   end
 
-  def insert(row : Hash(Symbolic, Inserable))
+  def values(row : Hash(Symbolic, Inserable))
     @keys = row.keys.to_a.map(&.as(Symbolic))
 
     v = @values = [] of Array(Inserable)
     v << row.values.to_a.map(&.as(Inserable))
 
     change!
+  end
+
+  def values(rows : Array(NamedTuple))
+    rows.each do |nt|
+      values(nt)
+    end
+  end
+
+  def values(rows : Array(Hash(Symbolic, Inserable)))
+    rows.each do |nt|
+      values(nt)
+    end
   end
 
   # Used with values

@@ -1,6 +1,17 @@
 # master/HEAD
 
 ## Features
+- Improved Model build/create methods, allowing to pass arguments instead of NamedTuple
+
+
+## Bug fixes
+
+## Breaking changes
+- Renaming `insert` method on `InsertQuery` to `values`, making API more elegant.
+
+# v0.3
+
+## Features
 - Add support to pg Enum
 - Add support for UUID primary key, with uuid autogeneration
 - Add support for BCrypt fields, like passwords

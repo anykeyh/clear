@@ -127,8 +127,7 @@ module ModelSpec
       it "can load link string <-> varchar" do
         temporary do
           reinit
-          u = User.new({id: 1, first_name: "John", middle_name: "William"})
-          u.save!
+          User.create!(id: 1, first_name: "John", middle_name: "William")
 
           User.query.each do |u|
             u.middle_name.should eq "William"

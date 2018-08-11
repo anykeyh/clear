@@ -31,44 +31,44 @@ module Clear::Model::ClassMethods
         find(x).not_nil!
       end
 
-      # Build methods are used as factory and can
-      #   be redefined in case of polymorphism
-      def self.build : self
-        self.new
+      def self.build(**x : **T) forall T
+        \\{% if T.size > 0 %}
+          self.new(x)
+        \\{% else %}
+          self.new
+        \\{% end %}
       end
 
-      def self.build(x : NamedTuple) : self
-        self.new(x)
+      # Multi-args or no-arg to named tuple
+      def self.create(**args) : self
+        mdl = build(**args)
+        mdl.save
+        mdl
       end
 
-      def self.create : self
-          mdl = build
-          mdl.save
-          mdl
-      end
-
-      def self.create! : self
-          mdl = build
-          mdl.save!
-          mdl
+      # Multi-args to named tuple
+      def self.create!(**args) : self
+        mdl = build(**args)
+        mdl.save!
+        mdl
       end
 
       def self.create(x : Array(NamedTuple)) : Array(self)
-        x.map{ |elm| create(elm) }
+        x.map{ |elm| create(**elm) }
       end
 
       def self.create!(x : Array(NamedTuple)) : Array(self)
-        x.map{ |elm| create!(elm) }
+        x.map{ |elm| create!(**elm) }
       end
 
       def self.create(x : NamedTuple) : self
-        mdl = build(x)
+        mdl = build(**x)
         mdl.save
         mdl
       end
 
       def self.create!(x : NamedTuple) : self
-        mdl = build(x)
+        mdl = build(**x)
         mdl.save!
         mdl
       end
