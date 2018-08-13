@@ -44,16 +44,16 @@ module Clear::SQL::Query::Where
   # ```
   # - the `IN` operator if compared with an array:
   # ```crystal
-  # query.where(x: [1, 2]) # WHERE x in (1,2)
+  # query.where({x: [1, 2]}) # WHERE x in (1,2)
   # ```
   # - the `>=` and `<=` | `<` if compared with a range:
   # ```crystal
-  # query.where(x: (1..4))  # WHERE x >= 1 AND x <= 4
-  # query.where(x: (1...4)) # WHERE x >= 1 AND x < 4
+  # query.where({x: (1..4)})  # WHERE x >= 1 AND x <= 4
+  # query.where({x: (1...4)}) # WHERE x >= 1 AND x < 4
   # ```
   # - You also can put another select query as argument:
   # ```crystal
-  # query.where(x: another_select) # WHERE x IN (SELECT ... )
+  # query.where({x: another_select}) # WHERE x IN (SELECT ... )
   # ```
   def where(x : NamedTuple)
     x.each do |k, v|
@@ -122,7 +122,7 @@ module Clear::SQL::Query::Where
   # where("ADD_SOME_DANGEROUS_SQL_HERE") # WHERE ADD_SOME_DANGEROUS_SQL_HERE
   # ```
   def where(str : String)
-    @wheres << Clear::Expression::Node::Variable.new(str)
+    @wheres << Clear::Expression::Node::Raw.new(str)
     change!
   end
 

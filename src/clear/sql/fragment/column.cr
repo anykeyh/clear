@@ -17,8 +17,10 @@ module Clear::SQL
     def to_sql
       v = value
       case v
-      when Symbolic
+      when String
         [v, @var].compact.join(" AS ")
+      when Symbol
+        [SQL.escape(v.to_s), @var].compact.join(" AS ")
       when SQL::SelectBuilder
         ["( #{v.to_sql} )", @var].compact.join(" AS ")
       else

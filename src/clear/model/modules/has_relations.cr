@@ -51,14 +51,17 @@ module Clear::Model::HasRelations
           %primary_key = {{(primary_key || "#{relation_type}.pkey").id}}
           %foreign_key =  {{foreign_key}} || ( {{@type}}.table.to_s.singularize + "_id" )
 
+          %table = {{@type}}.esc_schema_table
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
-          sub_query = self.dup.clear_select.select("#{{{@type}}.table}.#{%primary_key}")
+          sub_query = self.dup.clear_select.select(
+            { %table, Clear::SQL.escape(%primary_key) }.join(".")
+          )
 
           @cache.active "{{method_name}}"
 
           {{relation_type}}.query.where{ raw(%foreign_key).in?(sub_query) }.each(fetch_columns: true) do |mdl|
             @cache.set(
-              "{{@type}}.{{method_name}}", mdl.attributes[%foreign_key], [mdl]
+              "#{%table}.{{method_name}}", mdl.attributes[%foreign_key], [mdl]
             )
           end
         end
@@ -87,13 +90,13 @@ module Clear::Model::HasRelations
 
       cache = @cache
 
-      qry = {{relation_type}}.query.select("#{%final_table}.*")
-        .join(%through_table){
-          var("#{%through_table}.#{%through_key}") == var("#{%final_table}.#{%final_pkey}")
+      qry = {{relation_type}}.query.select("#{Clear::SQL.escape(%final_table)}.*")
+        .join(Clear::SQL.escape(%through_table)){
+          var(%through_table, %through_key) == var(%final_table, %final_pkey)
         }.where{
           # FIXME: self.id or self.pkey ?
-          var("#{%through_table}.#{%own_key}") == self.id
-        }.distinct("#{%final_table}.#{%final_pkey}")
+          var(%through_table, %own_key) == self.id
+        }.distinct("#{Clear::SQL.escape(%final_table)}.#{Clear::SQL.escape(%final_pkey)}")
 
 
       if cache && cache.active?("{{method_name}}")
@@ -122,11 +125,11 @@ module Clear::Model::HasRelations
           sub_query = self.dup.clear_select.select("#{{{@type}}.table}.#{self_type.pkey}")
 
           qry = {{relation_type}}.query.join(%through_table){
-            var("#{%through_table}.#{%through_key}") == var("#{%final_table}.#{%final_pkey}")
+            var(%through_table, %through_key) == var(%final_table, %final_pkey)
           }.where{
-            var("#{%through_table}.#{%own_key}").in?(sub_query)
-          }.distinct.select( "#{%final_table}.*",
-            "#{%through_table}.#{%own_key} AS __own_id"
+            var(%through_table, %own_key).in?(sub_query)
+          }.distinct.select( "#{Clear::SQL.escape(%final_table)}.*",
+            "#{Clear::SQL.escape(%through_table)}.#{Clear::SQL.escape(%own_key)} AS __own_id"
           )
 
           block.call(qry)

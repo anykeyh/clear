@@ -4,6 +4,8 @@ module Clear::SQL::Query::Join
   end
 
   protected def join_impl(name : Symbolic, type, clear_expr)
+    name = ( name.is_a?(Symbol) ? Clear::SQL.escape(name.to_s) : name )
+
     joins << Clear::SQL::Join.new(name, clear_expr, type)
     change!
   end

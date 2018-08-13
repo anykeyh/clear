@@ -21,16 +21,13 @@ module Clear::SQL::Query::OrderBy
     change!
   end
 
-  def order_by( x : Array(Record) )
+  def order_by(x : Array(Record))
     @order_bys = x
     change!
   end
 
   def order_by(**tuple)
-    tuple.each do |k, v|
-      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s))
-    end
-    change!
+    order_by(tuple)
   end
 
   def order_by(tuple : NamedTuple)
@@ -40,13 +37,18 @@ module Clear::SQL::Query::OrderBy
     change!
   end
 
-  def order_by(expression, direction="ASC")
+  def order_by(expression : Symbol, direction = "ASC")
+    @order_bys << Record.new(SQL.escape(expression.to_s), _order_by_to_symbol(direction))
+    change!
+  end
+
+  def order_by(expression : String, direction = "ASC")
     @order_bys << Record.new(expression, _order_by_to_symbol(direction))
     change!
   end
 
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map{ |r| [r.op, r.dir.to_s.upcase].join(" ") }.join(", ")
+    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase].join(" ") }.join(", ")
   end
 end

@@ -11,7 +11,9 @@ module Clear::SQL
     def to_sql
       v = value
       case v
-      when Symbolic
+      when Symbol
+        [Clear::SQL.escape(v), @var].compact.join(" AS ")
+      when String
         [v, @var].compact.join(" AS ")
       when SQL::SelectBuilder
         raise Clear::ErrorMessages.query_building_error("Subquery `from` clause must have variable name") if @var.nil?

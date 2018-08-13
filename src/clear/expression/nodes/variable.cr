@@ -15,8 +15,6 @@ require "./node"
 #
 # ```
 class Clear::Expression::Node::Variable < Clear::Expression::Node
-  def initialize(@a : String); end
-
   def initialize(@name : String, @parent : Variable? = nil); end
 
   macro method_missing(call)
@@ -31,9 +29,9 @@ class Clear::Expression::Node::Variable < Clear::Expression::Node
   def resolve
     parent = @parent
     if parent
-      {parent.resolve, ".", @name}.join
+      {parent.resolve, ".", Clear::SQL.escape(@name)}.join
     else # nil
-      @name
+      Clear::SQL.escape(@name)
     end
   end
 end

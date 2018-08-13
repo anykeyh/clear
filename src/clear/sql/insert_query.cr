@@ -23,17 +23,17 @@ class Clear::SQL::InsertQuery
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
   getter values : SelectBuilder | Array(Array(Inserable)) = [] of Array(Inserable)
-  getter! table : Selectable
+  getter! table : Symbol | String
   getter returning : String?
 
-  def initialize(@table : Selectable)
+  def initialize(@table : Symbol | String)
   end
 
-  def initialize(@table : Selectable, values)
+  def initialize(@table : Symbol | String, values)
     self.values(values)
   end
 
-  def into(@table : Selectable)
+  def into(@table : Symbol | String)
   end
 
   def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Void)
@@ -151,7 +151,7 @@ class Clear::SQL::InsertQuery
   end
 
   protected def print_keys
-    @keys.any? ? "(" + @keys.map(&.to_s).join(", ") + ")" : nil
+    @keys.any? ? "(" + @keys.map{ |x| Clear::SQL.escape(x.to_s) }.join(", ") + ")" : nil
   end
 
   protected def print_values
@@ -164,8 +164,11 @@ class Clear::SQL::InsertQuery
   end
 
   def to_sql
-    raise QueryBuildingError.new "You must provide a `into` clause" if @table.nil?
-    o = ["INSERT INTO", @table, print_keys]
+    raise QueryBuildingError.new "You must provide a `into` clause" unless table = @table
+
+    table = Clear::SQL.escape(table.to_s)
+
+    o = ["INSERT INTO", table, print_keys]
     v = @values
     case v
     when SelectBuilder

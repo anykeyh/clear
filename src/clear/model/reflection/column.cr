@@ -3,7 +3,8 @@
 class Clear::Reflection::Column
   include Clear::Model
 
-  self.table = "information_schema.columns"
+  self.schema = "information_schema"
+  self.table = "columns"
   self.read_only = true
 
   column table_catalog : String

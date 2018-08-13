@@ -28,7 +28,7 @@ module Clear::SQL::SelectBuilder
                  @wheres = [] of Clear::Expression::Node,
                  @havings = [] of Clear::Expression::Node,
                  @windows = [] of {String, String},
-                 @group_bys = [] of String,
+                 @group_bys = [] of Symbolic,
                  @order_bys = [] of Clear::SQL::Query::OrderBy::Record,
                  @limit = nil,
                  @offset = nil,

@@ -45,11 +45,11 @@ module ScopeSpec
 
         ScopeModel.create! #Without value
 
-        ScopeModel.no_value.to_sql.should eq("SELECT * FROM scope_models WHERE (value IS NULL)")
+        ScopeModel.no_value.to_sql.should eq("SELECT * FROM \"scope_models\" WHERE (\"value\" IS NULL)")
         ScopeModel.no_value.count.should eq 1
-        ScopeModel.with_value(1).to_sql.should eq("SELECT * FROM scope_models WHERE (value = 1)")
+        ScopeModel.with_value(1).to_sql.should eq("SELECT * FROM \"scope_models\" WHERE (\"value\" = 1)")
         ScopeModel.with_value(1).count.should eq 1
-        ScopeModel.with_values(1,2,3).where{id < 10}.to_sql.should eq("SELECT * FROM scope_models WHERE value IN (1, 2, 3) AND (id < 10)")
+        ScopeModel.with_values(1,2,3).where{id < 10}.to_sql.should eq("SELECT * FROM \"scope_models\" WHERE \"value\" IN (1, 2, 3) AND (\"id\" < 10)")
         ScopeModel.with_values(1,2,3).count.should eq 3
       end
 

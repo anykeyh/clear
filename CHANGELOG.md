@@ -3,11 +3,25 @@
 ## Features
 - Improved Model build/create methods, allowing to pass arguments instead of NamedTuple
 
-
 ## Bug fixes
+- Escaping table, columns and schema name to allow Clear to works on any model names.
+  - This is very demanding work as it turns out table and columns naming are used everywhere
+    in the ORM. Please give me feedback in case of any issues !
 
 ## Breaking changes
 - Renaming `insert` method on `InsertQuery` to `values`, making API more elegant.
+- Usage of `var`  in Expression engine has been changed and is now different from raw:
+  - `var` provide simple way to construct `[schema].table.field` structure,
+  with escaped table, field and schema keywords.
+  - `raw` works as usual, printing the raw string fragment to you condition.
+  - Therefore:
+    ```crystal
+      where{ var("a.b") == 1 } # Wrong now! => WHERE "a.b" = 1
+      # Must be changed by:
+      where{ var("a", "b") == 1 } # OR
+      where{ raw("a.b") }
+    ```
+    TL;DR, if you currently use `var` function, please use `raw` instead from now.
 
 # v0.3
 

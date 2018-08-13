@@ -58,9 +58,20 @@ module Clear
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectBuilder
 
-    # Sanitize the
+    # Sanitize
     def sanitize(x : String, delimiter = "''")
       Clear::Expression[x]
+    end
+
+    # Escape the expression, double quoting it.
+    #
+    # It allows use of reserved keywords as table or column name
+    def escape(x : String|Symbol)
+      "\"" + x.to_s.gsub("\"", "\"\"") + "\""
+    end
+
+    def unsafe(x)
+      Clear::Expression::UnsafeSql.new(x)
     end
 
     def init(url : String)

@@ -34,7 +34,7 @@ module Clear::Model
       @wheres = [] of Clear::Expression::Node,
       @havings = [] of Clear::Expression::Node,
       @windows = [] of {String, String},
-      @group_bys = [] of String,
+      @group_bys = [] of SQL::Symbolic,
       @order_bys = [] of Clear::SQL::Query::OrderBy::Record,
       @limit = nil,
       @offset = nil,
@@ -263,7 +263,7 @@ module Clear::Model
     # Get the first row from the collection query.
     # if not found, return `nil`
     def first(fetch_columns = false) : T?
-      order_by("#{T.pkey}", "ASC") unless T.pkey.nil? || order_bys.any?
+      order_by(Clear::SQL.escape("#{T.pkey}"), "ASC") unless T.pkey.nil? || order_bys.any?
 
       limit(1).fetch do |hash|
         return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
@@ -281,7 +281,7 @@ module Clear::Model
     protected def join_impl(name, type, clear_expr)
       # TODO: not sure about that...
       if @columns.empty?
-        self.select("#{T.table}.*")
+        self.select("#{Clear::SQL.escape(T.table)}.*")
       end
 
       super(name, type, clear_expr)

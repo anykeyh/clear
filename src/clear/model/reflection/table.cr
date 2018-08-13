@@ -3,7 +3,9 @@
 class Clear::Reflection::Table
   include Clear::Model
 
-  self.table = "information_schema.tables"
+  self.table = "tables"
+  self.schema = "information_schema"
+
   self.read_only = true
 
   column table_catalog : String
@@ -14,7 +16,7 @@ class Clear::Reflection::Table
   scope(:public) { where { table_schema == "public" } }
 
   scope(:tables_only) { where { table_type == "BASE TABLE" } }
-  scope(:views_only) { where{ table_type == "VIEW" } }
+  scope(:views_only) { where { table_type == "VIEW" } }
 
   has_many columns : Clear::Reflection::Column, foreign_key: "table_name", primary_key: "table_name"
 
@@ -45,27 +47,27 @@ class Clear::Reflection::Table
     o = {} of String => Array(String)
 
     SQL.select({
-      index_name: "i.relname",
-      column_name: "a.attname"
+      index_name:  "i.relname",
+      column_name: "a.attname",
     })
-    .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
-    .where {
-      (t.oid == ix.indrelid) &
-      (i.oid == ix.indexrelid) &
-      (a.attrelid == t.oid) &
-      (a.attnum == raw("ANY(ix.indkey)")) &
-      (t.relkind == "r") &
-      (t.relname == self.table_name)
-    }
-    .order_by("t.relname": :asc, "i.relname": :asc)
-    .fetch do |h|
-      col = h["column_name"].to_s
-      v = h["index_name"].to_s
+      .from({t: "pg_class", i: "pg_class", ix: "pg_index", a: "pg_attribute"})
+      .where {
+        (t.oid == ix.indrelid) &
+          (i.oid == ix.indexrelid) &
+          (a.attrelid == t.oid) &
+          (a.attnum == raw("ANY(ix.indkey)")) &
+          (t.relkind == "r") &
+          (t.relname == self.table_name)
+      }
+      .order_by("t.relname").order_by("i.relname")
+      .fetch do |h|
+        col = h["column_name"].to_s
+        v = h["index_name"].to_s
 
-      arr = o[col]? ? o[col] : (o[col] = [] of String)
+        arr = o[col]? ? o[col] : (o[col] = [] of String)
 
-      arr << v
-    end
+        arr << v
+      end
 
     return o
   end

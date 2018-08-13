@@ -15,12 +15,26 @@ module Clear::Model::ClassMethods
 
 
       class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
+      # Schema of this model
+      class_property schema : Clear::SQL::Symbolic? = nil
+
+      # Compose the "schema"."table" key for PG
+      def self.esc_schema_table
+        if s = schema
+          {schema, table}.map{ |x| Clear::SQL.escape(x.to_s) }.join(".")
+        else
+          # Default schema
+          Clear::SQL.escape(table)
+        end
+
+      end
+
       class_property pkey : String = "id"
 
       class Collection < Clear::Model::CollectionBase(\{{@type}}); end
 
       def self.query
-        Collection.new.use_connection(connection).from(table)
+        Collection.new.use_connection(connection).from(self.esc_schema_table)
       end
 
       def self.find(x)

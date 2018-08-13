@@ -206,14 +206,22 @@ class Clear::Expression
   # IDEA: raw should accept array splat as second parameters and the "?" keyword
   #
   def raw(x)
-    Node::Variable.new(x.to_s)
+    Node::Raw.new(x.to_s)
   end
 
-  # Alias for `raw`
+  # Flag the content as variable.
+  # Variables are escaped with double quotes
   #
-  # See `raw`
-  def var(x)
-    raw(x)
+  def var(*parts)
+    _var(parts)
+  end
+
+  private def _var(parts : Tuple, pos = parts.size-1)
+    if pos == 0
+      Node::Variable.new(parts[pos].to_s)
+    else
+      Node::Variable.new(parts[pos].to_s, _var(parts, pos-1))
+    end
   end
 
   # Because many postgresql operators are not transcriptable in Crystal lang,
@@ -230,8 +238,8 @@ class Clear::Expression
 
   macro method_missing(call)
      {% if call.args.size > 0 %}
-       args = {{call.args}}.map{ |x| Clear::Expression[x] }.join(", ")
-       return Node::Variable.new("{{call.name.id}}(#{args})")
+       args = {{call.args}}.map{ |x| Clear::Expression[x] }
+       return Node::Function.new("{{call.name.id}}", args)
      {% else %}
        return Node::Variable.new({{call.name.id.stringify}})
      {% end %}

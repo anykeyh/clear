@@ -17,8 +17,8 @@ module SelectSpec
 
   def complex_query
     select_request.from(:users)
-      .join(:role_users) { var("role_users.user_id") == users.id }
-      .join(:roles) { var("role_users.role_id") == var("roles.id") }
+      .join(:role_users) { var("role_users", "user_id") == users.id }
+      .join(:roles) { var("role_users", "role_id") == var("roles", "id") }
       .where({role: ["admin", "superadmin"]})
       .order_by({priority: :desc, name: :asc})
       .limit(50)
@@ -39,7 +39,7 @@ module SelectSpec
 
       it "can transfert to delete method" do
         r = select_request.select("*").from(:users).where { raw("users.id") > 1000 }
-        r.to_delete.to_sql.should eq "DELETE FROM users WHERE (users.id > 1000)"
+        r.to_delete.to_sql.should eq "DELETE FROM \"users\" WHERE (users.id > 1000)"
       end
 
       describe "the SELECT clause" do
@@ -54,12 +54,13 @@ module SelectSpec
         end
 
         it "can select using variables" do
-          r = select_request.select({sum: "SUM(quantity)", count: "COUNT(*)"})
+          r = select_request.select("SUM(quantity) AS sum", "COUNT(*) AS count")
+          # No escape with string, escape must be done manually
           r.to_sql.should eq "SELECT SUM(quantity) AS sum, COUNT(*) AS count"
         end
 
         it "can select using multiple strings" do
-          r = select_request.select("user_id AS uid", "column AS some_cool_stuff")
+          r = select_request.select({uid: "user_id", some_cool_stuff: "column"})
           r.to_sql.should eq "SELECT user_id AS uid, column AS some_cool_stuff"
         end
 
@@ -77,12 +78,12 @@ module SelectSpec
       describe "the FROM clause" do
         it "can build simple from" do
           r = select_request.from(:users)
-          r.to_sql.should eq "SELECT * FROM users"
+          r.to_sql.should eq "SELECT * FROM \"users\""
         end
 
         it "can build multiple from" do
           r = select_request.from(:users, :posts)
-          r.to_sql.should eq "SELECT * FROM users, posts"
+          r.to_sql.should eq "SELECT * FROM \"users\", \"posts\""
         end
 
         it "can build named from" do
@@ -101,8 +102,8 @@ module SelectSpec
         end
 
         it "can stack" do
-          r = select_request.from("x").from("y")
-          r.to_sql.should eq "SELECT * FROM x, y"
+          r = select_request.from("x").from(:y)
+          r.to_sql.should eq "SELECT * FROM x, \"y\""
         end
 
         it "can be cleared" do
@@ -123,15 +124,15 @@ module SelectSpec
           # Simple CTE
           cte = select_request.from(:users_info).where("x > 10")
           sql = select_request.from(:ui).with_cte("ui", cte).to_sql
-          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE x > 10) SELECT * FROM ui"
+          sql.should eq "WITH ui AS (SELECT * FROM \"users_info\" WHERE x > 10) SELECT * FROM \"ui\""
 
           # Complex CTE
           cte1 = select_request.from(:users_info).where { a == b }
           cte2 = select_request.from(:just_another_table).where { users_infos.x == just_another_table.w }
           sql = select_request.with_cte({ui: cte1, at: cte2}).from(:at).to_sql
-          sql.should eq "WITH ui AS (SELECT * FROM users_info WHERE (a = b))," +
-                        " at AS (SELECT * FROM just_another_table WHERE (" +
-                        "users_infos.x = just_another_table.w)) SELECT * FROM at"
+          sql.should eq "WITH ui AS (SELECT * FROM \"users_info\" WHERE (\"a\" = \"b\"))," +
+                        " at AS (SELECT * FROM \"just_another_table\" WHERE (" +
+                        "\"users_infos\".\"x\" = \"just_another_table\".\"w\")) SELECT * FROM \"at\""
         end
       end
 
@@ -139,33 +140,33 @@ module SelectSpec
         context "using simple engine" do
           it "can use simple equals" do
             r = select_request.from(:users).where({user_id: 1})
-            r.to_sql.should eq "SELECT * FROM users WHERE (user_id = 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" = 1)"
           end
 
           it "can use `in` operators in case of array" do
             r = select_request.from(:users).where({user_id: [1, 2, 3, 4, "hello"]})
-            r.to_sql.should eq "SELECT * FROM users WHERE user_id IN (1, 2, 3, 4, 'hello')"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"user_id\" IN (1, 2, 3, 4, 'hello')"
           end
 
           it "can write where with string" do
             r = select_request.from(:users).where("a = b")
-            r.to_sql.should eq "SELECT * FROM users WHERE a = b"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE a = b"
           end
 
           it "manages ranges" do
             select_request.from(:users).where({x: 1..4}).to_sql
-              .should eq "SELECT * FROM users WHERE (x >= 1 AND x <= 4)"
+              .should eq "SELECT * FROM \"users\" WHERE (\"x\" >= 1 AND \"x\" <= 4)"
 
             select_request.from(:users).where({x: 1...4}).to_sql
-              .should eq "SELECT * FROM users WHERE (x >= 1 AND x < 4)"
+              .should eq "SELECT * FROM \"users\" WHERE (\"x\" >= 1 AND \"x\" < 4)"
           end
 
           it "can prepare query" do
             r = select_request.from(:users).where("a LIKE ?", ["hello"])
-            r.to_sql.should eq "SELECT * FROM users WHERE a LIKE 'hello'"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'hello'"
 
             r = select_request.from(:users).where("a LIKE ?", {"hello"})
-            r.to_sql.should eq "SELECT * FROM users WHERE a LIKE 'hello'"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'hello'"
           end
 
           it "raises exception with prepared query" do
@@ -177,7 +178,7 @@ module SelectSpec
           it "can prepare query with tuple" do
             r = select_request.from(:users).where("a LIKE :hello AND b LIKE :world",
               {hello: "h", world: "w"})
-            r.to_sql.should eq "SELECT * FROM users WHERE a LIKE 'h' AND b LIKE 'w'"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'h' AND b LIKE 'w'"
           end
 
           it "raises exception if a tuple element is not found" do
@@ -188,78 +189,78 @@ module SelectSpec
           end
 
           it "can prepare group by query" do
-            select_request.select("role").from(:users).group_by("role").order_by("role").to_sql.should eq \
-              "SELECT role FROM users GROUP BY role ORDER BY role ASC"
+            select_request.select("role").from(:users).group_by(:role).order_by(:role).to_sql.should eq \
+              "SELECT role FROM \"users\" GROUP BY \"role\" ORDER BY \"role\" ASC"
           end
         end
 
         context "using expression engine" do
           it "can use different comparison and arithmetic operators" do
             r = select_request.from(:users).where { users.id > 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id > 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" > 1)"
             r = select_request.from(:users).where { users.id < 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id < 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" < 1)"
             r = select_request.from(:users).where { users.id >= 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id >= 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1)"
             r = select_request.from(:users).where { users.id <= 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id <= 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" <= 1)"
             r = select_request.from(:users).where { users.id * 2 == 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE ((users.id * 2) = 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE ((\"users\".\"id\" * 2) = 1)"
             r = select_request.from(:users).where { users.id / 2 == 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE ((users.id / 2) = 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE ((\"users\".\"id\" / 2) = 1)"
             r = select_request.from(:users).where { users.id + 2 == 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE ((users.id + 2) = 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE ((\"users\".\"id\" + 2) = 1)"
             r = select_request.from(:users).where { users.id - 2 == 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE ((users.id - 2) = 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE ((\"users\".\"id\" - 2) = 1)"
             r = select_request.from(:users).where { -users.id < -1000 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (-users.id < -1000)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (-\"users\".\"id\" < -1000)"
           end
 
           it "can use expression engine equal" do
             r = select_request.from(:users).where { users.id == var("test") }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id = test)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" = \"test\")"
           end
 
           it "can use expression engine not equals" do
             r = select_request.from(:users).where { users.id != 1 }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id <> 1)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" <> 1)"
           end
 
           it "can use expression engine not null" do
             r = select_request.from(:users).where { users.id != nil }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id IS NOT NULL)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NOT NULL)"
           end
 
           it "can use expression engine null" do
             r = select_request.from(:users).where { users.id == nil }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id IS NULL)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL)"
           end
 
           it "can stack with `AND` operator" do
             now = Time.now
             r = select_request.from(:users).where { users.id == nil }.where {
-              var("users.updated_at") >= now
+              var("users", "updated_at") >= now
             }
-            r.to_sql.should eq "SELECT * FROM users WHERE (users.id IS NULL) " +
-                               "AND (users.updated_at >= #{Clear::Expression[now]})"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL) " +
+                               "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
           end
 
           it "can use subquery into where clause" do
             r = select_request.from(:users).where { users.id.in?(complex_query.clear_select.select(:id)) }
-            r.to_sql.should eq "SELECT * FROM users WHERE users.id IN (" +
-                               "SELECT id FROM users INNER JOIN role_users ON " +
-                               "((role_users.user_id = users.id)) INNER JOIN roles" +
-                               " ON ((role_users.role_id = roles.id)) WHERE role IN" +
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"users\".\"id\" IN (" +
+                               "SELECT \"id\" FROM \"users\" INNER JOIN \"role_users\" ON " +
+                               "((\"role_users\".\"user_id\" = \"users\".\"id\")) INNER JOIN \"roles\"" +
+                               " ON ((\"role_users\".\"role_id\" = \"roles\".\"id\")) WHERE \"role\" IN" +
                                " ('admin', 'superadmin') ORDER BY priority DESC, " +
                                "name ASC LIMIT 50 OFFSET 50)"
           end
 
           it "can build locks" do
             r = select_request.from(:users).with_lock("FOR UPDATE")
-            r.to_sql.should eq "SELECT * FROM users FOR UPDATE"
+            r.to_sql.should eq "SELECT * FROM \"users\" FOR UPDATE"
 
             r = select_request.from(:users).with_lock("FOR SHARE")
-            r.to_sql.should eq "SELECT * FROM users FOR SHARE"
+            r.to_sql.should eq "SELECT * FROM \"users\" FOR SHARE"
           end
 
           it "can use & as AND and | as OR" do
@@ -268,31 +269,32 @@ module SelectSpec
                 (raw("users.role") == "superadmin")
             }
 
-            r.to_sql.should eq "SELECT * FROM users WHERE (((users.id > 100) " +
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (((users.id > 100) " +
                                "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
           end
 
           it "can check presence into array" do
             r = select_request.from(:users).where { raw("users.id").in?([1, 2, 3, 4]) }
-            r.to_sql.should eq "SELECT * FROM users WHERE users.id IN (1, 2, 3, 4)"
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE users.id IN (1, 2, 3, 4)"
           end
 
           it "can check presence into range" do
             # Simple number
             select_request.from(:users).where { users.id.in?(1..3) }.to_sql
-              .should eq "SELECT * FROM users WHERE (users.id >= 1 AND users.id <= 3)"
+              .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1 AND \"users\".\"id\" <= 3)"
 
             # Date range.
             range = 2.day.ago..1.day.ago
 
             select_request.from(:users).where { created_at.in?(range) }.to_sql
-              .should eq "SELECT * FROM users WHERE " +
-                         "(created_at >= #{Clear::Expression[range.begin]} AND" +
-                         " created_at <= #{Clear::Expression[range.end]})"
+              .should eq "SELECT * FROM \"users\" WHERE " +
+                         "(\"created_at\" >= #{Clear::Expression[range.begin]} AND" +
+                         " \"created_at\" <= #{Clear::Expression[range.end]})"
 
             # Exclusive range
             select_request.from(:users).where { users.id.in?(1...3) }.to_sql
-              .should eq "SELECT * FROM users WHERE (users.id >= 1 AND users.id < 3)"
+              .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1" +
+                         " AND \"users\".\"id\" < 3)"
           end
         end
       end

@@ -414,12 +414,12 @@ module ModelSpec
           p = Post.create!({title: "Post about Dogs", user_id: u.id, category_id: c.id})
 
           # Categories should return 1, as we remove duplicate
+          u.categories.to_sql.should eq "SELECT DISTINCT ON (\"model_categories\".\"id\") \"model_categories\".* " +
+                                        "FROM \"model_categories\" " +
+                                        "INNER JOIN \"model_posts\" ON " +
+                                        "((\"model_posts\".\"category_id\" = \"model_categories\".\"id\")) " +
+                                        "WHERE (\"model_posts\".\"user_id\" = 1)"
           u.categories.count.should eq(1)
-          u.categories.to_sql.should eq "SELECT DISTINCT ON (model_categories.id) model_categories.* " +
-                                        "FROM model_categories " +
-                                        "INNER JOIN model_posts ON " +
-                                        "((model_posts.category_id = model_categories.id)) " +
-                                        "WHERE (model_posts.user_id = 1)"
         end
       end
     end
@@ -433,9 +433,9 @@ module ModelSpec
 
           Post.create!({title: "A Post", user_id: u.id})
 
-          Post.query.join("model_users") { model_posts.user_id == model_users.id }.to_sql
-            .should eq "SELECT model_posts.* FROM model_posts INNER JOIN model_users " +
-                       "ON ((model_posts.user_id = model_users.id))"
+          Post.query.join(:model_users) { model_posts.user_id == model_users.id }.to_sql
+            .should eq "SELECT \"model_posts\".* FROM \"model_posts\" INNER JOIN \"model_users\" " +
+                       "ON ((\"model_posts\".\"user_id\" = \"model_users\".\"id\"))"
         end
       end
 
@@ -445,11 +445,11 @@ module ModelSpec
           u = User.create!({first_name: "Join User"})
           Post.create!({title: "A Post", user_id: u.id})
 
-          user_with_a_post_minimum = User.query.distinct.join("model_posts") { model_posts.user_id == model_users.id }
+          user_with_a_post_minimum = User.query.distinct.join(:model_posts) { model_posts.user_id == model_users.id }
 
           user_with_a_post_minimum.to_sql.should eq \
-            "SELECT DISTINCT model_users.* FROM model_users INNER JOIN " +
-            "model_posts ON ((model_posts.user_id = model_users.id))"
+            "SELECT DISTINCT \"model_users\".* FROM \"model_users\" INNER JOIN " +
+            "\"model_posts\" ON ((\"model_posts\".\"user_id\" = \"model_users\".\"id\"))"
 
           user_with_a_post_minimum.with_posts.each { } # Should just execute
         end

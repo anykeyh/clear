@@ -46,48 +46,48 @@ module JSONBSpec
         it "use -> operator when it cannot test presence" do
           Clear::SQL.select("*").from("users")
             .where { data.jsonb("personal email").cast("text").like "%@gmail.com" }.to_sql
-            .should eq %(SELECT * FROM users WHERE (data->'personal email'::text LIKE '%@gmail.com'))
+            .should eq %(SELECT * FROM users WHERE ("data"->'personal email'::text LIKE '%@gmail.com'))
 
           # v-- Complex call
           Clear::SQL.select.from("users")
             .where { data.jsonb("test") == call_function(data.jsonb("a.b.c")) }.to_sql
-            .should eq %(SELECT * FROM users WHERE (data->'test' = call_function(data->'a'->'b'->'c')))
+            .should eq %(SELECT * FROM users WHERE ("data"->'test' = call_function("data"->'a'->'b'->'c')))
         end
 
         it "uses @> operator when it can !" do
-          Clear::SQL.select("*").from("users")
+          Clear::SQL.select("*").from(:users)
             .where {
               (data.jsonb("security.role") == "admin") &
                 (data.jsonb("security.level") == 1)
             }.to_sql
-            .should eq "SELECT * FROM users WHERE (data @> '{\"security\":{\"role\":\"admin\"}}' AND " +
-                       "data @> '{\"security\":{\"level\":1}}')"
+            .should eq "SELECT * FROM \"users\" WHERE (\"data\" @> '{\"security\":{\"role\":\"admin\"}}' AND " +
+                       "\"data\" @> '{\"security\":{\"level\":1}}')"
         end
 
         it "check existence of a key" do
-          Clear::SQL.select.from("users")
+          Clear::SQL.select.from(:users)
             .where { data.jsonb_key_exists?("test") }
             .to_sql
-            .should eq "SELECT * FROM users WHERE (data ? 'test')"
+            .should eq "SELECT * FROM \"users\" WHERE (\"data\" ? 'test')"
 
           Clear::SQL.select.from("users")
             .where { data.jsonb("a").jsonb_key_exists?("test") }
             .to_sql
-            .should eq "SELECT * FROM users WHERE (data->'a' ? 'test')"
+            .should eq "SELECT * FROM users WHERE (\"data\"->'a' ? 'test')"
         end
 
         it "check existence of any key" do
-          Clear::SQL.select.from("users")
+          Clear::SQL.select.from(:users)
             .where { data.jsonb_any_key_exists?(["a", 0]) }
             .to_sql
-            .should eq "SELECT * FROM users WHERE (data ?| array['a', 0])"
+            .should eq "SELECT * FROM \"users\" WHERE (\"data\" ?| array['a', 0])"
         end
 
         it "check existence of all keys" do
           Clear::SQL.select.from("users")
             .where { data.jsonb("a").jsonb_all_keys_exists?(["a", "b"]) }
             .to_sql
-            .should eq "SELECT * FROM users WHERE (data->'a' ?& array['a', 'b'])"
+            .should eq "SELECT * FROM users WHERE (\"data\"->'a' ?& array['a', 'b'])"
         end
       end
     end
