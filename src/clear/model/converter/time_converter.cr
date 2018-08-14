@@ -8,7 +8,7 @@ class Clear::Model::Converter::TimeConverter
     when Time
       x.to_local
     else
-      Time.parse(x.to_s, "%F %X.%L").to_local
+      Time.parse_local(x.to_s, "%F %X.%L")
     end
   end
 
