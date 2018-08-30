@@ -24,7 +24,7 @@ module ModelSpec
     column title : String
 
     column tags : Array(String), presence: false
-    column flags : Array(Int32), presence: false
+    column flags : Array(Int64), presence: false
 
     def validate
       ensure_than(title, "is not empty", &.size.>(0))
@@ -100,7 +100,7 @@ module ModelSpec
         t.string "title", index: true
 
         t.string "tags", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
-        t.int "flags", array: true, index: "gin", default: "'{}'::int[]"
+        t.bigint "flags", array: true, index: "gin", default: "'{}'::bigint[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
@@ -391,7 +391,7 @@ module ModelSpec
         p = Post.create!({title: "A post", user_id: u.id})
 
         p.tags = ["a", "b", "c"]
-        p.flags = [1, 2, 3, 4]
+        p.flags = [11234212343543_i64, 11234212343543_i64, -12928394059603_i64, 12038493029484_i64]
         p.save!
 
         p = Post.query.first!

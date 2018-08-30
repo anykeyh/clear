@@ -12,21 +12,28 @@ require "json"
 
 class Clear::Model::Converter::ArrayConverter_{{exp.id}}_
   def self.to_column(x) : Array(::{{exp.id}})?
-    if x
-      if arr = ::JSON.parse(x.to_s).as_a?
-        arr.map{ |x| x.as_{{k.id}} }
-      end
+    pp x.class.name
+    case x
+    when Nil
+      return nil
+    when ::{{exp.id}}
+      return [x]
+    when Array(::PG::{{exp.id}}Array)
+      return x.map do |i|
+        case i
+        when ::{{exp.id}}
+          i
+        else
+          nil
+        end
+      end.compact
     else
-      nil
+      if arr = ::JSON.parse(x.to_s).as_a?
+        return arr.map{ |x| x.as_{{k.id}} }
+      end
+
+      return nil
     end
-    # case x
-    # when Array(::{{exp.id}})
-    #   x.as(Array(::{{exp.id}}))
-    # when Nil
-    #   x
-    # else
-    #   raise "Cannot convert #{x.class} to {{exp.id}}"
-    # end
   end
 
   def self.to_string( x ) : String
