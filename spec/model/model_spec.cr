@@ -396,7 +396,7 @@ module ModelSpec
 
         p = Post.query.first!
         p.tags.should eq ["a", "b", "c"]
-        p.flags.should eq [1, 2, 3, 4]
+        p.flags.should eq [11234212343543_i64, 11234212343543_i64, -12928394059603_i64, 12038493029484_i64]
       end
     end
 
