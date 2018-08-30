@@ -5,7 +5,7 @@ Clear offers a migration system. Migration allow you to handle state update of y
 Migration is a list of change going through a direction, up (commit changes) or down (rollback changes).
 
 In clear, a migration is defined like this:
-
+ 
 ```crystal
 class MyMigration1
   include Clear::Migration
