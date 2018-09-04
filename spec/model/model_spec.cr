@@ -55,6 +55,7 @@ module ModelSpec
     column first_name : String
     column last_name : String?
     column middle_name : String?
+    column active : Bool?
 
     column notification_preferences : JSON::Any, presence: false
 
@@ -81,6 +82,9 @@ module ModelSpec
       create_table "model_users" do |t|
         t.text "first_name"
         t.text "last_name"
+
+        t.bool "active", null: true
+
         t.add_column "middle_name", type: "varchar(32)"
 
         t.jsonb "notification_preferences", index: "gin", default: "'{}'"
@@ -154,7 +158,17 @@ module ModelSpec
         end
       end
 
-      it "should not try to update the model if there's not update" do
+      it "can deal with boolean nullable" do # Specific bug with converter already fixed
+        temporary do
+          reinit
+          u = User.new({id: 1, first_name: "x", active: nil})
+          u.save!
+          u2 = User.query.first!
+          u2.active.should eq(nil)
+        end
+      end
+
+      it "should not try to update the model if there's nothing to update" do
         temporary do
           reinit
           u = User.new({id: 1, first_name: "x"})
@@ -336,7 +350,6 @@ module ModelSpec
 
           u.first_name = "Yacine"
           u.last_name = "Petitprez"
-          pp u.changed?
           u.save.should eq true
 
           u.notification_preferences = JSON.parse(JSON.build do |json|

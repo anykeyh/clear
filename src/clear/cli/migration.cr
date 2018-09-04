@@ -94,8 +94,6 @@ class Clear::CLI::Migration < Admiral::Command
         num = array.size - 1
       end
 
-      pp array[-num]
-
       Clear::Migration::Manager.instance.apply_to(
         array[-num],
         direction: :down)

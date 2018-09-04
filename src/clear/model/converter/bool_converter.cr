@@ -42,6 +42,8 @@ class Clear::Model::Converter::BoolConverter
   end
 
   def self.to_db(x : Bool?)
-    x ? "t" : "f"
+    x.nil? ? nil : (
+      x ? "t" : "f"
+    )
   end
 end

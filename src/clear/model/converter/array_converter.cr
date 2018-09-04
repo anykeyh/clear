@@ -12,7 +12,6 @@ require "json"
 
 class Clear::Model::Converter::ArrayConverter_{{exp.id}}_
   def self.to_column(x) : Array(::{{exp.id}})?
-    pp x.class.name
     case x
     when Nil
       return nil
