@@ -29,7 +29,8 @@ module ConverterSpec
       converter = Clear::Model::Converter::BoolConverter
       converter.to_db(true).should eq("t")
       converter.to_db(false).should eq("f")
-      converter.to_db(nil).should eq("f")
+      # To ensure we can use the converter with Bool? type.
+      converter.to_db(nil).should eq(nil)
     end
   end
 end
