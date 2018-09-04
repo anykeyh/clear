@@ -143,6 +143,11 @@ module SelectSpec
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" = 1)"
           end
 
+          it "can use simple equals with nil" do
+            r = select_request.from(:users).where({user_id: nil})
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" IS NULL)"
+          end
+
           it "can use `in` operators in case of array" do
             r = select_request.from(:users).where({user_id: [1, 2, 3, 4, "hello"]})
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"user_id\" IN (1, 2, 3, 4, 'hello')"

@@ -70,8 +70,10 @@ module Clear::SQL::Query::Where
             Clear::Expression[v.begin]..Clear::Expression[v.end],
             v.exclusive?)
         else
-          v = Clear::Expression::Node::Literal.new(v)
-          Clear::Expression::Node::DoubleOperator.new(k, v, "=")
+          Clear::Expression::Node::DoubleOperator.new(k,
+            Clear::Expression::Node::Literal.new(v),
+            (v.nil? ? "IS" : "=")
+          )
         end
     end
 
