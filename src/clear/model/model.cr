@@ -29,8 +29,8 @@ module Clear::Model
   # The overload are shown in this case, but not in the case the constructors
   # are directly defined without the included block.
   macro included
-    {% raise "Do NOT include Clear::Model on struct-like objects.\n"+
-      "It would behave very strangely otherwise." unless @type < Reference %}
+    {% raise "Do NOT include Clear::Model on struct-like objects.\n" +
+             "It would behave very strangely otherwise." unless @type < Reference %}
 
     getter cache : Clear::Model::QueryCache?
 

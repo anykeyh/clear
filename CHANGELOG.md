@@ -4,9 +4,11 @@
 - Improved Model build/create methods, allowing to pass arguments instead of NamedTuple
 
 ## Bug fixes
-- Escaping table, columns and schema name to allow Clear to works on any model names.
+- Escaping table, columns and schema name to allow Clear to works on any SQL restricted names.
   - This is very demanding work as it turns out table and columns naming are used everywhere
     in the ORM. Please give me feedback in case of any issues !
+- Fix #31, #36, #37
+- Fix issue with polymorphic table
 
 ## Breaking changes
 - Renaming `insert` method on `InsertQuery` to `values`, making API more elegant.

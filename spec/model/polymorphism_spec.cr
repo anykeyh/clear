@@ -10,6 +10,8 @@ module PolymorphismSpec
       ConcreteClass2,
       through: "type"
 
+    column common_value : Int32?
+
     abstract def print_value : String
   end
 
@@ -42,6 +44,7 @@ module PolymorphismSpec
         t.text "type", index: true, null: false
         t.text "string_value"
         t.integer "integer_value"
+        t.integer "common_value"
       end
     end
   end
@@ -77,10 +80,11 @@ module PolymorphismSpec
       temporary do
         reinit
 
-        5.times { ConcreteClass1.create({integer_value: 1}) }
-        10.times { ConcreteClass2.create({string_value: "Yey"}) }
+        5.times { ConcreteClass1.create({integer_value: 1, common_value: 1}) }
+        10.times { ConcreteClass2.create({string_value: "Yey", common_value: 1}) }
 
         ConcreteClass1.query.count.should eq 5
+
         ConcreteClass2.query.count.should eq 10
         AbstractClass.query.count.should eq 15
       end

@@ -3,7 +3,6 @@ require "pg"
 
 # This module declare all the methods and macro related to columns in `Clear::Model`
 module Clear::Model::HasColumns
-
   macro included # In Clear::Model
     macro included # In RealModel
       COLUMNS = {} of Nil => Nil
@@ -18,6 +17,12 @@ module Clear::Model::HasColumns
         self.table = \\{{@type.ancestors.first}}.table
       end
     end
+  end
+
+  def set( h : Hash(Symbol, _) )
+  end
+
+  def set( h : Hash(String, ::Clear::SQL::Any) )
   end
 
   # Access to direct SQL attributes given by the request used to build the model.
@@ -142,6 +147,8 @@ module Clear::Model::HasColumns
 
     # Set the columns from hash
     def set( h : Hash(Symbol, _) )
+      super
+
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
         @{{name}}_column.reset({{settings[:converter]}}.to_column(v)) unless v.is_a?(Column::UnknownClass)
@@ -210,6 +217,8 @@ module Clear::Model::HasColumns
 
     # Set the model fields from hash
     def set( h : Hash(String, ::Clear::SQL::Any) )
+      super
+
       {% for name, settings in COLUMNS %}
         if h.has_key?({{settings[:column_name]}})
           @{{name}}_column.reset({{settings[:converter]}}.to_column(h[{{settings[:column_name]}}]))
