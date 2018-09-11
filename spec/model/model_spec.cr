@@ -139,7 +139,7 @@ module ModelSpec
         end
       end
 
-      it "can detect persistance" do
+      it "can detect persistence" do
         temporary do
           reinit
           u = User.new({id: 1}, persisted: true)
@@ -206,6 +206,23 @@ module ModelSpec
 
           u.id.should eq(1)       # Should be set
           p.user!.id.should eq(1) # And should be set
+        end
+      end
+
+      it "does not set persisted on failed insert" do
+        temporary do
+          reinit
+          user_info = UserInfo.new({registration_number: 123, user_id: 999})
+
+          begin
+            user_info.save!.should be_false
+          rescue ex
+            user_info.persisted?.should be_false
+            User.create({id: 999})
+          ensure
+            user_info.save!.should be_true
+            user_info.persisted?.should be_true
+          end
         end
       end
 
