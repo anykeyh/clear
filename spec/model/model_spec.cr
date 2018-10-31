@@ -212,17 +212,24 @@ module ModelSpec
       it "does not set persisted on failed insert" do
         temporary do
           reinit
+          # There's no user_id = 999
           user_info = UserInfo.new({registration_number: 123, user_id: 999})
 
-          begin
-            user_info.save!.should be_false
-          rescue ex
-            user_info.persisted?.should be_false
-            User.create({id: 999})
-          ensure
-            user_info.save!.should be_true
-            user_info.persisted?.should be_true
+          expect_raises(Exception) do
+            user_info.save! # Should raise exception
           end
+
+          user_info.persisted?.should be_false
+        end
+
+        temporary do
+          reinit
+
+          User.create!({id: 999, first_name: "Test"})
+          user_info = UserInfo.new({registration_number: 123, user_id: 999})
+
+          user_info.save.should be_true
+          user_info.persisted?.should be_true
         end
       end
 
