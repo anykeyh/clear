@@ -26,7 +26,7 @@ module Clear::SQL::Query::Fetch
 
     Clear::SQL.transaction do
       cnx = Clear::SQL.connection(connection_name)
-      cursor_name = "__cursor_#{Time.now.epoch ^ (rand * 0xfffffff).to_i}__"
+      cursor_name = "__cursor_#{Time.now.to_unix ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
 

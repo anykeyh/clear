@@ -25,7 +25,7 @@ class Clear::CLI::Generator
       if name
         name_underscore = name.underscore
         class_name = name.camelcase
-        migration_uid = Time.now.epoch.to_s.rjust(10, '0')
+        migration_uid = Time.now.to_unix.to_s.rjust(10, '0')
 
         g["migration_uid"] = migration_uid
         g["class_name"] = class_name
