@@ -12,8 +12,10 @@ description: Clear ORM is an advanced ORM focusing on PostgreSQL
 dependencies:
   admiral:
     github: jwaldrip/admiral.cr
+    branch: master
   generate:
     github: anykeyh/generate.cr
+    branch: master
   pg:
     github: will/crystal-pg
   inflector:
@@ -21,10 +23,12 @@ dependencies:
     version: "~> 0.1.8"
 
 development_dependencies:
-  coverage:
-    github: anykeyh/crystal-coverage
+  # coverage:
+  #   github: anykeyh/crystal-coverage
   ameba:
     github: veelenga/ameba
     version: 0.7.0
+
+crystal: 0.27.0
 
 license: MIT

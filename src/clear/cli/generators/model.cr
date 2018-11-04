@@ -28,7 +28,7 @@ class Clear::CLI::Generator
         class_name = name.camelcase
 
         fields = @argv.join("|")
-        migration_uid = Time.now.epoch.to_s.rjust(10, '0')
+        migration_uid = Time.now.to_unix.to_s.rjust(10, '0')
 
         g["model_class"] = class_name
         g["migration_uid"] = migration_uid

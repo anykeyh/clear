@@ -304,7 +304,7 @@ module ModelSpec
           u.id.should_not eq nil
 
           u = User.find! u.id
-          u.created_at.epoch.should be_close(now.epoch, 1)
+          u.created_at.to_unix.should be_close(now.to_unix, 1)
         end
       end
 

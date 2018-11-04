@@ -50,10 +50,10 @@ module Clear::SQL::Logger
   end
 
   def log_query(sql, &block)
-    time = Time.now.epoch_f
+    time = Time.now.to_unix_f
 
     o = yield
-    time = Time.now.epoch_f - time
+    time = Time.now.to_unix_f - time
 
     Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
 

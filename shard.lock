@@ -2,15 +2,11 @@ version: 1.0
 shards:
   admiral:
     github: jwaldrip/admiral.cr
-    version: 1.7.2
+    commit: d10f9f49effd26f2a305c1fb704d9d39adbbeb34
 
   ameba:
     github: veelenga/ameba
     version: 0.7.0
-
-  coverage:
-    github: anykeyh/crystal-coverage
-    commit: af5246dde152b6e42352ce6e759bb07e9bed09ed
 
   db:
     github: crystal-lang/crystal-db
@@ -18,7 +14,7 @@ shards:
 
   generate:
     github: anykeyh/generate.cr
-    commit: f374acb340ea92a79fba97c7deb2f0a0ff4be62f
+    commit: 27a59d663ded8ce39a361e3a88b8dd747f59ce42
 
   inflector:
     github: phoffer/inflector.cr
