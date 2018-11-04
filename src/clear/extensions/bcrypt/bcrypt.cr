@@ -13,7 +13,7 @@ class Crypto::Bcrypt::Password
   end
 end
 
-module Clear::Model::Converter::Crypto::Bcrypt::PasswordConverter
+module Clear::Model::Converter::BcryptPasswordConverter
   def self.to_column(x) : ::Crypto::Bcrypt::Password?
     case x
     when String
@@ -36,3 +36,5 @@ module Clear::Model::Converter::Crypto::Bcrypt::PasswordConverter
     end
   end
 end
+
+Clear::Model::Converter.add_converter("Crypto::Bcrypt::Password", Clear::Model::Converter::BcryptPasswordConverter)

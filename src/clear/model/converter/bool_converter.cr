@@ -1,21 +1,4 @@
-require "pg"
-
-class Clear::Model::Converter::JSON::AnyConverter
-  def self.to_column(x) : ::JSON::Any?
-    case x
-    when Nil
-      nil
-    when ::JSON::Any
-      x
-    else
-      ::JSON.parse(x.to_s)
-    end
-  end
-
-  def self.to_db(x : ::JSON::Any?)
-    x.to_json
-  end
-end
+require "./base"
 
 # Convert the column to a boolean
 # If value is not boolean (e.g. string or number), rules of `falsey`
@@ -24,7 +7,7 @@ end
 # falsey's values are:
 # false, null, 0, "0", "" (empty string), "false", "f"
 # Anything else is considered true
-class Clear::Model::Converter::BoolConverter
+module Clear::Model::Converter::BoolConverter
   def self.to_column(x) : Bool?
     case x
     when Nil
@@ -47,3 +30,5 @@ class Clear::Model::Converter::BoolConverter
     )
   end
 end
+
+Clear::Model::Converter.add_converter("Bool", Clear::Model::Converter::BoolConverter)

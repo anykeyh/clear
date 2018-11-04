@@ -81,21 +81,24 @@ module Clear::Model::HasColumns
   macro column(name, primary = false, converter = nil, column_name = nil, presence = true)
     {% _type = name.type %}
     {%
+      old_c = _type
       unless converter
         if _type.is_a?(Path)
           if _type.resolve.stringify =~ /\(/
-            converter = ("Clear::Model::Converter::" + _type.stringify + "Converter").id
+            converter = _type.stringify
           else
-            converter = ("Clear::Model::Converter::" + _type.resolve.stringify + "Converter").id
+            converter = _type.resolve.stringify
           end
         elsif _type.is_a?(Generic) # Union?
-          if _type.name.resolve == Union
-            converter = ("Clear::Model::Converter::" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join("") + "Converter").id
+          if _type.name.stringify == "::Union"
+            converter = (_type.type_vars.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" || x == "::Nil" }.join("")).id.stringify
           else
-            converter = ("Clear::Model::Converter::#{_type.name.id}Converter_" + _type.type_vars.map(&.stringify).sort.reject { |x| x == "::Nil" }.join(", ") + "_").id
+            converter = _type.resolve.stringify
           end
+        elsif _type.is_a?(Union)
+          converter = (_type.types.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" || x == "::Nil" }.join("")).id.stringify
         else
-            converter = ("Clear::Model::Converter::" + _type.types.map(&.resolve).map(&.stringify).sort.reject { |x| x == "Nil" }.join("") + "Converter").id
+          raise "Unknown: #{_type}, #{_type.class}"
         end
       end %}
 
@@ -151,7 +154,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
-        @{{name}}_column.reset({{settings[:converter]}}.to_column(v)) unless v.is_a?(Column::UnknownClass)
+        @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
       {% end %}
     end
 
@@ -162,7 +165,7 @@ module Clear::Model::HasColumns
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined? &&
            @{{name}}_column.changed?
-          o[{{settings[:column_name]}}] = {{settings[:converter]}}.to_db(@{{name}}_column.value)
+          o[{{settings[:column_name]}}] = Clear::Model::Converter.to_db({{settings[:converter]}}, @{{name}}_column.value)
         end
       {% end %}
 
@@ -198,7 +201,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined?
-          out[{{settings[:column_name]}}] = {{settings[:converter]}}.to_db(@{{name}}_column.value(nil))
+          out[{{settings[:column_name]}}] = Clear::Model::Converter.to_db({{settings[:converter]}}, @{{name}}_column.value(nil))
         end
       {% end %}
 
@@ -221,7 +224,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         if h.has_key?({{settings[:column_name]}})
-          @{{name}}_column.reset({{settings[:converter]}}.to_column(h[{{settings[:column_name]}}]))
+          @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))
         end
       {% end %}
     end

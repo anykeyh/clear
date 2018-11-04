@@ -1,4 +1,4 @@
-require "pg"
+require "./base"
 
 class Clear::Model::Converter::StringConverter
   def self.to_column(x) : String?
@@ -16,3 +16,5 @@ class Clear::Model::Converter::StringConverter
     x
   end
 end
+
+Clear::Model::Converter.add_converter("String", Clear::Model::Converter::StringConverter)

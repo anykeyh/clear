@@ -1,4 +1,4 @@
-require "pg"
+require "./base"
 
 class Clear::Model::Converter::UUIDConverter
   def self.to_column(x) : UUID?
@@ -16,3 +16,5 @@ class Clear::Model::Converter::UUIDConverter
     x.to_s
   end
 end
+
+Clear::Model::Converter.add_converter("UUID", Clear::Model::Converter::UUIDConverter)

@@ -95,3 +95,5 @@ class Clear::TSVector
     end
   end
 end
+
+Clear::Model::Converter.add_converter("Clear::TSVector", Clear::TSVector::Converter)

@@ -3,7 +3,7 @@ require "./tsvector"
 module Clear::Model::FullTextSearchable
   # Set this model as searchable using tsvector
   macro full_text_searchable(through = "full_text_vector", catalog = "pg_catalog.english", scope_name = "search")
-    column( {{through.id}} : Clear::TSVector, presence: false, converter: Clear::TSVector::Converter )
+    column( {{through.id}} : Clear::TSVector, presence: false)
 
     scope "{{scope_name.id}}" do |str|
       where{ op({{through.id}}, to_tsquery({{catalog}},
