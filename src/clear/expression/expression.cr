@@ -92,7 +92,7 @@ class Clear::Expression
                            UInt8 | UInt16 | UInt32 | UInt64 |
                            Literal | String | Symbol | Time | Bool | Nil
 
-  # fastest way to call self.safe_literal
+  # A fast way to call `self.safe_literal`
   # See `safe_literal(x : _)`
   def self.[](arg)
     safe_literal(arg)
@@ -156,7 +156,24 @@ class Clear::Expression
     self.safe_literal(x.to_s)
   end
 
-  def self.ensure_node!(bool : Bool)
+  # This method will raise error on compilation if discovered in the code.
+  # This allow to avoid issues like this one at compile type:
+  #
+  # ```crystal
+  # id = 1
+  # # ... and later
+  # User.query.where { id == 2 }
+  # ```
+  #
+  # In this case, the local var id will be evaluated in the expression engine.
+  # leading to buggy code.
+  #
+  # Having this method prevent the code to compile.
+  #
+  # To be able to pass a literal or values other than node, please use `raw`
+  # method.
+  #
+  def self.ensure_node!(any)
     # UPDATE: Having precomputed boolean return is
     # probably a mistake using the Expression engine
     # It is advisable to raise an error in this case,
@@ -216,11 +233,11 @@ class Clear::Expression
     _var(parts)
   end
 
-  private def _var(parts : Tuple, pos = parts.size-1)
+  private def _var(parts : Tuple, pos = parts.size - 1)
     if pos == 0
       Node::Variable.new(parts[pos].to_s)
     else
-      Node::Variable.new(parts[pos].to_s, _var(parts, pos-1))
+      Node::Variable.new(parts[pos].to_s, _var(parts, pos - 1))
     end
   end
 

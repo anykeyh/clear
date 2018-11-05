@@ -2,7 +2,7 @@ module Clear
   class IllegalEnumValueError < Exception
   end
 
-  # The mother of all enums
+  # Clear::Enum wrap the enums used in PostgreSQL.
   abstract struct Enum
     include Clear::Expression::Literal
 
@@ -41,7 +41,7 @@ module Clear
     end
   end
 
-  # Construct a database enum field.
+  # Macro for constructing a database enum field.
   # example:
   # ```crystal
   # Clear.enum(MyApp::Gender, "male", "female")

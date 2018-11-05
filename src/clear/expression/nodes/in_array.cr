@@ -1,5 +1,8 @@
 require "./node"
 
+# A node managing the rendering of array in Postgres.
+# - It renders `val IN (...)`.
+# - If the array passed as argument is empty, it renders `FALSE` instead.
 class Clear::Expression::Node::InArray < Clear::Expression::Node
   def initialize(@target : Node, @array : Array(String)); end
 

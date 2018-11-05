@@ -19,6 +19,7 @@ require "./query/*"
 #
 #
 class Clear::SQL::InsertQuery
+  include Clear::SQL::Query::CTE
   include Query::Change
   include Query::Connection
   include Query::OnConflict
@@ -171,7 +172,7 @@ class Clear::SQL::InsertQuery
 
     table = Clear::SQL.escape(table.to_s)
 
-    o = ["INSERT INTO", table, print_keys]
+    o = [print_ctes, "INSERT INTO", table, print_keys]
     v = @values
     case v
     when SelectBuilder

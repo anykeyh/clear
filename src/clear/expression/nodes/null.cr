@@ -1,8 +1,6 @@
 require "./node"
 
-###
-# A simple NULL node.
-#
+# Render NULL !
 class Clear::Expression::Node::Null < Clear::Expression::Node
   def initialize
   end

@@ -9,11 +9,11 @@ module Clear::Migration
     end
 
     def up
-      [@up].compact
+      @up ? [@up] : [] of String
     end
 
     def down
-      [@down].compact
+      @down ? [@down] : [] of String
     end
   end
 end

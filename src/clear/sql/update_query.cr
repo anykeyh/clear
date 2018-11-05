@@ -2,7 +2,7 @@ require "db"
 require "pg"
 require "./sql"
 
-# WIP
+# TODO: Documentation
 class Clear::SQL::UpdateQuery
   alias Updatable = Clear::SQL::Any | BigInt | BigFloat | Time
   alias UpdateInstruction = Hash(String, Updatable) | String
@@ -10,6 +10,7 @@ class Clear::SQL::UpdateQuery
   @values : Array(UpdateInstruction) = [] of UpdateInstruction
   @table : String?
 
+  include Query::CTE
   include Query::Connection
   include Query::Change
   include Query::Where
@@ -40,10 +41,12 @@ class Clear::SQL::UpdateQuery
     change!
   end
 
+  # :nodoc:
   protected def print_value(row : Hash(String, Updatable)) : String
     row.map { |k, v| [Clear::SQL.escape(k.to_s), Clear::Expression[v]].join(" = ") }.join(", ")
   end
 
+  # :nodoc:
   protected def print_values : String
     @values.map do |x|
       case x
@@ -59,6 +62,6 @@ class Clear::SQL::UpdateQuery
 
   def to_sql
     # raise Clear::ErrorMessages.query_building_error("Update Query must have a table clause.") if @table.nil?
-    ["UPDATE", @table, "SET", print_values, print_wheres].compact.join(" ")
+    [print_ctes, "UPDATE", @table, "SET", print_values, print_wheres].compact.join(" ")
   end
 end
