@@ -1,7 +1,6 @@
-# Declaration of the differents error messages.
-# I try to make Clear as dev-friendly as possible
-# I put it here so it doesn't overflow through the code
-
+# This module list most of the runtime errors happening in Clear.
+# It's an attempt to make Clear user friendly by enabling advanced resolution
+# of problems when they raise.
 module Clear::ErrorMessages
   extend self
 
