@@ -25,6 +25,6 @@ module Clear::SQL::Query::OffsetLimit
   end
 
   protected def print_limit_offsets
-    [@limit && ("LIMIT #{@limit}"), @offset && "OFFSET #{@offset}"].compact.join(" ")
+    [@limit ? ("LIMIT #{@limit}"), @offset ? "OFFSET #{@offset}"].compact.join(" ")
   end
 end
