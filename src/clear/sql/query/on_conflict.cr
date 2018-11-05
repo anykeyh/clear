@@ -58,4 +58,17 @@ module Clear::SQL::Query::OnConflict
   def clear_conflict
     @on_conflict_condition = false
   end
+
+  protected def print_on_conflict(o : Array)
+    if c = @on_conflict_condition
+      o << "ON CONFLICT"
+
+      unless c == true
+        o << c.to_s
+      end
+
+      a = @on_conflict_action
+      o << "DO" << (a.is_a?(String) ? a.to_s : a.to_sql)
+    end
+  end
 end

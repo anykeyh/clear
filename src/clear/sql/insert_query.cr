@@ -185,16 +185,7 @@ class Clear::SQL::InsertQuery
       end
     end
 
-    if c = @on_conflict_condition
-      o << "ON CONFLICT"
-
-      unless c == true
-        o << c.to_s
-      end
-
-      a = @on_conflict_action
-      o << "DO" << (a.is_a?(String) ? a.to_s : a.to_sql)
-    end
+    print_on_conflict(o)
 
     if @returning
       o << "RETURNING"
