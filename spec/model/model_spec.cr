@@ -192,6 +192,37 @@ module ModelSpec
         end
       end
 
+      it "can save with conflict resolution" do
+        temporary do
+          reinit
+          u = User.new({id: 1, first_name: "John"})
+          u.save! # Create a new user
+
+          expect_raises(Exception, /duplicate key/) do
+            u2 = User.new({id: 1, first_name: "Louis"})
+            u2.save!
+          end
+        end
+
+        temporary do
+          reinit
+
+          u = User.new({id: 1, first_name: "John"})
+          u.save! # Create a new user
+
+          u2 = User.new({id: 1, first_name: "Louis"})
+          u2.save! { |qry|
+            qry.on_conflict("(id)").do_update { |up|
+              up.set("first_name = excluded.first_name")
+                .where { model_users.id == excluded.id }
+            }
+          }
+
+          User.query.count.should eq 1
+          User.query.first!.first_name.should eq("Louis")
+        end
+      end
+
       it "save in good order the belongs_to models" do
         temporary do
           reinit

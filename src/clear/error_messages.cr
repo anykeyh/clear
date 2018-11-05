@@ -33,7 +33,6 @@ module Clear::ErrorMessages
           o << word
         end
       end
-
     end
 
     o.join
@@ -42,10 +41,10 @@ module Clear::ErrorMessages
   private def build_tips(ways_to_resolve)
     if ways_to_resolve.size > 0
       "Here some tips:\n\n" +
-      ways_to_resolve.map do |l|
-        l = format_width(l, 72)
-        l = "  - " + l.gsub(/\n/){ |m| "#{m}    "}
-      end.join("\n\n") + "\n\n"
+        ways_to_resolve.map do |l|
+          l = format_width(l, 72)
+          l = "  - " + l.gsub(/\n/) { |m| "#{m}    " }
+        end.join("\n\n") + "\n\n"
     end
   end
 
@@ -57,9 +56,9 @@ module Clear::ErrorMessages
     if manual_pages.size > 0
       {
         "You may want to check the manual:",
-        manual_pages.map{ |x|
+        manual_pages.map { |x|
           build_url("https://github.com/anykeyh/clear/tree/master/manual/#{x}")
-        }.join("\n")
+        }.join("\n"),
       }.join("\n") + "\n\n"
     end
   end
@@ -78,17 +77,17 @@ module Clear::ErrorMessages
         ),
         "\n\nStack trace:\n"
       }.join)
-    {%end %}
+    {% end %}
   end
 
   def migration_already_up(number)
     build_error_message \
       "Migration already up: #{number}",
       {
-        "You try to force a migration which is already existing in your database. You should down the migration first, then up it again."
+        "You try to force a migration which is already existing in your database. You should down the migration first, then up it again.",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -96,10 +95,10 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already down: #{number}",
       {
-        "You try to force a migration which is not set in your database yet. You should up the migration first, then down it again."
+        "You try to force a migration which is not set in your database yet. You should up the migration first, then down it again.",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -108,10 +107,10 @@ module Clear::ErrorMessages
       "The migration number `#{number}` is not found.",
       {
         "Ensure to require your migration files",
-        "Number of the migrations can be found in the filename, in the classname or in the `uid` method of the migration."
+        "Number of the migrations can be found in the filename, in the classname or in the `uid` method of the migration.",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -120,24 +119,24 @@ module Clear::ErrorMessages
       "No migration are registered yet, so we cannot go to version=#{version}",
       {
         "Ensure to require your migration files",
-        "Ensure you have some migration files. Captain obvious to the rescue! ;-)"
+        "Ensure you have some migration files. Captain obvious to the rescue! ;-)",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
   def uid_not_found(class_name)
     build_error_message \
-        "I don't know how to order the migration `#{class_name}`",
-        {
-          "Rename your migration class to have the migration UID at the end of the class name",
-          "Rename the file where your migration stand to have the migration UID in front of the filename",
-          "Override the method `uid`. Be sure the number is immutable (e.g. return constant)"
-        },
-        {
-          "migration/Migration.md"
-        }
+      "I don't know how to order the migration `#{class_name}`",
+      {
+        "Rename your migration class to have the migration UID at the end of the class name",
+        "Rename the file where your migration stand to have the migration UID in front of the filename",
+        "Override the method `uid`. Be sure the number is immutable (e.g. return constant)",
+      },
+      {
+        "migration/Migration.md",
+      }
   end
 
   def migration_irreversible(name)
@@ -146,10 +145,10 @@ module Clear::ErrorMessages
       {
         "Build a way to revert the migration",
         "Do not revert the migration",
-        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded migrations. Good luck !"
+        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded migrations. Good luck !",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -158,10 +157,10 @@ module Clear::ErrorMessages
       "Cannot revert column drop, because datatype is unknown",
       {
         "Add the optional previous data `type` argument in the operation `drop`:" +
-        "`drop_column(table, column, type)`"
+        "`drop_column(table, column, type)`",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -171,10 +170,10 @@ module Clear::ErrorMessages
       {
         "It happens when migration share the same `uid`. Try to change the UID of one of your migrations",
         "By default, Clear has a `-1` migration used internally. Do not use this migration number.",
-        "Migration numbers can be found in filename, classname or return of `uid` method"
+        "Migration numbers can be found in filename, classname or return of `uid` method",
       },
       {
-        "migration/Migration.md"
+        "migration/Migration.md",
       }
   end
 
@@ -187,11 +186,11 @@ module Clear::ErrorMessages
         "In the case of unpersisted models, please initialize by calling `#{name}=` first",
         "For validator, try `ensure_than` method, or use `#{name}_column.defined?` to avoid your validation code.",
         "Are you calling `#{name}_column.revert` somewhere before?",
-        "If your model comes from JSON, please ensure the JSON source defines the column. Usage of `strict` mode will trigger exception on JSON loading."
+        "If your model comes from JSON, please ensure the JSON source defines the column. Usage of `strict` mode will trigger exception on JSON loading.",
       },
       {
         "model/Definition.md",
-        "model/Lifecycle.md"
+        "model/Lifecycle.md",
       }
   end
 
@@ -200,10 +199,10 @@ module Clear::ErrorMessages
       "Your field `#{name}` is declared as `#{type}` but `NULL` value has been found in the database.",
       {
         "In your model, declare your column `column #{name} : #{type}?` (note the `?` which allow nil value)",
-        "In your database, adding `DEFAULT` value and/or `NOT NULL` constraint should disallow NULL fields from your data."
+        "In your database, adding `DEFAULT` value and/or `NOT NULL` constraint should disallow NULL fields from your data.",
       },
       {
-        "model/Definition.md#presence-validation"
+        "model/Definition.md#presence-validation",
       }
   end
 
@@ -211,9 +210,9 @@ module Clear::ErrorMessages
     build_error_message \
       "Clear cannot convert from `#{from}` to #{to}.",
       {
-        "Ensure your database column type match the column declaration in Clear"
+        "Ensure your database column type match the column declaration in Clear",
       },
-      { "model/Definition.md" }
+      {"model/Definition.md"}
   end
 
   def lack_of_primary_key(model_name)
@@ -222,37 +221,37 @@ module Clear::ErrorMessages
       {
         "Define a column as primary key",
         "Only one column can be primary key (no compound keys are allowed in Clear for now)",
-        "You can use the helpers for primary key (see manual page)"
+        "You can use the helpers for primary key (see manual page)",
       },
-      { "model/PrimaryKeyTweaking.md" }
+      {"model/PrimaryKeyTweaking.md"}
   end
 
   def polymorphic_nil(through)
     build_error_message \
       "Impossible to instantiate polymorphic object, because the type given by the data is nil.",
       {
-        "The column `#{through}` contains NULL value, but is set as storage for "+
+        "The column `#{through}` contains NULL value, but is set as storage for " +
         "the type of the polymorphic object.",
         "Try to set DEFAULT value for your column `#{through}`",
-        "In case of new implementation of polymorphic system, we recommend you to update the column to the previous Class value. Value must be equal to the fully qualified model class name in Crystal Lang (e.g. `MyApp::MyModel`)"
+        "In case of new implementation of polymorphic system, we recommend you to update the column to the previous Class value. Value must be equal to the fully qualified model class name in Crystal Lang (e.g. `MyApp::MyModel`)",
       },
-      { "model/Polymorphism.md" }
+      {"model/Polymorphism.md"}
   end
 
   def polymorphic_unknown_class(class_name)
     build_error_message \
       "Impossible to instantiate a new `#{class_name}` using polymorphism.",
       {
-        "Ensure the type is properly setup in your `polymorphic` helper. "+
-          "Any model which can exists in your database needs to manually be setup as in the example below:\n"+
-          "`polymorphic Dog, Cat, through: \"type\"`\n"+
-          "In this case, if you have a `Cow` object in your database, then add it in the list of allowed polymorphic objects.",
-          "Ensure the name match a fully qualified, with full path, Clear model:\n" +
-          "`polymorphic ::Animal::Dog, ::Animal::Cat, through: \"type\"`\n" +
-          "The column should then contains `Animal::Dog` and not `Dog`"
+        "Ensure the type is properly setup in your `polymorphic` helper. " +
+        "Any model which can exists in your database needs to manually be setup as in the example below:\n" +
+        "`polymorphic Dog, Cat, through: \"type\"`\n" +
+        "In this case, if you have a `Cow` object in your database, then add it in the list of allowed polymorphic objects.",
+        "Ensure the name match a fully qualified, with full path, Clear model:\n" +
+        "`polymorphic ::Animal::Dog, ::Animal::Cat, through: \"type\"`\n" +
+        "The column should then contains `Animal::Dog` and not `Dog`",
       },
       {
-        "model/Polymorphism.md"
+        "model/Polymorphism.md",
       }
   end
 
@@ -261,26 +260,25 @@ module Clear::ErrorMessages
       "Order by allow only ASC and DESC directions. But #{current_order} was given.",
       {
         "Ensure to use :asc, :desc symbol (or string) when constructing your query.",
-        "If the code is dynamic, force the casting to one of the two value above, to avoid SQL injection."
+        "If the code is dynamic, force the casting to one of the two value above, to avoid SQL injection.",
       },
       {
-        "querying/RequestBuilding.md"
+        "querying/RequestBuilding.md",
       }
   end
 
   def query_building_error(message)
     Clear::SQL::QueryBuildingError.new(
       build_error_message({"You're trying to construct an invalid SQL request:\n",
-        message}.join, manual_pages: {"querying/RequestBuilding.md"} )
-      )
+                           message}.join, manual_pages: {"querying/RequestBuilding.md"})
+    )
   end
 
   def uninitialized_db_connection(connection)
     build_error_message("Your trying to access to the connection #{connection} which is not initialized",
-    {
-      "Use `Clear::SQL.init(#{connection}: \"postgres://XXX...\" )` on startup of your application",
-      "The name of the connection (#{connection}) can't be found. It may have been mistyped."
-    }, {"Setup.md","model/MultiConnection.md"})
+      {
+        "Use `Clear::SQL.init(#{connection}: \"postgres://XXX...\" )` on startup of your application",
+        "The name of the connection (#{connection}) can't be found. It may have been mistyped.",
+      }, {"Setup.md", "model/MultiConnection.md"})
   end
-
 end
