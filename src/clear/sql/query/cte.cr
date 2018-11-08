@@ -3,7 +3,7 @@ module Clear::SQL::Query::CTE
   # :nodoc:
   alias CTEAuthorized = Clear::SQL::SelectBuilder | String
 
-  getter cte : Hash(String, CTEAuthorized)
+  getter cte : Hash(String, CTEAuthorized) = {} of String => CTEAuthorized
 
   # Add a CTE to the query.
   #

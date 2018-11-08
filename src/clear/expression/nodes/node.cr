@@ -1,5 +1,6 @@
 require "../expression"
 
+# Mother class of all the rendering nodes
 abstract class Clear::Expression::Node
   macro define_operator(op_name, sql_name, null = false)
     def {{op_name.id}}(any : Node) : Node

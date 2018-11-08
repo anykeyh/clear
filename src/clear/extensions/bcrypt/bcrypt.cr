@@ -1,18 +1,5 @@
 require "crypto/bcrypt/password"
 
-# Fix issue in the Bcrypt::Password equality check
-# https://github.com/crystal-lang/crystal/issues/6339
-class Crypto::Bcrypt::Password
-  def ==(password)
-    super(password)
-  end
-
-  def ==(password : String)
-    hashed_password = Bcrypt.new(password, salt, cost)
-    Crypto::Subtle.constant_time_compare(@raw_hash, hashed_password)
-  end
-end
-
 module Clear::Model::Converter::BcryptPasswordConverter
   def self.to_column(x) : ::Crypto::Bcrypt::Password?
     case x

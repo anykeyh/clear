@@ -1,5 +1,6 @@
 require "./node"
 
+# A node managing the unary `NOT` operator.
 class Clear::Expression::Node::Not < Clear::Expression::Node
   def initialize(@a : Node); end
 

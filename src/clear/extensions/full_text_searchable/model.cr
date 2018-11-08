@@ -13,7 +13,8 @@ module Clear::Model::FullTextSearchable
 
   # :nodoc:
   # Split a chain written by a user
-  # A problem to solve is the `'` character
+  # The problem comes from the usage of `'` in languages like French
+  # which can easily break a tsvector query
   private def self.split_to_exp(text)
     last_char : Char? = nil
     quote_char : Char? = nil

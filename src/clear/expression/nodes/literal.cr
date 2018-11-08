@@ -1,5 +1,6 @@
 require "./node"
 
+# Management of rendering of literal values.
 class Clear::Expression::Node::Literal < Clear::Expression::Node
   getter value : AvailableLiteral
 

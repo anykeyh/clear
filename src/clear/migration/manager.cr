@@ -221,10 +221,10 @@ class Clear::Migration::Manager
     @migrations_up.clear
 
     Clear::SQL.select("*")
-              .from("__clear_metadatas")
-              .where({metatype: "migration"}).to_a.map { |m|
-      @migrations_up.add(Int64.new(m["value"].as(String)))
-    }
+      .from("__clear_metadatas")
+      .where({metatype: "migration"}).to_a.map { |m|
+        @migrations_up.add(Int64.new(m["value"].as(String)))
+      }
   end
 
   def refresh
@@ -241,7 +241,7 @@ class Clear::Migration::Manager
   def up(number : Int64) : Void
     m = find(number)
 
-    raise migration_already_up if migrations_up.includes?(number)
+    raise migration_already_up(number) if migrations_up.includes?(number)
 
     m.apply(Clear::Migration::Direction::UP)
     @migrations_up.add(m.uid)
@@ -251,7 +251,7 @@ class Clear::Migration::Manager
   def down(number : Int64) : Void
     m = find(number)
 
-    raise migration_already_down unless migrations_up.includes?(number)
+    raise migration_already_down(number) unless migrations_up.includes?(number)
 
     m.apply(Clear::Migration::Direction::DOWN)
     @migrations_up.delete(m.uid)

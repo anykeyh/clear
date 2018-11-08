@@ -7,18 +7,22 @@ require "./query/*"
 # An insert query
 #
 # cf. postgres documentation
+# ```
 # [ WITH [ RECURSIVE ] with_query [, ...] ]
 # INSERT INTO table_name [ AS alias ] [ ( column_name [, ...] ) ]
 #    { DEFAULT VALUES | VALUES ( { expression | DEFAULT } [, ...] ) [, ...] | query }
 #    [ ON CONFLICT [ conflict_target ] conflict_action ]
 #    [ RETURNING * | output_expression [ [ AS ] output_name ] [, ...] ]
+# ```
 #
 #
 #
 #
 class Clear::SQL::InsertQuery
+  include Clear::SQL::Query::CTE
   include Query::Change
   include Query::Connection
+  include Query::OnConflict
 
   alias Inserable = ::Clear::SQL::Any | BigInt | BigFloat | Time
   getter keys : Array(Symbolic) = [] of Symbolic
@@ -166,7 +170,7 @@ class Clear::SQL::InsertQuery
 
     table = Clear::SQL.escape(table.to_s)
 
-    o = ["INSERT INTO", table, print_keys]
+    o = [print_ctes, "INSERT INTO", table, print_keys]
     v = @values
     case v
     when SelectBuilder
@@ -179,6 +183,9 @@ class Clear::SQL::InsertQuery
         o << print_values
       end
     end
+
+    print_on_conflict(o)
+
     if @returning
       o << "RETURNING"
       o << @returning

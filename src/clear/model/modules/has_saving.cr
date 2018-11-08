@@ -9,7 +9,38 @@ module Clear::Model::HasSaving
 
   getter? persisted : Bool
 
-  def save
+  # Save the model. If the model is already persisted, will call `UPDATE` query. 
+  # If the model is not persisted, will call `INSERT`
+  #
+  # Optionally, you can pass a `Proc` to refine the `INSERT` with on conflict
+  # resolution functions.
+  #
+  # Return `false` if the model cannot be saved (validation issue)
+  # Return `true` if the model has been correctly saved.
+  #
+  # Note: On first save, `persisted` is set to true.
+  #
+  # Example:
+  #
+  # ```crystal
+  # u = User.new
+  # if u.save
+  #   puts "User correctly saved !"
+  # else
+  #   puts "There was a problem during save: "
+  #   # do something with `u.errors`
+  # end
+  # ```
+  #
+  # ```crystal
+  # u = User.new id: 123, email: "email@example.com"
+  # u.save(-> (qry) { qry.on_conflict.do_update{ |u| u.set(email: "email@example.com") } #update
+  # # Note: user may not be saved, but will be detected as persisted !
+  # ```
+  #
+  #
+  #
+  def save(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
     return false if self.class.read_only?
 
     with_triggers(:save) do
@@ -25,14 +56,12 @@ module Clear::Model::HasSaving
           end
         else
           with_triggers(:create) do
-            begin
-              hash = Clear::SQL.insert_into(self.class.table, to_h).returning("*").execute(@@connection)
-            rescue ex
-              raise ex
-            else
-              @persisted = true
-              self.set(hash)
-            end
+            query = Clear::SQL.insert_into(self.class.table, to_h).returning("*")
+            on_conflict.call(query) if on_conflict
+            hash = query.execute(@@connection)
+
+            self.set(hash)
+            @persisted = true
           end
         end
 
@@ -46,13 +75,21 @@ module Clear::Model::HasSaving
     return true
   end
 
-  def save!
+  def save(&block)
+    save(on_conflict: block)
+  end
+
+  def save!(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
     raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
 
     raise Clear::Model::InvalidModelError.new(
-      "Validation of the model failed:\n #{print_errors}") unless save
+      "Validation of the model failed:\n #{print_errors}") unless save(on_conflict)
 
     return self
+  end
+
+  def save!(&block : Clear::SQL::InsertQuery ->)
+    return save!(block)
   end
 
   def delete
