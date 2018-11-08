@@ -5,6 +5,21 @@ module Clear::Model::HasSaving
     macro included # When included into final Model
       class_property? read_only : Bool = false
 
+      # Import a bulk of models in one SQL insert query.
+      # Each model must be non-persisted.
+      #
+      # `on_conflict` callback can be optionnaly turned on
+      # to manage constraints of the database.
+      #
+      # Note: Old models are not modified. This method return a copy of the
+      # models as saved in the database.
+      #
+      # ## Example:
+      # ```crystal
+      #
+      #  users = [ User.new(id: 1), User.new(id: 2), User.new(id: 3)]
+      #  users = User.import(users)
+      # ```
       def self.import(array : Array(self), on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
         array.each do |item|
           raise "One of your model is persisted while calling import" if item.persisted?
