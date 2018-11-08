@@ -1,5 +1,5 @@
-# This is a "fire-and-forget" cache used to cache over associations to
-# prevent N+1 queries
+# This is a "fire-and-forget" cache used to cache
+# model associations to prevent N+1 queries
 class Clear::Model::QueryCache
   # :nodoc:
   record CacheKey, relation_name : String, relation_value : Clear::SQL::Any, relation_model : String

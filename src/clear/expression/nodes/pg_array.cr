@@ -1,6 +1,6 @@
 require "./node"
 
-# PG structure `array[args...]`
+# A node managing PG structure `array[args...]`
 # Named PGArray instead of Array to avoid issue with naming
 class Clear::Expression::Node::PGArray(T) < Clear::Expression::Node
   @arr : Array(T)

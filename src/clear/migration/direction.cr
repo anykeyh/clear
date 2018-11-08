@@ -20,7 +20,6 @@
 # end
 # ```
 #
-#
 module Clear::Migration
   struct Direction
     UP   = Direction.new(true)

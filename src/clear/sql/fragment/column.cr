@@ -1,9 +1,9 @@
 # Column in SQL Select query
 #
-# ```
+# ```crystal
 # c = SQL::Column.new("COUNT(*)", "count")
 # c.to_sql # 'COUNT(*) as count'
-#
+# ```
 require "./fragment"
 
 module Clear::SQL

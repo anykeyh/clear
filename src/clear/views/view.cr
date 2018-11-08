@@ -1,10 +1,9 @@
 # A view is like a read-only model.
 # It has columns and relations
 # It is automatically updated on migration by the migration manager
-# ```
+# ```crystal
 # class MyView
-#   define do
-#      <<-SQL
+#   define <<-SQL
 #     SELECT * FROM users, other_views
 #   SQL
 #

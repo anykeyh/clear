@@ -29,7 +29,10 @@ module Clear::Migration
     end
 
     def down
-      raise IrreversibleMigration.new("Cannot revert column drop, because datatype is unknown") if @datatype.nil?
+      raise IrreversibleMigration.new(
+        "Cannot revert column drop, because datatype is unknown"
+      ) if @datatype.nil?
+
       ["ALTER TABLE #{@table} ADD #{@column} #{@datatype}"]
     end
   end

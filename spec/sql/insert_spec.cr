@@ -26,6 +26,29 @@ module InsertSpec
         )
       end
 
+      it "can insert with ON CONFLICT" do
+        insert_request.values({a: "c", b: 12}).on_conflict("(a)").do_nothing
+          .to_sql.should eq (
+          "INSERT INTO \"users\" (\"a\", \"b\") VALUES ('c', 12) ON CONFLICT (a) DO NOTHING"
+        )
+
+        req = insert_request.values({a: "c", b: 12}).on_conflict("(b)").do_update { |upd|
+          upd.set(a: 1).where { b == 2 }
+        }
+
+        req.to_sql.should eq(
+          %(INSERT INTO "users" ("a", "b") VALUES ('c', 12) ON CONFLICT (b) DO UPDATE SET "a" = 1 WHERE ("b" = 2))
+        )
+
+        req = insert_request.values({a: "c", b: 12}).on_conflict { age < 18 }.do_update { |upd|
+          upd.set(a: 1).where { b == 2 }
+        }
+
+        req.to_sql.should eq(
+          %(INSERT INTO "users" ("a", "b") VALUES ('c', 12) ON CONFLICT WHERE ("age" < 18) DO UPDATE SET "a" = 1 WHERE ("b" = 2))
+        )
+      end
+
       it "can build an empty insert?" do
         insert_request.to_sql.should eq (
           "INSERT INTO \"users\" DEFAULT VALUES"

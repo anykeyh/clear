@@ -18,7 +18,7 @@ module Clear
   # +------------------------------------+
   # |  Model | DB Views | Migrations     | < High Level Tools
   # +---------------+--------------------+
-  # |  Field | Validation | Converters   | < Mapping system
+  # |  Columns | Validation | Converters | < Mapping system
   # +---------------+--------------------+
   # |  Clear::SQL   | Clear::Expression  | < Low Level SQL Builder
   # +------------------------------------+
@@ -27,14 +27,14 @@ module Clear
   # ```
   #
   # On the bottom stack, Clear offer SQL query building.
-  # Theses features are then used by uppermost parts of the engine.
+  # Theses features are then used by top level parts of the engine.
   #
-  # The SQL module provide simple API to generate delete, insert, select and update
-  # methods.
+  # The SQL module provide a simple API to generate `delete`, `insert`, `select`
+  # and `update` methods.
   #
   # Each requests can be duplicated then modified and executed.
   #
-  # Each request object is mutable. Therefor, to update and store a request,
+  # Note: Each request object is mutable. Therefore, to update and store a request,
   # you must use manually the `dup` method.
   #
   module SQL
@@ -66,7 +66,7 @@ module Clear
     # Escape the expression, double quoting it.
     #
     # It allows use of reserved keywords as table or column name
-    def escape(x : String|Symbol)
+    def escape(x : String | Symbol)
       "\"" + x.to_s.gsub("\"", "\"\"") + "\""
     end
 

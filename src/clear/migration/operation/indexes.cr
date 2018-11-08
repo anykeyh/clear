@@ -28,7 +28,7 @@ module Clear::Migration
     end
 
     private def print_columns
-      "(" + @fields.join(", ") + ")"
+      {"(", @fields.join(", "), ")"}.join
     end
 
     def up
@@ -43,19 +43,6 @@ module Clear::Migration
       ["DROP INDEX IF EXISTS #{@name}"]
     end
   end
-
-  # struct DropIndex < Operation
-  #   def initialize(@table)
-  #   end
-
-  #   def up
-  #     "DROP TABLE #{@table}"
-  #   end
-
-  #   def down
-  #     "CREATE TABLE #{@table}"
-  #   end
-  # end
 end
 
 module Clear::Migration::Helper
