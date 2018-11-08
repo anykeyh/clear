@@ -4,6 +4,33 @@ module Clear::Model::HasSaving
   macro included # When included into Model
     macro included # When included into final Model
       class_property? read_only : Bool = false
+
+      def self.import(array : Array(self), on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
+        array.each do |item|
+          raise "One of your model is persisted while calling import" if item.persisted?
+        end
+
+        hashes = array.map do |item|
+          item.trigger_before_events(:save)
+          raise "import: Validation failed for `#{item}`" unless item.valid?
+          item.trigger_before_events(:create)
+          item.to_h
+        end
+
+        query = Clear::SQL.insert_into(self.table, hashes).returning("*")
+        on_conflict.call(query) if on_conflict
+
+        o = [] of self
+        query.fetch(@@connection) do |hash|
+          o << factory.build(hash, persisted: true,
+             fetch_columns: false, cache: nil)
+        end
+
+        o.each(&.trigger_after_events(:create))
+        o.each(&.trigger_after_events(:save))
+
+        o
+      end
     end
   end
 

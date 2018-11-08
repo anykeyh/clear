@@ -192,6 +192,24 @@ module ModelSpec
         end
       end
 
+      it "can import a number of models" do
+        temporary do
+          reinit
+          u = User.new({id: 1, first_name: "x"})
+          u2 = User.new({id: 2, first_name: "y"})
+          u3 = User.new({id: 3, first_name: "z"})
+
+          o = User.import([u, u2, u3])
+
+          o[0].id.should eq 1
+          o[0].first_name.should eq "x"
+          o[2].id.should eq 3
+          o[2].first_name.should eq "z"
+
+          User.query.count.should eq 3
+        end
+      end
+
       it "can save with conflict resolution" do
         temporary do
           reinit
