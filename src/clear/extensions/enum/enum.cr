@@ -92,7 +92,7 @@ module Clear
             when Slice(UInt8)
               ::\{{@type}}.from_string(String.new(x))
             else
-              raise Clear::ErrorMessages.converter_error(x.class.name, "::{{@type}}")
+              raise Clear::ErrorMessages.converter_error(x.class.name, "::\{{@type}}")
             end
           end
 
@@ -101,10 +101,10 @@ module Clear
           end
         end
 
-        Clear::Model::Converter.add_converter("{{name.id}}", ::Clear::Model::Converter::\{{@type}}Converter)
+        Clear::Model::Converter.add_converter("\{{@type}}", ::Clear::Model::Converter::\{{@type}}Converter)
       end
-
     end
+
 
   end
 end

@@ -254,8 +254,8 @@ module SelectSpec
             r = select_request.from(:users).where { users.id.in?(complex_query.clear_select.select(:id)) }
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"users\".\"id\" IN (" +
                                "SELECT \"id\" FROM \"users\" INNER JOIN \"role_users\" ON " +
-                               "((\"role_users\".\"user_id\" = \"users\".\"id\")) INNER JOIN \"roles\"" +
-                               " ON ((\"role_users\".\"role_id\" = \"roles\".\"id\")) WHERE \"role\" IN" +
+                               "(\"role_users\".\"user_id\" = \"users\".\"id\") INNER JOIN \"roles\"" +
+                               " ON (\"role_users\".\"role_id\" = \"roles\".\"id\") WHERE \"role\" IN" +
                                " ('admin', 'superadmin') ORDER BY priority DESC, " +
                                "name ASC LIMIT 50 OFFSET 50)"
           end
@@ -266,6 +266,12 @@ module SelectSpec
 
             r = select_request.from(:users).with_lock("FOR SHARE")
             r.to_sql.should eq "SELECT * FROM \"users\" FOR SHARE"
+          end
+
+          it "can join lateral" do
+            Clear::SQL::SelectQuery.new.from(:a)
+              .inner_join(:b, lateral: true) { a.b_id == b.id }.to_sql
+              .should eq %(SELECT * FROM "a" INNER JOIN LATERAL "b" ON ("a"."b_id" = "b"."id"))
           end
 
           it "can use & as AND and | as OR" do

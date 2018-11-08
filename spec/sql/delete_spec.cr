@@ -33,8 +33,8 @@ module DeleteSpec
         r = delete_request.from(:table).where({id: complex_query})
         r.to_sql.should eq "DELETE FROM \"table\" WHERE \"id\" IN (SELECT * " +
                            "FROM \"users\" " +
-                           "INNER JOIN \"role_users\" ON ((\"role_users\".\"user_id\" = \"users\".\"id\")) " +
-                           "INNER JOIN \"roles\" ON ((\"role_users\".\"role_id\" = \"roles\".\"id\")) " +
+                           "INNER JOIN \"role_users\" ON (\"role_users\".\"user_id\" = \"users\".\"id\") " +
+                           "INNER JOIN \"roles\" ON (\"role_users\".\"role_id\" = \"roles\".\"id\") " +
                            "WHERE \"role\" IN ('admin', 'superadmin') " +
                            "ORDER BY priority DESC, name ASC " +
                            "LIMIT 1)"

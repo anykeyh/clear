@@ -61,6 +61,7 @@
 ###
 module Clear::Migration
   include Clear::ErrorMessages
+
   module Helper; end
 
   include Helper
