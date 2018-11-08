@@ -457,7 +457,7 @@ module ModelSpec
           u.categories.to_sql.should eq "SELECT DISTINCT ON (\"model_categories\".\"id\") \"model_categories\".* " +
                                         "FROM \"model_categories\" " +
                                         "INNER JOIN \"model_posts\" ON " +
-                                        "((\"model_posts\".\"category_id\" = \"model_categories\".\"id\")) " +
+                                        "(\"model_posts\".\"category_id\" = \"model_categories\".\"id\") " +
                                         "WHERE (\"model_posts\".\"user_id\" = 1)"
           u.categories.count.should eq(1)
         end
@@ -475,7 +475,7 @@ module ModelSpec
 
           Post.query.join(:model_users) { model_posts.user_id == model_users.id }.to_sql
             .should eq "SELECT \"model_posts\".* FROM \"model_posts\" INNER JOIN \"model_users\" " +
-                       "ON ((\"model_posts\".\"user_id\" = \"model_users\".\"id\"))"
+                       "ON (\"model_posts\".\"user_id\" = \"model_users\".\"id\")"
         end
       end
 
@@ -489,7 +489,7 @@ module ModelSpec
 
           user_with_a_post_minimum.to_sql.should eq \
             "SELECT DISTINCT \"model_users\".* FROM \"model_users\" INNER JOIN " +
-            "\"model_posts\" ON ((\"model_posts\".\"user_id\" = \"model_users\".\"id\"))"
+            "\"model_posts\" ON (\"model_posts\".\"user_id\" = \"model_users\".\"id\")"
 
           user_with_a_post_minimum.with_posts.each { } # Should just execute
         end

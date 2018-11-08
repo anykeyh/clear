@@ -273,18 +273,19 @@ module Clear::Model
     end
 
     # Get the last row from the collection query.
-    # if not found, return `nil`
+    # if not found, throw an error
     def last!(fetch_columns = false) : T
       last(fetch_columns).not_nil!
     end
 
-    protected def join_impl(name, type, clear_expr)
-      # TODO: not sure about that...
+    # Redefinition of `join_impl` to avoid ambiguity on the column
+    # name if no specific column have been selected.
+    protected def join_impl(name, type, lateral, clear_expr)
       if @columns.empty?
         self.select("#{Clear::SQL.escape(T.table)}.*")
       end
 
-      super(name, type, clear_expr)
+      super(name, type, lateral, clear_expr)
     end
 
     # Get the last row from the collection query.

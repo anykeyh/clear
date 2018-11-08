@@ -1,12 +1,9 @@
 require "../spec_helper"
 
 module EnumSpec
-end
-
-Clear.enum ::EnumSpec::GenderType, "male", "female", "two_part"
-
-module EnumSpec
   extend self
+
+  Clear.enum GenderType, "male", "female", "two_part"
 
   class EnumMigration18462
     include Clear::Migration
