@@ -80,6 +80,7 @@ class Clear::Model::Column(T)
     T.nilable?
   end
 
+  # Inspect this column.
   # If a column is not loaded (e.g. not defined once), it will show "#undef".
   # If a column is dirty (e.g. change hasn't be saved), it will show a "*" after the value.
   def inspect
@@ -88,6 +89,11 @@ class Clear::Model::Column(T)
     else
       "#undef"
     end
+  end
+
+  # :nodoc:
+  def inspect(io)
+    io << inspect
   end
 
   def defined?

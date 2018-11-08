@@ -82,6 +82,11 @@ class Clear::SQL::InsertQuery
     o
   end
 
+  def clear_values
+    @values = [] of Array(Inserable)
+    change!
+  end
+
   # Fast insert system
   #
   # insert({field: "value"}).into(:table)
@@ -89,8 +94,12 @@ class Clear::SQL::InsertQuery
   def values(row : NamedTuple)
     @keys = row.keys.to_a.map(&.as(Symbolic))
 
-    v = @values = [] of Array(Inserable)
-    v << row.values.to_a.map(&.as(Inserable))
+    case v = @values
+    when SelectBuilder
+      raise "Cannot insert both from SELECT and from data"
+    when Array(Array(Inserable))
+      v << row.values.to_a.map(&.as(Inserable))
+    end
 
     change!
   end
@@ -98,8 +107,12 @@ class Clear::SQL::InsertQuery
   def values(row : Hash(Symbolic, Inserable))
     @keys = row.keys.to_a.map(&.as(Symbolic))
 
-    v = @values = [] of Array(Inserable)
-    v << row.values.to_a.map(&.as(Inserable))
+    case v = @values
+    when SelectBuilder
+      raise "Cannot insert both from SELECT and from data"
+    when Array(Array(Inserable))
+      v << row.values.to_a.map(&.as(Inserable))
+    end
 
     change!
   end
@@ -108,12 +121,16 @@ class Clear::SQL::InsertQuery
     rows.each do |nt|
       values(nt)
     end
+
+    change!
   end
 
   def values(rows : Array(Hash(Symbolic, Inserable)))
     rows.each do |nt|
       values(nt)
     end
+
+    change!
   end
 
   # Used with values
