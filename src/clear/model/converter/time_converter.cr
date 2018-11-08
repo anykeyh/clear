@@ -1,4 +1,4 @@
-require "pg"
+require "./base"
 
 class Clear::Model::Converter::TimeConverter
   def self.to_column(x) : Time?
@@ -21,3 +21,5 @@ class Clear::Model::Converter::TimeConverter
     end
   end
 end
+
+Clear::Model::Converter.add_converter("Time", Clear::Model::Converter::TimeConverter)

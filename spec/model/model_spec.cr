@@ -434,6 +434,9 @@ module ModelSpec
         p = Post.query.first!
         p.tags.should eq ["a", "b", "c"]
         p.flags.should eq [11234212343543_i64, 11234212343543_i64, -12928394059603_i64, 12038493029484_i64]
+
+        # Test insertion of empty array
+        Post.create!({title: "A post", user_id: u.id, tags: [] of String})
       end
     end
 

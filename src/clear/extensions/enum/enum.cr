@@ -100,6 +100,8 @@ module Clear
             x.to_s
           end
         end
+
+        Clear::Model::Converter.add_converter("{{name.id}}", ::Clear::Model::Converter::\{{@type}}Converter)
       end
 
     end

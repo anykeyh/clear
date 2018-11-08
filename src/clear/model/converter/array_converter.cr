@@ -1,6 +1,15 @@
-require "pg"
-require "json"
+require "./base"
 
+{% begin %}
+{% # Mapping of the Array type to array in postgresql.
+ typemap = {
+   "Bool"    => "boolean[]",
+   "String"  => "text[]",
+   "Float32" => "real[]",
+   "Float64" => "double precision[]",
+   "Int32"   => "int[]",
+   "Int64"   => "bigint[]",
+ } %}
 {% for k, exp in {
                    bool: Bool,
                    s:    String,
@@ -10,7 +19,7 @@ require "json"
                    i64:  Int64,
                  } %}
 
-class Clear::Model::Converter::ArrayConverter_{{exp.id}}_
+module Clear::Model::Converter::ArrayConverter{{exp.id}}
   def self.to_column(x) : Array(::{{exp.id}})?
     case x
     when Nil
@@ -45,12 +54,18 @@ class Clear::Model::Converter::ArrayConverter_{{exp.id}}_
   end
 
   def self.to_db(x : Array(::{{exp.id}})?) : Clear::SQL::Any
+      {% t = typemap["#{exp.id}"] %}
     if x
-      Clear::Expression.unsafe({"Array[", to_string(x), "]"}.join)
+      Clear::Expression.unsafe({"Array[", to_string(x), "]::{{t.id}}"}.join)
     else
       nil
     end
   end
+
 end
 
+Clear::Model::Converter.add_converter("Array({{exp.id}})", Clear::Model::Converter::ArrayConverter{{exp.id}})
+Clear::Model::Converter.add_converter("Array({{exp.id}} | Nil)", Clear::Model::Converter::ArrayConverter{{exp.id}})
+
+{% end %}
 {% end %}

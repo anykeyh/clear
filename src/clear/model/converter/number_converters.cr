@@ -1,4 +1,4 @@
-require "pg"
+require "./base"
 
 module Clear::Model::Converter
   # Macro used to generate conveniently all conversion for
@@ -21,6 +21,8 @@ module Clear::Model::Converter
         x
       end
     end
+
+    Clear::Model::Converter.add_converter("{{t}}", ::Clear::Model::Converter::{{t}}Converter)
   end
 
   number_converter(Int8)
