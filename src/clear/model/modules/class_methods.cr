@@ -31,6 +31,13 @@ module Clear::Model::ClassMethods
 
       class_property pkey : String = "id"
 
+      # Collection({{@type}})
+      #
+      # This is the object managing a `Select` request.
+      # A new collection is created by calling `{{@type}}.query`
+      #
+      # Collection are mutable and refining the SQL will mutate the collection.
+      # You may want to copy the collection by calling `dup`
       class Collection < Clear::Model::CollectionBase(\{{@type}}); end
 
       def self.query

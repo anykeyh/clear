@@ -291,7 +291,7 @@ module Clear::Model::HasRelations
     end
 
     before(:validate, _bt_save_{{method_name}})
-    # Adding the eager loading
+
     class Collection
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
         before_query do

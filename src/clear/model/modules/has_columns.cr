@@ -43,7 +43,7 @@ module Clear::Model::HasColumns
     {} of String => ::Clear::SQL::Any
   end
 
-  def to_h
+  def to_h(full = false)
     {} of String => ::Clear::SQL::Any
   end
 
@@ -196,11 +196,11 @@ module Clear::Model::HasColumns
     end
 
     # Return a hash version of the columns of this model.
-    def to_h : Hash(String, ::Clear::SQL::Any)
+    def to_h(full = false) : Hash(String, ::Clear::SQL::Any)
       out = super
 
       {% for name, settings in COLUMNS %}
-        if @{{name}}_column.defined?
+        if full || @{{name}}_column.defined?
           out[{{settings[:column_name]}}] = Clear::Model::Converter.to_db({{settings[:converter]}}, @{{name}}_column.value(nil))
         end
       {% end %}

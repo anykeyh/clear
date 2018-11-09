@@ -17,6 +17,7 @@ module Clear::Model
   include Clear::Model::HasRelations
   include Clear::Model::HasScope
   include Clear::Model::ClassMethods
+  include Clear::Model::HasJson
   include Clear::Model::IsPolymorphic
 
   getter cache : Clear::Model::QueryCache?

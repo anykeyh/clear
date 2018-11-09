@@ -49,5 +49,20 @@ module UUIDSpec
         DBObject.query.where { id == "#{first_uuid}" }.count.should eq 1
       end
     end
+
+    it "can save a model with UUID to JSON" do
+      temporary do
+        reinit
+
+        3.times do |x|
+          DBObject.create!({name: "obj#{x}"})
+        end
+
+        (
+          DBObject.query.first!.to_json =~
+            /"id":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"/
+        ).should eq 1
+      end
+    end
   end
 end
