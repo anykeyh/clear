@@ -563,6 +563,18 @@ module ModelSpec
         end
       end
 
+      it "can export to json" do
+        temporary do
+          reinit
+          u = User.new({first_name: "Hello", last_name: "World"})
+          u.to_json.should eq %({"first_name":"Hello","last_name":"World"})
+
+          u.to_json(full: true).should eq (
+            %({"id":null,"first_name":"Hello","last_name":"World","middle_name":null,"active":null,"notification_preferences":"null","updated_at":null,"created_at":null})
+          )
+        end
+      end
+
       it "can paginate with where clause" do
         temporary do
           reinit
