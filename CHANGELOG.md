@@ -1,13 +1,41 @@
 # master/HEAD
 
+To be continued 😁
+
+# v0.4
+
 ## Features
 - Improved Model build/create methods, allowing to pass arguments instead of NamedTuple
+- #48 Add `lateral join` feature:
+  ```crystal
+    Model.query.left_join("other_model", lateral: true){ model.id == other_model.model_id }
+  ```
+- #35 Add methods `import` over collection, to be able to insert multiple objects with one query:
+  ```crystal
+    user_array = 10.times.map{ |x| User.new(name: "user#{x}")  }
+    Model.import(user_array)
+  ```
+- #42 Add support of `ON CONFLICT` both in `Insert` and `Model#save`
+  ```crystal
+    u = User.new(id: 1, first_name: "me")
+    u.save! &.on_conflict("(id)").do_update(&.set("first_name = excluded.first_name").where { model_users.id == excluded.id })
+  ```
+  - Note: Method `Model#import` explained above can use the same syntax to resolve conflict.
+  This will helps to use Clear for import, CSV and batch processing.
+- #26 Add `to_json` supports to model. Please note that some core lib and shards `pg` objects got
+  extended to allow this support:
+  - By default, undefined fields are not exported. To export all columns even thoses which are not fetched in SQL, use `full: true`. For example:
+  ```
+    User.query.first!.to_json # => {"id":1, "first_name":"Louis", "last_name": "XVI"}
+    User.query.select("id, first_name").first!.to_json # => {"id":1, "first_name":"Louis"}
+    User.query.select("id, first_name").first!.to_json(full: true) # => {"id":1, "first_name":"Louis", "last_name": null}
+  ```
 
 ## Bug fixes
 - Escaping table, columns and schema name to allow Clear to works on any SQL restricted names.
   - This is very demanding work as it turns out table and columns naming are used everywhere
     in the ORM. Please give me feedback in case of any issues !
-- Fix #31, #36, #37
+- Fix #31, #36, #38, #37
 - Fix issue with polymorphic table
 
 ## Breaking changes
@@ -24,6 +52,12 @@
       where{ raw("a.b") }
     ```
     TL;DR, if you currently use `var` function, please use `raw` instead from now.
+- Revamping the converter system, allowing to work seemlessly with complexes types like Union and Generic
+  - Documentation will follow soon.
+
+# v0.3.1
+
+Basically a transition version, to support Crystal 0.27. Some of the features of 0.4 were deployed already in 0.3.1. See above for the new features/changes.
 
 # v0.3
 
