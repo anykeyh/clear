@@ -28,6 +28,7 @@ module Clear::Model::IsPolymorphic
                   cache : Clear::Model::QueryCache? = nil,
                   persisted = false,
                   fetch_columns = false)
+          puts "FACTORY: #{h.inspect}"
           {{@type}}.new(h, cache, persisted, fetch_columns)
         end
       end

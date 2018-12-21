@@ -3,16 +3,17 @@ module Clear::Model::ClassMethods
     macro included # When included into final Model
       macro inherited #Polymorphism
         macro finished
-        __generate_columns
-        __init_default_factory
+          __generate_relations
+          __generate_columns
+          __init_default_factory
         end
       end
 
       macro finished
+        __generate_relations
         __generate_columns
         __init_default_factory
       end
-
 
       class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
       # Schema of this model

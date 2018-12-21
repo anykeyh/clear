@@ -110,8 +110,8 @@ module Clear::Migration
   #   Int64.new(0)
   # end
 
-  def execute(x : String)
-    SQL.connection.execute(x)
+  def execute(up : String? = nil, down : String? = nil)
+    @operations << Clear::Migration::Execute.new( up, down )
   end
 
   def add_operation(op : Operation)

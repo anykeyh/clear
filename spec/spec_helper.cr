@@ -2,6 +2,11 @@ require "spec"
 
 require "../src/clear"
 
+# Redefine the default cost to 4 (the min) to accelerate greatly the tests.
+class ::Crypto::Bcrypt::Password
+  DEFAULT_COST = 4
+end
+
 def initdb
   system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres")
   system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres")

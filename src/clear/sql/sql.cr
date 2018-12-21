@@ -51,7 +51,7 @@ module Clear
 
     @@connections = {} of String => DB::Database
 
-    def self.connection(connection) : DB::Database
+    def self.connection(connection="default") : DB::Database
       @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
     end
 

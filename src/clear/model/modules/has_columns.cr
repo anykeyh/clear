@@ -111,6 +111,7 @@ module Clear::Model::HasColumns
        } %}
   end
 
+  # :nodoc:
   # Used internally to gather the columns
   macro __generate_columns
     {% for name, settings in COLUMNS %}
