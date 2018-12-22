@@ -9,7 +9,6 @@ module Clear::Model::HasSerialPkey
     {% elsif type == :serial %}
       column {{name.id}} : Int32, primary: true, presence: false
     {% elsif type == :uuid %}
-      {% puts name.id %}
       column {{name.id}} : UUID, primary: true, presence: true
 
       before(:validate) do |m|

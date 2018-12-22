@@ -60,8 +60,6 @@ module Clear::Model::HasSaving
   # Return `false` if the model cannot be saved (validation issue)
   # Return `true` if the model has been correctly saved.
   #
-  # Note: On first save, `persisted` is set to true.
-  #
   # Example:
   #
   # ```crystal
@@ -74,13 +72,15 @@ module Clear::Model::HasSaving
   # end
   # ```
   #
+  # ## `on_conflict` optional parameter
+  #
+  # Example:
+  #
   # ```crystal
   # u = User.new id: 123, email: "email@example.com"
   # u.save(-> (qry) { qry.on_conflict.do_update{ |u| u.set(email: "email@example.com") } #update
   # # Note: user may not be saved, but will be detected as persisted !
   # ```
-  #
-  #
   #
   def save(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
     return false if self.class.read_only?
@@ -134,6 +134,11 @@ module Clear::Model::HasSaving
     return save!(block)
   end
 
+  
+  #  Delete the model by building and executing a `DELETE` query.
+  #  A deleted model is not persisted anymore, and can be saved again. 
+  #     Clear will do `INSERT` instead of `UPDATE` then
+  #  Return `true` if the model has been successfully deleted, and `false` otherwise.
   def delete
     return false unless persisted?
 
