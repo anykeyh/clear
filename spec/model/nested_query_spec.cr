@@ -83,7 +83,7 @@ module NestedQuerySpec
     temporary do
       reinit
 
-      puts Release.query
+      Release.query
              .with_video(&.with_tags).to_a
     end
   end

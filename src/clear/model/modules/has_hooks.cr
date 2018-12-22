@@ -22,4 +22,17 @@ module Clear::Model::HasHooks
       Clear::Model::EventManager.attach(self, :after, event_name, block)
     end
   end
+
+  macro before(event_name, method_name)
+    before({{event_name}}) { |mdl|
+      mdl.as({{@type}}).{{method_name.id}}
+    }
+  end
+
+  macro after(event_name, method_name)
+    after({{event_name}}) { |mdl|
+      mdl.as({{@type}}).{{method_name.id}}
+    }
+  end
+
 end

@@ -5,18 +5,36 @@ class Clear::Model::EventManager
   EVENT_CALLBACKS = {} of EventKey => Array(HookFunction)
   INHERITANCE_MAP = {} of String => String
 
+  # Trigger events callback for a specific model.
+  # Direction can be `:before` and `:after`
+  # In case of `:before` direction, the events are called in reverse order:
+  # ```
+  # before:
+  # - Last defined event
+  # - First defined event
+  # action
+  # after:
+  # - First defined events
+  # - Last defined events
   def self.trigger(klazz, direction : Symbol, event : Symbol, mdl : Clear::Model)
     arr = EVENT_CALLBACKS.fetch({klazz.to_s, direction, event}){ [] of HookFunction }
 
     parent = INHERITANCE_MAP[klazz.to_s]?
 
-    self.trigger(parent, direction, event, mdl) unless parent.nil?
+    if direction == :after
+      arr = arr.reverse 
 
-    arr = arr.reverse if direction == :before
-    
-    arr.each do |fn|
-      fn.call(mdl)
+      arr.each do |fn|
+        fn.call(mdl)
+      end
+      self.trigger(parent, direction, event, mdl) unless parent.nil?
+    else
+      self.trigger(parent, direction, event, mdl) unless parent.nil?
+      arr.each do |fn|
+        fn.call(mdl)
+      end
     end
+    
   end
 
   def self.add_inheritance(parent, child)

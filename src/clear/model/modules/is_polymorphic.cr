@@ -17,6 +17,7 @@ module Clear::Model::IsPolymorphic
       class_getter? polymorphic : Bool = false
       class_getter! factory : Factory
 
+      # Add linking between classes for the EventManager triggers
       macro inherited
         \\{% for ancestor in @type.ancestors %}
           \\{% if ancestor < Clear::Model %}
