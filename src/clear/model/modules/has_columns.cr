@@ -128,6 +128,7 @@ module Clear::Model::HasColumns
         @{{name}}_column.value
       end
 
+      {% puts "#{name} = #{type}" %}
       def {{name}}=(x : {{type}})
         @{{name}}_column.value = x
       end

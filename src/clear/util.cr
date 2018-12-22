@@ -35,4 +35,5 @@ module Clear::Util
   macro to_proc(*args, &block)
     -> ({{args.join(", ").id}}) { {{block.body}} }
   end
+
 end

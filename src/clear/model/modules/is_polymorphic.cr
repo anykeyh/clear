@@ -16,6 +16,14 @@ module Clear::Model::IsPolymorphic
     macro included
       class_getter? polymorphic : Bool = false
       class_getter! factory : Factory
+
+      macro inherited
+        \\{% for ancestor in @type.ancestors %}
+          \\{% if ancestor < Clear::Model %}
+            Clear::Model::EventManager.add_inheritance(\\{{ancestor}}, \\{{@type}})
+          \\{% end %}
+        \\{% end %}
+      end
     end
   end
 
@@ -28,7 +36,6 @@ module Clear::Model::IsPolymorphic
                   cache : Clear::Model::QueryCache? = nil,
                   persisted = false,
                   fetch_columns = false)
-          puts "FACTORY: #{h.inspect}"
           {{@type}}.new(h, cache, persisted, fetch_columns)
         end
       end

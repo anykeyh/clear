@@ -29,11 +29,10 @@ module Clear::Model::Relations::BelongsToMacro
     def {{method_name}}=(x : {{relation_type}}?)
       if x.persisted?
         raise "#{x.pkey_column.name} must be defined when assigning a belongs_to relation." unless x.pkey_column.defined?
-        @cached_{{method_name}} = x
         @{{foreign_key.id}}_column.value = x.pkey
-      else
-        @cached_{{method_name}} = x
       end
+
+      @cached_{{method_name}} = x
     end # / *=
 
     # :nodoc:
@@ -51,7 +50,11 @@ module Clear::Model::Relations::BelongsToMacro
       end
     end # / _bt_save_*
 
-    before(:validate, _bt_save_{{method_name}})
+    __on_init__ do
+      {{self_type}}.before(:validate) do |mdl|
+        mdl.as(self)._bt_save_{{method_name}}
+      end
+    end
 
     class Collection
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
