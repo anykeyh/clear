@@ -61,7 +61,7 @@ class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operatio
     return [cr_fn, cr_tr]
   end
 
-  private def print_udpate_current_data
+  private def print_update_current_data
     op = print_concat_rules(use_new: false)
 
     return [Clear::SQL.update(table)
@@ -73,7 +73,7 @@ class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operatio
   end
 
   def up
-    print_trigger + print_udpate_current_data
+    print_trigger + print_update_current_data
   end
 
   def down
