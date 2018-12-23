@@ -17,6 +17,7 @@ module Clear::Model::Initializer
         end
       end
 
+      # :nodoc:
       def self.__initialize_once__
         unless @@initialized
           __main_init__

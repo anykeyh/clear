@@ -28,6 +28,7 @@ module Clear::Model::IsPolymorphic
     end
   end
 
+  # :nodoc:
   # Define a simple model factory which is litteraly just a
   # delegate to the constructor.
   macro __init_default_factory

@@ -13,6 +13,7 @@ module Clear::Model::HasRelations
 
   macro included # In Clear::Model
     macro included # In RealModel
+      # :nodoc:
       RELATIONS = {} of Nil => Nil
     end
   end
@@ -110,7 +111,7 @@ module Clear::Model::HasRelations
     %}
   end
 
-
+  # :nodoc:
   macro __generate_relations
     {% begin %}
     {% for name, settings in RELATIONS %}
