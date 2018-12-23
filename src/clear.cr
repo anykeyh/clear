@@ -16,17 +16,6 @@ require "logger"
 #
 # And here you have ! The ORM made for Postgres and Crystal, simple to use, full
 # of ideas stolen to ActiveRecord and Sequel :-).
-module Clear
-  class_getter logger : Logger = Logger.new(STDOUT)
-end
-
-require "./clear/version"
-require "./clear/util"
-require "./clear/error_messages"
-require "./clear/seed"
-require "./clear/expression/**"
-require "./clear/sql/**"
-require "./clear/model/**"
-require "./clear/migration/**"
-require "./clear/cli"
+require "./clear/core"
 require "./clear/extensions/**"
+require "./clear/cli"

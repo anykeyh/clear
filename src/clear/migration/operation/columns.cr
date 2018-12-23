@@ -1,5 +1,5 @@
 module Clear::Migration
-  struct AddColumn < Operation
+  class AddColumn < Operation
     @table : String
     @column : String
     @datatype : String
@@ -16,7 +16,7 @@ module Clear::Migration
     end
   end
 
-  struct RemoveColumn < Operation
+  class RemoveColumn < Operation
     @table : String
     @column : String
     @datatype : String?
@@ -37,7 +37,7 @@ module Clear::Migration
     end
   end
 
-  struct AlterColumn < Operation
+  class AlterColumn < Operation
     @table : String
 
     @old_column_name : String?

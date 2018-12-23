@@ -10,36 +10,18 @@ module EventSpec
     polymorphic ModelB,
       through: "type"
 
-    before(:validate) {
-      ACCUMULATOR << "1"
-    }
+    before(:validate) { ACCUMULATOR << "1" }
+    before(:validate) { ACCUMULATOR << "2" }
+    before(:validate) { ACCUMULATOR << "3" }
 
-    before(:validate) {
-      ACCUMULATOR << "2"
-    }
-
-    before(:validate) {
-      ACCUMULATOR << "3"
-    }
-
-    after(:validate) {
-      ACCUMULATOR << "6"
-    }
-
-    after(:validate) {
-      ACCUMULATOR << "7"
-    }
-
-    after(:validate) {
-      ACCUMULATOR << "8"
-    }
+    after(:validate) { ACCUMULATOR << "6" }
+    after(:validate) { ACCUMULATOR << "7" }
+    after(:validate) { ACCUMULATOR << "8" }
   end
 
   class ModelB < ModelA
 
-    before(:validate) {
-      ACCUMULATOR << "A"
-    }
+    before(:validate) { ACCUMULATOR << "A" }
 
     after(:validate, :x) 
 

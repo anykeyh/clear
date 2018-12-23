@@ -5,7 +5,7 @@ module Clear::Model
 end
 
 # Reopen Table to add the helpers
-struct Clear::Migration::Table < Clear::Migration::Operation
+class Clear::Migration::Table < Clear::Migration::Operation
   include Clear::Migration::FullTextSearchableTableHelpers
 end
 
