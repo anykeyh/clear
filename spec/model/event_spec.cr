@@ -4,9 +4,9 @@ module EventSpec
 
   ACCUMULATOR = [] of String
 
-  abstract class ModelA 
+  abstract class ModelA
     include Clear::Model
-    
+
     polymorphic ModelB,
       through: "type"
 
@@ -23,7 +23,7 @@ module EventSpec
 
     before(:validate) { ACCUMULATOR << "A" }
 
-    after(:validate, :x) 
+    after(:validate, :x)
 
     def x
       ACCUMULATOR << "Z"

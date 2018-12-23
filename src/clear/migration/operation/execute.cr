@@ -1,5 +1,5 @@
 require "./operation"
- 
+
 module Clear::Migration
   class Execute < Operation
     @up : String?

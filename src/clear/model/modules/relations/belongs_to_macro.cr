@@ -1,11 +1,11 @@
-# :nodoc: 
+# :nodoc:
 module Clear::Model::Relations::BelongsToMacro
   macro generate(self_type, method_name, relation_type, foreign_key, primary, no_cache, key_type)
     {% foreign_key = foreign_key || method_name.stringify.underscore + "_id" %}
-        
+
     column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}
     getter _cached_{{method_name}} : {{relation_type}}?
-    
+
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type}}?
@@ -60,18 +60,18 @@ module Clear::Model::Relations::BelongsToMacro
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
         before_query do
           sub_query = self.dup.clear_select.select("#{{{self_type}}.table}.{{foreign_key.id}}")
-        
+
           cached_qry = {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) }
-        
+
           block.call(cached_qry)
-        
+
           @cache.active "{{method_name}}"
-        
+
           cached_qry.each(fetch_columns: fetch_columns) do |mdl|
             @cache.set("{{method_name}}", mdl.pkey, [mdl])
           end
         end
-    
+
         self
       end # / with_*
 

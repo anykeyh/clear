@@ -51,7 +51,7 @@ module Clear::SQL::Query::OnConflict
     change!
   end
 
-  def has_conflict?
+  def conflict?
     !!@on_conflict_condition
   end
 

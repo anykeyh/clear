@@ -51,7 +51,7 @@ module Clear::Model::HasRelations
       }
     %}
   end
- 
+
   macro has_many(name, through = nil, foreign_key = nil, own_key = nil, primary_key = nil, no_cache = false)
     {%
       if through != nil
@@ -60,7 +60,7 @@ module Clear::Model::HasRelations
 
         own_key     = own_key.id if own_key.is_a?(SymbolLiteral) || own_key.is_a?(StringLiteral)
         foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
-  
+
         RELATIONS[name.var.id] = {
           relation_type: :has_many_through,
           type: name.type,
@@ -69,15 +69,15 @@ module Clear::Model::HasRelations
           own_key: own_key,
           foreign_key: foreign_key
         }
-        
+
       else
         foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
         primary_key = primary_key.id if primary_key.is_a?(SymbolLiteral) || primary_key.is_a?(StringLiteral)
-  
+
         RELATIONS[name.var.id] = {
           relation_type: :has_many,
           type: name.type,
-  
+
           foreign_key: foreign_key,
           primary_key: primary_key,
           no_cache: no_cache
@@ -94,7 +94,7 @@ module Clear::Model::HasRelations
   #
   # ```
   macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int64?)
-    {% 
+    {%
     foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
 
     RELATIONS[name.var.id] = {
@@ -115,16 +115,16 @@ module Clear::Model::HasRelations
     {% begin %}
     {% for name, settings in RELATIONS %}
       {% if settings[:relation_type] == :belongs_to %}
-        Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}}, 
+        Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
           {{settings[:primary]}}, {{settings[:no_cache]}}, {{settings[:key_type]}})
       {% elsif settings[:relation_type] == :has_many %}
-        Relations::HasManyMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}}, 
+        Relations::HasManyMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
           {{settings[:primary_key]}})
       {% elsif settings[:relation_type] == :has_many_through %}
-        Relations::HasManyThroughMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:through]}}, 
+        Relations::HasManyThroughMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:through]}},
           {{settings[:own_key]}}, {{settings[:foreign_key]}})
       {% elsif settings[:relation_type] ==  :has_one %}
-        Relations::HasOneMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}}, 
+        Relations::HasOneMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
           {{settings[:primary_key]}})
       {% else %}
         {% raise "I don't know this relation: #{settings[:relation_type]}" %}

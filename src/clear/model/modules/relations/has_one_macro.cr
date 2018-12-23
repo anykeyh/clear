@@ -16,8 +16,8 @@ module Clear::Model::Relations::HasOneMacro
 
       {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first
     end
-    
-    # Return the related model `{{method_name}}`, 
+
+    # Return the related model `{{method_name}}`,
     # but throw an error if the model is not found.
     def {{method_name}}! : {{relation_type}}
       {{method_name}}.not_nil!

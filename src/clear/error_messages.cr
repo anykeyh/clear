@@ -11,7 +11,7 @@ module Clear::ErrorMessages
   def format_width(x, w = 80)
     counter = 0
     o = [] of String
-    new_line = false
+
     x.split(/([ \n\t])/).each do |word|
       case word
       when "\n"
@@ -143,9 +143,9 @@ module Clear::ErrorMessages
 
   def migration_irreversible(name=nil, operation = nil)
     op_string = operation ? "This is caused by the operation #{operation} which is irreversible." : nil
-    mig_string = name ? 
+    mig_string = name ?
       "The migration `#{name}` is irreversible. You're trying to down a migration which is not downable, "+
-      "because the operations are one way only." : 
+      "because the operations are one way only." :
       "A migration is irreversible. You're trying to down a migration which is not downable, " +
       "because the operations are one way only."
 

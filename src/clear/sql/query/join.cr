@@ -19,7 +19,7 @@ module Clear::SQL::Query::Join
   end
 
   def cross_join(name : Symbolic, lateral = false)
-    join(name, :cross, lateral = false)
+    join(name, :cross, lateral)
   end
 
   {% for j in ["left", "right", "full_outer", "inner"] %}

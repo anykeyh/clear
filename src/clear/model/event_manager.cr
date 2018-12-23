@@ -22,7 +22,7 @@ class Clear::Model::EventManager
     parent = INHERITANCE_MAP[klazz.to_s]?
 
     if direction == :after
-      arr = arr.reverse 
+      arr = arr.reverse
 
       arr.each do |fn|
         fn.call(mdl)
@@ -34,7 +34,7 @@ class Clear::Model::EventManager
         fn.call(mdl)
       end
     end
-    
+
   end
 
   def self.add_inheritance(parent, child)
@@ -46,7 +46,7 @@ class Clear::Model::EventManager
     arr = EVENT_CALLBACKS.fetch(tuple){ [] of HookFunction }
 
     arr.push(block)
-    EVENT_CALLBACKS[tuple] = arr 
+    EVENT_CALLBACKS[tuple] = arr
   end
 
 end

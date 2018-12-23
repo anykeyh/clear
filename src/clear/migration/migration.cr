@@ -65,22 +65,22 @@ module Clear::Migration
   # This error is throw when you try to revert a migration which is irreversible.
   class IrreversibleMigration < Exception; end
 
-  module Helper 
+  module Helper
     def irreversible!
       raise IrreversibleMigration.new(migration_irreversible(self.class.name))
-    end  
+    end
 
     def execute(up : String? = nil, down : String? = nil)
       @operations << Clear::Migration::Execute.new( up, down )
     end
-  
+
     def add_operation(op : Operation)
       op.migration = self
       @operations << op
     end
 
     abstract def change(dir)
-  
+
     # This will apply the migration in a given direction (up or down)
     def apply(dir : Direction)
     Clear::Migration::Manager.instance.ensure_ready

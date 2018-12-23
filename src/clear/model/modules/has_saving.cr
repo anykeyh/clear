@@ -51,7 +51,7 @@ module Clear::Model::HasSaving
 
   getter? persisted : Bool
 
-  # Save the model. If the model is already persisted, will call `UPDATE` query. 
+  # Save the model. If the model is already persisted, will call `UPDATE` query.
   # If the model is not persisted, will call `INSERT`
   #
   # Optionally, you can pass a `Proc` to refine the `INSERT` with on conflict
@@ -134,9 +134,9 @@ module Clear::Model::HasSaving
     return save!(block)
   end
 
-  
+
   #  Delete the model by building and executing a `DELETE` query.
-  #  A deleted model is not persisted anymore, and can be saved again. 
+  #  A deleted model is not persisted anymore, and can be saved again.
   #     Clear will do `INSERT` instead of `UPDATE` then
   #  Return `true` if the model has been successfully deleted, and `false` otherwise.
   def delete

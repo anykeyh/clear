@@ -36,7 +36,7 @@ module Clear::Model
     extend Clear::Model::HasHooks::ClassMethods
 
     getter cache : Clear::Model::QueryCache?
-    
+
     def initialize(@persisted = false)
     end
 
@@ -52,7 +52,7 @@ module Clear::Model
     # :nodoc:
     # This method is useful to trigger the initializers used to build the models.
     # Without it, the events and others stuff would be fullfilled AFTER the main code has finished.
-    # 
+    #
     # I wish there was another method
     def self.__main_init__
     end
