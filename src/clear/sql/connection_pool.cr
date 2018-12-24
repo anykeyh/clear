@@ -23,13 +23,12 @@ class Clear::SQL::ConnectionPool
       yield(db)
     ensure
       db, call_count = @@fiber_connections[fiber_target]
-      call_count -= 1
 
-      if call_count == 0
+      if call_count == 1
         @@fiber_connections.delete(fiber_target)
         channel.send db
       else
-        @@fiber_connections[fiber_target] = {db, call_count}
+        @@fiber_connections[fiber_target] = {db, call_count - 1}
       end
     end
   end
