@@ -1,6 +1,6 @@
 module Clear::Migration
   # Helper to create or alter table.
-  struct Table < Operation
+  class Table < Operation
     record ColumnOperation, column : String, type : String,
       null : Bool = false, default : SQL::Any = nil, primary : Bool = false,
       array : Bool = false
@@ -17,9 +17,8 @@ module Clear::Migration
     getter column_operations : Array(ColumnOperation) = [] of ColumnOperation
     getter index_operations : Array(IndexOperation) = [] of IndexOperation
     getter fkey_operations : Array(FkeyOperation) = [] of FkeyOperation
-    getter migration : Clear::Migration
 
-    def initialize(@migration, @name, @is_create)
+    def initialize(@name, @is_create)
       raise "Not yet implemented" unless is_create?
     end
 
@@ -169,10 +168,11 @@ module Clear::Migration
     end
   end
 
-  struct AddTable < Operation
+  class AddTable < Operation
     @table : String
 
     def initialize(@table)
+
     end
 
     def up
@@ -184,7 +184,7 @@ module Clear::Migration
     end
   end
 
-  struct DropTable < Operation
+  class DropTable < Operation
     @table : String
 
     def initialize(@table)
@@ -229,7 +229,8 @@ module Clear::Migration
     # ```
     #
     def create_table(name, id : Symbol | Bool = true, &block)
-      table = Table.new(self.as(Clear::Migration), name.to_s, is_create: true)
+      table = Table.new(name.to_s, is_create: true)
+      self.add_operation(table)
 
       case id
       when true, :bigserial
@@ -238,9 +239,12 @@ module Clear::Migration
         table.serial :id, primary: true, null: false
       when :uuid
         table.uuid :id, primary: true, null: false
+      when false
+      else
+        raise "Unknown key type while try to create new table: `#{id}`. " +
+          "Please proceed with `id: false` and add the column manually"
       end
 
-      self.add_operation(table)
       yield(table)
     end
   end

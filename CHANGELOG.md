@@ -1,6 +1,11 @@
-# master/HEAD
+# master/HEAD (v0.5)
 
 To be continued 😁
+
+- Fix #53
+- Update dependencies to newer version
+- Large refactoring on relations
+- Many bugfixes
 
 # v0.4
 

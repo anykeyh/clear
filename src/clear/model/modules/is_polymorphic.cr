@@ -16,9 +16,19 @@ module Clear::Model::IsPolymorphic
     macro included
       class_getter? polymorphic : Bool = false
       class_getter! factory : Factory
+
+      # Add linking between classes for the EventManager triggers
+      macro inherited
+        \\{% for ancestor in @type.ancestors %}
+          \\{% if ancestor < Clear::Model %}
+            Clear::Model::EventManager.add_inheritance(\\{{ancestor}}, \\{{@type}})
+          \\{% end %}
+        \\{% end %}
+      end
     end
   end
 
+  # :nodoc:
   # Define a simple model factory which is litteraly just a
   # delegate to the constructor.
   macro __init_default_factory

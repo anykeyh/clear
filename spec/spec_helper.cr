@@ -2,6 +2,11 @@ require "spec"
 
 require "../src/clear"
 
+class ::Crypto::Bcrypt::Password
+  # Redefine the default cost to 4 (the minimum allowed) to accelerate greatly the tests.
+  DEFAULT_COST = 4
+end
+
 def initdb
   system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres")
   system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres")
@@ -13,11 +18,7 @@ def initdb
   Clear::SQL.init("postgres://postgres@localhost/clear_spec")
   Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec")
 
-  {% if flag?(:quiet) %}
-    Clear.logger.level = ::Logger::ERROR
-  {% else %}
-    Clear.logger.level = ::Logger::DEBUG
-  {% end %}
+  Clear.logger.level = {% if flag?(:quiet) %} ::Logger::ERROR {% else %} Clear.logger.level = ::Logger::DEBUG {% end %}
 end
 
 def reinit_migration_manager

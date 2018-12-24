@@ -8,7 +8,7 @@ module BCryptSpec
     include Clear::Migration
 
     def change(dir)
-      create_table(:bcrypt_users) do |t|
+      create_table(:bcrypt_users, id: :uuid) do |t|
         t.string :encrypted_password
       end
     end
@@ -17,7 +17,7 @@ module BCryptSpec
   class User
     include Clear::Model
 
-    with_serial_pkey
+    with_serial_pkey type: :uuid
 
     self.table = "bcrypt_users"
 

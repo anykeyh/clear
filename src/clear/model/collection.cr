@@ -102,7 +102,7 @@ module Clear::Model
           o << T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
         end
 
-        o.each { |it| yield(it) }
+        o.each(&block)
       end
     end
 

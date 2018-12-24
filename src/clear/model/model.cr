@@ -8,8 +8,8 @@ require "./validation/**"
 module Clear::Model
   include Clear::ErrorMessages
   include Clear::Model::Connection
-  include Clear::Model::HasColumns
   include Clear::Model::HasHooks
+  include Clear::Model::HasColumns
   include Clear::Model::HasTimestamps
   include Clear::Model::HasSerialPkey
   include Clear::Model::HasSaving
@@ -19,6 +19,7 @@ module Clear::Model
   include Clear::Model::ClassMethods
   include Clear::Model::HasJson
   include Clear::Model::IsPolymorphic
+  include Clear::Model::Initializer
 
   getter cache : Clear::Model::QueryCache?
 
@@ -32,9 +33,9 @@ module Clear::Model
   macro included
     {% raise "Do NOT include Clear::Model on struct-like objects.\n" +
              "It would behave very strangely otherwise." unless @type < Reference %}
+    extend Clear::Model::HasHooks::ClassMethods
 
     getter cache : Clear::Model::QueryCache?
-
 
     def initialize(@persisted = false)
     end
@@ -46,6 +47,14 @@ module Clear::Model
 
     def initialize(t : NamedTuple, @persisted = false)
       set(t)
+    end
+
+    # :nodoc:
+    # This method is useful to trigger the initializers used to build the models.
+    # Without it, the events and others stuff would be fullfilled AFTER the main code has finished.
+    #
+    # I wish there was another method
+    def self.__main_init__
     end
   end
 end

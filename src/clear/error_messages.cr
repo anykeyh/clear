@@ -11,7 +11,7 @@ module Clear::ErrorMessages
   def format_width(x, w = 80)
     counter = 0
     o = [] of String
-    new_line = false
+
     x.split(/([ \n\t])/).each do |word|
       case word
       when "\n"
@@ -62,7 +62,7 @@ module Clear::ErrorMessages
     end
   end
 
-  def build_error_message(message : String, ways_to_resolve : Tuple = Tuple.new, manual_pages : Tuple = Tuple.new)
+  def build_error_message(message : String, ways_to_resolve : Tuple|Array = Tuple.new, manual_pages : Tuple|Array = Tuple.new)
     {% if flag?(:release) %}
       message
     {% else %}
@@ -83,7 +83,8 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already up: #{number}",
       {
-        "You try to force a migration which is already existing in your database. You should down the migration first, then up it again.",
+        "You try to force a migration which is already existing in your database. "+
+        "You should down the migration first, then up it again.",
       },
       {
         "migration/Migration.md",
@@ -94,7 +95,8 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already down: #{number}",
       {
-        "You try to force a migration which is not set in your database yet. You should up the migration first, then down it again.",
+        "You try to force a migration which is not set in your database yet. " +
+        "You should up the migration first, then down it again.",
       },
       {
         "migration/Migration.md",
@@ -106,7 +108,8 @@ module Clear::ErrorMessages
       "The migration number `#{number}` is not found.",
       {
         "Ensure to require your migration files",
-        "Number of the migrations can be found in the filename, in the classname or in the `uid` method of the migration.",
+        "Number of the migrations can be found in the filename, " +
+        "in the classname or in the `uid` method of the migration.",
       },
       {
         "migration/Migration.md",
@@ -138,14 +141,23 @@ module Clear::ErrorMessages
       }
   end
 
-  def migration_irreversible(name)
+  def migration_irreversible(name=nil, operation = nil)
+    op_string = operation ? "This is caused by the operation #{operation} which is irreversible." : nil
+    mig_string = name ?
+      "The migration `#{name}` is irreversible. You're trying to down a migration which is not downable, "+
+      "because the operations are one way only." :
+      "A migration is irreversible. You're trying to down a migration which is not downable, " +
+      "because the operations are one way only."
+
     build_error_message \
-      "The migration #{name} is irreversible. You're trying to down a migration which is not downable, because the operations are one way only.",
-      {
+      mig_string,
+      [
+        op_string,
         "Build a way to revert the migration",
         "Do not revert the migration",
-        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded migrations. Good luck !",
-      },
+        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded "+
+        "migrations. Good luck !",
+      ].compact,
       {
         "migration/Migration.md",
       }
@@ -153,7 +165,7 @@ module Clear::ErrorMessages
 
   def migration_drop_irreversible(name)
     build_error_message \
-      "Cannot revert column drop, because datatype is unknown",
+      "Cannot revert column drop, because datatype is `unknown`",
       {
         "Add the optional previous data `type` argument in the operation `drop`:" +
         "`drop_column(table, column, type)`",
@@ -181,11 +193,13 @@ module Clear::ErrorMessages
       "You're trying to access to the column `#{name}` but it is not initialized.",
       {
         "Ensure than the column `#{name}` exists in your table",
-        "If the model comes from a collection query, there was maybe a filtering on your `select` clause, and you forgot to declare the column `#{name}`",
+        "If the model comes from a collection query, there was maybe a filtering on your `select` clause, " +
+          "and you forgot to declare the column `#{name}`",
         "In the case of unpersisted models, please initialize by calling `#{name}=` first",
         "For validator, try `ensure_than` method, or use `#{name}_column.defined?` to avoid your validation code.",
         "Are you calling `#{name}_column.revert` somewhere before?",
-        "If your model comes from JSON, please ensure the JSON source defines the column. Usage of `strict` mode will trigger exception on JSON loading.",
+        "If your model comes from JSON, please ensure the JSON source defines the column. Usage of `strict` mode will " +
+        "trigger exception on JSON loading.",
       },
       {
         "model/Definition.md",
@@ -198,7 +212,8 @@ module Clear::ErrorMessages
       "Your field `#{name}` is declared as `#{type}` but `NULL` value has been found in the database.",
       {
         "In your model, declare your column `column #{name} : #{type}?` (note the `?` which allow nil value)",
-        "In your database, adding `DEFAULT` value and/or `NOT NULL` constraint should disallow NULL fields from your data.",
+        "In your database, adding `DEFAULT` value and/or `NOT NULL` constraint should disallow NULL fields " +
+        "from your data.",
       },
       {
         "model/Definition.md#presence-validation",
@@ -232,7 +247,8 @@ module Clear::ErrorMessages
         "The column `#{through}` contains NULL value, but is set as storage for " +
         "the type of the polymorphic object.",
         "Try to set DEFAULT value for your column `#{through}`",
-        "In case of new implementation of polymorphic system, we recommend you to update the column to the previous Class value. Value must be equal to the fully qualified model class name in Crystal Lang (e.g. `MyApp::MyModel`)",
+        "In case of new implementation of polymorphic system, we recommend you to update the column to the previous " +
+        "Class value. Value must be equal to the fully qualified model class name in Crystal (e.g. `MyApp::MyModel`)",
       },
       {"model/Polymorphism.md"}
   end

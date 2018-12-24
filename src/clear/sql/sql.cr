@@ -51,7 +51,7 @@ module Clear
 
     @@connections = {} of String => DB::Database
 
-    def self.connection(connection) : DB::Database
+    def self.connection(connection="default") : DB::Database
       @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
     end
 
@@ -157,7 +157,7 @@ module Clear
       raise RollbackError.new
     end
 
-    # Execute a SQL request.
+    # Execute a SQL statement.
     #
     # Usage:
     # Clear::SQL.execute("SELECT 1 FROM users")
@@ -166,7 +166,7 @@ module Clear
       log_query(sql) { Clear::SQL.connection("default").exec(sql) }
     end
 
-    # Execute a SQL request on a specific connection.
+    # Execute a SQL statement on a specific connection.
     #
     # Usage:
     # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
@@ -184,15 +184,21 @@ module Clear
       Clear::SQL::DeleteQuery.new("default").from(table)
     end
 
+    # Start a DELETE table query on specific connection
     def delete(connection : Symbolic, table = nil)
       Clear::SQL::DeleteQuery.new(connection).from(table)
     end
 
+    # Start an INSERT INTO table query
     def insert_into(table)
       Clear::SQL::InsertQuery.new(table)
     end
 
     # Start an INSERT INTO table query
+    #
+    # ```
+    # Clear::SQL.insert_into("table", id: 1, name: "hello")
+    # ```
     def insert_into(table, *args)
       Clear::SQL::InsertQuery.new(table).values(*args)
     end

@@ -1,5 +1,5 @@
 module Clear::Migration
-  struct CreateIndex < Operation
+  class CreateIndex < Operation
     @name : String
     @table : String
     @fields : Array(String)
@@ -10,13 +10,13 @@ module Clear::Migration
       @name = name || safe_name(table + "_" + fields.map(&.to_s.underscore).join("_") + "_idx")
     end
 
-    def safe_name(x)
-      x.gsub(/[^A-Za-z_0-9]/, "_")
-    end
-
     def initialize(@table, field : String | Symbol, name = nil, @using = nil, @unique = false)
       @fields = [field]
       @name = name || safe_name([table, field.to_s.underscore].join("_") + "_idx")
+    end
+
+    def safe_name(x)
+      x.gsub(/[^A-Za-z_0-9]/, "_")
     end
 
     private def print_unique

@@ -24,6 +24,7 @@ class Clear::Model::QueryCache
   # Try to hit the cache. If an array is found, it will be returned.
   # Otherwise, empty array is returned.
   def hit(relation_name, relation_value, klass : T.class) : Array(T) forall T
+    puts "HIT #{relation_name}, #{relation_value}, #{klass}"
     @cache.fetch CacheKey.new(relation_name, relation_value, T.name) do
       [] of T
     end.unsafe_as(Array(T))
@@ -36,6 +37,7 @@ class Clear::Model::QueryCache
     # Thus to make happy the compiler and keep away garbage collecting.
     # After that, I'm going to cast back to the real array type Array(T) in `hit` method
     # to prevent array recopy on hit.
+    puts "SET #{relation_name}, #{relation_value}, #{T.name}"
     @cache[CacheKey.new(relation_name, relation_value, T.name)] = arr.unsafe_as(Pointer(Void))
   end
 

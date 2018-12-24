@@ -1,5 +1,6 @@
 require "admiral"
 
+require "./core"
 require "./cli/command"
 require "./cli/migration"
 require "./cli/generator"

@@ -81,7 +81,6 @@ module Clear::Model::HasColumns
   macro column(name, primary = false, converter = nil, column_name = nil, presence = true)
     {% _type = name.type %}
     {%
-      old_c = _type
       unless converter
         if _type.is_a?(Path)
           if _type.resolve.stringify =~ /\(/
@@ -111,6 +110,7 @@ module Clear::Model::HasColumns
        } %}
   end
 
+  # :nodoc:
   # Used internally to gather the columns
   macro __generate_columns
     {% for name, settings in COLUMNS %}

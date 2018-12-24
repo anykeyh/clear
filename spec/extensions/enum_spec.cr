@@ -13,6 +13,7 @@ module EnumSpec
 
     def change(dir)
       create_enum(:gender_type, GenderType)
+      create_enum :other_enum, ["a", "b", "c"]
 
       create_table(:enum_users) do |t|
         t.string :name
