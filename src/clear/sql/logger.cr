@@ -50,18 +50,16 @@ module Clear::SQL::Logger
   end
 
   def log_query(sql, &block)
-    time = Time.now.to_unix_f
+    start_time = Time.monotonic
 
     o = yield
-    time = Time.now.to_unix_f - time
+    elapsed_time = Time.monotonic - start_time
 
-    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
+    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(elapsed_time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
 
     return o
   rescue e
     STDERR.puts "Error catched, last request was:\n#{Clear::SQL::Logger.colorize_query(sql)}"
     raise e
-    # raise ExecutionError.new("Error while in SQL execution: `#{e.message}`\n" +
-    #                          "    Request was `#{Clear::SQL::Logger.colorize_query(sql)}`")
   end
 end
