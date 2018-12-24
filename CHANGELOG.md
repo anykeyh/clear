@@ -24,7 +24,7 @@ This is a huge step forward:
 ## Bug fixes
 
 - Fix #53
-- Update dependencies to newer version
+- Update ameba to latest version
 - Large refactoring on relations
 - Many bugfixes
 
