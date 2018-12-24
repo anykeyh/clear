@@ -28,6 +28,11 @@ This is a huge step forward:
 - Large refactoring on relations
 - Many bugfixes
 
+- Fix #53
+- Update dependencies to newer version
+- Large refactoring on relations
+- Many bugfixes
+
 # v0.4
 
 ## Features

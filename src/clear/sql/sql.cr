@@ -49,11 +49,6 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    # @@connections = {} of String => DB::Database
-
-    # def self.connection(connection="default") : DB::Database
-    #   @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
-    # end
 
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectBuilder

@@ -15,7 +15,7 @@ class Clear::SQL::ConnectionPool
   def self.with_connection(target : String, &block)
     fiber_target = {target, Fiber.current}
 
-    channel = @@connections[target]
+    channel = @@connections.fetch(target){ raise Clear::ErrorMessages.uninitialized_db_connection(target) }
     db, call_count = @@fiber_connections.fetch(fiber_target){ { channel.receive, 0} }
 
     begin
