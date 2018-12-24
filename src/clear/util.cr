@@ -32,6 +32,7 @@ module Clear::Util
     o
   end
 
+  # :nodoc:
   macro to_proc(*args, &block)
     -> ({{args.join(", ").id}}) { {{block.body}} }
   end

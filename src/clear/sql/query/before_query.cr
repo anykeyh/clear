@@ -16,7 +16,7 @@ module Clear::SQL::Query::BeforeQuery
 
     # :nodoc:
     protected def trigger_before_query
-      @before_query_triggers.each { |bq| bq.call }
+      @before_query_triggers.each &.call
       @before_query_triggers.clear
     end
   end

@@ -26,10 +26,7 @@ class Clear::Model::Column(T)
   end
 
   def value : T
-    unless defined?
-      raise illegal_setter_access_to_undefined_column(@name)
-    end
-
+    raise illegal_setter_access_to_undefined_column(@name) unless defined?
     @value.as(T)
   end
 
@@ -42,6 +39,8 @@ class Clear::Model::Column(T)
       @changed = true
       @value = @old_value
     end
+
+    @value
   end
 
   # Reset the current field.
@@ -63,6 +62,8 @@ class Clear::Model::Column(T)
   def value=(x : UnknownClass)
     @value = UNKNOWN
     @changed = false
+
+    @value
   end
 
   def value=(x : T)
@@ -109,13 +110,16 @@ class Clear::Model::Column(T)
   def clear
     self.value = UNKNOWN
     @old_value = UNKNOWN
+    self
   end
 
   def dirty!
     @changed = true
+    self
   end
 
   def clear_change_flag
     @changed = false
+    self
   end
 end

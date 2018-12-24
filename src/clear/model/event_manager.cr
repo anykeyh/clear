@@ -24,15 +24,11 @@ class Clear::Model::EventManager
     if direction == :after
       arr = arr.reverse
 
-      arr.each do |fn|
-        fn.call(mdl)
-      end
+      arr.each &.call(mdl)
       self.trigger(parent, direction, event, mdl) unless parent.nil?
     else
       self.trigger(parent, direction, event, mdl) unless parent.nil?
-      arr.each do |fn|
-        fn.call(mdl)
-      end
+      arr.each &.call(mdl)
     end
 
   end
