@@ -1,6 +1,12 @@
 # master/HEAD (v0.5)
 
-To be continued 😁
+# v0.5
+
+## Features
+
+- Connection pool ! Clear is now Fiber friendly!!! 😁
+
+## Bug fixes
 
 - Fix #53
 - Update dependencies to newer version

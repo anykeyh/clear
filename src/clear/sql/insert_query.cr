@@ -44,9 +44,12 @@ class Clear::SQL::InsertQuery
     Clear::SQL.log_query to_sql do
       h = {} of String => ::Clear::SQL::Any
 
-      Clear::SQL.connection(connection_name).query(to_sql) do |rs|
-        fetch_result_set(h, rs) { |x| yield(x) }
+      Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+        cnx.query(to_sql) do |rs|
+          fetch_result_set(h, rs) { |x| yield(x) }
+        end
       end
+
     end
   end
 

@@ -49,11 +49,11 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-    @@connections = {} of String => DB::Database
+    # @@connections = {} of String => DB::Database
 
-    def self.connection(connection="default") : DB::Database
-      @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
-    end
+    # def self.connection(connection="default") : DB::Database
+    #   @@connections[connection]? || raise Clear::ErrorMessages.uninitialized_db_connection(connection)
+    # end
 
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectBuilder
@@ -74,18 +74,22 @@ module Clear
       Clear::Expression::UnsafeSql.new(x)
     end
 
-    def init(url : String)
-      @@connections["default"] = DB.open(url)
+    def init(url : String, connection_pool_size = 5)
+      Clear::SQL::ConnectionPool.init(url, "default", connection_pool_size)
     end
 
-    def init(name : String, url : String)
-      @@connections[name] = DB.open(url)
+    def init(name : String, url : String, connection_pool_size = 5)
+      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+      #@@connections[name] = DB.open(url)
     end
 
-    def init(connections : Hash(Symbolic, String))
+    def init(connections : Hash(Symbolic, String), connection_pool_size = 5)
       connections.each do |name, url|
-        @@connections[name.to_s] = DB.open(url)
+        Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
       end
+      # connections.each do |name, url|
+      #   @@connections[name.to_s] = DB.open(url)
+      # end
     end
 
     @@in_transaction : Bool = false
@@ -108,23 +112,26 @@ module Clear
     # ```
     # see #with_savepoint to use a stackable version using savepoints.
     #
-    def transaction(&block)
-      if @@in_transaction
-        yield # In case we already are in transaction, we just ignore
-      else
-        @@in_transaction = true
-        execute("BEGIN")
-        begin
-          yield
-          execute("COMMIT")
-        rescue e
-          is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
-          execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
-          raise e unless is_rollback_error
-        ensure
-          @@in_transaction = false
+    def transaction(connection = "default", &block)
+      Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
+        if @@in_transaction
+          yield(cnx) # In case we already are in transaction, we just ignore
+        else
+          @@in_transaction = true
+          execute("BEGIN")
+          begin
+            yield(cnx)
+            execute("COMMIT")
+          rescue e
+            is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
+            execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
+            raise e unless is_rollback_error
+          ensure
+            @@in_transaction = false
+          end
         end
       end
+
     end
 
     # Create a transaction, but this one is stackable
@@ -139,15 +146,15 @@ module Clear
     #   end
     # end
     # ```
-    def with_savepoint(&block)
+    def with_savepoint(connection_name = "default", &block)
       transaction do
         sp_name = "sp_#{@@savepoint_uid += 1}"
         begin
-          execute("SAVEPOINT #{sp_name}")
+          execute(connection_name, "SAVEPOINT #{sp_name}")
           yield
-          execute("RELEASE SAVEPOINT #{sp_name}")
+          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}")
         rescue e : RollbackError
-          execute("ROLLBACK TO SAVEPOINT #{sp_name}")
+          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}")
         end
       end
     end
@@ -163,7 +170,7 @@ module Clear
     # Clear::SQL.execute("SELECT 1 FROM users")
     #
     def execute(sql)
-      log_query(sql) { Clear::SQL.connection("default").exec(sql) }
+      log_query(sql) { Clear::SQL::ConnectionPool.with_connection("default", &.exec(sql)) }
     end
 
     # Execute a SQL statement on a specific connection.
@@ -171,7 +178,9 @@ module Clear
     # Usage:
     # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
     def execute(connection_name : String, sql)
-      log_query(sql) { Clear::SQL.connection(connection_name).exec(sql) }
+      log_query(sql) do
+        Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec(sql))
+      end
     end
 
     # :nodoc:

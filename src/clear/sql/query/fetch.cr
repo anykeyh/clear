@@ -24,8 +24,7 @@ module Clear::SQL::Query::Fetch
   def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
     trigger_before_query
 
-    Clear::SQL.transaction do
-      cnx = Clear::SQL.connection(connection_name)
+    Clear::SQL.transaction do |cnx|
       cursor_name = "__cursor_#{Time.now.to_unix ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
@@ -57,7 +56,7 @@ module Clear::SQL::Query::Fetch
     sql = to_sql
 
     Clear::SQL.log_query sql do
-      Clear::SQL.connection(connection_name).scalar(sql).as(T)
+      Clear::SQL::ConnectionPool.with_connection(connection_name, &.scalar(sql)).as(T)
     end
   end
 
@@ -74,7 +73,7 @@ module Clear::SQL::Query::Fetch
 
     sql = self.to_sql
 
-    rs = Clear::SQL.log_query(sql) { Clear::SQL.connection(connection_name).query(sql) }
+    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
     o = [] of Hash(String, ::Clear::SQL::Any)
     fetch_result_set(h, rs) { |x| o << x.dup }
@@ -109,7 +108,7 @@ module Clear::SQL::Query::Fetch
 
     sql = self.to_sql
 
-    rs = Clear::SQL.log_query(sql) { Clear::SQL.connection(connection_name).query(sql) }
+    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
     if fetch_all
       o = [] of Hash(String, ::Clear::SQL::Any)

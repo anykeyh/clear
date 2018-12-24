@@ -15,8 +15,8 @@ def initdb
   system("echo \"CREATE DATABASE clear_secondary_spec;\" | psql -U postgres")
   system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql -U postgres clear_secondary_spec")
 
-  Clear::SQL.init("postgres://postgres@localhost/clear_spec")
-  Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec")
+  Clear::SQL.init("postgres://postgres@localhost/clear_spec", connection_pool_size: 5)
+  Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec", connection_pool_size: 5)
 
   Clear.logger.level = {% if flag?(:quiet) %} ::Logger::ERROR {% else %} Clear.logger.level = ::Logger::DEBUG {% end %}
 end
