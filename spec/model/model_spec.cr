@@ -497,10 +497,10 @@ module ModelSpec
           u = User.create!({first_name: "John"})
 
           c = Category.create!({name: "Nature"})
-          p = Post.create!({title: "Post about Poneys", user_id: u.id, category_id: c.id})
+          Post.create!({title: "Post about Poneys", user_id: u.id, category_id: c.id})
 
           # Create a second post, with same category.
-          p = Post.create!({title: "Post about Dogs", user_id: u.id, category_id: c.id})
+          Post.create!({title: "Post about Dogs", user_id: u.id, category_id: c.id})
 
           # Categories should return 1, as we remove duplicate
           u.categories.to_sql.should eq "SELECT DISTINCT ON (\"model_categories\".\"id\") \"model_categories\".* " +
