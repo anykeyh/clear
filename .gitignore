@@ -5,6 +5,7 @@
 /poc
 /generated/
 /test
+/docs
 /coverage/
 
 /bin/crystal-coverage*

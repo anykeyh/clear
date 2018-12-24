@@ -1,6 +1,32 @@
 # master/HEAD (v0.5)
 
-To be continued 😁
+# v0.5: Merry christmas 🎄
+
+## Features
+
+### Connection pool
+
+Clear wasn't fiber-proof since it lacks of connection pool system. It's now fixed, the connection pooling is done
+completely transparently without any boilerplate on your application side.
+
+Each fiber may require a specific connection; then the connection is binded to the fiber. In the case of `transaction`
+and `with_savepoint`, the connection is kept until the end of the block happens.
+On the case of normal execution or cursors, we store the connection until the execution is done.
+
+The connection pool is using Channel so in case of pool shortage, the fiber requesting the connection is put in
+waiting state.
+
+This is a huge step forward:
+- Clear can be used in framework with `spawn`-based server and other event machine system.
+- I'll work on performance improvement or other subtilities in some specific cases, where multiple requests can be
+  parallelized over different connections.
+
+## Bug fixes
+
+- Fix #53
+- Update ameba to latest version
+- Large refactoring on relations
+- Many bugfixes
 
 - Fix #53
 - Update dependencies to newer version
