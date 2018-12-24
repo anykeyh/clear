@@ -55,7 +55,7 @@ module Clear::SQL::Logger
     o = yield
     elapsed_time = Time.monotonic - start_time
 
-    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(elapsed_time).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
+    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(elapsed_time.to_f).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
 
     return o
   rescue e

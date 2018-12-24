@@ -16,7 +16,8 @@ module Clear::Model::ClassMethods
       end
 
       class_property table : Clear::SQL::Symbolic = self.name.underscore.gsub(/::/, "_").pluralize
-      # Schema of this model
+
+      # PostgreSQL schema for this model
       class_property schema : Clear::SQL::Symbolic? = nil
 
       # Compose the "schema"."table" key for PG
