@@ -52,11 +52,6 @@ module Clear::Model
       self
     end
 
-    def add_to_collection_callback(&block : (T, CollectionBase(T)) -> Nil)
-      @op_add_callback = block
-      self
-    end
-
     # :nodoc:
     def with_cached_result(r : Array(T))
       @cached_result = r
@@ -179,8 +174,18 @@ module Clear::Model
       super(type)
     end
 
+    # Add an item in the collection.
+    # Works only with has_many collections (not has_many through:)
     def <<(item : T)
-      raise "Operation not permitted on this collection."
+      if @tags.any?
+        item.set(@tags)
+        item.save!
+
+        @cached_result = self.to_a
+        self
+      else
+        raise "Operation not permitted on this collection."
+      end
     end
 
     # Create an array from the query.
