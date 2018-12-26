@@ -508,6 +508,8 @@ module ModelSpec
                                         "INNER JOIN \"model_posts\" ON " +
                                         "(\"model_posts\".\"category_id\" = \"model_categories\".\"id\") " +
                                         "WHERE (\"model_posts\".\"user_id\" = 1)"
+
+          u.posts << Post.new({title: "a title", category_id: c.id})
           u.categories.count.should eq(1)
         end
       end

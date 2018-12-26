@@ -23,12 +23,10 @@ module Clear::Model::Relations::HasManyMacro
           .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
         .where{ raw(%foreign_key) == %primary_key }
       end
-      #end
     end
 
     # Addition of the method for eager loading and N+1 avoidance.
     class Collection
-
       # Eager load the has many relation {{method_name}}.
       # Use it to avoid N+1 queries.
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
