@@ -5,6 +5,7 @@ module Clear::Model
   # Every time a collection is created when you call `Model.query`
   # or call any defined scope
   class CollectionBase(T)
+    include Enumerable(T)
     include Clear::SQL::SelectBuilder
 
     # Used for build from collection
