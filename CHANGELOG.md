@@ -26,7 +26,6 @@ This is a huge step forward:
   parallelized over different connections.
 
 ## Bug fixes
-
 - Fix #53
 - Update ameba to latest version
 - Large refactoring on relations
