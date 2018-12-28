@@ -1,4 +1,8 @@
-# master/HEAD (v0.5)
+# master/HEAD (v0.6)
+
+## Features
+
+- [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
 
 # v0.5: Merry christmas 🎄
 

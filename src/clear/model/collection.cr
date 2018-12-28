@@ -24,6 +24,8 @@ module Clear::Model
     # :nodoc:
     @cached_result : Array(T)?
 
+    property add_operation : Proc(T, T)?
+
     # :nodoc:
     def initialize(
       @distinct_value = nil,
@@ -80,6 +82,10 @@ module Clear::Model
     def tags(x : Hash(String, X)) forall X
       @tags.merge!(x.to_h)
       self
+    end
+
+    def tags
+      @tags
     end
 
     # :nodoc:
@@ -175,13 +181,15 @@ module Clear::Model
     end
 
     # Add an item in the collection.
-    # Works only with has_many collections (not has_many through:)
+    # Works only with has_many and has_many through: collections as of now.
     def <<(item : T)
-      if @tags.any?
-        item.set(@tags)
-        item.save!
+      add_operation = self.add_operation
 
-        @cached_result = self.to_a
+      if add_operation
+        add_operation.call(item)
+
+        @cached_result.try &.<<(item)
+
         self
       else
         raise "Operation not permitted on this collection."
@@ -220,7 +228,7 @@ module Clear::Model
     end
 
     # A convenient way to write `where{ condition }.first`
-    def find(fetch_columns, &block) : T?
+    def find(fetch_columns = false, &block) : T?
       x = Clear::Expression.ensure_node!(with Clear::Expression.new yield)
       where(x).first(fetch_columns)
     end

@@ -5,7 +5,7 @@ module Clear::Migration
       null : Bool = false, default : SQL::Any = nil, primary : Bool = false,
       array : Bool = false
 
-    record IndexOperation, field : String, name : String,
+    record IndexOperation, fields : Array(String), name : String,
       using : String? = nil, unique : Bool = false
 
     record FkeyOperation, fields : Array(String), table : String,
@@ -26,8 +26,8 @@ module Clear::Migration
     def timestamps(null = false)
       add_column(:created_at, "timestamp without time zone", null: null, default: "NOW()")
       add_column(:updated_at, "timestamp without time zone", null: null, default: "NOW()")
-      add_index(:created_at)
-      add_index(:updated_at)
+      add_index(["created_at"])
+      add_index(["updated_at"])
     end
 
     def references(to, name : String? = nil, on_delete = "restrict", type = "bigint",
@@ -53,29 +53,33 @@ module Clear::Migration
         default: default, null: null, primary: primary, array: array)
 
       if unique
-        add_index(field: column, unique: true)
+        add_index(fields: [column.to_s], unique: true)
       elsif index
         if index.is_a?(Bool)
-          add_index(field: column, unique: false)
+          add_index(fields: [column.to_s], unique: false)
         else
-          add_index(field: column, unique: false, using: index)
+          add_index(fields: [column.to_s], unique: false, using: index)
         end
       end
     end
 
     # Add or replace an index for this table.
     # Alias for `add_index`
-    def index(field, name = nil, using = nil, unique = false)
-      add_index(field, name, using, unique)
+    def index(field : String | Symbol, name = nil, using = nil, unique = false)
+      add_index(fields: [field.to_s], name: name, using: using, unique: unique)
     end
 
-    private def add_index(field, name = nil, using = nil, unique = false)
-      name ||= safe_index_name([@name, field.to_s].join("_"))
+    def index(fields : Array, name = nil, using = nil, unique = false)
+      add_index(fields: fields.map(&.to_s), name: name, using: using, unique: unique)
+    end
+
+    private def add_index(fields : Array(String), name = nil, using = nil, unique = false)
+      name ||= safe_index_name([@name, fields.join("_")].join("_"))
 
       using = using.to_s unless using.nil?
 
       self.index_operations << IndexOperation.new(
-        field: field.to_s, name: name, using: using, unique: unique
+        fields: fields, name: name, using: using, unique: unique
       )
     end
 
@@ -125,7 +129,7 @@ module Clear::Migration
           "ON",
           self.name,
           (x.using ? "USING #{x.using}" : nil),
-          "(#{x.field})",
+          "(#{x.fields.join(", ")})",
         ].compact.join(" ")
       end
     end
@@ -159,6 +163,8 @@ module Clear::Migration
       else
         type
       end
+
+      {% raise "STOP" if caller.name == "add_index" %}
 
       {% if caller.named_args.is_a?(Nop) %}
         self.add_column( {{caller.args[0]}}.to_s, type: type )
@@ -241,7 +247,7 @@ module Clear::Migration
         table.uuid :id, primary: true, null: false
       when false
       else
-        raise "Unknown key type while try to create new table: `#{id}`. " +
+        raise "Unknown key type while try to create new table: `#{id}`. Candidates are :bigserial, :serial and :uuid" +
           "Please proceed with `id: false` and add the column manually"
       end
 
