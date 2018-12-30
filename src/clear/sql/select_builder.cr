@@ -84,4 +84,15 @@ module Clear::SQL::SelectBuilder
 
     DeleteQuery.new(from: v.dup, wheres: @wheres.dup)
   end
+
+  def to_update
+    raise QueryBuildingError.new("Cannot build a update query " +
+                                 "from a select with multiple or none `from` clauses") unless @froms.size == 1
+    v = @froms[0].value
+
+    raise QueryBuildingError.new("Cannot delete from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
+
+    UpdateQuery.new(table: v.dup, wheres: @wheres.dup)
+  end
+
 end
