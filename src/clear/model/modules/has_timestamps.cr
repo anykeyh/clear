@@ -1,7 +1,7 @@
 module Clear::Model::HasTimestamps
   # Generate the columns `updated_at` and `created_at`
-  # The two column values are automatically set during saving
-  #   or updating of the model.
+  # The two column values are automatically set during insertion
+  #   or update of the model.
   macro timestamps
     column( updated_at : Time )
     column( created_at : Time )

@@ -23,6 +23,12 @@ module Clear::Model
 
   getter cache : Clear::Model::QueryCache?
 
+  # Alias method for primary key.
+  #
+  # If `Model#id` IS the primary key, then calling `Model#pkey` is exactly the same as `Model#id`.
+  #
+  # This method exists to tremendously simplify the meta-programming code.
+  # If no primary key has been setup to this model, raise an exception.
   def pkey
     raise lack_of_primary_key(self.class.name)
   end
@@ -32,7 +38,10 @@ module Clear::Model
   # are directly defined without the included block.
   macro included
     {% raise "Do NOT include Clear::Model on struct-like objects.\n" +
-             "It would behave very strangely otherwise." unless @type < Reference %}
+             "It would behave very strangely otherwise." unless @type < Reference %}    # <~ Models are mutable objects;
+                                                                                        # they do not work with structures which are immuable
+
+
     extend Clear::Model::HasHooks::ClassMethods
 
     getter cache : Clear::Model::QueryCache?
@@ -50,10 +59,16 @@ module Clear::Model
     end
 
     # :nodoc:
-    # This method is useful to trigger the initializers used to build the models.
-    # Without it, the events and others stuff would be fullfilled AFTER the main code has finished.
+    # This is a tricky method which is overriden by inherited models.
     #
-    # I wish there was another method
+    # The problem is usage of static array initialisation under `finalize` macro; they are initialized
+    # AFTER the main code is executed, preventing it to work properly.
+    #
+    # The strategy here is to execute the static array initialization under a method and execute this method
+    # before main.
+    #
+    # Then to redefine this method in the finalize block. The current behavior seems to be a crystal compiler bug
+    # and should be fixed in near future.
     def self.__main_init__
     end
   end

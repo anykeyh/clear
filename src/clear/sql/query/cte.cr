@@ -3,6 +3,8 @@ module Clear::SQL::Query::CTE
   # :nodoc:
   alias CTEAuthorized = Clear::SQL::SelectBuilder | String
 
+  # List the current CTE of the query. The key is the name of the CTE,
+  # while the value is the fragment (string or Sub-select)
   getter cte : Hash(String, CTEAuthorized) = {} of String => CTEAuthorized
 
   # Add a CTE to the query.
@@ -20,6 +22,7 @@ module Clear::SQL::Query::CTE
   end
 
   # Add a CTE to the query. Use NamedTuple convention:
+  #
   # ```crystal
   # Clear::SQL.select.with_cte(cte: "xxx")
   # # WITH cte AS xxx SELECT...

@@ -79,7 +79,16 @@ module Clear::Model::HasSaving
   # ```crystal
   # u = User.new id: 123, email: "email@example.com"
   # u.save(-> (qry) { qry.on_conflict.do_update{ |u| u.set(email: "email@example.com") } #update
-  # # Note: user may not be saved, but will be detected as persisted !
+  # # IMPORTANT NOTICE: user may not be saved, but will be still detected as persisted !
+  # ```
+  #
+  # You may want to use a block for `on_conflict` optional parameter:
+  #
+  # ```crystal
+  # u = User.new id: 123, email: "email@example.com"
+  # u.save do |qry|
+  #    qry.on_conflict.do_update{ |u| u.set(email: "email@example.com")
+  # end
   # ```
   #
   def save(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
@@ -121,6 +130,8 @@ module Clear::Model::HasSaving
     save(on_conflict: block)
   end
 
+  # Performs like `save`, but instead of returning `false` if validation failed,
+  # raise `Clear::Model::InvalidModelError` exception
   def save!(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
     raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
 
@@ -130,6 +141,7 @@ module Clear::Model::HasSaving
     return self
   end
 
+  # Pass the `on_conflict` optional parameter via block.
   def save!(&block : Clear::SQL::InsertQuery ->)
     return save!(block)
   end

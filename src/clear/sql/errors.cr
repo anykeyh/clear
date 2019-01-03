@@ -5,6 +5,8 @@ module Clear::SQL
 
   class QueryBuildingError < Error; end
 
+  class OperationNotPermittedError < Error; end
+
   # Rollback the transaction or the last savepoint.
   class RollbackError < Error; end
 

@@ -1,7 +1,11 @@
 require "uuid"
 
 module Clear::Model::HasSerialPkey
-  # Helper for lazy developers, to add different primary key.
+  # Macro used to define serializable primary keys.
+  # Currently support `bigserial`, `serial` and `uuid`.
+  #
+  # For `bigserial` and `serial`, let to PostgreSQL the handling of sequence numbers.
+  # For `uuid`, will generate a new `UUID` number on creation.
   macro with_serial_pkey(name = "id", type = :bigserial)
 
     {% if type == :bigserial %}

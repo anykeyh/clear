@@ -24,7 +24,8 @@ module Clear::Model::HasRelations
   # (default: table_name in singular, plus "_id" appended)
   # can be redefined
   #
-  # Examples:
+  # Example:
+  #
   # ```
   # model Passport
   #   column id : Int32, primary : true
@@ -53,6 +54,21 @@ module Clear::Model::HasRelations
     %}
   end
 
+  # Has Many and Has One are the relations where the model share its primary key into a foreign table. In our example above, we can assume than a User has many Post as author.
+  #
+  # Basically, for each `belongs_to` declaration, you must have a `has_many` or `has_one` declaration on the other model.
+  #
+  # While `has_many` relation returns a list of models, `has_one` returns only one model when called.
+  #
+  # Example:
+  #
+  # ```crystal
+  #   class User
+  #     include Clear::Model
+  #     #...
+  #     has_many posts : Post, foreign_key: "author_id"
+  #  end
+  # ```
   macro has_many(name, through = nil, foreign_key = nil, own_key = nil, primary_key = nil, no_cache = false)
     {%
       if through != nil
@@ -112,6 +128,7 @@ module Clear::Model::HasRelations
   end
 
   # :nodoc:
+  # Generate the relations by calling the macro
   macro __generate_relations
     {% begin %}
     {% for name, settings in RELATIONS %}

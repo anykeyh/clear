@@ -19,13 +19,12 @@ module Clear::Model::Relations::HasManyThroughMacro
 
       cache = @cache
 
-      current_model_id = self.id
+      current_model_id = self.pkey
 
       qry = {{relation_type}}.query.select("#{Clear::SQL.escape(%final_table)}.*")
         .join(Clear::SQL.escape(%through_table)){
           var(%through_table, %through_key) == var(%final_table, %final_pkey)
         }.where{
-          # FIXME: self.id or self.pkey ?
           var(%through_table, %own_key) == current_model_id
         }.distinct("#{Clear::SQL.escape(%final_table)}.#{Clear::SQL.escape(%final_pkey)}")
 
