@@ -87,6 +87,10 @@ module Clear
       # end
     end
 
+    def add_connection(name : String, url : String, connection_pool_size = 5)
+      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+    end
+
     @@in_transaction : Bool = false
     @@savepoint_uid : UInt64 = 0_u64
 
