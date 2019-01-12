@@ -1,6 +1,18 @@
 require "../spec_helper"
 
 module ModelSpec
+  class Tag
+    include Clear::Model
+
+    column id : Int32, primary: true, presence: false
+
+    column name : String
+
+    has_many posts : Post, through: :model_post_tags, foreign_key: :post_id, own_key: :tag_id
+
+    self.table = "model_tags"
+  end
+
   class Category
     include Clear::Model
 
@@ -29,6 +41,8 @@ module ModelSpec
     def validate
       ensure_than(title, "is not empty", &.size.>(0))
     end
+
+    has_many tag_relations : Tag, through: :model_post_tags, foreign_key: :tag_id, own_key: :post_id
 
     belongs_to user : User, key_type: Int32?
     belongs_to category : Category, key_type: Int32?
@@ -79,6 +93,10 @@ module ModelSpec
         t.timestamps
       end
 
+      create_table "model_tags", id: :serial do |t|
+        t.text "name", unique: true, null: false
+      end
+
       create_table "model_users" do |t|
         t.text "first_name"
         t.text "last_name"
@@ -92,14 +110,6 @@ module ModelSpec
         t.timestamps
       end
 
-      create_table "model_user_infos" do |t|
-        t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
-
-        t.int64 "registration_number", index: true
-
-        t.timestamps
-      end
-
       create_table "model_posts" do |t|
         t.string "title", index: true
 
@@ -108,6 +118,21 @@ module ModelSpec
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
+      end
+
+      create_table "model_post_tags", id: false do |t|
+        t.references to: "model_tags", name: "tag_id", on_delete: "cascade", null: false, primary: true
+        t.references to: "model_posts", name: "post_id", on_delete: "cascade", null: false, primary: true
+
+        t.index ["tag_id", "post_id"], using: :btree
+      end
+
+      create_table "model_user_infos" do |t|
+        t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
+
+        t.int64 "registration_number", index: true
+
+        t.timestamps
       end
     end
   end
@@ -349,7 +374,7 @@ module ModelSpec
           u.last_name = "B"
           u.created_at = now
 
-          u.save
+          u.save!
           u.id.should_not eq nil
 
           u = User.find! u.id
@@ -508,7 +533,22 @@ module ModelSpec
                                         "INNER JOIN \"model_posts\" ON " +
                                         "(\"model_posts\".\"category_id\" = \"model_categories\".\"id\") " +
                                         "WHERE (\"model_posts\".\"user_id\" = 1)"
+
+          # Test addition in has_many relation
+          u.posts << Post.new({title: "a title", category_id: c.id})
           u.categories.count.should eq(1)
+
+          # Test addition in has_many through relation
+          p = Post.query.first!
+
+          p.tag_relations.count.should eq(0)
+
+          p.tag_relations << Tag.new({name: "Awesome"})
+          p.tag_relations << Tag.new({name: "Why not"})
+
+          p.tag_relations.count.should eq(2)
+          p.tag_relations.first!.name.should eq("Awesome")
+          p.tag_relations.offset(1).first!.name.should eq("Why not")
         end
       end
     end

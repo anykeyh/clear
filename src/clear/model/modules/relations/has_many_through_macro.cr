@@ -19,12 +19,13 @@ module Clear::Model::Relations::HasManyThroughMacro
 
       cache = @cache
 
+      current_model_id = self.pkey
+
       qry = {{relation_type}}.query.select("#{Clear::SQL.escape(%final_table)}.*")
         .join(Clear::SQL.escape(%through_table)){
           var(%through_table, %through_key) == var(%final_table, %final_pkey)
         }.where{
-          # FIXME: self.id or self.pkey ?
-          var(%through_table, %own_key) == self.id
+          var(%through_table, %own_key) == current_model_id
         }.distinct("#{Clear::SQL.escape(%final_table)}.#{Clear::SQL.escape(%final_pkey)}")
 
 
@@ -32,6 +33,25 @@ module Clear::Model::Relations::HasManyThroughMacro
         arr = cache.hit("{{method_name}}", self.pkey, {{relation_type}})
         qry.with_cached_result(arr)
       end
+
+      qry.add_operation = -> (x : {{relation_type}}) {
+        x.save! unless x.persisted?
+
+        {% if through.is_a?(Path) %}
+          through_model = {{through}}.new
+          through_model.set({
+            "#{%own_key}" => current_model_id,
+            "#{%through_key}" => x.pkey
+          })
+          through_model.save!
+        {% else %}
+          Clear::SQL.insert({{through.id.stringify}}).values({
+            "#{%own_key}" => current_model_id,
+            "#{%through_key}" => x.pkey
+          }).execute
+        {% end %}
+        x
+      }
 
       qry
     end

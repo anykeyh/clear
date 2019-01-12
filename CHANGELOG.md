@@ -1,4 +1,15 @@
-# master/HEAD (v0.5)
+# master/HEAD (v0.6)
+
+## Features
+
+- [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
+- [EXPERIMENTAL] add `unlink` operation on collection which comes from `has_many through:`
+- Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
+- Comments of source code
+- SelectQuery now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+
+## Bug fixes
+- Fix #66, #62
 
 # v0.5: Merry christmas 🎄
 
@@ -25,11 +36,6 @@ This is a huge step forward:
 
 - Fix #53
 - Update ameba to latest version
-- Large refactoring on relations
-- Many bugfixes
-
-- Fix #53
-- Update dependencies to newer version
 - Large refactoring on relations
 - Many bugfixes
 

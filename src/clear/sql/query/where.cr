@@ -36,6 +36,9 @@ module Clear::SQL::Query::Where
     where(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
+  def where(**tuple)
+    where(conditions: tuple)
+  end
   # Build SQL `where` condition using a NamedTuple.
   #   this will use:
   # - the `=` operator if compared with a literal
@@ -55,8 +58,8 @@ module Clear::SQL::Query::Where
   # ```crystal
   # query.where({x: another_select}) # WHERE x IN (SELECT ... )
   # ```
-  def where(x : NamedTuple)
-    x.each do |k, v|
+  def where(conditions : NamedTuple)
+    conditions.each do |k, v|
       k = Clear::Expression::Node::Variable.new(k.to_s)
 
       @wheres <<

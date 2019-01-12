@@ -25,15 +25,19 @@ class Clear::Model::Column(T)
     @old_value = @value
   end
 
+  # Returns the current value of this column.
+  # If the value has never been initialized, throw an exception
   def value : T
     raise illegal_setter_access_to_undefined_column(@name) unless defined?
     @value.as(T)
   end
 
+  # Returns the current value of this column or `default` if the value is undefined.
   def value(default : X) : T | X forall X
     defined? ? @value.as(T) : default
   end
 
+  # If the column is dirty (e.g the value has been changed), return to the previous state.
   def revert
     if @value != @old_value && @old_value != UNKNOWN
       @changed = true
@@ -59,6 +63,7 @@ class Clear::Model::Column(T)
     @old_value = @value
   end
 
+  # :nodoc:
   def value=(x : UnknownClass)
     @value = UNKNOWN
     @changed = false
@@ -66,6 +71,8 @@ class Clear::Model::Column(T)
     @value
   end
 
+  # Set the value of the column to the value `x`. If `x` is not equal to the old value, then the column `changed?`
+  # flag is set to `true`.
   def value=(x : T)
     if @value == UNKNOWN || x != @value
       @value = x
@@ -75,8 +82,7 @@ class Clear::Model::Column(T)
     @value
   end
 
-  # Return if the value can be nilable or not,
-  # to check the presence during validation
+  # Return `true` if the value is an union of a Type with Nilable, `false` otherwise.
   def nilable?
     T.nilable?
   end
@@ -97,27 +103,35 @@ class Clear::Model::Column(T)
     io << inspect
   end
 
+  # Check whether the column is defined or not.
   def defined?
     UNKNOWN != @value
   end
 
+  # :nodoc:
   def failed_to_be_present?
     !nilable? &&
       !defined? &&
       !has_db_default?
   end
 
+  # Completely clear the column, remove both `value` and `old_value` and turning the column in a non-defined state.
   def clear
     self.value = UNKNOWN
     @old_value = UNKNOWN
+
+    @changed = false
+
     self
   end
 
+  # Reset `changed?` flag to `true`. See `Column(T)#clear_change_flag` for the counter part.
   def dirty!
     @changed = true
     self
   end
 
+  # Reset `changed?` flag to `false`. See `Column(T)#dirty!` for the counter part.
   def clear_change_flag
     @changed = false
     self

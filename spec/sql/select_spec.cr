@@ -42,6 +42,11 @@ module SelectSpec
         r.to_delete.to_sql.should eq "DELETE FROM \"users\" WHERE (users.id > 1000)"
       end
 
+      it "can transfert to update method" do
+        r = select_request.select("*").from(:users).where { var("users","id") > 1000 }
+        r.to_update.set(x: 1).to_sql.should eq "UPDATE \"users\" SET \"x\" = 1 WHERE (\"users\".\"id\" > 1000)"
+      end
+
       describe "the SELECT clause" do
         it "can select wildcard *" do
           r = select_request.select("*")
@@ -140,6 +145,9 @@ module SelectSpec
         context "using simple engine" do
           it "can use simple equals" do
             r = select_request.from(:users).where({user_id: 1})
+            r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" = 1)"
+
+            r = select_request.from(:users).where(user_id: 1)
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" = 1)"
           end
 

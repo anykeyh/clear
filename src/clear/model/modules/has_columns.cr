@@ -22,27 +22,61 @@ module Clear::Model::HasColumns
   def set( h : Hash(Symbol, _) )
   end
 
+  # Set the colums value of your model from Hash.
+  # The values are then converted using database converter helper.
+  #
+  # ```
+  #   model.set({"id" => 1})
+  #   model.id # 1
+  # ```
   def set( h : Hash(String, ::Clear::SQL::Any) )
   end
 
   # Access to direct SQL attributes given by the request used to build the model.
   # Access is read only and updating the model columns will not apply change to theses columns.
+  #
+  # ```
+  #   model = Model.query.select("MIN(id) as min_id").first(fetch_columns: true)
+  #   id = model["min_id"].to_i32
+  # ```
   def [](x) : ::Clear::SQL::Any
     attributes[x]
   end
 
-  # Access to direct SQL attributes given by the request  used to build the model
+  # Access to direct SQL attributes given by the request and used to build the model
   # or Nil if not found.
+  #
   # Access is read only and updating the model columns will not apply change to theses columns.
+  # You must set `fetch_column: true` in your model to access the attributes.
   def []?(x) : ::Clear::SQL::Any
     attributes[x]?
   end
 
-
+  # Returns the current hash of the modified values:
+  #
+  #```
+  # model = Model.query.first!
+  # model.update_h # => {}
+  # model.first_name = "hello"
+  # model.update_h # => { "first_name" => "hello" }
+  # model.save!
+  # model.update_h # => {}
+  #```
   def update_h
     {} of String => ::Clear::SQL::Any
   end
 
+  # Returns the model columns as Hash.
+  # Calling `to_h` will returns only the defined columns, while settings the optional parameter `full` to `true`
+  #   will return all the column and fill the undefined columns by `nil` values.
+  # Example:
+  #
+  # ```
+  # # Assuming our model has a primary key, a first name and last name and two timestamp columns:
+  # model = Model.query.select("first_name, last_name").first!
+  # model.to_h # => { "first_name" => "Johnny", "last_name" => "Walker" }
+  # model.to_h(full: true) # => {"id" => nil, "first_name" => "Johnny", "last_name" => "Walker", "created_at" => nil, "updated_at" => nil}
+  # ```
   def to_h(full = false)
     {} of String => ::Clear::SQL::Any
   end
@@ -119,25 +153,33 @@ module Clear::Model::HasColumns
       @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}",
         has_db_default: {{has_db_default}} )
 
+      # Returns the column object used to manage `{{name}}` field
+      #
+      # See `Clear::Model::Column`
       def {{name}}_column : Clear::Model::Column({{type}})
         @{{name}}_column
       end
 
+      # Returns the value of `{{name}}` column or throw an exception if the column is not defined.
       def {{name}} : {{type}}
         @{{name}}_column.value
       end
 
+      # Setter for `{{name}}` column.
       def {{name}}=(x : {{type}})
         @{{name}}_column.value = x
       end
 
       {% if settings[:primary] %}
+        # :nodoc:
         class_property pkey : String = "{{name}}"
 
+        # :nodoc:
         def pkey
           @{{name}}_column.value
         end
 
+        # :nodoc:
         def pkey_column
           @{{name}}_column
         end
@@ -174,6 +216,7 @@ module Clear::Model::HasColumns
 
     # For each column, ensure than when needed the column has present
     # information into it.
+    #
     # This method is called on validation.
     def validate_fields_presence
       {% for name, settings in COLUMNS %}
@@ -189,10 +232,14 @@ module Clear::Model::HasColumns
     #
     # The model behave like its not dirty anymore
     # and call to save would apply no changes.
+    #
+    # Returns `self`
     def clear_change_flags
       {% for name, settings in COLUMNS %}
         @{{name}}_column.clear_change_flag
       {% end %}
+
+      self
     end
 
     # Return a hash version of the columns of this model.
