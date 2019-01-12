@@ -6,6 +6,7 @@
 - [EXPERIMENTAL] add `unlink` operation on collection which comes from `has_many through:`
 - Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
 - Comments of source code
+- SelectQuery now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
 
 ## Bug fixes
 - Fix #66, #62
