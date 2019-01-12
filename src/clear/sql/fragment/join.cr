@@ -30,7 +30,7 @@ module Clear::SQL
          "ON",
          c.resolve].compact.join(" ")
       else
-        {type, SQL.sel_str(from)}.join(" ")
+        {type, lateral ? "LATERAL" : nil, SQL.sel_str(from)}.join(" ")
       end
     end
   end
