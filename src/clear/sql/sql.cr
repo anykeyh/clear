@@ -82,9 +82,10 @@ module Clear
       connections.each do |name, url|
         Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
       end
-      # connections.each do |name, url|
-      #   @@connections[name.to_s] = DB.open(url)
-      # end
+    end
+
+    def add_connection(name : String, url : String, connection_pool_size = 5)
+      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
     end
 
     @@in_transaction : Bool = false

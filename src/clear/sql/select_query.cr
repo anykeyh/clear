@@ -1,5 +1,6 @@
 require "./query/*"
 require "./select_builder"
+require "./sql"
 
 # A Select Query builder
 #
@@ -20,5 +21,10 @@ require "./select_builder"
 #     [ FOR { UPDATE | NO KEY UPDATE | SHARE | KEY SHARE } [ OF table_name [, ...] ] [ NOWAIT | SKIP LOCKED ] [...] ]
 #
 class Clear::SQL::SelectQuery
+  include Enumerable(Hash(String, Clear::SQL::Any))
   include SelectBuilder
+
+  def each
+    fetch{ |h| yield(h) }
+  end
 end

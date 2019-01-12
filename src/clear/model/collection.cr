@@ -215,6 +215,13 @@ module Clear::Model
     end
 
     # :nodoc:
+    # Setup the connection of this query to be equal to the one of the model class
+    def connection_name
+      T.connection
+    end
+
+
+    # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
     def cached(cache : Clear::Model::QueryCache)
       @cache = cache

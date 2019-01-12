@@ -65,8 +65,10 @@ module Clear::Model::Relations::HasManyThroughMacro
           %final_table = {{relation_type}}.table
           %final_pkey = {{relation_type}}.pkey
           %through_table = {{through}}.table
-          %through_key = {{foreign_key}} || {{relation_type}}.table.to_s.singularize + "_id"
-          %own_key = {{own_key}} || {{self_type}}.table.to_s.singularize + "_id"
+
+          %through_key = {% if foreign_key %} "{{foreign_key}}" {% else %} {{relation_type}}.table.to_s.singularize + "_id" {% end %}
+          %own_key = {% if own_key %} "{{own_key}}" {% else %} {{self_type}}.table.to_s.singularize + "_id" {% end %}
+
           self_type = {{self_type}}
 
           @cache.active "{{method_name}}"

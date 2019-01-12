@@ -3,6 +3,12 @@
 ## Features
 
 - [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
+- [EXPERIMENTAL] add `unlink` operation on collection which comes from `has_many through:`
+- Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
+- Comments of source code
+
+## Bug fixes
+- Fix #66, #62
 
 # v0.5: Merry christmas 🎄
 
