@@ -47,6 +47,13 @@ module Clear::Model
     end
 
     # :nodoc:
+    # Setup the connection of this query to be equal to the one of the model class
+    def connection_name
+      T.connection
+    end
+
+
+    # :nodoc:
     def cached(cache : Clear::Model::QueryCache)
       @cache = cache
       self
