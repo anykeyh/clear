@@ -4,7 +4,9 @@ require "./sql"
 
 # A Select Query builder
 #
-# Cf. Postgres documentation
+# Postgres documentation:
+#
+# ```
 # [ WITH [ RECURSIVE ] with_query [, ...] ]
 # SELECT [ ALL | DISTINCT [ ON ( expression [, ...] ) ] ]
 #     [ * | expression [ [ AS ] output_name ] [, ...] ]
@@ -19,7 +21,7 @@ require "./sql"
 #     [ OFFSET start [ ROW | ROWS ] ]
 #     [ FETCH { FIRST | NEXT } [ count ] { ROW | ROWS } ONLY ]
 #     [ FOR { UPDATE | NO KEY UPDATE | SHARE | KEY SHARE } [ OF table_name [, ...] ] [ NOWAIT | SKIP LOCKED ] [...] ]
-#
+# ```
 class Clear::SQL::SelectQuery
   include Enumerable(Hash(String, Clear::SQL::Any))
   include SelectBuilder
