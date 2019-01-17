@@ -13,10 +13,10 @@ module CacheSpec
       Category.create [{id: 201, name: "Test"}]
       Category.create [{id: 202, name: "Test 2"}]
 
-      Post.create [{id: 301, name: "Post 1", published: true, user_id: 101, category_id: 201, content: "Lorem ipsum"}]
-      Post.create [{id: 302, name: "Post 2", published: true, user_id: 102, category_id: 201, content: "Lorem ipsum"}]
-      Post.create [{id: 303, name: "Post 2", published: true, user_id: 102, category_id: 202, content: "Lorem ipsum"}]
-      Post.create [{id: 304, name: "Post 2", published: true, user_id: 101, category_id: 202, content: "Lorem ipsum"}]
+      Post.create [{id: 301, published: true, user_id: 101, category_id: 201, content: "Lorem ipsum"}]
+      Post.create [{id: 302, published: true, user_id: 102, category_id: 201, content: "Lorem ipsum"}]
+      Post.create [{id: 303, published: true, user_id: 102, category_id: 202, content: "Lorem ipsum"}]
+      Post.create [{id: 304, published: true, user_id: 101, category_id: 202, content: "Lorem ipsum"}]
 
       context "cache system" do
         it "manage has_many relations" do
