@@ -80,6 +80,15 @@ module ModelSpec
 
     timestamps
 
+    # Random virtual method
+    def full_name=(x)
+      self.first_name, self.last_name = x.split(" ")
+    end
+
+    def full_name
+      {self.first_name, self.last_name}.join(" ")
+    end
+
     self.table = "model_users"
   end
 
@@ -348,6 +357,17 @@ module ModelSpec
 
           u = User.query.select({full_name: "first_name || ' ' || last_name"}).first!(fetch_columns: true)
           u["full_name"].should eq "a b"
+        end
+      end
+
+      it "can create a model using virtual fields" do
+        temporary do
+          reinit
+          User.create!(full_name: "Hello World")
+
+          u = User.query.first!
+          u.first_name.should eq "Hello"
+          u.last_name.should eq "World"
         end
       end
 
