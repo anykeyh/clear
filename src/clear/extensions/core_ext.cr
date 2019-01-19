@@ -1,3 +1,4 @@
+# Extension of some objects outside of Clear ("Monkey Patching")
 require "base64"
 
 struct Char
@@ -7,6 +8,7 @@ struct Char
 end
 
 struct PG::Geo::Box
+  # :nodoc:
   def to_json(json)
     json.object do
       json.field("x1") { json.number x1 }

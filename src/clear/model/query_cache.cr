@@ -62,11 +62,9 @@ class Clear::Model::QueryCache
 
   # Perform some operations with the cache then eventually clear the cache.
   def with_cache(&block)
-    begin
-      yield
-    ensure
-      clear
-    end
+    yield
+  ensure
+    clear
   end
 
   # Empty the cache and flag all relations has unactive

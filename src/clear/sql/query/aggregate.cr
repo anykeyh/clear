@@ -1,9 +1,10 @@
 module Clear::SQL::Query::Aggregate
+
   # Use SQL `COUNT` over your query, and return this number as a Int64
-  # as count return always a scalar, the usage of `COUNT OVER GROUP BY` can be done by
-  # calling `agg` instead.
   #
-  # This return only a number of records !!
+  # as count return always a scalar, the usage of `COUNT(*) OVER GROUP BY` can be done by
+  # using `pluck` or `select`
+  #
   #
   def count(type : X.class = Int64) forall X
     # save the `select` column clause to ensure non-mutability of the query
@@ -28,14 +29,21 @@ module Clear::SQL::Query::Aggregate
     return o
   end
 
-  # Call an custom aggregation function, like MEDIAN or other
-  # Note than COUNT, MIN, MAX and AVG are already conveniently mapped.
+  # Call an custom aggregation function, like MEDIAN or other:
+  #
+  # ```
+  #   query.agg("MEDIAN(age)", Int64)
+  # ```
   def agg(field, x : X.class) forall X
     self.clear_select.select(field).scalar(X)
   end
 
   {% for x in %w(min max avg) %}
-    # Call the SQL aggregation function {{x.upcase}}
+    # SQL aggregation function {{x.upcase}}:
+    #
+    # ```
+    #   query.{{x.id}}("field", Int64)
+    # ```
     def {{x.id}}(field, x : X.class) forall X
       agg("{{x.id.upcase}}(#{field})", X)
     end
