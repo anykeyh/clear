@@ -1,6 +1,6 @@
 # The column feature
 
-### The column macro
+## The column macro
 
 Column macro follow this syntax:
 
@@ -63,164 +63,110 @@ The arguments action is defined as below:
       </td>
     </tr>
   </tbody>
-</table>### Non-presence vs Nil
+</table>\#\#\# Non-presence vs Nil Clear use a column assignation system which provide safeguard against \`NilException\` while keeping possibility to fetch semi-fetched model. For example, you may want to fetch only the \`first\_name\` and \`last\_name\` of a \`User\` through the database : \`\`\`ruby User.query.select\("first\_name, last\_name"\).each do \|usr\| puts "User: \#{usr.first\_name} \#{usr.last\_name}" end \`\`\` But what if by mistake your code call a non fetched field ? \`\`\`ruby User.query.select\("first\_name, last\_name"\).each do \|usr\| \# Will throw an exception ! puts "User: &gt;\#{usr.id}
 
-Clear use a column assignation system which provide safeguard against `NilException` while keeping possibility to fetch semi-fetched model.
+| Name | Description |
+| :--- | :--- |
 
-For example, you may want to fetch only the `first_name` and `last_name` of a `User` through the database :
 
-```ruby
-User.query.select("first_name, last_name").each do |usr|
-  puts "User: #{usr.first_name} #{usr.last_name}"
-end
-```
+| `xxx_column.changed?` | Return true\|false whether the column as changed since the database fetch |
+| :--- | :--- |
 
-But what if by mistake your code call a non fetched field ?
 
-```ruby
-User.query.select("first_name, last_name").each do |usr|
-  # Will throw an exception !
-  puts "User: >#{usr.id}< - #{usr.first_name} #{usr.last_name}"
-end
-```
+| `xxx_column.has_db_default?` | Return true if the presence check is set to false |
+| :--- | :--- |
 
-In this case, Clear will throw an exception; in short, Clear handle non-presence differently than nil in the case of columns. 
 
-#### The \[column\_name\]\_column object
+| `xxx_column.name` | Return the name of the field in the database. |
+| :--- | :--- |
 
-For each column present, a second property exists which provide informations about the column:
 
-```ruby
-def print_user(usr)
-    puts [
-        "User: ",
-        usr.id_column.value(nil),
-        usr.first_name_column.value(nil),
-        usr.last_name_column.value(nil)
-    ].compact.join(" - ")
-end
-```
+| `xxx_column.old_value` | In case of change, return the previous value, before the change |
+| :--- | :--- |
 
-The list of functionalities for each column is as below:
+
+| `xxx_column.revert` | Return the column to it's initial state; changed flag is set to false and `value` become `old_value` |
+| :--- | :--- |
+
+
+| `xxx_column.clear` | The column become in non-present state \(e.g. wasn't fetched\) |
+| :--- | :--- |
+
+
+| `xxx_column.defined?` | Return true if the column has a value, false otherwise |
+| :--- | :--- |
+
 
 <table>
   <thead>
     <tr>
-      <th style="text-align:left">Name</th>
-      <th style="text-align:left">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.changed?</code>
-      </td>
-      <td style="text-align:left">Return true|false whether the column
-        <br />as changed since the database fetch</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.has_db_default?</code>
-      </td>
-      <td style="text-align:left">Return true if the presence check is set to false</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.name</code>
-      </td>
-      <td style="text-align:left">Return the name of the field in the database.</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.old_value</code>
-      </td>
-      <td style="text-align:left">In case of change, return the previous value, before the change</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.revert</code>
-      </td>
-      <td style="text-align:left">Return the column to it's initial state; changed flag is set to false
-        and <code>value</code> become <code>old_value</code>
-      </td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.clear</code>
-      </td>
-      <td style="text-align:left">The column become in non-present state (e.g. wasn't fetched)</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.defined?</code>
-      </td>
-      <td style="text-align:left">Return true if the column has a value, false otherwise</td>
-    </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.value</code>
-      </td>
-      <td style="text-align:left">
+      <th style="text-align:left"><code>xxx_column.value</code>
+      </th>
+      <th style="text-align:left">
         <p>Return the column value. Raise an error if the column is in a non-present
           state.</p>
         <p>Equivalent to <code>self.xxx</code>
         </p>
-      </td>
+      </th>
     </tr>
-    <tr>
-      <td style="text-align:left"><code>xxx_column.value(default)</code>
-      </td>
-      <td style="text-align:left">Return the current column value, OR default if the column is in a non-present
-        state</td>
-    </tr>
-  </tbody>
-</table>### Column types
+  </thead>
+  <tbody></tbody>
+</table>| `xxx_column.value(default)` | Return the current column value, OR default if the column is in a non-present state |
+| :--- | :--- |
 
-Clear already map different types of column from PostgreSQL to crystal:
+
+\#\#\# Column types Clear already map different types of column from PostgreSQL to crystal:
 
 <table>
   <thead>
     <tr>
-      <th style="text-align:center">Crystal</th>
-      <th style="text-align:center">PostgreSQL</th>
+      <th style="text-align:left">Crystal</th>
+      <th style="text-align:left">PostgreSQL</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align:center">String</td>
-      <td style="text-align:center">varchar, text</td>
+      <td style="text-align:left">String</td>
+      <td style="text-align:left">varchar, text</td>
     </tr>
     <tr>
-      <td style="text-align:center">UUID</td>
-      <td style="text-align:center">uuid</td>
+      <td style="text-align:left">UUID</td>
+      <td style="text-align:left">uuid</td>
     </tr>
     <tr>
-      <td style="text-align:center">Bool</td>
-      <td style="text-align:center">boolean</td>
+      <td style="text-align:left">Bool</td>
+      <td style="text-align:left">boolean</td>
     </tr>
     <tr>
-      <td style="text-align:center">Int8</td>
-      <td style="text-align:center">byte</td>
+      <td style="text-align:left">Int8</td>
+      <td style="text-align:left">byte</td>
     </tr>
     <tr>
-      <td style="text-align:center">Int16</td>
-      <td style="text-align:center">short</td>
+      <td style="text-align:left">Int16</td>
+      <td style="text-align:left">short</td>
     </tr>
     <tr>
-      <td style="text-align:center">Int32</td>
-      <td style="text-align:center">int, serial</td>
+      <td style="text-align:left">Int32</td>
+      <td style="text-align:left">int, serial</td>
     </tr>
     <tr>
-      <td style="text-align:center">Int64</td>
-      <td style="text-align:center">bigint, bigserial</td>
+      <td style="text-align:left">Int64</td>
+      <td style="text-align:left">bigint, bigserial</td>
     </tr>
     <tr>
-      <td style="text-align:center">Array(Type)</td>
-      <td style="text-align:center">
+      <td style="text-align:left">Array(Type)</td>
+      <td style="text-align:left">
         <p>type[]</p>
         <p>(note: type can be primitives above)</p>
       </td>
     </tr>
     <tr>
-      <td style="text-align:center">JSON::Any</td>
-      <td style="text-align:center">jsonb</td>
+      <td style="text-align:left">JSON::Any</td>
+      <td style="text-align:left">jsonb</td>
     </tr>
     <tr>
-      <td style="text-align:center">Time</td>
-      <td style="text-align:center">timestamp without time zone</td>
+      <td style="text-align:left">Time</td>
+      <td style="text-align:left">timestamp without time zone</td>
     </tr>
   </tbody>
 </table>
-

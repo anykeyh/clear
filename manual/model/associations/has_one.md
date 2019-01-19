@@ -7,9 +7,9 @@ Usually, it's used when another model optionally extend the current model by com
 ```ruby
 class User
   include Clear::Model
-  
+
   with_serial_pkey
-  
+
   has_one user_info : UserInfo
 end
 
@@ -17,10 +17,8 @@ class UserInfo
   include Clear::Model
 
   with_serial_pkey
-  
+
   belongs_to user : User
 end
 ```
-
-
 

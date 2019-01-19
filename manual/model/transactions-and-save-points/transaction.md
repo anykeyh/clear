@@ -13,7 +13,7 @@ end
 
 In the example above, if one of the method fail, the whole transaction block will be reverted to initial state.
 
-### Rollback
+## Rollback
 
 You can manually rollback a transaction if something went wrong:
 
@@ -27,7 +27,7 @@ end
 
 In this case, the block will be returned, nothing will be committed in the database and no error will be thrown
 
-### Nested transaction
+## Nested transaction
 
 Nested transaction are not working, but save points are used for that. Let's take an example:
 
@@ -54,7 +54,7 @@ I do another thing
 
 Since **nested transaction are not permitted**, rollback will rollback the top-most transaction. Any nested transaction block will perform SQL-wise, only the block content will be executed.
 
-### Savepoints
+## Savepoints
 
 For nested transaction, you may want to use save points:
 

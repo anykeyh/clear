@@ -1,14 +1,12 @@
 # Handling multi-connection
 
-
-
 Often you will need to connect to two or more database, due to legacy code.
 
 Clear offers multi-connections possibility, and your model can live in a specific database.
 
 If not multiple connection are set, clear use `default` connection as living place for the models.
 
-### Setup the multiple connections
+## Setup the multiple connections
 
 ```ruby
   Clear::SQL.init("default", "postgres://[USER]:[PASSWORD]@[HOST]/[DATABASE]")
@@ -24,7 +22,7 @@ You can also use hash notation:
   )
 ```
 
-### Setup model connection
+## Setup model connection
 
 You can then just change the class property `connection` in your model definition:
 

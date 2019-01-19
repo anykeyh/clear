@@ -19,5 +19,3 @@ See PostgreSQL [deep explanation about locking here](https://www.postgresql.org/
 Locking works only in transaction.
 {% endhint %}
 
-
-

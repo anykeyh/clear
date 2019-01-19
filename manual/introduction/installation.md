@@ -2,7 +2,7 @@
 
 ## Setup: As new project
 
-**Note**: Clear offers a CLI but still in Alpha.  Documentation for building a new project with Clear + [Kemal](https://github.com/kemalcr/kemal) will be written once the feature is done. As of now, you can just follow the paragraph below.
+**Note**: Clear offers a CLI but still in Alpha. Documentation for building a new project with Clear + [Kemal](https://github.com/kemalcr/kemal) will be written once the feature is done. As of now, you can just follow the paragraph below.
 
 ## Setup: In existing project
 
@@ -53,9 +53,6 @@ Clear::SQL.init("postgres://postgres@localhost/my_database",
 #### Step by Step
 
 * `require "clear"` load the source code of Clear and provide everything needed to use the library.
-
-
-
 * `Clear::SQL.init` prepare a certain number of connection to your database. The URL is a convention used to connect to the database, and follow this schema:
 
 ```text
@@ -63,8 +60,6 @@ postgres://USER[:PASSWORD]@HOST/DATABASE[?*OPTIONS]
 ```
 
 More information about the URL notation can be found [here](https://crystal-lang.org/docs/database/)
-
-
 
 * `connection_pool_size: 5` is optional but offers the possibility to concurrent fibers to run query at the same time. It's useful if you use an event-driven server, like Kemal.
 

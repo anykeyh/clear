@@ -21,20 +21,20 @@ CREATE TABLE posts (
 ```ruby
 class Post
   include Clear::Model
-  
+
   with_serial_pkey
-  
+
   column name : String
   column content : String?
-  
+
   belongs_to category : Category
 end
 
 class Category
   with_serial_pkey
-  
+
   column name : String
-  
+
   has_many posts : Post
 end
 ```
@@ -58,7 +58,7 @@ c.posts.where{name =~ /^[0-9]/i}.each do |post|
 end
 ```
 
-### Customizing the relation
+## Customizing the relation
 
 Clear uses naming convention to infer the name of the foreign key. You may want to override this behavior by adding some parameters:
 
@@ -73,7 +73,7 @@ has_many relation_name : RelationType,
 | `own_key` | The key against what the relation is tested, primary key by default | `self.class.pkey` |
 | `no_cache` | Never cache the relation \(note: planned feature\) | `false` |
 
-### Adding to relation
+## Adding to relation
 
 An object can be added into the relation collection using `<<` operator:
 

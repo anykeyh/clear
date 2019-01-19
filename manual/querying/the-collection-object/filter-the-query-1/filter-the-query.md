@@ -1,7 +1,7 @@
 # Filter the query – The Expression Engine
 
 Because Collection represents SQL SELECT query, they offer way to filter the query.  
-Clear offer the Expression Engine, which is inspired by Sequel.   
+Clear offer the Expression Engine, which is inspired by Sequel.  
 It basically helps you to write complex filter conditions without sacrificing on code expressiveness.
 
 ## The where clause
@@ -42,15 +42,15 @@ User.query.where{ ~(users.id == 1) } # WHERE NOT( users.id = 1 )
 ```
 
 {% hint style="warning" %}
-In the example above, if some part of the expression are existing variable in the scope of the code execution, then the value of the variable will be taken in consideration. 
+In the example above, if some part of the expression are existing variable in the scope of the code execution, then the value of the variable will be taken in consideration.
 
-Otherwise, the name will refers to a column, schema or anything related to the PostgreSQL universe. 
+Otherwise, the name will refers to a column, schema or anything related to the PostgreSQL universe.
 {% endhint %}
 
 List of permitted operators: `<, >, <=, >=, !=, ==, =~, /, *, +, -`
 
 {% hint style="success" %}
-When comparing against nil with == or != operators, the expression engine 
+When comparing against nil with == or != operators, the expression engine
 {% endhint %}
 
 ### Expression Engine: Var, Raw
@@ -78,7 +78,6 @@ User.query.where{ var("id") == id } # WHERE "id" = ?
 User.query.where{ raw("id") == id } # WHERE id = ?
 User.query.where{ raw("users.id") == id } # WHERE users.id = ?
 User.query.where{var("users", "id") == id} # WHERE "users"."id" = ?
-
 ```
 
 {% hint style="danger" %}
@@ -87,8 +86,8 @@ User.query.where{var("users", "id") == id} # WHERE "users"."id" = ?
 
 ### Range and array and other methods
 
-Expression engine manage natively range, array and other methods as see below.  
-  
+Expression engine manage natively range, array and other methods as see below.
+
 Range:
 
 ```ruby

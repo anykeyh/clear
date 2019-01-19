@@ -31,39 +31,39 @@
 
 ## Querying
 
-* [The collection object](querying-1/the-collection-object/README.md)
-  * [Filter the query](querying-1/the-collection-object/filter-the-query-1/README.md)
-    * [Filter the query – The Expression Engine](querying-1/the-collection-object/filter-the-query-1/filter-the-query.md)
-    * [Find, First, Last, Offset, Limit](querying-1/the-collection-object/filter-the-query-1/find-first.md)
-    * [Aggregation](querying-1/the-collection-object/filter-the-query-1/aggregation.md)
-    * [Ordering & Group by](querying-1/the-collection-object/filter-the-query-1/ordering.md)
-  * [Fetching the query](querying-1/the-collection-object/fetching-the-query/README.md)
-    * [Each and Fetch](querying-1/the-collection-object/fetching-the-query/each-map-fetch.md)
-    * [Cursored fetching](querying-1/the-collection-object/fetching-the-query/cursored-fetching.md)
-    * [Model extra attributes](querying-1/the-collection-object/fetching-the-query/model-attributes.md)
-  * [Joins](querying-1/the-collection-object/joins.md)
-  * [Eager Loading – Resolving the N+1 query problem](querying-1/the-collection-object/n+1-query-avoidance.md)
-  * [Window and CTE](querying-1/the-collection-object/window-and-cte.md)
-  * [Scopes](querying-1/the-collection-object/scopes.md)
-* [Low-level SQL](querying-1/low-level-sql/README.md)
-  * [Select Clause](querying-1/low-level-sql/select-clause.md)
-  * [Insert Clause](querying-1/low-level-sql/insert-clause.md)
-  * [Delete Clause](querying-1/low-level-sql/delete-clause.md)
+* [The collection object](querying/the-collection-object/README.md)
+  * [Filter the query](querying/the-collection-object/filter-the-query-1/README.md)
+    * [Filter the query – The Expression Engine](querying/the-collection-object/filter-the-query-1/filter-the-query.md)
+    * [Find, First, Last, Offset, Limit](querying/the-collection-object/filter-the-query-1/find-first.md)
+    * [Aggregation](querying/the-collection-object/filter-the-query-1/aggregation.md)
+    * [Ordering & Group by](querying/the-collection-object/filter-the-query-1/ordering.md)
+  * [Fetching the query](querying/the-collection-object/fetching-the-query/README.md)
+    * [Each and Fetch](querying/the-collection-object/fetching-the-query/each-map-fetch.md)
+    * [Cursored fetching](querying/the-collection-object/fetching-the-query/cursored-fetching.md)
+    * [Model extra attributes](querying/the-collection-object/fetching-the-query/model-attributes.md)
+  * [Joins](querying/the-collection-object/joins.md)
+  * [Eager Loading – Resolving the N+1 query problem](querying/the-collection-object/n+1-query-avoidance.md)
+  * [Window and CTE](querying/the-collection-object/window-and-cte.md)
+  * [Scopes](querying/the-collection-object/scopes.md)
+* [Low-level SQL](querying/low-level-sql/README.md)
+  * [Select Clause](querying/low-level-sql/select-clause.md)
+  * [Insert Clause](querying/low-level-sql/insert-clause.md)
+  * [Delete Clause](querying/low-level-sql/delete-clause.md)
 
 ## Migrations
 
-* [Manage migrations](migrations-1/manage-migrations.md)
-* [Call migration script](migrations-1/call-migration-script.md)
-* [Migration CLI](migrations-1/migration-cli.md)
+* [Manage migrations](migrations/manage-migrations.md)
+* [Call migration script](migrations/call-migration-script.md)
+* [Migration CLI](migrations/migration-cli.md)
 
 ## Additional and advanced features
 
-* [Symbol vs String](additionals/symbol-vs-string.md)
-* [Enums](additionals/enums.md)
-* [BCrypt](additionals/bcrypt.md)
-* [Full Text Search](additionals/full-text-search.md)
-* [JSONB](additionals/jsonb.md)
-* [Handling multi-connection](additionals/handling-multi-connection.md)
+* [Symbol vs String](additional-and-advanced-features/symbol-vs-string.md)
+* [Enums](additional-and-advanced-features/enums.md)
+* [BCrypt](additional-and-advanced-features/bcrypt.md)
+* [Full Text Search](additional-and-advanced-features/full-text-search.md)
+* [JSONB](additional-and-advanced-features/jsonb.md)
+* [Handling multi-connection](additional-and-advanced-features/handling-multi-connection.md)
 
 ## Other resources
 

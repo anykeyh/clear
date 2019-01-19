@@ -6,14 +6,14 @@ Clear needs your model to define a primary key column. By default, Clear can han
 As time of writing this manual, compound primary keys are not handled properly.
 {% endhint %}
 
-### `with_serial_pkey` helper
+## `with_serial_pkey` helper
 
 Clear offers a built-in `with_serial_pkey` helper which will define your primary key without hassle:
 
 ```ruby
 class Product
   include Clear::Model
-  
+
   self.table = "products"
 
   with_serial_pkey name: "product_id", type: :uuid
@@ -27,6 +27,4 @@ end
 {% hint style="info" %}
 In case of `uuid`, Clear will generate a new `uuid` at every new object creation before inserting it into the database.
 {% endhint %}
-
-
 

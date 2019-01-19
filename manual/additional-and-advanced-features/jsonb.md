@@ -6,7 +6,7 @@ JSONB is a great No-SQL mapping under PostgreSQL. It helps you to store value an
 
 Let's imaging a table `events` where you store the events of differents suppliers:
 
-### Postgres limitation and Clear's answer
+## Postgres limitation and Clear's answer
 
 The main limitation of JSONB is the "simple" syntax is not indexable. For example:
 
@@ -29,9 +29,9 @@ Obviously, the second syntax is more complex and error prone. Clear offers lever
   #  SELECT * FROM events WHERE payload @> '{"source": {"name": "Asana"}}'
 ```
 
-### Expression Engine
+## Expression Engine
 
-#### jsonb
+### jsonb
 
 calling `node.jsonb(key)` on expression node will resolve to:
 
@@ -65,7 +65,7 @@ where{ data.jsonb("a.b").cast("text") == "o" }
 
 Note: If you cast the `jsonb`, clear will never use `@>` operator
 
-#### From path to arrow notation
+### From path to arrow notation
 
 ```ruby
 Clear::SQL::JSONB.jsonb_resolve("data", "a.b.c", "text")
@@ -73,7 +73,7 @@ Clear::SQL::JSONB.jsonb_resolve("data", "a.b.c", "text")
 # data->'a'->'b'->'c'::text
 ```
 
-### Use outside Expression Engine \(`@>` operator\)
+## Use outside Expression Engine \(`@>` operator\)
 
 ```ruby
 Clear::SQL::JSONB.jsonb_eq(data, "a.b.c", "value")

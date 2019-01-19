@@ -47,7 +47,7 @@ Obviously, search call can be chained:
   Post.query.from_user(user).search("orm")
 ```
 
-#### Additional parameters
+## Additional parameters
 
 **catalog**
 
@@ -61,7 +61,9 @@ t.full_text_searchable on: [{"title", 'A'}, {"content", 'C'}], catalog: "pg_cata
 full_text_searchable catalog: "pg_catalog.french"
 ```
 
-Note: For now, Clear doesn't offers dynamic selection of catalog \(for let's say multi-lang service\). If your app need this feature, do not hesitate to open an issue.
+{% hint style="info" %}
+For now, Clear doesn't offers dynamic selection of catalog \(for let's say multi-lang service\). If your app need this feature, do not hesitate to open an issue.
+{% endhint %}
 
 **trigger\_name, function\_name**
 

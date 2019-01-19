@@ -16,7 +16,7 @@ end
 Post.query.where{ user_id.in?(user_with_more_than_x_posts(10)) }
 ```
 
-### Joins
+## Joins
 
 Joins are built using `inner_join`, `left_join`, `right_join`, `cross_join` or simply `join` method. An optional block is requested for condition:
 
@@ -26,6 +26,4 @@ User.query.left_joins("users as u2"){ users.supervisor_id = u2.id }
 ```
 
 Additionally, optional parameter `lateral` can be set to true to create a LATERAL JOIN.
-
-
 
