@@ -9,7 +9,7 @@ After reading this guide, you will know:
 * How to take advantage of the advanced features of PostgreSQL combined seamlessly with the powerful Crystal Language features
 * How to maintain the coherence of your database through migration and validations. 
 
-### What is Clear ?
+## What is Clear ?
 
 Clear is an ORM \(Object Relation Mapping\) built with Crystal language. It offers a Model layer for MVC applications. Clear is built specifically for PostgreSQL, meaning it's not compatible with MariaDB or SQLite for example. On the other hand, because it's specific, it achieves to delivers a tremendous amount of PostgreSQL advanced features out of the box.
 
@@ -25,8 +25,5 @@ Clear is largely based on Active Record pattern, and freely inspired by [Rails A
 You can notice, if you already did some Rails application, that the naming convention is mostly like in Active Record.
 
 * **Multiple way of doing things:** Philosophically, Clear try to reduce the gap between the mind of the developer and the code itself. The code is meant to be read as close to written English as possible. Therefore, there's often multiple way to do things, based on the feeling of the developer writing the code.
-
-
-
 * **Less boilerplate = more happiness:** The "magic" under Clear allows to write as minimum as possible boilerplate code, like type-checking, validations or even SQL fragment writing.
 

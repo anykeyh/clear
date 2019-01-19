@@ -1,6 +1,6 @@
 # Cursored fetching
 
-When resolving the query, all the models are stored in memory before being processed. 
+When resolving the query, all the models are stored in memory before being processed.
 
 This behavior can overload the memory in case of large dataset of models. To prevent this, clear offers the methods `each_with_cursors`and `fetch_with_cursors` :
 
@@ -17,6 +17,4 @@ User.query.each_with_cursor(100) do |usr|
     #...
 end
 ```
-
-
 

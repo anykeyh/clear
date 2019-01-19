@@ -8,9 +8,9 @@ To instantiate a new `Collection`, you can simply call the method `query` over t
 users = User.query
 ```
 
-### Collection and SELECT query
+## Collection and SELECT query
 
-When instantiated, the collection is Crystal's coexistence of the a SELECT query: 
+When instantiated, the collection is Crystal's coexistence of the a SELECT query:
 
 ```sql
 SELECT * FROM users
@@ -24,7 +24,7 @@ array_of_users = User.query.to_a
 
 Collection will really perform SQL request only on resolution time, when calling `each` or `to_a` for example.
 
-### Mutability
+## Mutability
 
 Collection are mutable objects, and many of the methods will change the state of the collection:
 

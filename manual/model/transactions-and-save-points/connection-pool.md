@@ -7,7 +7,7 @@ By default, each connection is fetched from the connection pool for each fibers.
 ```ruby
 begin
   Clear::SQL.execute("CREATE TABLE tests (id serial PRIMARY KEY)")
-  
+
   spawn do
     # Clear automatically create a connection nº1 
     Clear::SQL.transaction do
@@ -15,22 +15,22 @@ begin
       sleep 0.2 #< Wait and do not commit the transaction for now
     end
   end
-  
+
   @@count = -1
-  
+
   # Spawn a new fiber
   spawn do
     sleep 0.1 #Wait a bit, to ensure than the first connection is inside a transaction
     # execute in connection nº2
     @@count = Clear::SQL.select.from("tests").count
   end
-  
+
   sleep 0.3 # Let the 2 fiber time to finish...
-  
+
   # The count is zero, because: it has been setup by the second fiber, which
   # called AFTER the insert but BEFORE the commit on the connection nº1
   @@count.should eq 0 
-  
+
   # Now the transaction of connection nº1 is over, count should be 1
   count = Clear::SQL.select.from("tests").count
   count.should eq 1

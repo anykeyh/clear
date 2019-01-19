@@ -23,20 +23,20 @@ In clear, this relation can be written like this:
 ```ruby
 class Post
   include Clear::Model
-  
+
   with_serial_pkey
-  
+
   column name : String
   column content : String?
-  
+
   belongs_to category : Category
 end
 
 class Category
   with_serial_pkey
-  
+
   column name : String
-  
+
   has_many posts : Post
 end
 ```
@@ -44,7 +44,7 @@ end
 * Clear will take care for you of the declaration of the column `category_id`
 * You may notice `has_many` in Category model. We will go further onto it in the next chapter. 
 
-### Customizing the relation
+## Customizing the relation
 
 Clear uses naming convention to infer the name of the foreign key. You may want to override this behavior by adding some parameters:
 
@@ -60,6 +60,4 @@ belongs_to relation_name : RelationType,
 | `primary` | Set to true if the foreign\_key is also the primary key of this table | `false` |
 | `key_type` | The type of the column. Set to the primary key type of the relative table. | `Int64?` |
 | `no_cache` | Never cache the relation \(note: planned feature\) | `false` |
-
-
 

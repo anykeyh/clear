@@ -33,7 +33,7 @@ end
 
 We just resolved our problem, and the ORM will call only two time the database !
 
-### Deep inclusion
+## Deep inclusion
 
 `with_[model]` helper allow you to pass a block, which can refine the related object. Therefore, it's easy to include far-related model like in this example:
 
@@ -47,8 +47,6 @@ end
 ```
 
 Since the `with_[model]` helper return a collection in the block, you may want to even more optimize your query:
-
-
 
 ```ruby
 User.query.with_posts{ |p|  
@@ -71,6 +69,4 @@ User.query.with_posts(&.published.with_category(&.select("name"))).each do |user
     end
 end
 ```
-
-
 

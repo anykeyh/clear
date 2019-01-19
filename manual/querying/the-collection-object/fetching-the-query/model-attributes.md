@@ -1,6 +1,6 @@
 # Model extra attributes
 
-In some case you may want to access a column which is not owned by the model itself. This can be provided by access `attributes` hash on the model.   
+In some case you may want to access a column which is not owned by the model itself. This can be provided by access `attributes` hash on the model.  
 In this case, you should set the optional argument `fetch_columns` to `true` during the fetching:
 
 In the example below, we want to display a the identification document `type` and `number` for each person:
@@ -34,6 +34,5 @@ customers = Customer.query
 customers.each(fetch_columns: true) do |x|
     puts "customer #{x.id} => #{x.attributes["shipping_count"]}"
 end
-
 ```
 

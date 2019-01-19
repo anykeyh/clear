@@ -11,7 +11,7 @@ Clear.enum Gender, "male", "female"
 
 This will create a new record called `MyApp::Gender`, which contains the constants `Male` and `Female`.
 
-### Validation, assignation
+## Validation, assignation
 
 You can use the new type directly in your model:
 
@@ -46,12 +46,12 @@ MyApp::Gender.valid?("female") #< Return true
 MyApp::Gender.valid?("unknown") #< Return false
 ```
 
-### Migration
+## Migration
 
 ```ruby
 class MyMigration1
     include Clear::Migration
-    
+
     def change(dir)
         create_enum("gender", %w(male female))
     end

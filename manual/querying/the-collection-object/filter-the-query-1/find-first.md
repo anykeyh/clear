@@ -2,13 +2,13 @@
 
 You may want to fetch one model instead of a collection.
 
-### Find
+## Find
 
 `Collection#find` allows to fetch a model based on an expression.
 
-There's two flavors for `find` method: `find` and `find!` . The first one return a nilable type, which will be `nil` if not found, while the second return a model or throw an exception if not found. 
+There's two flavors for `find` method: `find` and `find!` . The first one return a nilable type, which will be `nil` if not found, while the second return a model or throw an exception if not found.
 
-#### Example
+### Example
 
 ```ruby
 p = Product.query.find({id: 1234}) # Return Product?
@@ -16,9 +16,9 @@ p = Product.query.find({id: 1234}) # Return Product?
 p = Product.query.find!{ id == 1234 } # Return Product or throw an exception if not found.
 ```
 
-### First / Last
+## First / Last
 
-First and last return the first and last row of a SELECT query. 
+First and last return the first and last row of a SELECT query.
 
 In the case of first, it will order by `$pkey ASC` if no `order_by` directive is found. In the case of last, it will invert the direction of the order directive of the query before performing the call.
 
@@ -32,11 +32,11 @@ p = Product.query.order_by("created_at", "DESC").last!
 p = Product.query.order_by("created_at", "DESC").first!
 ```
 
-### Offset, Limit
+## Offset, Limit
 
 Offset and limit provide a way to scope the request or do some pagination.
 
-#### Offset
+### Offset
 
 ```ruby
 Product.query.order_by("id").limit(5).offset(5)

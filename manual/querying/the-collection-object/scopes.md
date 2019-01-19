@@ -7,14 +7,14 @@ Let's get an example:
 ```ruby
 class User
     include Clear::Model
-    
+
     with_serial_pkey
-    
+
     column role : String
     column role_level : Int32
     column email : String
     column active : Bool
-    
+
     scope :with_privileges do |level|
         where{ role.in?(%w(superadmin admin)) | (role_level > level) }
     end
