@@ -1,2 +1,0 @@
-# Batchs operations
-
