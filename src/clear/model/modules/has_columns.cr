@@ -144,6 +144,8 @@ module Clear::Model::HasColumns
        } %}
   end
 
+
+
   # :nodoc:
   # Used internally to gather the columns
   macro __generate_columns
@@ -186,8 +188,23 @@ module Clear::Model::HasColumns
       {% end %}
     {% end %}
 
+
+    def set( **t : **T ) forall T
+      \{% for name, typ in T %}
+        \{% if !@type.has_method?("#{name}=") %}
+          \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+        \{% end %}
+
+        \{% if settings = COLUMNS["#{name}".id] %}
+          @\{{name}}_column.reset(Clear::Model::Converter.to_column(\{{settings[:converter]}}, t[:\{{name}}]))
+        \{% else %}
+          self.\{{name}} = t[:\{{name}}]
+        \{% end %}
+      \{% end %}
+    end
+
     def set( t : NamedTuple )
-      set(t.to_h)
+      set(**t)
     end
 
     # Set the columns from hash
