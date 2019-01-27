@@ -16,7 +16,7 @@ module UUIDSpec
 
     self.table = "dbobjects"
 
-    with_serial_pkey type: :uuid
+    primary_key type: :uuid
     column name : String
   end
 

@@ -37,9 +37,8 @@ module NestedQuerySpec
 
     self.table = "tags"
 
-    with_serial_pkey
+    primary_key
 
-    column id : Int64, primary: true
     column name : String
     column taggable_id : Int64
 
@@ -51,9 +50,8 @@ module NestedQuerySpec
 
     self.table = "videos"
 
-    with_serial_pkey
+    primary_key
 
-    column id : Int64, primary: true
     column name : String
 
     has_many tags : Tag, foreign_key: "taggable_id"
@@ -64,7 +62,7 @@ module NestedQuerySpec
 
     self.table = "releases"
 
-    with_serial_pkey
+    primary_key
 
     column id : Int64, primary: true
     column video_id : Int64

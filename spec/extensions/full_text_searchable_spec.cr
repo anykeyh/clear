@@ -4,7 +4,7 @@ module FullTextSearchableSpec
   class Series
     include Clear::Model
 
-    with_serial_pkey
+    primary_key
 
     full_text_searchable "tsv"
 

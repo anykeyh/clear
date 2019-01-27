@@ -6,7 +6,7 @@ module SeedSpec
 
     self.table = "seed_models"
 
-    with_serial_pkey
+    primary_key
 
     column value : String
   end
