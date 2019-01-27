@@ -50,6 +50,17 @@ module Clear::Model::HasSerialPkey
     column __name__ : Int32, primary: true, presence: false
   end
 
+  add_pkey_type "text" do
+    column __name__ : String, primary: true, presence: true
+  end
+
+  add_pkey_type "int" do
+    column __name__ : Int32, primary: true, presence: true
+  end
+
+  add_pkey_type "bigint" do
+    column __name__ : Int64, primary: true, presence: true
+  end
 
 end
 

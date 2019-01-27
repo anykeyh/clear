@@ -34,4 +34,6 @@ class ApplyChange2
   end
 end
 
-Clear::CLI.run
+Clear.with_cli do
+  puts "Usage: crystal sample/cli/cli.cr -- clear [args]"
+end

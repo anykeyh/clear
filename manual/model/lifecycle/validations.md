@@ -47,13 +47,12 @@ class Article
     column description : String
 
     def validate
-        ensure_than :description, "must contains at least 100 characters", 
-            &.size.<(100)
+        ensure_than :description, "must contains at least 100 characters", &.size.<(100)
     end
 end
 ```
 
-The code above will perform exactly like the previous one, with focus on compact syntax.
+The code above will perform exactly like the previous one, while keeping a more compact syntax.
 
 ## Error object
 
@@ -67,7 +66,7 @@ a.content = "Lorem ipsum"
 
 unless a.valid?
     a.errors.each do |err|
-        puts "Error on column: #{err.column} => #{err.reason}" 
+        puts "Error on column: #{err.column} => #{err.reason}"
     end
 end
 ```
