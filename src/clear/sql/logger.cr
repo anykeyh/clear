@@ -59,7 +59,7 @@ module Clear::SQL::Logger
 
     return o
   rescue e
-    STDERR.puts "Error catched, last request was:\n#{Clear::SQL::Logger.colorize_query(sql)}"
+    STDERR.puts "Error caught, last query was:\n#{Clear::SQL::Logger.colorize_query(sql)}"
     raise e
   end
 end
