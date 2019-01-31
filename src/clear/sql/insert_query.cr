@@ -66,7 +66,7 @@ class Clear::SQL::InsertQuery
       break unless rs.move_next
     end
 
-    return true
+    true
   ensure
     rs.close
   end

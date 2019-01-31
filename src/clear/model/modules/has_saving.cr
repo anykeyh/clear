@@ -123,7 +123,6 @@ module Clear::Model::HasSaving
       end
     end
 
-    return true
   end
 
   def save(&block)
@@ -138,12 +137,12 @@ module Clear::Model::HasSaving
     raise Clear::Model::InvalidModelError.new(
       "Validation of the model failed:\n #{print_errors}") unless save(on_conflict)
 
-    return self
+    self
   end
 
   # Pass the `on_conflict` optional parameter via block.
   def save!(&block : Clear::SQL::InsertQuery ->)
-    return save!(block)
+    save!(block)
   end
 
 
@@ -161,7 +160,7 @@ module Clear::Model::HasSaving
       clear_change_flags
     end
 
-    return true
+    true
   end
 
 end

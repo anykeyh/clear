@@ -1,6 +1,7 @@
 language: crystal
 script:
 - crystal spec
+- bin/ameba
 - crystal docs
 services:
 - postgresql

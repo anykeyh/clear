@@ -27,7 +27,7 @@ class Clear::SQL::UpdateQuery
   end
 
   def set(**row)
-    return set(row)
+    set(row)
   end
 
   def set(row : String)

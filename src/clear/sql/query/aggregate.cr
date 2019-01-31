@@ -25,7 +25,7 @@ module Clear::SQL::Query::Aggregate
     end
     @columns = columns
 
-    return o
+    o
   end
 
   # Call an custom aggregation function, like MEDIAN or other

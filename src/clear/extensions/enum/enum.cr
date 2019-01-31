@@ -31,9 +31,9 @@ module Clear
       def self.to_column(x) : T?
         case x
         when String
-          return T.authorized_values[x]
+          T.authorized_values[x]
         when Nil
-          return nil
+          nil
         else
           raise converter_error(x.class.name, "Enum: #{T.class.name}")
         end

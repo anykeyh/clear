@@ -177,7 +177,7 @@ module Clear::Model::FullTextSearchable
     text = text.gsub(/\+/, " ")
     tokens = split_to_exp(text)
 
-    return tokens.map do |(modifier, value)|
+    tokens.map do |(modifier, value)|
       if modifier == :-
         "!" + Clear::Expression[value]
       else
