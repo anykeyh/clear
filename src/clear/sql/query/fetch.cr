@@ -13,7 +13,7 @@ module Clear::SQL::Query::Fetch
       break unless rs.move_next
     end
 
-    return true
+    true
   ensure
     rs.close
   end

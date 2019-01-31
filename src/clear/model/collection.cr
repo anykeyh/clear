@@ -339,7 +339,7 @@ module Clear::Model
         return true
       end
 
-      return false
+      false
     end
 
     # Inverse of `any?`, return true if the request return no rows.
@@ -484,7 +484,7 @@ module Clear::Model
         return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
       end
 
-      return nil
+      nil
     end
 
     # Get the last row from the collection query.
@@ -521,7 +521,7 @@ module Clear::Model
           return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
         end
 
-        return nil
+        nil
       ensure
         # reset the order by in case we want to reuse the query
         clear_order_bys.order_by(order_bys)

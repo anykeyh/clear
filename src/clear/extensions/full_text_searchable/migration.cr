@@ -58,18 +58,18 @@ class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operatio
          ON #{table} FOR EACH ROW EXECUTE PROCEDURE #{function_name}();
       SQL
 
-    return [cr_fn, cr_tr]
+    [cr_fn, cr_tr]
   end
 
   private def print_update_current_data
     op = print_concat_rules(use_new: false)
 
-    return [Clear::SQL.update(table)
+    [Clear::SQL.update(table)
       .set({"#{dest_field}" => Clear::Expression.unsafe(op)}).to_sql]
   end
 
   private def print_delete_trigger
-    return ["DROP FUNCTION #{function_name}()", "DROP TRIGGER #{trigger_name}"]
+    ["DROP FUNCTION #{function_name}()", "DROP TRIGGER #{trigger_name}"]
   end
 
   def up

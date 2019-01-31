@@ -75,6 +75,6 @@ class Clear::Reflection::Table
         arr << v
       end
 
-    return o
+    o
   end
 end
