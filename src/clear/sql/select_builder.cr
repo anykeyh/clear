@@ -1,24 +1,32 @@
 require "./query/**"
 
 module Clear::SQL::SelectBuilder
-  include Query::Change
-  include Query::Connection
+
   include Query::Select
   include Query::From
   include Query::Join
+
   include Query::Where
+  include Query::Having
+
   include Query::OrderBy
   include Query::GroupBy
-  include Query::Having
-  include Query::Window
   include Query::OffsetLimit
-  include Query::Execute
-  include Query::Lock
-  include Query::Fetch
-  include Query::BeforeQuery
-  include Query::CTE
-  include Query::WithPagination
   include Query::Aggregate
+
+  include Query::CTE
+  include Query::Window
+  include Query::Lock
+
+
+  include Query::Execute
+  include Query::Fetch
+  include Query::Pluck
+
+  include Query::Connection
+  include Query::Change
+  include Query::BeforeQuery
+  include Query::WithPagination
 
   def initialize(@distinct_value = nil,
                  @cte = {} of String => Clear::SQL::SelectBuilder | String,
