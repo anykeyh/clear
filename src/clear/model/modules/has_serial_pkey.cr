@@ -63,4 +63,3 @@ module Clear::Model::HasSerialPkey
   end
 
 end
-
