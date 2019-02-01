@@ -82,7 +82,7 @@ class Clear::TSVector
       when Nil
         nil
       else
-        Clear::ErrorMessages.converter_error(x.class, "TSVector")
+        raise Clear::ErrorMessages.converter_error(x.class, "TSVector")
       end
     end
 
