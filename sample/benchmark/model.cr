@@ -33,9 +33,10 @@ end
 puts "Starting benchmarking, total to fetch =" +
      " #{BenchmarkModel.query.count} records"
 Benchmark.ips(warmup: 2, calculation: 5) do |x|
-  x.report("Simple load 100k") { BenchmarkModel.query.limit(100_000).to_a }
-  x.report("With cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor { |o| a << o } }
-  x.report("With attributes") { BenchmarkModel.query.limit(100_000).to_a(fetch_columns: true) }
-  x.report("With attributes and cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor(fetch_columns: true) { |h| a << h } }
-  x.report("SQL only") { a = [] of Hash(String, ::Clear::SQL::Any); BenchmarkModel.query.limit(100_000).fetch { |h| a << h } }
+  x.report("With Model: Simple load 100k") { BenchmarkModel.query.limit(100_000).to_a }
+  x.report("With Model: With cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor { |o| a << o } }
+  x.report("With Model: With attributes") { BenchmarkModel.query.limit(100_000).to_a(fetch_columns: true) }
+  x.report("With Model: With attributes and cursor") { a = [] of BenchmarkModel; BenchmarkModel.query.limit(100_000).each_with_cursor(fetch_columns: true) { |h| a << h } }
+  x.report("Using: Pluck") { a = BenchmarkModel.query.limit(100_000).pluck("y") }
+  x.report("Hash from SQL only") { a = [] of Hash(String, ::Clear::SQL::Any); BenchmarkModel.query.limit(100_000).fetch { |h| a << h } }
 end

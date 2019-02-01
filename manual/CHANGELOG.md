@@ -3,10 +3,15 @@
 ## Features
 
 - [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
-- [EXPERIMENTAL] add `unlink` operation on collection which comes from `has_many through:`
+- [EXPERIMENTAL] add `unlink` method on collection which comes from `has_many through:`
+- Add of `pluck` and `pluck_col` methods to retrieve one or multiple column in a Tuple,
+  which are super super fast and convenient!
+- Add `Clear.with_cli` method to allow to use the CLI in your project. Check the documentation !
 - Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
+- Renaming of `with_serial_pkey` to `primary_key`; refactoring of the macro-code allowing to add other type of keys.
+  - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
 - Comments of source code
-- SelectQuery now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+- `SelectQuery` now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
 
 ## Bug fixes
 - Fix #66, #62

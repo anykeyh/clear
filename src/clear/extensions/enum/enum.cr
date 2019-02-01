@@ -3,6 +3,7 @@ module Clear
   end
 
   # Clear::Enum wrap the enums used in PostgreSQL.
+  # See `Clear.enum` macro helper.
   abstract struct Enum
     include Clear::Expression::Literal
 

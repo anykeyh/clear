@@ -173,6 +173,20 @@ module ModelSpec
         end
       end
 
+      it "can pluck" do
+        temporary do
+          reinit
+          User.create!(id: 1, first_name: "John", middle_name: "William")
+          User.create!(id: 2, first_name: "Hans", middle_name: "Zimmer")
+
+          User.query.pluck("first_name", "middle_name").should eq [{"John", "William"}, {"Hans", "Zimmer"}]
+          User.query.limit(1).pluck_col("first_name").should eq(["John"])
+          User.query.limit(1).pluck_col("first_name", String).should eq(["John"])
+          User.query.order_by("id").pluck_col("CASE WHEN id % 2 = 0 THEN id ELSE NULL END AS id").should eq([2_i64, nil])
+          User.query.pluck("first_name": String, "UPPER(middle_name)": String).should eq [{"John", "WILLIAM"}, {"Hans", "ZIMMER"}]
+        end
+      end
+
       it "can detect persistence" do
         temporary do
           reinit
