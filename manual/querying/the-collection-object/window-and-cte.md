@@ -10,7 +10,7 @@ In this case, using joins onto a generated series of day is the way to go. CTE m
 
 ```ruby
 dates_in_september = Clear::SQL.select({
-    day_start: "generate_series(date '2018-09-01', date '2018-09-30', '1 day'::interval)", 
+    day_start: "generate_series(date '2018-09-01', date '2018-09-30', '1 day'::interval)",
     day_end: "generate_series(date '2018-09-01', date '2018-09-30', '1 day'::interval) + '1 day'::interval";
 })
 
@@ -18,14 +18,14 @@ Clear::SQL.select({
     count: "COUNT(users.*)",
     day: "dates.day_start"
 })
-.with_cte(dates: dates_in_septembers)
-.from("dates")
-.left_joins(User.table){ (users.created_at >= day_start) & (users.created_at < day_end) }
-.group_by("dates.day_start")
-.order_by("dates.day_start")
-.fetch do |hash|
-    puts "users created the #{hash["day"]}: #{hash["count"]}"
-end
+  .with_cte(dates: dates_in_septembers)
+  .from("dates")
+  .left_joins(User.table){ (users.created_at >= day_start) & (users.created_at < day_end) }
+  .group_by("dates.day_start")
+  .order_by("dates.day_start")
+  .fetch do |hash|
+      puts "users created the #{hash["day"]}: #{hash["count"]}"
+  end
 ```
 
 {% hint style="info" %}

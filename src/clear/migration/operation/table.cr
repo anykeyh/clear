@@ -145,13 +145,18 @@ module Clear::Migration
       end
     end
 
-    #
+    # DEPRECATED
     # Method missing is used to generate add_column using the method name as
     # column type (ActiveRecord's style)
     macro method_missing(caller)
-      type = {{caller.name.stringify}}
+      {% raise "Migration: usage of Table##{caller.name} is deprecated.\n" +
+                "Tip: use instead `self.column(NAME, \"#{caller.name}\", ...)`" %}
+    end
 
-      type = case type
+    def column(name, type, default = nil, null = true, primary = false,
+      index = false, unique = false, array = false )
+
+      type = case type.to_s
       when "string"
         "text"
       when "int32", "integer"
@@ -161,16 +166,11 @@ module Clear::Migration
       when "datetime"
         "timestamp without time zone"
       else
-        type
+        type.to_s
       end
 
-      {% raise "STOP" if caller.name == "add_index" %}
-
-      {% if caller.named_args.is_a?(Nop) %}
-        self.add_column( {{caller.args[0]}}.to_s, type: type )
-      {% else %}
-        self.add_column( {{caller.args[0]}}.to_s, type: type, {{caller.named_args.join(", ").id}} )
-      {% end %}
+      self.add_column(name.to_s, type: type, default: default, null: null,
+        primary: primary, index: index, unique: unique, array: array)
     end
   end
 
@@ -240,11 +240,11 @@ module Clear::Migration
 
       case id
       when true, :bigserial
-        table.bigserial :id, primary: true, null: false
+        table.column "id", "bigserial", primary: true, null: false
       when :serial
-        table.serial :id, primary: true, null: false
+        table.column "id", "serial", primary: true, null: false
       when :uuid
-        table.uuid :id, primary: true, null: false
+        table.column "id", "uuid", primary: true, null: false
       when false
       else
         raise "Unknown key type while try to create new table: `#{id}`. Candidates are :bigserial, :serial and :uuid" +

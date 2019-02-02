@@ -6,7 +6,7 @@ module UUIDSpec
 
     def change(dir)
       create_table(:dbobjects, id: :uuid) do |t|
-        t.string :name, null: false
+        t.column :name, :string, null: false
       end
     end
   end

@@ -24,7 +24,7 @@ module ScopeSpec
 
     def change(dir)
       create_table "scope_models" do |t|
-        t.integer "value", index: true, null: true
+        t.column "value", "integer", index: true, null: true
       end
     end
   end

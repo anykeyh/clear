@@ -7,7 +7,7 @@ class Clear::Model::Converter::UUIDConverter
     when Slice(UInt8)
       UUID.new(x)
     else
-      raise "Cannot convert from #{x.class} to UUID"
+      raise Clear::ErrorMessages.converter_error(x.class.name, "UUID")
     end
   end
 

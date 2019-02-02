@@ -16,7 +16,7 @@ module SeedSpec
 
     def change(dir)
       create_table "seed_models" do |t|
-        t.string "value", index: true, null: false
+        t.column "value", "string", index: true, null: false
       end
     end
   end

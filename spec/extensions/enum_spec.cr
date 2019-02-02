@@ -16,8 +16,8 @@ module EnumSpec
       create_enum :other_enum, ["a", "b", "c"]
 
       create_table(:enum_users) do |t|
-        t.string :name
-        t.gender_type :gender
+        t.column :name, :string
+        t.column :gender, :gender_type
 
         t.timestamps
       end

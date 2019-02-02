@@ -41,10 +41,10 @@ module PolymorphismSpec
 
     def change(dir)
       create_table "polymorphs" do |t|
-        t.text "type", index: true, null: false
-        t.text "string_value"
-        t.integer "integer_value"
-        t.integer "common_value"
+        t.column "type", "text", index: true, null: false
+        t.column "string_value", "text"
+        t.column "integer_value", "integer"
+        t.column "common_value", "integer"
       end
     end
   end

@@ -6,17 +6,17 @@ module NestedQuerySpec
 
     def change(dir)
       create_table "tags" do |t|
-        t.bigint "taggable_id", index: true
-        t.string "name"
+        t.column "taggable_id", "bigint", index: true
+        t.column "name", "string"
       end
 
       create_table "videos" do |t|
-        t.string "name"
+        t.column "name", "string"
       end
 
       create_table "releases" do |t|
-        t.bigint "video_id", index: true
-        t.string "name"
+        t.column "video_id", "bigint", index: true
+        t.column "name", "string"
       end
 
       <<-SQL

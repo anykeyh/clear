@@ -97,33 +97,33 @@ module ModelSpec
 
     def change(dir)
       create_table "model_categories" do |t|
-        t.text "name"
+        t.column "name", "string"
 
         t.timestamps
       end
 
       create_table "model_tags", id: :serial do |t|
-        t.text "name", unique: true, null: false
+        t.column "name", "string", unique: true, null: false
       end
 
       create_table "model_users" do |t|
-        t.text "first_name"
-        t.text "last_name"
+        t.column "first_name", "string"
+        t.column "last_name", "string"
 
-        t.bool "active", null: true
+        t.column "active", "bool", null: true
 
-        t.add_column "middle_name", type: "varchar(32)"
+        t.column "middle_name", type: "varchar(32)"
 
-        t.jsonb "notification_preferences", index: "gin", default: "'{}'"
+        t.column "notification_preferences", "jsonb", index: "gin", default: "'{}'"
 
         t.timestamps
       end
 
       create_table "model_posts" do |t|
-        t.string "title", index: true
+        t.column "title", "string", index: true
 
-        t.string "tags", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
-        t.bigint "flags", array: true, index: "gin", default: "'{}'::bigint[]"
+        t.column "tags", "string", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
+        t.column "flags", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
@@ -139,7 +139,7 @@ module ModelSpec
       create_table "model_user_infos" do |t|
         t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
 
-        t.int64 "registration_number", index: true
+        t.column "registration_number", "int64", index: true
 
         t.timestamps
       end

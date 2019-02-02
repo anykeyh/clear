@@ -100,7 +100,7 @@ module Clear::Migration::FullTextSearchableTableHelpers
   def full_text_searchable(on : Array(Tuple(String, Char)),
                            column_name = "full_text_vector", catalog = "pg_catalog.english",
                            trigger_name = nil, function_name = nil)
-    tsvector(column_name, index: "gin")
+    column(column_name, "tsvector", index: "gin")
 
     migration.not_nil!.add_operation(Clear::Migration::FullTextSearchableOperation.new(self.name,
       on, catalog, trigger_name, function_name, column_name))

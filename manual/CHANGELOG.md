@@ -8,10 +8,14 @@
   which are super super fast and convenient!
 - Add `Clear.with_cli` method to allow to use the CLI in your project. Check the documentation !
 - Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
-- Renaming of `with_serial_pkey` to `primary_key`; refactoring of the macro-code allowing to add other type of keys.
-  - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
 - Comments of source code
 - `SelectQuery` now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+
+## Breaking changes
+- Migration: use of `table.column` instead of `table.${type}` (remove the method missing method); this was causing headache
+  in some case where the syntax wasn't exactly followed, as the error output from the compiler was unclear.
+- Renaming of `with_serial_pkey` to `primary_key`; refactoring of the macro-code allowing to add other type of keys.
+  - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
 
 ## Bug fixes
 - Fix #66, #62
