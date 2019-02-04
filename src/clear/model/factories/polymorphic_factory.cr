@@ -19,7 +19,11 @@ module Clear::Model::Factory
       case v
       when String
         if v == T.name
-          raise "STOP"
+          {% if T.abstract? %}
+            raise "Cannot instantiate #{@type_field} because it is abstract class"
+          {% else %}
+            T.new(v, h, cache, persisted, fetch_columns).as(Clear::Model)
+          {% end %}
         else
           Clear::Model::Factory.build(v, h, cache, persisted, fetch_columns).as(Clear::Model)
         end

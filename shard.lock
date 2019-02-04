@@ -6,7 +6,7 @@ shards:
 
   ameba:
     github: veelenga/ameba
-    version: 0.9.0
+    commit: 62c8247e21a890845b91677d3b32e6164830f725
 
   db:
     github: crystal-lang/crystal-db

@@ -61,7 +61,7 @@ module Clear::SQL::Logger
   rescue e
     raise Clear::SQL::Error.new(
       message:
-        [e.message,"Error caught, last query was:\n#{Clear::SQL::Logger.colorize_query(sql)}"].compact.join("\n"),
+        [e.message,"Error caught, last query was:", Clear::SQL::Logger.colorize_query(sql)].compact.join("\n"),
       cause: e
     )
   end
