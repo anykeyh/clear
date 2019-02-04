@@ -1,6 +1,6 @@
 language: crystal
 script:
-- crystal spec
+- crystal spec --Dquiet
 - bin/ameba
 - crystal docs
 services:
