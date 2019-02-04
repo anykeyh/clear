@@ -3,16 +3,16 @@ module Clear::Model::ClassMethods
     macro included # When included into final Model
       macro inherited #Polymorphism
         macro finished
-          __generate_relations
-          __generate_columns
-          __init_default_factory
+          __generate_relations__
+          __generate_columns__
+          __register_factory__
         end
       end
 
       macro finished
-        __generate_relations
-        __generate_columns
-        __init_default_factory
+        __generate_relations__
+        __generate_columns__
+        __register_factory__
       end
 
       # Return the table name setup for this model.

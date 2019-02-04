@@ -148,7 +148,7 @@ module Clear::Model::HasColumns
 
   # :nodoc:
   # Used internally to gather the columns
-  macro __generate_columns
+  macro __generate_columns__
     {% for name, settings in COLUMNS %}
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}

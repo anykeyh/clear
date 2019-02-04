@@ -2,8 +2,9 @@ require "../sql"
 require "./collection"
 require "./column"
 require "./modules/**"
-require "./converter/**"
+require "./converters/**"
 require "./validation/**"
+require "./factory"
 
 module Clear::Model
   include Clear::ErrorMessages
@@ -18,7 +19,7 @@ module Clear::Model
   include Clear::Model::HasScope
   include Clear::Model::ClassMethods
   include Clear::Model::HasJson
-  include Clear::Model::IsPolymorphic
+  include Clear::Model::HasFactory
   include Clear::Model::Initializer
 
   getter cache : Clear::Model::QueryCache?

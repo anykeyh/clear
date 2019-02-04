@@ -1,14 +1,13 @@
 require "../spec_helper"
 
 module PolymorphismSpec
+  # MODELS POLYMORPHISM
   abstract class AbstractClass
     include Clear::Model
 
     self.table = "polymorphs"
 
-    polymorphic ConcreteClass1,
-      ConcreteClass2,
-      through: "type"
+    polymorphic through: "type"
 
     column common_value : Int32?
 

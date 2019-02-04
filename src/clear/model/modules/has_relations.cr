@@ -129,7 +129,7 @@ module Clear::Model::HasRelations
 
   # :nodoc:
   # Generate the relations by calling the macro
-  macro __generate_relations
+  macro __generate_relations__
     {% begin %}
     {% for name, settings in RELATIONS %}
       {% if settings[:relation_type] == :belongs_to %}

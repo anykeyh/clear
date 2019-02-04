@@ -280,7 +280,7 @@ module Clear::Model
         o = [] of T
 
         fetch(fetch_all: false) do |hash|
-          o << T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
+          o << Clear::Model::Factory.build(T, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
         end
 
         o.each(&block)
@@ -306,7 +306,7 @@ module Clear::Model
         cr.each(&block)
       else
         self.fetch_with_cursor(count: batch) do |hash|
-          yield(T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+          yield(Clear::Model::Factory.build(T, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
         end
       end
     end
@@ -316,7 +316,7 @@ module Clear::Model
     # the primary key of `my_model` will be setup by default, preventing you
     # to forget it.
     def build : T
-      T.factory.build(@tags, persisted: false)
+      Clear::Model::Factory.build(T, @tags, persisted: false)
     end
 
     # Build a new collection; if the collection comes from a has_many relation
@@ -326,7 +326,7 @@ module Clear::Model
     # You can pass extra parameters using a named tuple:
     # `my_model.associations.build({a_column: "value"}) `
     def build(x : NamedTuple) : T
-      T.factory.build(@tags.merge(x.to_h), persisted: false)
+      Clear::Model::Factory.build(T, @tags.merge(x.to_h), persisted: false)
     end
 
     # Check whether the query return any row.
@@ -454,7 +454,7 @@ module Clear::Model
       tuple.map { |k, v| str_hash[k.to_s] = v }
       str_hash.merge!(@tags)
 
-      r = T.factory.build(str_hash)
+      r = Clear::Model::Factory.build(T, str_hash)
       yield(r)
 
       r
@@ -481,7 +481,7 @@ module Clear::Model
       order_by(Clear::SQL.escape("#{T.pkey}"), "ASC") unless T.pkey.nil? || order_bys.any?
 
       limit(1).fetch do |hash|
-        return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
+        return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
       end
 
       nil
@@ -518,7 +518,7 @@ module Clear::Model
         clear_order_bys.order_by(new_order)
 
         limit(1).fetch do |hash|
-          return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
+          return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
         end
 
         nil

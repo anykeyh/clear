@@ -37,8 +37,8 @@ module Clear::Model::HasSaving
 
         o = [] of self
         query.fetch(@@connection) do |hash|
-          o << factory.build(hash, persisted: true,
-          fetch_columns: false, cache: nil)
+          o << Clear::Model::Factory.build(self.name, hash, persisted: true,
+          fetch_columns: false, cache: nil).as(self)
         end
 
         o.each(&.trigger_after_events(:create))
