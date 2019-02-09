@@ -7,6 +7,8 @@ class Clear::Model::Converter::UUIDConverter
       UUID.new(x)
     when Slice(UInt8)
       UUID.new(x)
+    when UUID
+      x
     else
       raise "Cannot convert from #{x.class} to UUID"
     end
