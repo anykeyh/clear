@@ -11,7 +11,7 @@ module UUIDSpec
       end
 
       create_table(:dbobjects2, id: :uuid) do |t|
-        t.references to: "dbobjects", name: "db_object_id", type: "uuid"
+        t.references to: "dbobjects", name: "db_object_id", type: "uuid", null: true
       end
 
     end
@@ -80,9 +80,13 @@ module UUIDSpec
 
         dbo_id = DBObject.query.first!.id
         DBObject2.create!({db_object_id: dbo_id})
+        DBObject2.create!
 
         obj = DBObject2.query.first!
         obj.db_object.not_nil!.id.should eq dbo_id
+
+        obj = DBObject2.query.offset(1).first!
+        obj.db_object.should eq nil
 
       end
     end

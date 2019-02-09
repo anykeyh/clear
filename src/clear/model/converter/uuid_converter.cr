@@ -9,6 +9,8 @@ class Clear::Model::Converter::UUIDConverter
       UUID.new(x)
     when UUID
       x
+    when Nil
+      nil
     else
       raise "Cannot convert from #{x.class} to UUID"
     end
