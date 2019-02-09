@@ -144,21 +144,21 @@ module Clear::Model::HasColumns
        } %}
   end
 
-
-
   # :nodoc:
   # Used internally to gather the columns
   macro __generate_columns
     {% for name, settings in COLUMNS %}
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
-      @{{name}}_column : Clear::Model::Column({{type}}) = Clear::Model::Column({{type}}).new("{{name}}",
+      {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
+      @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
+        Clear::Model::Column({{type}}, {{converter}}).new("{{name}}",
         has_db_default: {{has_db_default}} )
 
       # Returns the column object used to manage `{{name}}` field
       #
       # See `Clear::Model::Column`
-      def {{name}}_column : Clear::Model::Column({{type}})
+      def {{name}}_column : Clear::Model::Column({{type}}, {{converter}})
         @{{name}}_column
       end
 
@@ -196,7 +196,7 @@ module Clear::Model::HasColumns
         \{% end %}
 
         \{% if settings = COLUMNS["#{name}".id] %}
-          @\{{name}}_column.reset(Clear::Model::Converter.to_column(\{{settings[:converter]}}, t[:\{{name}}]))
+          @\{{name}}_column.reset_convert(t[:\{{name}}])
         \{% else %}
           self.\{{name}} = t[:\{{name}}]
         \{% end %}
@@ -213,7 +213,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
-        @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
+        @{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
       {% end %}
     end
 
@@ -224,7 +224,7 @@ module Clear::Model::HasColumns
       {% for name, settings in COLUMNS %}
         if @{{name}}_column.defined? &&
            @{{name}}_column.changed?
-          o[{{settings[:column_name]}}] = Clear::Model::Converter.to_db({{settings[:converter]}}, @{{name}}_column.value)
+          o[{{settings[:column_name]}}] = @{{name}}_column.to_sql_value
         end
       {% end %}
 
@@ -265,7 +265,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         if full || @{{name}}_column.defined?
-          out[{{settings[:column_name]}}] = Clear::Model::Converter.to_db({{settings[:converter]}}, @{{name}}_column.value(nil))
+          out[{{settings[:column_name]}}] = @{{name}}_column.to_sql_value(nil)
         end
       {% end %}
 
@@ -288,7 +288,7 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         if h.has_key?({{settings[:column_name]}})
-          @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))
+          @{{name}}_column.reset_convert(h[{{settings[:column_name]}}])
         end
       {% end %}
     end
