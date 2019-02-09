@@ -15,7 +15,7 @@ module UUIDSpec
       end
 
     end
-    
+
   end
 
   class DBObject
@@ -36,7 +36,7 @@ module UUIDSpec
     self.table = "dbobjects2"
 
     belongs_to db_object : DBObject, foreign_key: "db_object_id", key_type: UUID?
-    
+
     with_serial_pkey type: :uuid
   end
 

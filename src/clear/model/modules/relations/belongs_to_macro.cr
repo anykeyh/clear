@@ -15,7 +15,7 @@ module Clear::Model::Relations::BelongsToMacro
         cache = @cache
 
         if cache && cache.active? "{{method_name}}"
-          @cached_{{method_name}} = cache.hit("{{method_name}}", 
+          @cached_{{method_name}} = cache.hit("{{method_name}}",
             self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
           ).first?
         else

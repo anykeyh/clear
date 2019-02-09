@@ -151,7 +151,7 @@ module Clear::Model::HasColumns
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
-      @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) = 
+      @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
         Clear::Model::Column({{type}}, {{converter}}).new("{{name}}",
         has_db_default: {{has_db_default}} )
 
