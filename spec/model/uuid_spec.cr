@@ -79,15 +79,11 @@ module UUIDSpec
         end
 
         dbo_id = DBObject.query.first!.id
-        DBObject2.create!({db_object_id: dbo_id})
-        DBObject2.create!
+        obj1 = DBObject2.create!({db_object_id: dbo_id})
+        obj2 = DBObject2.create!
 
-        obj = DBObject2.query.first!
-        obj.db_object.not_nil!.id.should eq dbo_id
-
-        obj = DBObject2.query.offset(1).first!
-        obj.db_object.should eq nil
-
+        obj1.db_object.not_nil!.id.should eq dbo_id
+        obj2.db_object.should eq nil
       end
     end
 
