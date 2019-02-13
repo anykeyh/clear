@@ -101,7 +101,7 @@ module Clear::Migration
       end
 
       dir.down do
-        @operations.each { |op|
+        @operations.reverse_each { |op|
           op.down.each { |x| Clear::SQL.execute(x.as(String)) }
         }
 
