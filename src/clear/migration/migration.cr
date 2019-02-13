@@ -159,15 +159,15 @@ end
 
 # :nodoc:
 # This class is here to prevent bug #5705
-# and will be removed at newer version of Crystal
-# class DummyMigration
-#   include Clear::Migration
-#   def uid
-#     -0x01_i64
-#   end
-#   def change(dir)
-#     # Nothing
-#   end
-# end
+# and will be removed when the bug is fixed
+class DummyMigration
+  include Clear::Migration
+  def uid
+    -0x01_i64
+  end
+  def change(dir)
+    # Nothing
+  end
+end
 
 require "./operation"
