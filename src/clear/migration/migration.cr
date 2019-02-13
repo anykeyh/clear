@@ -62,6 +62,8 @@
 module Clear::Migration
   include Clear::ErrorMessages
 
+  abstract def uid : Int64
+
   # This error is throw when you try to revert a migration which is irreversible.
   class IrreversibleMigration < Exception; end
 
