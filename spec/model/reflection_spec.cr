@@ -14,13 +14,13 @@ module ReflectionSpec
         temporary do
           first_table = Clear::Reflection::Table.query.first!
 
-          expect_raises Clear::Model::ReadOnlyModelError do
+          expect_raises Clear::Model::ReadOnlyError do
             first_table.save!
           end
 
           first_table.columns.first!.save.should eq false
 
-          expect_raises Clear::Model::ReadOnlyModelError do
+          expect_raises Clear::Model::ReadOnlyError do
             first_table.columns.first!.save!
           end
         end

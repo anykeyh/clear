@@ -16,6 +16,8 @@
   in some case where the syntax wasn't exactly followed, as the error output from the compiler was unclear.
 - Renaming of `with_serial_pkey` to `primary_key`; refactoring of the macro-code allowing to add other type of keys.
   - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
+- Renaming of `Clear::Model::InvalidModelError` to `Clear::Model::InvalidError` and `Clear::Model::ReadOnlyError` to
+  `Clear::Model::ReadOnly` to simplify as those classes are already in the `Clear::Model` namespace
 
 ## Bug fixes
 - Fix #66, #62
