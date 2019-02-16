@@ -59,6 +59,11 @@ module Clear::Model
       set(json.as_h)
     end
 
+    # def initialize(json : Hash(String, ::JSON::Any::Type), @cache : Clear::Model::QueryCache? = nil, @persisted = false )
+    #   set(json)
+    # end
+
+
     def initialize(t : NamedTuple, @persisted = false)
       set(t)
     end

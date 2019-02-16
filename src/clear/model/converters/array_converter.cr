@@ -26,6 +26,8 @@ module Clear::Model::Converter::ArrayConverter{{exp.id}}
       return nil
     when ::{{exp.id}}
       return [x]
+    when Array(::{{exp.id}})
+      return x
     when Array(::PG::{{exp.id}}Array)
       return x.map do |i|
         case i
@@ -39,10 +41,10 @@ module Clear::Model::Converter::ArrayConverter{{exp.id}}
       if arr = x.as_a?
         return arr.map(&.as_{{k.id}})
       else
-        raise "Cannot convert from #{x.class} to Array"
+        raise "Cannot convert from #{x.class} to Array({{exp.id}}) [1]"
       end
     else
-      raise "Cannot convert from #{x.class} to Array"
+      raise "Cannot convert from #{x.class} to Array({{exp.id}}) [2]"
     end
   end
 

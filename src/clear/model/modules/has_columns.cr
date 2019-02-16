@@ -201,6 +201,8 @@ module Clear::Model::HasColumns
           self.\{{name}} = t[:\{{name}}]
         \{% end %}
       \{% end %}
+
+      self
     end
 
     def set( t : NamedTuple )
@@ -219,14 +221,22 @@ module Clear::Model::HasColumns
       self
     end
 
-    def set( from_json : JSON::Any )
-      obj = from_json.as_h
+    # Set the model fields from hash
+    def set( h : Hash(String, ::Clear::SQL::Any) )
+      super
+
       {% for name, settings in COLUMNS %}
-        v = obj.fetch({{settings[:column_name]}}){ Column::UNKNOWN }
-        @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
+        if h.has_key?({{settings[:column_name]}})
+          @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))
+        end
       {% end %}
 
       self
+    end
+
+
+    def set( from_json : JSON::Any )
+      return set(from_json.as_h)
     end
 
     # Generate the hash for update request (like during save)
@@ -294,16 +304,6 @@ module Clear::Model::HasColumns
       return false
     end
 
-    # Set the model fields from hash
-    def set( h : Hash(String, ::Clear::SQL::Any) )
-      super
-
-      {% for name, settings in COLUMNS %}
-        if h.has_key?({{settings[:column_name]}})
-          @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))
-        end
-      {% end %}
-    end
 
   end
 end
