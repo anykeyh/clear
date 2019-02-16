@@ -62,12 +62,12 @@ class Clear::Model::Column(T, C)
   def reset(x : T?)
     @changed = false
 
-    if T.nilable?
+    {% if T.nilable? %}
       @value = x.as(T)
-    else
+    {% else %}
       raise null_column_mapping_error(@name, T) if x.nil?
       @value = x.not_nil!
-    end
+    {% end %}
 
     @old_value = @value
   end
