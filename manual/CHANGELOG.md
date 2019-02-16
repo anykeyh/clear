@@ -3,7 +3,14 @@
 ## Features
 
 - [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
-- [EXPERIMENTAL] add `unlink` method on collection which comes from `has_many through:`
+- [EXPERIMENTAL] Add `unlink` method on collection which comes from `has_many through:`
+- [EXPERIMENTAL] Add possibility to create model from JSON:
+
+  ```crystal
+    json = JSON.parse(%({"first_name": "John", "last_name": "Doe", "tags": ["customer", "medical"] }))
+    User.new(json)
+  ```
+
 - Add of `pluck` and `pluck_col` methods to retrieve one or multiple column in a Tuple,
   which are super super fast and convenient!
 - Add `Clear.with_cli` method to allow to use the CLI in your project. Check the documentation !

@@ -35,12 +35,14 @@ module Clear::Model::Converter::ArrayConverter{{exp.id}}
           nil
         end
       end.compact
-    else
-      if arr = ::JSON.parse(x.to_s).as_a?
-        return arr.map{ |x| x.as_{{k.id}} }
+    when ::JSON::Any
+      if arr = x.as_a?
+        return arr.map(&.as_{{k.id}})
+      else
+        raise "Cannot convert from #{x.class} to Array"
       end
-
-      return nil
+    else
+      raise "Cannot convert from #{x.class} to Array"
     end
   end
 

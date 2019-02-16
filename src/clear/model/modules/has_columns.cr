@@ -208,13 +208,25 @@ module Clear::Model::HasColumns
     end
 
     # Set the columns from hash
-    def set( h : Hash(Symbol, _) )
+    def set( h : Hash(Symbol, Clear::SQL::Any) )
       super
 
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
         @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
       {% end %}
+
+      self
+    end
+
+    def set( from_json : JSON::Any )
+      obj = from_json.as_h
+      {% for name, settings in COLUMNS %}
+        v = obj.fetch({{settings[:column_name]}}){ Column::UNKNOWN }
+        @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
+      {% end %}
+
+      self
     end
 
     # Generate the hash for update request (like during save)
