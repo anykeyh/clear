@@ -3,6 +3,9 @@ require "../spec_helper"
 module ValidationSpec
   class User
     include Clear::Model
+
+    primary_key
+
     column user_name : String   # Must be present
     column first_name : String? # No presence
   end
@@ -50,7 +53,7 @@ module ValidationSpec
       # In case we select a user from db, byt without user_name in the
       # selection of column, then the model is still valid for update even
       # without the presence of user_name.
-      u = User.new persisted: true
+      u = User.new({id: 1}, persisted: true)
       u.valid?.should eq(true)
     end
 

@@ -29,7 +29,7 @@ module Clear::Model::HasColumns
   #   model.set({"id" => 1})
   #   model.id # 1
   # ```
-  def set( h : Hash(String, ::Clear::SQL::Any) )
+  def set( h : Hash(String, _) )
   end
 
   # Access to direct SQL attributes given by the request used to build the model.
@@ -210,9 +210,7 @@ module Clear::Model::HasColumns
     end
 
     # Set the columns from hash
-    def set( h : Hash(Symbol, Clear::SQL::Any) )
-      super
-
+    def set( h : Hash(Symbol, _) )
       {% for name, settings in COLUMNS %}
         v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
         @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, v)) unless v.is_a?(Column::UnknownClass)
@@ -222,9 +220,7 @@ module Clear::Model::HasColumns
     end
 
     # Set the model fields from hash
-    def set( h : Hash(String, ::Clear::SQL::Any) )
-      super
-
+    def set( h : Hash(String, _) )
       {% for name, settings in COLUMNS %}
         if h.has_key?({{settings[:column_name]}})
           @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))

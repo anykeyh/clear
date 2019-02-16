@@ -20,9 +20,11 @@ module ModelSpec
       p.flags.should eq [1, 2, 3]
 
       # Manage hash of JSON::Any::Type, convenient for example with Kemal:
-      p = Post.new(json2)
+      json_h = json2.as_h
+      p = Post.new(json_h)
       p.tags.should eq ["a", "b", "c"]
       p.flags.should eq [1, 2, 3]
+
     end
   end
 
