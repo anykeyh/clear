@@ -211,21 +211,25 @@ module Clear::Model::HasColumns
 
     # Set the columns from hash
     def set( h : Hash(Symbol, _) )
-      {% for name, settings in COLUMNS %}
-        v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
-        @{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
-      {% end %}
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
 
       self
     end
 
     # Set the model fields from hash
     def set( h : Hash(String, _) )
-      {% for name, settings in COLUMNS %}
-        if h.has_key?({{settings[:column_name]}})
-          @{{name}}_column.reset(Clear::Model::Converter.to_column({{settings[:converter]}}, h[{{settings[:column_name]}}]))
+      super
+
+      \{% for name, settings in COLUMNS %}
+        if h.has_key?(\{{settings[:column_name]}})
+          @\{{name}}_column.reset(Clear::Model::Converter.to_column(\{{settings[:converter]}}, h[\{{settings[:column_name]}}]))
         end
-      {% end %}
+      \{% end %}
 
       self
     end
@@ -254,6 +258,14 @@ module Clear::Model::HasColumns
     #
     # This method is called on validation.
     def validate_fields_presence
+      # It should have only zero (non-polymorphic) or
+      # one (polymorphic) ancestor inheriting from Clear::Model
+      {% for ancestors in @type.ancestors %}
+        {% if ancestors < Clear::Model %}
+        super
+        {% end %}
+      {% end %}
+
       {% for name, settings in COLUMNS %}
         unless persisted?
           if @{{name}}_column.failed_to_be_present?
