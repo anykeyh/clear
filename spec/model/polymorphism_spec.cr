@@ -114,14 +114,15 @@ module PolymorphismSpec
       temporary do
         reinit
 
+        # I had a bug in production application, which I cannot reproduce with specs.
         5.times { ConcreteClass1.create({integer_value: 1}) }
         10.times { ConcreteClass2.new({"string_value" => "Yey"}).save! }
 
         json = JSON.parse(%<{"string_value": "Yey"}>)
         10.times { ConcreteClass2.new(json).save! }
 
-        concret = ConcreteClass1.find(1).class.should eq ConcreteClass1
-        concret2 = AbstractClass.find(1).class.should eq ConcreteClass1
+        ConcreteClass1.find(1).class.should eq ConcreteClass1
+        AbstractClass.find(1).class.should eq ConcreteClass1
       end
 
     end
