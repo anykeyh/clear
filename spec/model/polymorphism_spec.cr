@@ -109,5 +109,26 @@ module PolymorphismSpec
         c2.should eq 10
       end
     end
+
+    it "can query with subclass" do
+      temporary do
+        reinit
+
+        5.times { ConcreteClass1.create({integer_value: 1}) }
+        10.times { ConcreteClass2.new({"string_value" => "Yey"}).save! }
+
+        json = JSON.parse(%<{"string_value": "Yey"}>)
+        10.times { ConcreteClass2.new(json).save! }
+
+        concret = ConcreteClass1.find(1)
+        concret2 = AbstractClass.find(1)
+
+        pp concret
+        pp concret2
+        raise "stop"
+      end
+
+    end
+
   end
 end

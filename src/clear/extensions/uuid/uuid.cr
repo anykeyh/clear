@@ -6,6 +6,10 @@ class Clear::Model::Converter::UUIDConverter
       UUID.new(x)
     when Slice(UInt8)
       UUID.new(x)
+    when UUID
+      x
+    when Nil
+      nil
     else
       raise Clear::ErrorMessages.converter_error(x.class.name, "UUID")
     end

@@ -6,7 +6,7 @@ require "db"
 #   - Raise error if we try to access the value of a field
 #     which is not gathered through the query system (uninitialized column).
 #     Or use the `get_def` to get with default value
-class Clear::Model::Column(T)
+class Clear::Model::Column(T, C)
   include Clear::ErrorMessages
 
   struct UnknownClass
@@ -32,6 +32,11 @@ class Clear::Model::Column(T)
     @value.as(T)
   end
 
+  # Return the database converted value using the converter
+  def to_sql_value(default = nil) : Clear::SQL::Any
+    C.to_db(value(default))
+  end
+
   # Returns the current value of this column or `default` if the value is undefined.
   def value(default : X) : T | X forall X
     defined? ? @value.as(T) : default
@@ -45,6 +50,10 @@ class Clear::Model::Column(T)
     end
 
     @value
+  end
+
+  def reset_convert(x)
+    reset( C.to_column x )
   end
 
   # Reset the current field.

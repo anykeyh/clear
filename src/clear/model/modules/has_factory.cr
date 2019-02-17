@@ -19,11 +19,6 @@ module Clear::Model::HasFactory
     end
   end
 
-  macro included
-    macro included
-    end
-  end
-
   # :nodoc:
   macro __default_factory__
     Clear::Model::Factory.add({{@type.stringify}}, ::Clear::Model::Factory::SimpleFactory({{@type}}).new)
