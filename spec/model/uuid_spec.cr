@@ -23,14 +23,9 @@ module UUIDSpec
 
     self.table = "dbobjects"
 
-<<<<<<< HEAD
     primary_key type: :uuid
-=======
-    with_serial_pkey type: :uuid
+    has_many db_objects : DBObject2, foreign_key: "db_object_id"
 
-    has_many db_object : DBObject, foreign_key: "db_object_id"
-
->>>>>>> 4fae4a638cdafd0fce2ce6888038d977af6ebbf9
     column name : String
   end
 
@@ -41,7 +36,7 @@ module UUIDSpec
 
     belongs_to db_object : DBObject, foreign_key: "db_object_id", key_type: UUID?
 
-    with_serial_pkey type: :uuid
+    primary_key type: :uuid
   end
 
   def self.reinit
