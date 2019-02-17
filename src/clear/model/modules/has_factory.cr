@@ -47,6 +47,8 @@ module Clear::Model::HasFactory
     # Subclasses are refined using a default scope
     # to filter by type.
     macro inherited
+      class Collection < Clear::Model::CollectionBase(\{{@type}}); end
+
       def self.query
         Collection.new.from(table).where{ {{through.id}} == self.name }
       end
