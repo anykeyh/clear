@@ -8,6 +8,14 @@ module ValidationSpec
 
     column user_name : String   # Must be present
     column first_name : String? # No presence
+
+    property? on_presence_working : Bool = false
+
+    def validate
+      on_presence user_name, first_name do
+        @on_presence_working = true
+      end
+    end
   end
 
   class ValidateNotEmpty
@@ -36,6 +44,7 @@ module ValidationSpec
           /yahoo.[A-Za-z\.]+$/,
         ].any? { |x| v =~ x }
       end
+
     end
   end
 
@@ -71,6 +80,14 @@ module ValidationSpec
       m.email = "abdul(at)gmail.com"
       m.valid?.should eq(false)
       m.print_errors.should eq("email: must be email, must not be a free email")
+    end
+
+    it "can use on_presence helper" do
+      u = User.new({user_name: "u"}); u.valid?
+      u.on_presence_working?.should eq false
+
+      u = User.new({user_name: "u", first_name: "f"}); u.valid?
+      u.on_presence_working?.should eq true
     end
 
     it "can validate" do

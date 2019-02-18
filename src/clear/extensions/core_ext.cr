@@ -1,5 +1,6 @@
-# Extension of some objects outside of Clear ("Monkey Patching")
 require "base64"
+
+# Extension of some objects outside of Clear ("Monkey Patching")
 
 struct Char
   def to_json(json)

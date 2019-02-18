@@ -14,7 +14,6 @@ module ModelSpec
 
       json2 = JSON.parse(%<{"tags": ["a", "b", "c"], "flags": [1, 2, 3]}>)
 
-      pp json2
       p = Post.new(json2)
       p.tags.should eq ["a", "b", "c"]
       p.flags.should eq [1, 2, 3]

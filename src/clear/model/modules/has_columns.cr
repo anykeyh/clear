@@ -151,6 +151,11 @@ module Clear::Model::HasColumns
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
+      {% if converter == nil %}
+        {% raise "No converter found for `#{settings[:converter].id}`.\n"+
+                 "The type is probably not supported natively by Clear.\n"+
+                 "Please refer to the manual to create a custom converter." %}
+      {% end %}
       @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
         Clear::Model::Column({{type}}, {{converter}}).new("{{name}}",
         has_db_default: {{has_db_default}} )
@@ -260,11 +265,9 @@ module Clear::Model::HasColumns
     def validate_fields_presence
       # It should have only zero (non-polymorphic) or
       # one (polymorphic) ancestor inheriting from Clear::Model
-      {% for ancestors in @type.ancestors %}
-        {% if ancestors < Clear::Model %}
+      {% for ancestors in @type.ancestors %}{% if ancestors < Clear::Model %}
         super
-        {% end %}
-      {% end %}
+      {% end %}{% end %}
 
       {% for name, settings in COLUMNS %}
         unless persisted?

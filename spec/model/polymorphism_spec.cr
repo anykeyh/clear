@@ -116,10 +116,8 @@ module PolymorphismSpec
 
         # I had a bug in production application, which I cannot reproduce with specs.
         5.times { ConcreteClass1.new({integer_value: 1, common_value: 0}).save! }
-        puts "HERE"
         10.times { ConcreteClass2.new({"string_value" => "Yey", "common_value" => 1}).save! }
 
-        puts "OR HERE?"
         json = JSON.parse(%<{"string_value": "Yey", "common_value": -1}>)
         10.times { ConcreteClass2.new(json).save! }
 
