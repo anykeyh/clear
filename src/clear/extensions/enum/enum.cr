@@ -112,12 +112,18 @@ module Clear
   # ```
   macro enum(name, *values, &block)
     struct {{name.id}} < ::Clear::Enum
-      private AUTHORIZED_VALUES = {} of String => {{name.id}}
-
       {% for i in values %}
         {{i.camelcase.id}} = {{name.id}}.new("{{i.id}}")
-        AUTHORIZED_VALUES["{{i.id}}"] = {{i.camelcase.id}}
       {% end %}
+
+      {% begin %}
+        AUTHORIZED_VALUES = {
+        {% for i in values %}
+          "{{i.id}}" => {{i.camelcase.id}},
+        {% end %}
+        }
+      {% end %}
+
 
       # Return the enum with the string passed as parameter.
       # Throw Clear::IllegalEnumValueError if the string is not found.
