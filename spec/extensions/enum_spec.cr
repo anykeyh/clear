@@ -6,6 +6,11 @@ module EnumSpec
   extend self
 
   Clear.enum GenderType, "male", "female", "two_part"
+  Clear.enum ClientType, "company", "non_profit", "personnal" do
+    def pay_vat?
+      self == Personnal
+    end
+  end
 
   class EnumMigration18462
     include Clear::Migration
@@ -36,7 +41,13 @@ module EnumSpec
     EnumMigration18462.new.apply(Clear::Migration::Direction::UP)
   end
 
-  describe "Clear::Migration::CreateEnum" do
+  describe "Clear.enum" do
+    it "can call custom member methods" do
+      ClientType::Personnal.pay_vat?.should eq true
+      ClientType::Company.pay_vat?.should eq false
+      ClientType::NonProfit.pay_vat?.should eq false
+    end
+
     it "Can create and use enum" do
       temporary do
         reinit!

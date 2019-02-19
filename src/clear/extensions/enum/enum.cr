@@ -110,7 +110,7 @@ module Clear
   #   u = User.new
   #   u.gender = MyApp::Gender::Male
   # ```
-  macro enum(name, *values)
+  macro enum(name, *values, &block)
     struct {{name.id}} < ::Clear::Enum
       private AUTHORIZED_VALUES = {} of String => {{name.id}}
 
@@ -162,6 +162,8 @@ module Clear
 
         Clear::Model::Converter.add_converter("\{{@type}}", ::Clear::Model::Converter::\{{@type}}Converter)
       end
+
+      {{yield}}
     end
 
 

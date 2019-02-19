@@ -15,8 +15,23 @@
   which are super super fast and convenient!
 - Add `Clear.with_cli` method to allow to use the CLI in your project. Check the documentation !
 - Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
-- Comments of source code
+- Additional comments in the source code
 - `SelectQuery` now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+- Add optional block on `Enum` definition. This allow you to define custom methods for the enum:
+  ```crystal
+  Clear.enum ClientType, "company", "non_profit", "personnal" do
+    def pay_vat?
+      self == Personnal
+    end
+  end
+  ```
+- Add `?` support in `raw` method:
+  ```crystal
+    a = 1
+    b = 1000
+    c = 2
+    where{ raw("generate_series(?, ?, ?)", a, b, c) }
+  ```
 
 ## Breaking changes
 - Migration: use of `table.column` instead of `table.${type}` (remove the method missing method); this was causing headache
