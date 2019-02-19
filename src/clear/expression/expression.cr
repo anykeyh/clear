@@ -230,11 +230,22 @@ class Clear::Expression
   #
   # ```
   # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
   #
-  def raw(x : String)
-    Node::Raw.new(x)
+  def raw(x : String, *args)
+    idx = -1
+
+    clause = x.gsub("?") do |_|
+      begin
+        Clear::Expression[args[idx += 1]]
+      rescue e : IndexError
+        raise Clear::ErrorMessages.query_building_error(e.message)
+      end
+    end
+
+    Node::Raw.new(clause)
   end
 
   # Use var to create expression of variable. Variables are columns with or without the namespace and tablename:
