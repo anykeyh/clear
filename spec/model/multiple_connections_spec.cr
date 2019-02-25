@@ -25,7 +25,7 @@ module MultipleConnectionsSpec
 
     def change(dir)
       create_table "models_posts_two" do |t|
-        t.string "title", index: true
+        t.column "title", "string", index: true
       end
     end
   end

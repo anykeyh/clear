@@ -7,7 +7,7 @@ module UUIDSpec
     def change(dir)
 
       create_table(:dbobjects, id: :uuid) do |t|
-        t.string :name, null: false
+        t.column :name, :string, null: false
       end
 
       create_table(:dbobjects2, id: :uuid) do |t|
@@ -23,9 +23,8 @@ module UUIDSpec
 
     self.table = "dbobjects"
 
-    with_serial_pkey type: :uuid
-
-    has_many db_object : DBObject, foreign_key: "db_object_id"
+    primary_key type: :uuid
+    has_many db_objects : DBObject2, foreign_key: "db_object_id"
 
     column name : String
   end
@@ -37,7 +36,7 @@ module UUIDSpec
 
     belongs_to db_object : DBObject, foreign_key: "db_object_id", key_type: UUID?
 
-    with_serial_pkey type: :uuid
+    primary_key type: :uuid
   end
 
   def self.reinit

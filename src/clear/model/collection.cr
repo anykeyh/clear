@@ -166,7 +166,7 @@ module Clear::Model
   # class `MyModel::Collection` which inherits from `CollectionBase(MyModel)`
   #
   # Collection are instantiated using `Model.query` method.
-  abstract class CollectionBase(T)
+  class CollectionBase(T)
     include Enumerable(T)
     include Clear::SQL::SelectBuilder
 
@@ -180,6 +180,10 @@ module Clear::Model
     @offset : Int64?
     @lock : String?
     @distinct_value : String?
+
+    @polymorphic : Bool = false
+    @polymorphic_key : String?
+    @polymorphic_scope : Set(String)?
 
     # :nodoc:
     @cache : Clear::Model::QueryCache
@@ -210,8 +214,16 @@ module Clear::Model
       @before_query_triggers = [] of -> Void,
       @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
-      @cached_result = nil
+      @cached_result = nil,
     )
+    end
+
+    def dup
+      if @polymorphic
+        super.flag_as_polymorphic!(@polymorphic_key.not_nil!, @polymorphic_scope.not_nil!)
+      else
+        super
+      end
     end
 
     # :nodoc:
@@ -231,6 +243,16 @@ module Clear::Model
     # :nodoc:
     def with_cached_result(r : Array(T))
       @cached_result = r
+      self
+    end
+
+    # :nodoc:
+    # Used internally to fetch the models if the collection is flagged as polymorphic
+    def flag_as_polymorphic!(@polymorphic_key, scope : Enumerable(String))
+      @polymorphic = true
+      polymorphic_scope = @polymorphic_scope = Set(String).new
+      scope.each{ |x| polymorphic_scope.add(x) }
+
       self
     end
 
@@ -279,8 +301,15 @@ module Clear::Model
       else
         o = [] of T
 
-        fetch(fetch_all: false) do |hash|
-          o << T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
+        if @polymorphic
+          fetch(fetch_all: false) do |hash|
+            type = hash[@polymorphic_key].as(String)
+            o << Clear::Model::Factory.build(type, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache).as(T)
+          end
+        else
+          fetch(fetch_all: false) do |hash|
+            o << Clear::Model::Factory.build(T, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache)
+          end
         end
 
         o.each(&block)
@@ -305,8 +334,15 @@ module Clear::Model
       if cr
         cr.each(&block)
       else
-        self.fetch_with_cursor(count: batch) do |hash|
-          yield(T.factory.build(hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+        if @polymorphic
+          fetch_with_cursor(count: batch) do |hash|
+            type = hash[@polymorphic_key].as(String)
+            yield(Clear::Model::Factory.build(type, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache).as(T))
+          end
+        else
+          fetch_with_cursor(count: batch) do |hash|
+            yield(Clear::Model::Factory.build(T, hash, persisted: true, fetch_columns: fetch_columns, cache: @cache))
+          end
         end
       end
     end
@@ -316,7 +352,7 @@ module Clear::Model
     # the primary key of `my_model` will be setup by default, preventing you
     # to forget it.
     def build : T
-      T.factory.build(@tags, persisted: false)
+      Clear::Model::Factory.build(T, @tags, persisted: false)
     end
 
     # Build a new collection; if the collection comes from a has_many relation
@@ -326,7 +362,7 @@ module Clear::Model
     # You can pass extra parameters using a named tuple:
     # `my_model.associations.build({a_column: "value"}) `
     def build(x : NamedTuple) : T
-      T.factory.build(@tags.merge(x.to_h), persisted: false)
+      Clear::Model::Factory.build(T, @tags.merge(x.to_h), persisted: false)
     end
 
     # Check whether the query return any row.
@@ -335,7 +371,7 @@ module Clear::Model
 
       return cr.any? if cr
 
-      self.clear_select.select("1").limit(1).fetch do |_|
+      clear_select.select("1").limit(1).fetch do |_|
         return true
       end
 
@@ -374,7 +410,7 @@ module Clear::Model
 
     # Alias for `Collection#<<`
     def add(item : T)
-      super.<<(item)
+      self << item
     end
 
     # Unlink the model currently referenced through a relation `has_many through`
@@ -387,6 +423,11 @@ module Clear::Model
       unlink_operation = self.unlink_operation
 
       raise "Operation not permitted on this collection." unless unlink_operation
+
+      unlink_operation.call(item)
+      @cached_result.try &.remove(item)
+
+      self
     end
 
     # Create an array from the query.
@@ -454,7 +495,7 @@ module Clear::Model
       tuple.map { |k, v| str_hash[k.to_s] = v }
       str_hash.merge!(@tags)
 
-      r = T.factory.build(str_hash)
+      r = Clear::Model::Factory.build(T, str_hash)
       yield(r)
 
       r
@@ -481,7 +522,7 @@ module Clear::Model
       order_by(Clear::SQL.escape("#{T.pkey}"), "ASC") unless T.pkey.nil? || order_bys.any?
 
       limit(1).fetch do |hash|
-        return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
+        return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
       end
 
       nil
@@ -518,7 +559,7 @@ module Clear::Model
         clear_order_bys.order_by(new_order)
 
         limit(1).fetch do |hash|
-          return T.factory.build(hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
+          return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
         end
 
         nil

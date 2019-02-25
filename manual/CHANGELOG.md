@@ -1,12 +1,56 @@
-# master/HEAD (v0.6)
+# v0.6
+
+v0.6 should have shipped polymorphic relations, spec rework and improvement in
+documentation. That's a lot of work (honestly the biggest improvement since v0)
+and since already a lot of stuff have been integrated, I think it's better to
+ship now and prepare it for the next release.
+
+Since few weeks I'm using Clear in a full-time project, so I can see and correct
+many bugs. Clear should now be more stable in term of compilation and should not
+crash the compiler (which happened in some borderline cases).
 
 ## Features
 
 - [EXPERIMENTAL] Add `<<` operation on collection which comes from `has_many` and `has_many through:`
-- [EXPERIMENTAL] add `unlink` operation on collection which comes from `has_many through:`
+- [EXPERIMENTAL] Add `unlink` method on collection which comes from `has_many through:`
+- [EXPERIMENTAL] Add possibility to create model from JSON:
+
+  ```crystal
+    json = JSON.parse(%({"first_name": "John", "last_name": "Doe", "tags": ["customer", "medical"] }))
+    User.new(json)
+  ```
+
+- Add of `pluck` and `pluck_col` methods to retrieve one or multiple column in a Tuple,
+  which are super super fast and convenient!
+- Add `Clear.with_cli` method to allow to use the CLI in your project. Check the documentation !
 - Release of a guide and documentation to use Clear:  https://clear.gitbook.io/project/
-- Comments of source code
-- SelectQuery now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+- Additional comments in the source code
+- `SelectQuery` now inherits from `Enumerable(Hash(String, Clear::SQL::Any))`
+- Add optional block on `Enum` definition. This allow you to define custom methods for the enum:
+  ```crystal
+  Clear.enum ClientType, "company", "non_profit", "personnal" do
+    def pay_vat?
+      self == Personnal
+    end
+  end
+  ```
+- Add `?` support in `raw` method:
+  ```crystal
+    a = 1
+    b = 1000
+    c = 2
+    where{ raw("generate_series(?, ?, ?)", a, b, c) }
+  ```
+
+## Breaking changes
+- Migration: use of `table.column` instead of `table.${type}` (remove the method missing method); this was causing headache
+  in some case where the syntax wasn't exactly followed, as the error output from the compiler was unclear.
+- Renaming of `with_serial_pkey` to `primary_key`; refactoring of the macro-code allowing to add other type of keys.
+  - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
+- Renaming of `Clear::Model::InvalidModelError` to `Clear::Model::InvalidError` and `Clear::Model::ReadOnlyError` to
+  `Clear::Model::ReadOnly` to simplify as those classes are already in the `Clear::Model` namespace
+- `Model#set` methods has been transfered to `Model#reset`, and `Model#set` now change the status of the column to
+  dirty. (see #81)
 
 ## Bug fixes
 - Fix #66, #62

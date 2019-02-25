@@ -4,7 +4,7 @@ module FullTextSearchableSpec
   class Series
     include Clear::Model
 
-    with_serial_pkey
+    primary_key
 
     full_text_searchable "tsv"
 
@@ -19,8 +19,8 @@ module FullTextSearchableSpec
 
     def change(dir)
       create_table "series" do |t|
-        t.string "title"
-        t.string "description"
+        t.column "title", "string"
+        t.column "description", "string"
         t.full_text_searchable on: [{"title", 'A'}, {"description", 'C'}], column_name: "tsv"
       end
     end

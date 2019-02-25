@@ -97,33 +97,33 @@ module ModelSpec
 
     def change(dir)
       create_table "model_categories" do |t|
-        t.text "name"
+        t.column "name", "string"
 
         t.timestamps
       end
 
       create_table "model_tags", id: :serial do |t|
-        t.text "name", unique: true, null: false
+        t.column "name", "string", unique: true, null: false
       end
 
       create_table "model_users" do |t|
-        t.text "first_name"
-        t.text "last_name"
+        t.column "first_name", "string"
+        t.column "last_name", "string"
 
-        t.bool "active", null: true
+        t.column "active", "bool", null: true
 
-        t.add_column "middle_name", type: "varchar(32)"
+        t.column "middle_name", type: "varchar(32)"
 
-        t.jsonb "notification_preferences", index: "gin", default: "'{}'"
+        t.column "notification_preferences", "jsonb", index: "gin", default: "'{}'"
 
         t.timestamps
       end
 
       create_table "model_posts" do |t|
-        t.string "title", index: true
+        t.column "title", "string", index: true
 
-        t.string "tags", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
-        t.bigint "flags", array: true, index: "gin", default: "'{}'::bigint[]"
+        t.column "tags", "string", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
+        t.column "flags", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
@@ -139,7 +139,7 @@ module ModelSpec
       create_table "model_user_infos" do |t|
         t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
 
-        t.int64 "registration_number", index: true
+        t.column "registration_number", "int64", index: true
 
         t.timestamps
       end
@@ -170,6 +170,20 @@ module ModelSpec
           User.query.each do |u|
             u.middle_name.should eq "William"
           end
+        end
+      end
+
+      it "can pluck" do
+        temporary do
+          reinit
+          User.create!(id: 1, first_name: "John", middle_name: "William")
+          User.create!(id: 2, first_name: "Hans", middle_name: "Zimmer")
+
+          User.query.pluck("first_name", "middle_name").should eq [{"John", "William"}, {"Hans", "Zimmer"}]
+          User.query.limit(1).pluck_col("first_name").should eq(["John"])
+          User.query.limit(1).pluck_col("first_name", String).should eq(["John"])
+          User.query.order_by("id").pluck_col("CASE WHEN id % 2 = 0 THEN id ELSE NULL END AS id").should eq([2_i64, nil])
+          User.query.pluck("first_name": String, "UPPER(middle_name)": String).should eq [{"John", "WILLIAM"}, {"Hans", "ZIMMER"}]
         end
       end
 
@@ -327,6 +341,39 @@ module ModelSpec
 
           u.persisted?.should eq true
           u.id.should eq 1
+        end
+      end
+
+      it "can use set to setup multiple fields at once" do
+        temporary do
+          reinit
+
+          # Set from tuple
+          puts "FROM TUPLE"
+          u = User.new
+          u.set first_name: "hello", last_name: "world"
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from hash
+          puts "FROM HASH"
+          u = User.new
+          u.set({"first_name" => "hello", "last_name" => "world"})
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from json
+          puts "FROM JSON"
+          u = User.new
+          u.set(JSON.parse(%<{"first_name": "hello", "last_name": "world"}>))
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
         end
       end
 

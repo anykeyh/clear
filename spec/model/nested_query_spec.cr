@@ -6,17 +6,17 @@ module NestedQuerySpec
 
     def change(dir)
       create_table "tags" do |t|
-        t.bigint "taggable_id", index: true
-        t.string "name"
+        t.column "taggable_id", "bigint", index: true
+        t.column "name", "string"
       end
 
       create_table "videos" do |t|
-        t.string "name"
+        t.column "name", "string"
       end
 
       create_table "releases" do |t|
-        t.bigint "video_id", index: true
-        t.string "name"
+        t.column "video_id", "bigint", index: true
+        t.column "name", "string"
       end
 
       <<-SQL
@@ -37,9 +37,8 @@ module NestedQuerySpec
 
     self.table = "tags"
 
-    with_serial_pkey
+    primary_key
 
-    column id : Int64, primary: true
     column name : String
     column taggable_id : Int64
 
@@ -51,9 +50,8 @@ module NestedQuerySpec
 
     self.table = "videos"
 
-    with_serial_pkey
+    primary_key
 
-    column id : Int64, primary: true
     column name : String
 
     has_many tags : Tag, foreign_key: "taggable_id"
@@ -64,7 +62,7 @@ module NestedQuerySpec
 
     self.table = "releases"
 
-    with_serial_pkey
+    primary_key
 
     column id : Int64, primary: true
     column video_id : Int64

@@ -9,7 +9,7 @@ module BCryptSpec
 
     def change(dir)
       create_table(:bcrypt_users, id: :uuid) do |t|
-        t.string :encrypted_password
+        t.column "encrypted_password", "string"
       end
     end
   end
@@ -17,7 +17,7 @@ module BCryptSpec
   class User
     include Clear::Model
 
-    with_serial_pkey type: :uuid
+    primary_key type: :uuid
 
     self.table = "bcrypt_users"
 

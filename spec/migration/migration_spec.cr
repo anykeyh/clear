@@ -9,10 +9,10 @@ module MigrationSpec
 
     def change(dir)
       create_table(:test) do |t|
-        t.string :first_name, index: true
-        t.string :last_name, unique: true
+        t.column :first_name, "string", index: true
+        t.column :last_name, "string", unique: true
 
-        t.string :tags, array: true, index: "gin"
+        t.column :tags, "string", array: true, index: "gin"
 
         t.index "lower(first_name || ' ' || last_name)", using: :btree
 

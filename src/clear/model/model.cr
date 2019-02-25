@@ -2,8 +2,9 @@ require "../sql"
 require "./collection"
 require "./column"
 require "./modules/**"
-require "./converter/**"
+require "./converters/**"
 require "./validation/**"
+require "./factory"
 
 module Clear::Model
   include Clear::ErrorMessages
@@ -18,7 +19,7 @@ module Clear::Model
   include Clear::Model::HasScope
   include Clear::Model::ClassMethods
   include Clear::Model::HasJson
-  include Clear::Model::IsPolymorphic
+  include Clear::Model::HasFactory
   include Clear::Model::Initializer
 
   getter cache : Clear::Model::QueryCache?
@@ -46,16 +47,22 @@ module Clear::Model
 
     getter cache : Clear::Model::QueryCache?
 
-    def initialize(@persisted = false)
+    def initialize
+      @persisted = false
     end
 
-    def initialize(h : Hash(String, ::Clear::SQL::Any ), @cache : Clear::Model::QueryCache? = nil, @persisted = false, fetch_columns = false )
+    def initialize(h : Hash(String, _), @cache : Clear::Model::QueryCache? = nil, @persisted = false, fetch_columns = false )
       @attributes.merge!(h) if fetch_columns
-      set(h)
+
+      reset(h)
+    end
+
+    def initialize(json : ::JSON::Any, @cache : Clear::Model::QueryCache? = nil, @persisted = false )
+      reset(json.as_h)
     end
 
     def initialize(t : NamedTuple, @persisted = false)
-      set(t)
+      reset(t)
     end
 
     # :nodoc:

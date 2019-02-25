@@ -23,7 +23,7 @@
   * [Triggers](model/lifecycle/callbacks.md)
 * [Batchs operations](model/batchs-operations/README.md)
   * [Bulk update](model/batchs-operations/bulk-update.md)
-  * [Bulk insert](model/batchs-operations/bulk-insert.md)
+  * [Bulk insert & delete](model/batchs-operations/bulk-insert.md)
 * [Transactions & Save Points](model/transactions-and-save-points/README.md)
   * [Transaction & Savepoints](model/transactions-and-save-points/transaction.md)
   * [Connection pool](model/transactions-and-save-points/connection-pool.md)

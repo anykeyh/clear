@@ -6,7 +6,7 @@ module SeedSpec
 
     self.table = "seed_models"
 
-    with_serial_pkey
+    primary_key
 
     column value : String
   end
@@ -16,7 +16,7 @@ module SeedSpec
 
     def change(dir)
       create_table "seed_models" do |t|
-        t.string "value", index: true, null: false
+        t.column "value", "string", index: true, null: false
       end
     end
   end

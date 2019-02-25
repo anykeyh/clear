@@ -5,8 +5,9 @@ require "./base"
 # value is used:
 #
 # falsey's values are:
-# false, null, 0, "0", "" (empty string), "false", "f"
-# Anything else is considered true
+# `false`, `nil`, `0`, `"0"`, `""` (empty string), `"false"`, `"f"`
+#
+# Anything else is considered `true`
 module Clear::Model::Converter::BoolConverter
   def self.to_column(x) : Bool?
     case x

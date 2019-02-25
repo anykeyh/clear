@@ -98,27 +98,33 @@ class Clear::Expression
     safe_literal(arg)
   end
 
+  # :nodoc:
   def self.safe_literal(x : Number) : String
     x.to_s
   end
 
+  # :nodoc:
   def self.safe_literal(x : Nil) : String
     "NULL"
   end
 
+  # :nodoc:
   def self.safe_literal(x : String) : String
     {"'", x.gsub('\'', "''"), "'"}.join
   end
 
+  # :nodoc:
   def self.safe_literal(x : ::Clear::SQL::SelectBuilder)
     {"(", x.to_sql, ")"}
   end
 
+  # :nodoc:
   def self.safe_literal(x : ::Clear::Expression::Node)
     x.resolve
   end
 
-  def self.safe_literal(x : Array(AvailableLiteral)) : Array(String)
+  # Transform multiple objects into a string which is SQL-Injection safe.
+  def self.safe_literal(x : Enumerable(AvailableLiteral)) : Enumerable(String)
     x.map { |item| self.safe_literal(item) }
   end
 
@@ -128,10 +134,11 @@ class Clear::Expression
     Clear::Expression::UnsafeSql.new(x)
   end
 
+  # Safe literal of a time return a string representation of time in the format understood by postgresql.
   #
-  # Safe literal of a time is the time in the database format
-  # @params date
-  #   if date is passed, then only the date part of the Time is used:
+  # If the optional parameter `date` is passed, the time is truncated and only the date is passed:
+  #
+  # ## Example
   # ```
   # Clear::Expression[Time.now]             # < "2017-04-03 23:04:43.234 +08:00"
   # Clear::Expression[Time.now, date: true] # < "2017-04-03"
@@ -140,18 +147,22 @@ class Clear::Expression
     {"'", x.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT), "'"}.join
   end
 
+  # :nodoc:
   def self.safe_literal(x : Bool) : String
     (x ? "TRUE" : "FALSE")
   end
 
+  # :nodoc:
   def self.safe_literal(x : Node) : String
     x.resolve
   end
 
+  # :nodoc:
   def self.safe_literal(x : UnsafeSql) : String
     x.to_s
   end
 
+  # Sanitize an object and return a `String` representation of itself which is proofed against SQL injections.
   def self.safe_literal(x : _) : String
     self.safe_literal(x.to_s)
   end
@@ -174,10 +185,6 @@ class Clear::Expression
   # method.
   #
   def self.ensure_node!(any)
-    # UPDATE: Having precomputed boolean return is
-    # probably a mistake using the Expression engine
-    # It is advisable to raise an error in this case,
-    # because a developer mistake can create a boolean where he doesn't want to.
     {% raise \
          "The expression engine discovered a runtime-evaluable condition.\n" +
          "It happens when a test is done with values on both sides.\n" +
@@ -187,6 +194,7 @@ class Clear::Expression
          "In this case, please use `raw(\"id IS NULL\")` to allow the expression." %}
   end
 
+  # :nodoc:
   def self.ensure_node!(node : Node) : Node
     node
   end
@@ -201,7 +209,11 @@ class Clear::Expression
     ensure_node!(with expression_engine yield)
   end
 
-  # Not operator
+  # `NOT` operator
+  #
+  # Return an logically reversed version of the contained `Node`
+  #
+  # ## Example
   #
   # ```
   # Clear::Expression.where { not(a == b) }.resolve # >> "WHERE NOT( a = b )
@@ -210,29 +222,48 @@ class Clear::Expression
     Node::Not.new(x)
   end
 
+  # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
+  # or in case of a complex piece of computation impossible to express with the expression engine
+  # (e.g. usage of functions) you can use then raw to pass the String.
   #
-  # In case the name of the variable is a reserved word (e.g. not or ... raw :P)
-  # or in case of a complex piece impossible to express with the expression engine
-  # (mostly usage of functions)
-  # you can use then raw
+  # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # where { raw("COUNT(*)") > 5 }
+  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
-  # IDEA: raw should accept array splat as second parameters and the "?" keyword
   #
-  def raw(x)
-    Node::Raw.new(x.to_s)
+  def raw(x : String, *args)
+    idx = -1
+
+    clause = x.gsub("?") do |_|
+      begin
+        Clear::Expression[args[idx += 1]]
+      rescue e : IndexError
+        raise Clear::ErrorMessages.query_building_error(e.message)
+      end
+    end
+
+    Node::Raw.new(clause)
   end
 
-  # Flag the content as variable.
-  # Variables are escaped with double quotes
+  # Use var to create expression of variable. Variables are columns with or without the namespace and tablename:
+  #
+  # It escapes each part of the expression with double-quote as requested by PostgreSQL.
+  # This is useful to escape SQL keywords or `.` and `"` character in the name of a column.
+  #
+  # ```crystal
+  #   var("template1", "users", "name") # "template1"."users"."name"
+  #   var("template1", "users.table2", "name") # "template1"."users.table2"."name"
+  #   var("order") # "order"
+  # ```
   #
   def var(*parts)
     _var(parts)
   end
 
+  # :nodoc:
   private def _var(parts : Tuple, pos = parts.size - 1)
     if pos == 0
       Node::Variable.new(parts[pos].to_s)
@@ -243,8 +274,10 @@ class Clear::Expression
 
   # Because many postgresql operators are not transcriptable in Crystal lang,
   # this helpers helps to write the expressions:
+  #
   # ```crystal
   # where { op(jsonb_field, "something", "?") } #<< Return "jsonb_field ? 'something'"
+  # ```
   #
   def op(a : (Node | AvailableLiteral), b : (Node | AvailableLiteral), op : String)
     a = Node::Literal.new(a) if a.is_a?(AvailableLiteral)
@@ -253,6 +286,8 @@ class Clear::Expression
     Node::DoubleOperator.new(a, b, op)
   end
 
+  # :nodoc:
+  # Used internally by the expression engine.
   macro method_missing(call)
      {% if call.args.size > 0 %}
        args = {{call.args}}.map{ |x| Clear::Expression[x] }

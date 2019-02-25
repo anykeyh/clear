@@ -99,7 +99,7 @@ class Clear::SQL::InsertQuery
 
     case v = @values
     when SelectBuilder
-      raise "Cannot insert both from SELECT and from data"
+      raise "Cannot insert both from SELECT query and from data"
     when Array(Array(Inserable))
       v << row.values.to_a.map(&.as(Inserable))
     end
@@ -112,7 +112,7 @@ class Clear::SQL::InsertQuery
 
     case v = @values
     when SelectBuilder
-      raise "Cannot insert both from SELECT and from data"
+      raise "Cannot insert both from SELECT query and from data"
     when Array(Array(Inserable))
       v << row.values.to_a.map(&.as(Inserable))
     end

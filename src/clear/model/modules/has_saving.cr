@@ -37,8 +37,8 @@ module Clear::Model::HasSaving
 
         o = [] of self
         query.fetch(@@connection) do |hash|
-          o << factory.build(hash, persisted: true,
-          fetch_columns: false, cache: nil)
+          o << Clear::Model::Factory.build(self.name, hash, persisted: true,
+          fetch_columns: false, cache: nil).as(self)
         end
 
         o.each(&.trigger_after_events(:create))
@@ -111,7 +111,7 @@ module Clear::Model::HasSaving
             on_conflict.call(query) if on_conflict
             hash = query.execute(@@connection)
 
-            self.set(hash)
+            self.reset(hash)
             @persisted = true
           end
         end
@@ -132,10 +132,9 @@ module Clear::Model::HasSaving
   # Performs like `save`, but instead of returning `false` if validation failed,
   # raise `Clear::Model::InvalidModelError` exception
   def save!(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
-    raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
+    raise Clear::Model::ReadOnlyError.new(self) if self.class.read_only?
 
-    raise Clear::Model::InvalidModelError.new(
-      "Validation of the model failed:\n #{print_errors}") unless save(on_conflict)
+    raise Clear::Model::InvalidError.new(self) unless save(on_conflict)
 
     self
   end

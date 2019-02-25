@@ -22,7 +22,7 @@ Joins are built using `inner_join`, `left_join`, `right_join`, `cross_join` or s
 
 ```ruby
 # Retrieve users with supervisors
-User.query.left_joins("users as u2"){ users.supervisor_id = u2.id }
+User.query.left_joins("users as u2"){ users.supervisor_id == u2.id }
 ```
 
 Additionally, optional parameter `lateral` can be set to true to create a LATERAL JOIN.

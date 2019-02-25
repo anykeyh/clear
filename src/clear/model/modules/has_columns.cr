@@ -19,18 +19,50 @@ module Clear::Model::HasColumns
     end
   end
 
+  # Reset one or multiple columns; Reseting set the current value of the column
+  # to the given value, while the `changed?` flag remains false.
+  # If you call save on a persisted model, the reset columns won't be
+  # commited in the UPDATE query.
+  def reset( **t : **T ) forall T
+    # Dev note:
+    # ---------
+    # The current implementation of reset is overriden on finalize (see below).
+    # This method is a placeholder to ensure that we can call `super`
+    # in case of inherited (polymorphic) models
+  end
+
+  # See `reset(**t : **T)`
+  def reset( h : Hash(String, _) )
+  end
+
+  # See `reset(**t : **T)`
+  def reset( h : Hash(Symbol, _) )
+  end
+
+
+  # Set one or multiple columns to a specific value
+  # This two are equivalents:
+  #
+  # ```
+  #   model.set(a: 1)
+  #   model.a = 1
+  # ```
+  def set( ** t : **T ) forall T
+    # Dev note:
+    # ---------
+    # The current implementation of set is overriden on finalize (see below).
+    # This method is a placeholder to ensure that we can call `super`
+    # in case of inherited (polymorphic) models
+  end
+
+  # See `set(**t : **T)`
+  def set( h : Hash(String, _) )
+  end
+
+  # See `set(**t : **T)`
   def set( h : Hash(Symbol, _) )
   end
 
-  # Set the colums value of your model from Hash.
-  # The values are then converted using database converter helper.
-  #
-  # ```
-  #   model.set({"id" => 1})
-  #   model.id # 1
-  # ```
-  def set( h : Hash(String, ::Clear::SQL::Any) )
-  end
 
   # Access to direct SQL attributes given by the request used to build the model.
   # Access is read only and updating the model columns will not apply change to theses columns.
@@ -146,11 +178,16 @@ module Clear::Model::HasColumns
 
   # :nodoc:
   # Used internally to gather the columns
-  macro __generate_columns
+  macro __generate_columns__
     {% for name, settings in COLUMNS %}
       {% type = settings[:type] %}
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
+      {% if converter == nil %}
+        {% raise "No converter found for `#{settings[:converter].id}`.\n"+
+                 "The type is probably not supported natively by Clear.\n"+
+                 "Please refer to the manual to create a custom converter." %}
+      {% end %}
       @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
         Clear::Model::Column({{type}}, {{converter}}).new("{{name}}",
         has_db_default: {{has_db_default}} )
@@ -188,8 +225,10 @@ module Clear::Model::HasColumns
       {% end %}
     {% end %}
 
+    # reset flavors
+    def reset( **t : **T ) forall T
+      super
 
-    def set( **t : **T ) forall T
       \{% for name, typ in T %}
         \{% if !@type.has_method?("#{name}=") %}
           \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
@@ -201,6 +240,58 @@ module Clear::Model::HasColumns
           self.\{{name}} = t[:\{{name}}]
         \{% end %}
       \{% end %}
+
+      self
+    end
+
+    def reset( t : NamedTuple )
+      reset(**t)
+    end
+
+    # Set the columns from hash
+    def reset( h : Hash(Symbol, _) )
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
+    end
+
+    # Set the model fields from hash
+    def reset( h : Hash(String, _) )
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
+    end
+
+    def reset( from_json : JSON::Any )
+      reset(from_json.as_h)
+    end
+
+    def set( **t : **T ) forall T
+      super
+
+      \{% for name, typ in T %}
+        \{% if !@type.has_method?("#{name}=") %}
+          \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+        \{% end %}
+
+        \{% if settings = COLUMNS["#{name}".id] %}
+          @\{{name}}_column.set_convert(t[:\{{name}}])
+        \{% else %}
+          self.\{{name}} = t[:\{{name}}]
+        \{% end %}
+      \{% end %}
+
+      self
     end
 
     def set( t : NamedTuple )
@@ -211,11 +302,30 @@ module Clear::Model::HasColumns
     def set( h : Hash(Symbol, _) )
       super
 
-      {% for name, settings in COLUMNS %}
-        v = h.fetch(:{{settings[:column_name]}}){ Column::UNKNOWN }
-        @{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
-      {% end %}
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
     end
+
+    # Set the model fields from hash
+    def set( h : Hash(String, _) )
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
+    end
+
+    def set( from_json : JSON::Any )
+      set(from_json.as_h)
+    end
+
 
     # Generate the hash for update request (like during save)
     def update_h : Hash(String, ::Clear::SQL::Any)
@@ -231,11 +341,20 @@ module Clear::Model::HasColumns
       o
     end
 
+    # set flavors
+
+
     # For each column, ensure than when needed the column has present
     # information into it.
     #
     # This method is called on validation.
     def validate_fields_presence
+      # It should have only zero (non-polymorphic) or
+      # one (polymorphic) ancestor inheriting from Clear::Model
+      {% for ancestors in @type.ancestors %}{% if ancestors < Clear::Model %}
+        super
+      {% end %}{% end %}
+
       {% for name, settings in COLUMNS %}
         unless persisted?
           if @{{name}}_column.failed_to_be_present?
@@ -280,17 +399,6 @@ module Clear::Model::HasColumns
       {% end %}
 
       return false
-    end
-
-    # Set the model fields from hash
-    def set( h : Hash(String, ::Clear::SQL::Any) )
-      super
-
-      {% for name, settings in COLUMNS %}
-        if h.has_key?({{settings[:column_name]}})
-          @{{name}}_column.reset_convert(h[{{settings[:column_name]}}])
-        end
-      {% end %}
     end
 
   end

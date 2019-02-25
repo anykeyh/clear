@@ -39,7 +39,7 @@ Clear::SQL.transaction do
         Clear::SQL.rollback
         puts "This should not print"
     end
-    puts "Eventually, I do something else"
+    puts "This will never reach too."
 end
 ```
 

@@ -53,15 +53,15 @@ class Clear::Model::Column(T, C)
   end
 
   def reset_convert(x)
-    reset( C.to_column x )
+    reset C.to_column(x)
   end
 
-  # Reset the current field.
-  # Restore the `old_value` state to current value.
-  # Reset the flag `changed` to false.
-  def reset(x : T?)
-    @changed = false
+  def set_convert(x)
+    set C.to_column(x)
+  end
 
+  def set(x : T?)
+    old_value = @value
     {% if T.nilable? %}
       @value = x.as(T)
     {% else %}
@@ -69,6 +69,22 @@ class Clear::Model::Column(T, C)
       @value = x.not_nil!
     {% end %}
 
+    @old_value = old_value
+    @changed = true
+  end
+
+  # Reset the current field.
+  # Restore the `old_value` state to current value.
+  # Reset the flag `changed` to false.
+  def reset(x : T?)
+    {% if T.nilable? %}
+      @value = x.as(T)
+    {% else %}
+      raise null_column_mapping_error(@name, T) if x.nil?
+      @value = x.not_nil!
+    {% end %}
+
+    @changed = false
     @old_value = @value
   end
 

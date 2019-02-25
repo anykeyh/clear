@@ -16,15 +16,16 @@ Another good performance improvement would be to connect through [PGBouncer](htt
 
 ## Query and fetching benchmark
 
-Here is a simple benchmark comparing the different layers of Clear and how they impact the performance, over a 100k row simple table:
+Here is a simple benchmark comparing the different layers of Clear and how they impact the performance, over a 100k row very simple table:
 
-| Method | Total Time | Speed |
-| :--- | :--- | :--- |
-| `User.query.each` | \( 83.03ms\) \(± 3.87%\) | 2.28× slower |
-| `User.query.each_with_cursor` | \( 121.0ms\) \(± 1.25%\) | 3.32× slower |
-| `User.query.each(fetch_columns: true)` | \( 97.12ms\) \(± 4.07%\) | 2.67× slower |
-| `User.query.each_with_cursor(fetch_columns: true)` | \(132.52ms\) \(± 2.39%\) | 3.64× slower |
-| `User.query.fetch` | \( 36.42ms\) \(± 5.05%\) | fastest |
+```
+With Model: With attributes and cursor    7.4  (135.09ms) (± 6.44%)  116409530 B/op   5.64× slower
+               With Model: With cursor   8.61  (116.08ms) (± 2.82%)   97209247 B/op   4.84× slower
+           With Model: With attributes  13.78  ( 72.59ms) (± 3.61%)   83101520 B/op   3.03× slower
+          With Model: Simple load 100k  16.41  ( 60.94ms) (± 3.22%)   63901872 B/op   2.54× slower
+                    Hash from SQL only  30.21  (  33.1ms) (± 5.18%)   22354496 B/op   1.38× slower
+        Using: Model::Collection#pluck  41.74  ( 23.96ms) (± 8.35%)   25337128 B/op        fastest
+```
 
 ## Against the competition
 
