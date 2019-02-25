@@ -1,4 +1,13 @@
-# master/HEAD (v0.6)
+# v0.6
+
+v0.6 should have shipped polymorphic relations, spec rework and improvement in
+documentation. That's a lot of work (honestly the biggest improvement since v0)
+and since already a lot of stuff have been integrated, I think it's better to
+ship now and prepare it for the next release.
+
+Since few weeks I'm using Clear in a full-time project, so I can see and correct
+many bugs. Clear should now be more stable in term of compilation and should not
+crash the compiler (which happened in some borderline cases).
 
 ## Features
 

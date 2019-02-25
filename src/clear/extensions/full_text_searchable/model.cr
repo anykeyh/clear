@@ -98,6 +98,8 @@ module Clear::Model::FullTextSearchable
   # Split a chain written by a user
   # The problem comes from the usage of `'` in languages like French
   # which can easily break a tsvector query
+  #
+  # ameba:disable Metrics/CyclomaticComplexity (Is parser)
   private def self.split_to_exp(text)
     last_char : Char? = nil
     quote_char : Char? = nil
