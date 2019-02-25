@@ -40,6 +40,8 @@
   - Now allow `text`, `int` and `bigint` primary key, with the 0.5 `uid`, `serial` and `bigserial` primary keys.
 - Renaming of `Clear::Model::InvalidModelError` to `Clear::Model::InvalidError` and `Clear::Model::ReadOnlyError` to
   `Clear::Model::ReadOnly` to simplify as those classes are already in the `Clear::Model` namespace
+- `Model#set` methods has been transfered to `Model#reset`, and `Model#set` now change the status of the column to
+  dirty. (see #81)
 
 ## Bug fixes
 - Fix #66, #62
