@@ -54,20 +54,15 @@ module Clear::Model
     def initialize(h : Hash(String, _), @cache : Clear::Model::QueryCache? = nil, @persisted = false, fetch_columns = false )
       @attributes.merge!(h) if fetch_columns
 
-      set(h)
+      reset(h)
     end
 
     def initialize(json : ::JSON::Any, @cache : Clear::Model::QueryCache? = nil, @persisted = false )
-      set(json.as_h)
+      reset(json.as_h)
     end
 
-    # def initialize(json : Hash(String, ::JSON::Any::Type), @cache : Clear::Model::QueryCache? = nil, @persisted = false )
-    #   set(json)
-    # end
-
-
     def initialize(t : NamedTuple, @persisted = false)
-      set(t)
+      reset(t)
     end
 
     # :nodoc:

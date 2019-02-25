@@ -56,6 +56,10 @@ class Clear::Model::Column(T, C)
     reset( C.to_column x )
   end
 
+  def set_convert(x)
+    self.value = ( C.to_column x )
+  end
+
   # Reset the current field.
   # Restore the `old_value` state to current value.
   # Reset the flag `changed` to false.

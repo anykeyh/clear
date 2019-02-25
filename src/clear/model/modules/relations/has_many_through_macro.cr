@@ -39,7 +39,7 @@ module Clear::Model::Relations::HasManyThroughMacro
 
         {% if through.is_a?(Path) %}
           through_model = {{through}}.new
-          through_model.set({
+          through_model.reset({
             "#{%own_key}" => current_model_id,
             "#{%through_key}" => x.pkey
           })

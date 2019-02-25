@@ -19,18 +19,26 @@ module Clear::Model::HasColumns
     end
   end
 
-  def set( h : Hash(Symbol, _) )
+  # Reset one of multiple columns; Reseting set the current value of the column
+  # to the given value, while the `changed?` flag remains false.
+  # If you call save on a persisted model, the reset columns won't be
+  # commited in the UPDATE query.
+  def reset( **t : **T ) forall T
+    # Dev note:
+    # ---------
+    # The current implementation of reset is overriden on finalize.
+    # This method is a placeholder to ensure that we can call super
+    # in case of inherited (polymorphic) models
   end
 
-  # Set the colums value of your model from Hash.
-  # The values are then converted using database converter helper.
-  #
-  # ```
-  #   model.set({"id" => 1})
-  #   model.id # 1
-  # ```
-  def set( h : Hash(String, _) )
+  # See `reset(**t : **T)`
+  def reset( h : Hash(String, _) )
   end
+
+  # See `reset(**t : **T)`
+  def reset( h : Hash(Symbol, _) )
+  end
+
 
   # Access to direct SQL attributes given by the request used to build the model.
   # Access is read only and updating the model columns will not apply change to theses columns.
@@ -193,8 +201,10 @@ module Clear::Model::HasColumns
       {% end %}
     {% end %}
 
+    # reset flavors
+    def reset( **t : **T ) forall T
+      super
 
-    def set( **t : **T ) forall T
       \{% for name, typ in T %}
         \{% if !@type.has_method?("#{name}=") %}
           \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
@@ -210,12 +220,12 @@ module Clear::Model::HasColumns
       self
     end
 
-    def set( t : NamedTuple )
-      set(**t)
+    def reset( t : NamedTuple )
+      reset(**t)
     end
 
     # Set the columns from hash
-    def set( h : Hash(Symbol, _) )
+    def reset( h : Hash(Symbol, _) )
       super
 
       \{% for name, settings in COLUMNS %}
@@ -227,21 +237,19 @@ module Clear::Model::HasColumns
     end
 
     # Set the model fields from hash
-    def set( h : Hash(String, _) )
+    def reset( h : Hash(String, _) )
       super
 
       \{% for name, settings in COLUMNS %}
-        if h.has_key?(\{{settings[:column_name]}})
-          @\{{name}}_column.reset(Clear::Model::Converter.to_column(\{{settings[:converter]}}, h[\{{settings[:column_name]}}]))
-        end
+        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
       \{% end %}
 
       self
     end
 
-
-    def set( from_json : JSON::Any )
-      return set(from_json.as_h)
+    def reset( from_json : JSON::Any )
+      reset(from_json.as_h)
     end
 
     # Generate the hash for update request (like during save)
@@ -257,6 +265,9 @@ module Clear::Model::HasColumns
 
       o
     end
+
+    # set flavors
+
 
     # For each column, ensure than when needed the column has present
     # information into it.

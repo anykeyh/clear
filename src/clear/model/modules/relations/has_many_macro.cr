@@ -25,7 +25,7 @@ module Clear::Model::Relations::HasManyMacro
       end
 
       query.add_operation = -> (x : {{relation_type}}) {
-        x.set(query.tags)
+        x.reset(query.tags)
         x.save!
         x
       }

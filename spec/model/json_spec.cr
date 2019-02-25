@@ -7,10 +7,11 @@ module ModelSpec
     it "Can load from JSON::Any" do
       json = JSON.parse(%<{"id": 1, "first_name": "hello", "last_name": "boss"}>)
 
-      u = User.new.set(json)
+      u = User.new.reset(json)
       u.id.should eq 1
       u.first_name.should eq "hello"
       u.last_name.should eq "boss"
+      u.changed?.should eq false
 
       json2 = JSON.parse(%<{"tags": ["a", "b", "c"], "flags": [1, 2, 3]}>)
 

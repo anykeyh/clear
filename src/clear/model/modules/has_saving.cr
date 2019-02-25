@@ -111,7 +111,7 @@ module Clear::Model::HasSaving
             on_conflict.call(query) if on_conflict
             hash = query.execute(@@connection)
 
-            self.set(hash)
+            self.reset(hash)
             @persisted = true
           end
         end
