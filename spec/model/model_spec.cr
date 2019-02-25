@@ -344,6 +344,39 @@ module ModelSpec
         end
       end
 
+      it "can use set to setup multiple fields at once" do
+        temporary do
+          reinit
+
+          # Set from tuple
+          puts "FROM TUPLE"
+          u = User.new
+          u.set first_name: "hello", last_name: "world"
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from hash
+          puts "FROM HASH"
+          u = User.new
+          u.set({"first_name" => "hello", "last_name" => "world"})
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from json
+          puts "FROM JSON"
+          u = User.new
+          u.set(JSON.parse(%<{"first_name": "hello", "last_name": "world"}>))
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+        end
+      end
+
       it "can load models" do
         temporary do
           reinit

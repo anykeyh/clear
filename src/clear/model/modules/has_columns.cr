@@ -19,15 +19,15 @@ module Clear::Model::HasColumns
     end
   end
 
-  # Reset one of multiple columns; Reseting set the current value of the column
+  # Reset one or multiple columns; Reseting set the current value of the column
   # to the given value, while the `changed?` flag remains false.
   # If you call save on a persisted model, the reset columns won't be
   # commited in the UPDATE query.
   def reset( **t : **T ) forall T
     # Dev note:
     # ---------
-    # The current implementation of reset is overriden on finalize.
-    # This method is a placeholder to ensure that we can call super
+    # The current implementation of reset is overriden on finalize (see below).
+    # This method is a placeholder to ensure that we can call `super`
     # in case of inherited (polymorphic) models
   end
 
@@ -37,6 +37,30 @@ module Clear::Model::HasColumns
 
   # See `reset(**t : **T)`
   def reset( h : Hash(Symbol, _) )
+  end
+
+
+  # Set one or multiple columns to a specific value
+  # This two are equivalents:
+  #
+  # ```
+  #   model.set(a: 1)
+  #   model.a = 1
+  # ```
+  def set( ** t : **T ) forall T
+    # Dev note:
+    # ---------
+    # The current implementation of set is overriden on finalize (see below).
+    # This method is a placeholder to ensure that we can call `super`
+    # in case of inherited (polymorphic) models
+  end
+
+  # See `set(**t : **T)`
+  def set( h : Hash(String, _) )
+  end
+
+  # See `set(**t : **T)`
+  def set( h : Hash(Symbol, _) )
   end
 
 
@@ -251,6 +275,57 @@ module Clear::Model::HasColumns
     def reset( from_json : JSON::Any )
       reset(from_json.as_h)
     end
+
+    def set( **t : **T ) forall T
+      super
+
+      \{% for name, typ in T %}
+        \{% if !@type.has_method?("#{name}=") %}
+          \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+        \{% end %}
+
+        \{% if settings = COLUMNS["#{name}".id] %}
+          @\{{name}}_column.set_convert(t[:\{{name}}])
+        \{% else %}
+          self.\{{name}} = t[:\{{name}}]
+        \{% end %}
+      \{% end %}
+
+      self
+    end
+
+    def set( t : NamedTuple )
+      set(**t)
+    end
+
+    # Set the columns from hash
+    def set( h : Hash(Symbol, _) )
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
+    end
+
+    # Set the model fields from hash
+    def set( h : Hash(String, _) )
+      super
+
+      \{% for name, settings in COLUMNS %}
+        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
+        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+      \{% end %}
+
+      self
+    end
+
+    def set( from_json : JSON::Any )
+      set(from_json.as_h)
+    end
+
 
     # Generate the hash for update request (like during save)
     def update_h : Hash(String, ::Clear::SQL::Any)
