@@ -423,7 +423,11 @@ module Clear::Model
       unlink_operation = self.unlink_operation
 
       raise "Operation not permitted on this collection." unless unlink_operation
-      #TODO
+
+      unlink_operation.call(item)
+      @cached_result.try &.remove(item)
+
+      self
     end
 
     # Create an array from the query.

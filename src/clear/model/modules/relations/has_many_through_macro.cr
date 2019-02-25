@@ -53,6 +53,21 @@ module Clear::Model::Relations::HasManyThroughMacro
         x
       }
 
+      qry.unlink_operation = -> (x : {{relation_type}}) {
+        {% if through.is_a?(Path) %}
+          table = {{through}}.table
+        {% else %}
+          table = {{through.id.stringify}}
+        {% end %}
+
+        Clear::SQL.delete(table).where({
+          "#{%own_key}" => current_model_id,
+          "#{%through_key}" => x.pkey
+        }).execute
+
+        x
+      }
+
       qry
     end
 

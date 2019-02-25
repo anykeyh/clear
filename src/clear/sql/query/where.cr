@@ -36,6 +36,7 @@ module Clear::SQL::Query::Where
     where(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
+
   def where(**tuple)
     where(conditions: tuple)
   end
@@ -58,7 +59,7 @@ module Clear::SQL::Query::Where
   # ```crystal
   # query.where({x: another_select}) # WHERE x IN (SELECT ... )
   # ```
-  def where(conditions : NamedTuple)
+  def where(conditions : NamedTuple | Hash(String, Clear::SQL::Any))
     conditions.each do |k, v|
       k = Clear::Expression::Node::Variable.new(k.to_s)
 
@@ -82,6 +83,7 @@ module Clear::SQL::Query::Where
 
     change!
   end
+
 
   # Build SQL `where` condition using a template string and
   # interpolating `?` characters with parameters given in a tuple or array.
