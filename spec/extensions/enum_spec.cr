@@ -73,7 +73,7 @@ module EnumSpec
       temporary do
         reinit!
 
-        u = User.create!({name: "Test", gender: GenderType::Male})
+        User.create!({name: "Test", gender: GenderType::Male})
         u = User.query.first!
         u.to_json.should eq %<{"gender":"male","name":"Test"}>
       end
