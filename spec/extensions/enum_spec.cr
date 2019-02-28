@@ -68,5 +68,15 @@ module EnumSpec
         User.query.where { gender.in? GenderType.all }.count.should eq 2
       end
     end
+
+    it "can export to json" do
+      temporary do
+        reinit!
+
+        u = User.create!({name: "Test", gender: GenderType::Male})
+        u = User.query.first!
+        u.to_json.should eq %<{"gender":"male","name":"Test"}>
+      end
+    end
   end
 end

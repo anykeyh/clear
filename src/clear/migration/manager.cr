@@ -63,7 +63,7 @@ class Clear::Migration::Manager
 
   # Compute the wanted version. if the number is negative, try to get
   # the version starting by the end.
-  private def compute_version(version)
+  private def compute_version(version, list_of_migrations)
     # Apply negative version
     return version if version >= 0
 
@@ -78,7 +78,7 @@ class Clear::Migration::Manager
 
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
 
-    version = compute_version(version)
+    version = compute_version(version, list_of_migrations)
 
     operations = [] of {Int64, Migration::Direction}
 
