@@ -29,6 +29,6 @@ module Clear::SQL::Query::Join
   {% end %}
 
   protected def print_joins
-    joins.map(&.to_sql.as(String)).join(" ")
+    joins.uniq(&.to_sql.as(String)).map(&.to_sql.as(String)).join(" ")
   end
 end
