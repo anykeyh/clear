@@ -148,9 +148,9 @@ module Clear
         begin
           execute(connection_name, "SAVEPOINT #{sp_name}")
           yield
-          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}")
+          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if in_transaction?
         rescue e : RollbackError
-          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}")
+          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if in_transaction?
         end
       end
     end
