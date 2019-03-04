@@ -35,11 +35,17 @@ module Clear::SQL::Query::Aggregate
   #   query.agg("MEDIAN(age)", Int64)
   # ```
   #
-  # Note than COUNT, MIN, MAX and AVG are already conveniently mapped.
+  # Note than COUNT, MIN, MAX, SUM and AVG are already conveniently mapped.
   #
   # This return only one row, and should not be used with `group_by` (prefer pluck or fetch)
   def agg(field, x : X.class) forall X
     self.clear_select.select(field).scalar(X)
+  end
+
+  # SUM through a field and return a Float64
+  # Note: This function is not safe injection-wise, so beware !.
+  def sum(field) : Float64
+    agg("SUM(#{field})", PG::Numeric).try(&.to_f) || 0.0
   end
 
   {% for x in %w(min max avg) %}
