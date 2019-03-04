@@ -380,7 +380,7 @@ module Clear::Model
 
     # Inverse of `any?`, return true if the request return no rows.
     def empty?
-      not any?
+      !any?
     end
 
     # Use SQL `COUNT` over your query, and return this number as a Int64
