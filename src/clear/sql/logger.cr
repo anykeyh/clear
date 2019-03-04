@@ -57,9 +57,12 @@ module Clear::SQL::Logger
 
     Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(elapsed_time.to_f).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
 
-    return o
+    o
   rescue e
-    STDERR.puts "Error catched, last request was:\n#{Clear::SQL::Logger.colorize_query(sql)}"
-    raise e
+    raise Clear::SQL::Error.new(
+      message:
+        [e.message,"Error caught, last query was:", Clear::SQL::Logger.colorize_query(sql)].compact.join("\n"),
+      cause: e
+    )
   end
 end

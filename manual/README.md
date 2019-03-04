@@ -1,42 +1,29 @@
-Welcome to Clear!
+# Welcome to Clear
 
-Clear is currently in alpha stage, but already used by the author in some applications.
-A lot of features have yet to be discovered, don't hesitate to make a pull request if something is impossible now, so I'll fix it.
+Welcome to Clear, the ORM specifically developed for PostgreSQL and Crystal Language.
 
-If you're in hurry and already at ease with Active Record pattern, a simple stand-alone example will helps you understand the fundamentals of Clear:
+After reading this guide, you will know:
 
+* How to install and configure Clear for your project
+* How to use Clear to manipulate the data stored in your database
+* How to take advantage of the advanced features of PostgreSQL combined seamlessly with the powerful Crystal Language features
+* How to maintain the coherence of your database through migration and validations. 
 
-## Getting started
+## What is Clear ?
 
-- [Simple Example](BasicExample.md)
-- [Setup of the ORM](Setup.md)
+Clear is an ORM \(Object Relation Mapping\) built with Crystal language. It offers a Model layer for MVC applications. Clear is built specifically for PostgreSQL, meaning it's not compatible with MariaDB or SQLite for example. On the other hand, because it's specific, it achieves to delivers a tremendous amount of PostgreSQL advanced features out of the box.
 
-## Model
+Clear is largely based on Active Record pattern, and freely inspired by [Rails Active Record](https://github.com/rails/rails/tree/master/activerecord) and [Sequel](https://github.com/jeremyevans/sequel). Thus, it follow some philosophical concepts, as:
 
-- [Model definition](model/Definition.md)
-- [Handling Model Lifecycle](model/Lifecycle.md)
-- [Model relation](model/Relation.md)
-- [Model validation](model/Validation.md)
-- [Event Hooks](model/Hooks.md)
-- [Migrations](migration/Migration.md)
-- [Polymorphism](model/Polymorphism.md)
-- [Different database connections](model/MultiConnection.md)
-- [Column data type management](model/TypeConversion.md)
-- [Primary Key Tweaking (Serial, UUID...)](model/PrimaryKeyTweaking.md)
-- [SQL Debugging Info](model/DebuggingInfo.md)
+* **Convention over configuration:** While it's possible to name your models and key the way you want, linking achieved without any directives in the code by using the default naming convention:
 
-## Querying
+| Crystal | PostgreSQL |
+| :--- | :--- |
+| **class** ModelName | **TABLE** model\_names |
+| **belongs\_to** foreign\_object | **COLUMN** foreign\_object\_id : bigint |
 
-- [Aggregate functions](querying/Aggregate.md)
-- [Scopes](querying/Scopes.md)
-- [Fetching extra columns](querying/ExtraColumns.md)
-- [Expression engine](querying/ExpressionEngine.md)
-- [Usage of SQL builder](querying/RequestBuilding.md)
-- [Transactions And savepoints](querying/Transaction.md)
-- [Pagination](querying/Pagination.md)
+You can notice, if you already did some Rails application, that the naming convention is mostly like in Active Record.
 
-## Extensions
+* **Multiple way of doing things:** Philosophically, Clear try to reduce the gap between the mind of the developer and the code itself. The code is meant to be read as close to written English as possible. Therefore, there's often multiple way to do things, based on the feeling of the developer writing the code.
+* **Less boilerplate = more happiness:** The "magic" under Clear allows to write as minimum as possible boilerplate code, like type-checking, validations or even SQL fragment writing.
 
-- [JSONB integration](extensions/jsonb/Jsonb.md)
-- [TSVector and Full Text Search](extensions/full_text_searchable/FullTextSearchable.md)
-- [PG enum integration](extensions/enum/Enum.md)

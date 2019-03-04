@@ -70,7 +70,7 @@ module Clear::SQL::JSONB
       h[key[idx]] = jsonb_arr2h(key, value, idx + 1)
     end
 
-    return h
+    h
   end
 
   # :nodoc:
@@ -102,7 +102,7 @@ module Clear::SQL::JSONB
       arr << buff
     end
 
-    return arr
+    arr
   end
 
   # Test equality using the `@>` operator
@@ -116,9 +116,9 @@ module Clear::SQL::JSONB
     arr = jsonb_k2a(key)
 
     if arr.empty?
-      return {field, Clear::Expression[value]}.join(" = ")
+      {field, Clear::Expression[value]}.join(" = ")
     else
-      return {field, Clear::Expression[jsonb_arr2h(arr, value).to_json]}.join(" @> ")
+      {field, Clear::Expression[jsonb_arr2h(arr, value).to_json]}.join(" @> ")
     end
   end
 

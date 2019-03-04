@@ -25,7 +25,12 @@ class Clear::Reflection::Table
   # and the value is an array containing all the indexes related to this specific
   # field.
   def indexes : Hash(String, Array(String))
+    # :nodoc:
+    #
+    # FROM:
     # https://stackoverflow.com/questions/2204058/list-columns-with-indexes-in-postgresql
+    #
+    # ```sql
     # select
     #     t.relname as table_name,
     #     i.relname as index_name,
@@ -44,6 +49,7 @@ class Clear::Reflection::Table
     # order by
     #     t.relname,
     #     i.relname;
+    # ```
     o = {} of String => Array(String)
 
     SQL.select({
@@ -69,6 +75,6 @@ class Clear::Reflection::Table
         arr << v
       end
 
-    return o
+    o
   end
 end

@@ -1,5 +1,5 @@
 module Clear
-  class_getter logger : Logger = Logger.new(STDOUT)
+  class_property logger : Logger = Logger.new(STDOUT)
 end
 
 # Require everything except the extensions and the CLI

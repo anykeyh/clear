@@ -49,11 +49,11 @@ class MigrateSpec10
   def change(dir)
     dir.up do
       create_table "users" do |t|
-        t.string "name", unique: true
+        t.column "name", "string", unique: true
       end
 
       create_table "categories" do |t|
-        t.string "name", unique: true
+        t.column "name", "string", unique: true
       end
 
       create_table "user_infos", id: false do |t|
@@ -64,9 +64,9 @@ class MigrateSpec10
         t.references to: "users", on_delete: "cascade", null: false
         t.references to: "categories", on_delete: "set null"
 
-        t.bool "published", default: false, null: false
+        t.column "published", "bool", default: false, null: false
 
-        t.string "content", null: false
+        t.column "content", "string", null: false
       end
     end
   end

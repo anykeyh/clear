@@ -1,5 +1,5 @@
 name: clear
-version: 0.5
+version: 0.6
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -27,8 +27,8 @@ development_dependencies:
   #   github: anykeyh/crystal-coverage
   ameba:
     github: veelenga/ameba
-    version: "~> 0.7"
+    branch: master
 
-crystal: 0.27.0
+crystal: 0.27.2
 
 license: MIT

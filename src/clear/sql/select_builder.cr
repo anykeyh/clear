@@ -1,24 +1,32 @@
 require "./query/**"
 
 module Clear::SQL::SelectBuilder
-  include Query::Change
-  include Query::Connection
+
   include Query::Select
   include Query::From
   include Query::Join
+
   include Query::Where
+  include Query::Having
+
   include Query::OrderBy
   include Query::GroupBy
-  include Query::Having
-  include Query::Window
   include Query::OffsetLimit
-  include Query::Execute
-  include Query::Lock
-  include Query::Fetch
-  include Query::BeforeQuery
-  include Query::CTE
-  include Query::WithPagination
   include Query::Aggregate
+
+  include Query::CTE
+  include Query::Window
+  include Query::Lock
+
+
+  include Query::Execute
+  include Query::Fetch
+  include Query::Pluck
+
+  include Query::Connection
+  include Query::Change
+  include Query::BeforeQuery
+  include Query::WithPagination
 
   def initialize(@distinct_value = nil,
                  @cte = {} of String => Clear::SQL::SelectBuilder | String,
@@ -53,7 +61,7 @@ module Clear::SQL::SelectBuilder
       offset: @offset,
       lock: @lock,
       before_query_triggers: @before_query_triggers
-    )
+    ).use_connection(self.connection_name)
   end
 
   def to_sql : String
@@ -84,4 +92,15 @@ module Clear::SQL::SelectBuilder
 
     DeleteQuery.new(from: v.dup, wheres: @wheres.dup)
   end
+
+  def to_update
+    raise QueryBuildingError.new("Cannot build a update query " +
+                                 "from a select with multiple or none `from` clauses") unless @froms.size == 1
+    v = @froms[0].value
+
+    raise QueryBuildingError.new("Cannot delete from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
+
+    UpdateQuery.new(table: v.dup, wheres: @wheres.dup)
+  end
+
 end

@@ -1,12 +1,16 @@
 require "../spec_helper"
 
-module EnumSpec
-end
 
-Clear.enum ::EnumSpec::GenderType, "male", "female", "two_part"
 
 module EnumSpec
   extend self
+
+  Clear.enum GenderType, "male", "female", "two_part"
+  Clear.enum ClientType, "company", "non_profit", "personnal" do
+    def pay_vat?
+      self == Personnal
+    end
+  end
 
   class EnumMigration18462
     include Clear::Migration
@@ -16,8 +20,8 @@ module EnumSpec
       create_enum :other_enum, ["a", "b", "c"]
 
       create_table(:enum_users) do |t|
-        t.string :name
-        t.gender_type :gender
+        t.column :name, :string
+        t.column :gender, :gender_type
 
         t.timestamps
       end
@@ -37,7 +41,13 @@ module EnumSpec
     EnumMigration18462.new.apply(Clear::Migration::Direction::UP)
   end
 
-  describe "Clear::Migration::CreateEnum" do
+  describe "Clear.enum" do
+    it "can call custom member methods" do
+      ClientType::Personnal.pay_vat?.should eq true
+      ClientType::Company.pay_vat?.should eq false
+      ClientType::NonProfit.pay_vat?.should eq false
+    end
+
     it "Can create and use enum" do
       temporary do
         reinit!
@@ -56,6 +66,16 @@ module EnumSpec
         User.query.where { gender == GenderType::Female }.count.should eq 1
         User.query.where { gender == "male" }.count.should eq 1
         User.query.where { gender.in? GenderType.all }.count.should eq 2
+      end
+    end
+
+    it "can export to json" do
+      temporary do
+        reinit!
+
+        User.create!({name: "Test", gender: GenderType::Male})
+        u = User.query.first!
+        u.to_json.should eq %<{"gender":"male","name":"Test"}>
       end
     end
   end

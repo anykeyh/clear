@@ -1,6 +1,18 @@
 require "../spec_helper"
 
 module ModelSpec
+  class Tag
+    include Clear::Model
+
+    column id : Int32, primary: true, presence: false
+
+    column name : String
+
+    has_many posts : Post, through: :model_post_tags, foreign_key: :post_id, own_key: :tag_id
+
+    self.table = "model_tags"
+  end
+
   class Category
     include Clear::Model
 
@@ -29,6 +41,8 @@ module ModelSpec
     def validate
       ensure_than(title, "is not empty", &.size.>(0))
     end
+
+    has_many tag_relations : Tag, through: :model_post_tags, foreign_key: :tag_id, own_key: :post_id
 
     belongs_to user : User, key_type: Int32?
     belongs_to category : Category, key_type: Int32?
@@ -66,6 +80,15 @@ module ModelSpec
 
     timestamps
 
+    # Random virtual method
+    def full_name=(x)
+      self.first_name, self.last_name = x.split(" ")
+    end
+
+    def full_name
+      {self.first_name, self.last_name}.join(" ")
+    end
+
     self.table = "model_users"
   end
 
@@ -74,40 +97,51 @@ module ModelSpec
 
     def change(dir)
       create_table "model_categories" do |t|
-        t.text "name"
+        t.column "name", "string"
 
         t.timestamps
+      end
+
+      create_table "model_tags", id: :serial do |t|
+        t.column "name", "string", unique: true, null: false
       end
 
       create_table "model_users" do |t|
-        t.text "first_name"
-        t.text "last_name"
+        t.column "first_name", "string"
+        t.column "last_name", "string"
 
-        t.bool "active", null: true
+        t.column "active", "bool", null: true
 
-        t.add_column "middle_name", type: "varchar(32)"
+        t.column "middle_name", type: "varchar(32)"
 
-        t.jsonb "notification_preferences", index: "gin", default: "'{}'"
-
-        t.timestamps
-      end
-
-      create_table "model_user_infos" do |t|
-        t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
-
-        t.int64 "registration_number", index: true
+        t.column "notification_preferences", "jsonb", index: "gin", default: "'{}'"
 
         t.timestamps
       end
 
       create_table "model_posts" do |t|
-        t.string "title", index: true
+        t.column "title", "string", index: true
 
-        t.string "tags", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
-        t.bigint "flags", array: true, index: "gin", default: "'{}'::bigint[]"
+        t.column "tags", "string", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
+        t.column "flags", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"
+      end
+
+      create_table "model_post_tags", id: false do |t|
+        t.references to: "model_tags", name: "tag_id", on_delete: "cascade", null: false, primary: true
+        t.references to: "model_posts", name: "post_id", on_delete: "cascade", null: false, primary: true
+
+        t.index ["tag_id", "post_id"], using: :btree
+      end
+
+      create_table "model_user_infos" do |t|
+        t.references to: "model_users", name: "user_id", on_delete: "cascade", null: true
+
+        t.column "registration_number", "int64", index: true
+
+        t.timestamps
       end
     end
   end
@@ -136,6 +170,20 @@ module ModelSpec
           User.query.each do |u|
             u.middle_name.should eq "William"
           end
+        end
+      end
+
+      it "can pluck" do
+        temporary do
+          reinit
+          User.create!(id: 1, first_name: "John", middle_name: "William")
+          User.create!(id: 2, first_name: "Hans", middle_name: "Zimmer")
+
+          User.query.pluck("first_name", "middle_name").should eq [{"John", "William"}, {"Hans", "Zimmer"}]
+          User.query.limit(1).pluck_col("first_name").should eq(["John"])
+          User.query.limit(1).pluck_col("first_name", String).should eq(["John"])
+          User.query.order_by("id").pluck_col("CASE WHEN id % 2 = 0 THEN id ELSE NULL END AS id").should eq([2_i64, nil])
+          User.query.pluck("first_name": String, "UPPER(middle_name)": String).should eq [{"John", "WILLIAM"}, {"Hans", "ZIMMER"}]
         end
       end
 
@@ -296,6 +344,39 @@ module ModelSpec
         end
       end
 
+      it "can use set to setup multiple fields at once" do
+        temporary do
+          reinit
+
+          # Set from tuple
+          puts "FROM TUPLE"
+          u = User.new
+          u.set first_name: "hello", last_name: "world"
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from hash
+          puts "FROM HASH"
+          u = User.new
+          u.set({"first_name" => "hello", "last_name" => "world"})
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+
+          # Set from json
+          puts "FROM JSON"
+          u = User.new
+          u.set(JSON.parse(%<{"first_name": "hello", "last_name": "world"}>))
+          u.save!
+          u.persisted?.should be_true
+          u.first_name.should eq "hello"
+          u.changed?.should be_false
+        end
+      end
+
       it "can load models" do
         temporary do
           reinit
@@ -326,6 +407,17 @@ module ModelSpec
         end
       end
 
+      it "can create a model using virtual fields" do
+        temporary do
+          reinit
+          User.create!(full_name: "Hello World")
+
+          u = User.query.first!
+          u.first_name.should eq "Hello"
+          u.last_name.should eq "World"
+        end
+      end
+
       it "define constraints on has_many to build object" do
         temporary do
           reinit
@@ -349,7 +441,7 @@ module ModelSpec
           u.last_name = "B"
           u.created_at = now
 
-          u.save
+          u.save!
           u.id.should_not eq nil
 
           u = User.find! u.id
@@ -508,7 +600,22 @@ module ModelSpec
                                         "INNER JOIN \"model_posts\" ON " +
                                         "(\"model_posts\".\"category_id\" = \"model_categories\".\"id\") " +
                                         "WHERE (\"model_posts\".\"user_id\" = 1)"
+
+          # Test addition in has_many relation
+          u.posts << Post.new({title: "a title", category_id: c.id})
           u.categories.count.should eq(1)
+
+          # Test addition in has_many through relation
+          p = Post.query.first!
+
+          p.tag_relations.count.should eq(0)
+
+          p.tag_relations << Tag.new({name: "Awesome"})
+          p.tag_relations << Tag.new({name: "Why not"})
+
+          p.tag_relations.count.should eq(2)
+          p.tag_relations.first!.name.should eq("Awesome")
+          p.tag_relations.offset(1).first!.name.should eq("Why not")
         end
       end
     end

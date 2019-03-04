@@ -76,11 +76,11 @@ class Clear::TSVector
     def self.to_column(x) : Clear::TSVector?
       case x
       when Slice # < Here bug of the crystal compiler with Slice(UInt8), do not want to compile
-        return Clear::TSVector.decode(x.as(Slice(UInt8)))
+        Clear::TSVector.decode(x.as(Slice(UInt8)))
       when Clear::TSVector
-        return x
+        x
       when Nil
-        return nil
+        nil
       else
         raise Clear::ErrorMessages.converter_error(x.class, "TSVector")
       end

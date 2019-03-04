@@ -20,7 +20,7 @@ module Clear::Model::HasSaving
       #  users = [ User.new(id: 1), User.new(id: 2), User.new(id: 3)]
       #  users = User.import(users)
       # ```
-      def self.import(array : Array(self), on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
+      def self.import(array : Enumerable(self), on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
         array.each do |item|
           raise "One of your model is persisted while calling import" if item.persisted?
         end
@@ -37,8 +37,8 @@ module Clear::Model::HasSaving
 
         o = [] of self
         query.fetch(@@connection) do |hash|
-          o << factory.build(hash, persisted: true,
-          fetch_columns: false, cache: nil)
+          o << Clear::Model::Factory.build(self.name, hash, persisted: true,
+          fetch_columns: false, cache: nil).as(self)
         end
 
         o.each(&.trigger_after_events(:create))
@@ -79,7 +79,16 @@ module Clear::Model::HasSaving
   # ```crystal
   # u = User.new id: 123, email: "email@example.com"
   # u.save(-> (qry) { qry.on_conflict.do_update{ |u| u.set(email: "email@example.com") } #update
-  # # Note: user may not be saved, but will be detected as persisted !
+  # # IMPORTANT NOTICE: user may not be saved, but will be still detected as persisted !
+  # ```
+  #
+  # You may want to use a block for `on_conflict` optional parameter:
+  #
+  # ```crystal
+  # u = User.new id: 123, email: "email@example.com"
+  # u.save do |qry|
+  #    qry.on_conflict.do_update{ |u| u.set(email: "email@example.com")
+  # end
   # ```
   #
   def save(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
@@ -102,7 +111,7 @@ module Clear::Model::HasSaving
             on_conflict.call(query) if on_conflict
             hash = query.execute(@@connection)
 
-            self.set(hash)
+            self.reset(hash)
             @persisted = true
           end
         end
@@ -114,24 +123,25 @@ module Clear::Model::HasSaving
       end
     end
 
-    return true
   end
 
   def save(&block)
     save(on_conflict: block)
   end
 
+  # Performs like `save`, but instead of returning `false` if validation failed,
+  # raise `Clear::Model::InvalidModelError` exception
   def save!(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
-    raise Clear::Model::ReadOnlyModelError.new("The model is read-only") if self.class.read_only?
+    raise Clear::Model::ReadOnlyError.new(self) if self.class.read_only?
 
-    raise Clear::Model::InvalidModelError.new(
-      "Validation of the model failed:\n #{print_errors}") unless save(on_conflict)
+    raise Clear::Model::InvalidError.new(self) unless save(on_conflict)
 
-    return self
+    self
   end
 
+  # Pass the `on_conflict` optional parameter via block.
   def save!(&block : Clear::SQL::InsertQuery ->)
-    return save!(block)
+    save!(block)
   end
 
 
@@ -149,7 +159,7 @@ module Clear::Model::HasSaving
       clear_change_flags
     end
 
-    return true
+    true
   end
 
 end

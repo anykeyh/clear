@@ -24,7 +24,8 @@ module Clear::Model::HasRelations
   # (default: table_name in singular, plus "_id" appended)
   # can be redefined
   #
-  # Examples:
+  # Example:
+  #
   # ```
   # model Passport
   #   column id : Int32, primary : true
@@ -36,7 +37,7 @@ module Clear::Model::HasRelations
   #   has_one owner : User # It assumes the table `users` have a column `passport_id`
   # end
   # ```
-  macro has_one(name, foreign_key = nil, primary_key = nil, no_cache = false)
+  macro has_one(name, foreign_key = nil, primary_key = nil, no_cache = false, polymorphic = false, foreign_key_type = nil)
     {%
       foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
       primary_key = primary_key.id if primary_key.is_a?(SymbolLiteral) || primary_key.is_a?(StringLiteral)
@@ -53,7 +54,22 @@ module Clear::Model::HasRelations
     %}
   end
 
-  macro has_many(name, through = nil, foreign_key = nil, own_key = nil, primary_key = nil, no_cache = false)
+  # Has Many and Has One are the relations where the model share its primary key into a foreign table. In our example above, we can assume than a User has many Post as author.
+  #
+  # Basically, for each `belongs_to` declaration, you must have a `has_many` or `has_one` declaration on the other model.
+  #
+  # While `has_many` relation returns a list of models, `has_one` returns only one model when called.
+  #
+  # Example:
+  #
+  # ```crystal
+  #   class User
+  #     include Clear::Model
+  #     #...
+  #     has_many posts : Post, foreign_key: "author_id"
+  #  end
+  # ```
+  macro has_many(name, through = nil, foreign_key = nil, own_key = nil, primary_key = nil, no_cache = false, polymorphic = false, foreign_key_type = nil)
     {%
       if through != nil
 
@@ -61,6 +77,7 @@ module Clear::Model::HasRelations
 
         own_key     = own_key.id if own_key.is_a?(SymbolLiteral) || own_key.is_a?(StringLiteral)
         foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
+        foreign_key_type = foreign_key_type.id if foreign_key_type.is_a?(SymbolLiteral) || foreign_key_type.is_a?(StringLiteral)
 
         RELATIONS[name.var.id] = {
           relation_type: :has_many_through,
@@ -68,12 +85,17 @@ module Clear::Model::HasRelations
 
           through: through,
           own_key: own_key,
-          foreign_key: foreign_key
+
+          foreign_key: foreign_key,
+          foreign_key_type: foreign_key_type,
+
+          polymorphic: polymorphic
         }
 
       else
         foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
         primary_key = primary_key.id if primary_key.is_a?(SymbolLiteral) || primary_key.is_a?(StringLiteral)
+        foreign_key_type = foreign_key_type.id if foreign_key_type.is_a?(SymbolLiteral) || foreign_key_type.is_a?(StringLiteral)
 
         RELATIONS[name.var.id] = {
           relation_type: :has_many,
@@ -81,7 +103,10 @@ module Clear::Model::HasRelations
 
           foreign_key: foreign_key,
           primary_key: primary_key,
-          no_cache: no_cache
+          foreign_key_type: foreign_key_type,
+
+          no_cache: no_cache,
+          polymorphic: polymorphic
         }
       end
     %}
@@ -112,7 +137,8 @@ module Clear::Model::HasRelations
   end
 
   # :nodoc:
-  macro __generate_relations
+  # Generate the relations by calling the macro
+  macro __generate_relations__
     {% begin %}
     {% for name, settings in RELATIONS %}
       {% if settings[:relation_type] == :belongs_to %}

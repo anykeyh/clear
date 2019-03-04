@@ -10,7 +10,7 @@ module Clear::Model::Relations::HasManyMacro
       %foreign_key =   {% if foreign_key %} "{{foreign_key}}" {% else %} (self.class.table.to_s.singularize + "_id") {% end %}
 
       cache = @cache
-      if cache && cache.active?("{{method_name}}")
+      query = if cache && cache.active?("{{method_name}}")
         arr = cache.hit("{{method_name}}", %primary_key, {{relation_type}})
 
         # This relation will trigger the cache if it exists
@@ -23,12 +23,18 @@ module Clear::Model::Relations::HasManyMacro
           .tags({ "#{%foreign_key}" => "#{%primary_key}" }) \
         .where{ raw(%foreign_key) == %primary_key }
       end
-      #end
+
+      query.add_operation = -> (x : {{relation_type}}) {
+        x.reset(query.tags)
+        x.save!
+        x
+      }
+
+      query
     end
 
     # Addition of the method for eager loading and N+1 avoidance.
     class Collection
-
       # Eager load the has many relation {{method_name}}.
       # Use it to avoid N+1 queries.
       def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self

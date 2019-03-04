@@ -39,7 +39,7 @@ module ConnectionPoolSpec
           # Now the transaction is over, count should be 1
           count = Clear::SQL.select.from("tests").count
           count.should eq 1
-      ensure
+        ensure
           Clear::SQL.execute("DROP TABLE tests;") unless init
         end
 

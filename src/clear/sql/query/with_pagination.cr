@@ -18,7 +18,7 @@ module Clear::SQL::Query::WithPagination
     clear_limit.clear_offset
     @total_entries = count
 
-    page = page < 1 ? 1 : page
+    page = {1, page}.max
     @limit = per_page.to_i64
     @offset = (per_page * (page - 1)).to_i64
     change!

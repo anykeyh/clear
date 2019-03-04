@@ -62,6 +62,8 @@
 module Clear::Migration
   include Clear::ErrorMessages
 
+  abstract def uid : Int64
+
   # This error is throw when you try to revert a migration which is irreversible.
   class IrreversibleMigration < Exception; end
 
@@ -99,7 +101,7 @@ module Clear::Migration
       end
 
       dir.down do
-        @operations.each { |op|
+        @operations.reverse_each { |op|
           op.down.each { |x| Clear::SQL.execute(x.as(String)) }
         }
 
@@ -157,15 +159,15 @@ end
 
 # :nodoc:
 # This class is here to prevent bug #5705
-# and will be removed at newer version of Crystal
-# class DummyMigration
-#   include Clear::Migration
-#   def uid
-#     -0x01_i64
-#   end
-#   def change(dir)
-#     # Nothing
-#   end
-# end
+# and will be removed when the bug is fixed
+class DummyMigration
+  include Clear::Migration
+  def uid
+    -0x01_i64
+  end
+  def change(dir)
+    # Nothing
+  end
+end
 
 require "./operation"

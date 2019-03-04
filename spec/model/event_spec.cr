@@ -7,8 +7,7 @@ module EventSpec
   abstract class ModelA
     include Clear::Model
 
-    polymorphic ModelB,
-      through: "type"
+    polymorphic through: "type"
 
     before(:validate) { ACCUMULATOR << "1" }
     before(:validate) { ACCUMULATOR << "2" }

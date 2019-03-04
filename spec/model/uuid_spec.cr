@@ -5,10 +5,17 @@ module UUIDSpec
     include Clear::Migration
 
     def change(dir)
+
       create_table(:dbobjects, id: :uuid) do |t|
-        t.string :name, null: false
+        t.column :name, :string, null: false
       end
+
+      create_table(:dbobjects2, id: :uuid) do |t|
+        t.references to: "dbobjects", name: "db_object_id", type: "uuid", null: true
+      end
+
     end
+
   end
 
   class DBObject
@@ -16,8 +23,20 @@ module UUIDSpec
 
     self.table = "dbobjects"
 
-    with_serial_pkey type: :uuid
+    primary_key type: :uuid
+    has_many db_objects : DBObject2, foreign_key: "db_object_id"
+
     column name : String
+  end
+
+  class DBObject2
+    include Clear::Model
+
+    self.table = "dbobjects2"
+
+    belongs_to db_object : DBObject, foreign_key: "db_object_id", key_type: UUID?
+
+    primary_key type: :uuid
   end
 
   def self.reinit
@@ -47,6 +66,23 @@ module UUIDSpec
         DBObject.query.where { id == UUID.random }.count.should eq 0
         # Where with string version of UUID
         DBObject.query.where { id == "#{first_uuid}" }.count.should eq 1
+      end
+    end
+
+    it "can call relations between the objects" do
+      temporary do
+        reinit
+
+	3.times do |x|
+          DBObject.create!({name: "obj#{x}"})
+        end
+
+        dbo_id = DBObject.query.first!.id
+        obj1 = DBObject2.create!({db_object_id: dbo_id})
+        obj2 = DBObject2.create!
+
+        obj1.db_object.not_nil!.id.should eq dbo_id
+        obj2.db_object.should eq nil
       end
     end
 

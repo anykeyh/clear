@@ -41,7 +41,7 @@ module Clear
     alias Any = Array(PG::BoolArray) | Array(PG::CharArray) | Array(PG::Float32Array) |
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
                 Array(PG::Int64Array) | Array(PG::StringArray) | Bool | Char | Float32 |
-                Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | PG::Geo::Box | PG::Geo::Circle |
+                Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | JSON::Any::Type | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
                 PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
                 UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql | Nil
@@ -82,9 +82,6 @@ module Clear
       connections.each do |name, url|
         Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
       end
-      # connections.each do |name, url|
-      #   @@connections[name.to_s] = DB.open(url)
-      # end
     end
 
     def add_connection(name : String, url : String, connection_pool_size = 5)
@@ -151,9 +148,9 @@ module Clear
         begin
           execute(connection_name, "SAVEPOINT #{sp_name}")
           yield
-          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}")
+          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if in_transaction?
         rescue e : RollbackError
-          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}")
+          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if in_transaction?
         end
       end
     end

@@ -3,6 +3,7 @@ module Clear
   end
 
   # Clear::Enum wrap the enums used in PostgreSQL.
+  # See `Clear.enum` macro helper.
   abstract struct Enum
     include Clear::Expression::Literal
 
@@ -31,9 +32,9 @@ module Clear
       def self.to_column(x) : T?
         case x
         when String
-          return T.authorized_values[x]
+          T.authorized_values[x]
         when Nil
-          return nil
+          nil
         else
           raise converter_error(x.class.name, "Enum: #{T.class.name}")
         end
@@ -109,14 +110,20 @@ module Clear
   #   u = User.new
   #   u.gender = MyApp::Gender::Male
   # ```
-  macro enum(name, *values)
+  macro enum(name, *values, &block)
     struct {{name.id}} < ::Clear::Enum
-      private AUTHORIZED_VALUES = {} of String => {{name.id}}
-
       {% for i in values %}
         {{i.camelcase.id}} = {{name.id}}.new("{{i.id}}")
-        AUTHORIZED_VALUES["{{i.id}}"] = {{i.camelcase.id}}
       {% end %}
+
+      {% begin %}
+        AUTHORIZED_VALUES = {
+        {% for i in values %}
+          "{{i.id}}" => {{i.camelcase.id}},
+        {% end %}
+        }
+      {% end %}
+
 
       # Return the enum with the string passed as parameter.
       # Throw Clear::IllegalEnumValueError if the string is not found.
@@ -161,6 +168,8 @@ module Clear
 
         Clear::Model::Converter.add_converter("\{{@type}}", ::Clear::Model::Converter::\{{@type}}Converter)
       end
+
+      {{yield}}
     end
 
 

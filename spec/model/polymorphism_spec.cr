@@ -1,16 +1,15 @@
 require "../spec_helper"
 
 module PolymorphismSpec
+  # MODELS POLYMORPHISM
   abstract class AbstractClass
     include Clear::Model
 
     self.table = "polymorphs"
 
-    polymorphic ConcreteClass1,
-      ConcreteClass2,
-      through: "type"
+    polymorphic through: "type"
 
-    column common_value : Int32?
+    column common_value : Int32
 
     abstract def print_value : String
   end
@@ -41,10 +40,10 @@ module PolymorphismSpec
 
     def change(dir)
       create_table "polymorphs" do |t|
-        t.text "type", index: true, null: false
-        t.text "string_value"
-        t.integer "integer_value"
-        t.integer "common_value"
+        t.column "type", "text", index: true, null: false
+        t.column "string_value", "text"
+        t.column "integer_value", "integer"
+        t.column "common_value", "integer", null: false
       end
     end
   end
@@ -66,7 +65,7 @@ module PolymorphismSpec
       temporary do
         reinit
 
-        c = ConcreteClass1.new
+        c = ConcreteClass1.new({common_value: 1})
         c.integer_value = 1
         c.save!
 
@@ -94,8 +93,8 @@ module PolymorphismSpec
       temporary do
         reinit
 
-        5.times { ConcreteClass1.create({integer_value: 1}) }
-        10.times { ConcreteClass2.create({string_value: "Yey"}) }
+        5.times { ConcreteClass1.create({integer_value: 1, common_value: 1}) }
+        10.times { ConcreteClass2.create({string_value: "Yey", common_value: 1}) }
 
         c1, c2 = 0, 0
         AbstractClass.query.each do |mdl|
@@ -110,5 +109,26 @@ module PolymorphismSpec
         c2.should eq 10
       end
     end
+
+    it "Test different constructors" do
+      temporary do
+        reinit
+
+        # I had a bug in production application, which I cannot reproduce with specs.
+        5.times { ConcreteClass1.new({integer_value: 1, common_value: 0}).save! }
+        10.times { ConcreteClass2.new({"string_value" => "Yey", "common_value" => 1}).save! }
+
+        json = JSON.parse(%<{"string_value": "Yey", "common_value": -1}>)
+        10.times { ConcreteClass2.new(json).save! }
+
+        ConcreteClass1.find(1).class.should eq ConcreteClass1
+        AbstractClass.find(1).class.should eq ConcreteClass1
+      end
+    end
+
+    it "call validators of both parent and children" do
+      ConcreteClass1.new.save.should eq false
+    end
+
   end
 end

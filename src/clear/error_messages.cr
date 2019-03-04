@@ -71,8 +71,8 @@ module Clear::ErrorMessages
         build_tips(ways_to_resolve),
         build_manual(manual_pages),
         (
-          "Your may also have encountered a bug. \n"+
-          "Feel free to fill an issue: \n#{build_url("https://github.com/anykeyh/clear/issues/new")}"
+          "You may also have encountered a bug. \n"+
+          "Feel free to submit an issue: \n#{build_url("https://github.com/anykeyh/clear/issues/new")}"
         ),
         "\n\nStack trace:\n"
       }.join)
@@ -83,7 +83,7 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already up: #{number}",
       {
-        "You try to force a migration which is already existing in your database. "+
+        "You're trying to force a migration which is already existing in your database. "+
         "You should down the migration first, then up it again.",
       },
       {
@@ -95,7 +95,7 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already down: #{number}",
       {
-        "You try to force a migration which is not set in your database yet. " +
+        "You're trying to force a migration which is not set in your database yet. " +
         "You should up the migration first, then down it again.",
       },
       {
@@ -107,7 +107,7 @@ module Clear::ErrorMessages
     build_error_message \
       "The migration number `#{number}` is not found.",
       {
-        "Ensure to require your migration files",
+        "Ensure your migration files are required",
         "Number of the migrations can be found in the filename, " +
         "in the classname or in the `uid` method of the migration.",
       },
@@ -118,9 +118,9 @@ module Clear::ErrorMessages
 
   def no_migration_yet(version)
     build_error_message \
-      "No migration are registered yet, so we cannot go to version=#{version}",
+      "No migrations are registered yet, so we cannot go to version=#{version}",
       {
-        "Ensure to require your migration files",
+        "Ensure your migration files are required",
         "Ensure you have some migration files. Captain obvious to the rescue! ;-)",
       },
       {
@@ -192,7 +192,7 @@ module Clear::ErrorMessages
     build_error_message \
       "You're trying to access to the column `#{name}` but it is not initialized.",
       {
-        "Ensure than the column `#{name}` exists in your table",
+        "Ensure that the column `#{name}` exists in your table",
         "If the model comes from a collection query, there was maybe a filtering on your `select` clause, " +
           "and you forgot to declare the column `#{name}`",
         "In the case of unpersisted models, please initialize by calling `#{name}=` first",
@@ -224,7 +224,7 @@ module Clear::ErrorMessages
     build_error_message \
       "Clear cannot convert from `#{from}` to #{to}.",
       {
-        "Ensure your database column type match the column declaration in Clear",
+        "Ensure your database column type matches the column declaration in Clear",
       },
       {"model/Definition.md"}
   end
@@ -290,7 +290,7 @@ module Clear::ErrorMessages
   end
 
   def uninitialized_db_connection(connection)
-    build_error_message("Your trying to access to the connection #{connection} which is not initialized",
+    build_error_message("You're trying to access the connection #{connection} which is not initialized",
       {
         "Use `Clear::SQL.init(#{connection}: \"postgres://XXX...\" )` on startup of your application",
         "The name of the connection (#{connection}) can't be found. It may have been mistyped.",
