@@ -6,6 +6,13 @@ require "db"
 require "./errors"
 require "./logger"
 
+# Add a field to DB::Database to handle
+#   the state of transaction of a specific
+#   connection
+abstract class DB::Database
+  property? _clear_in_transaction : Bool = false
+end
+
 module Clear
   #
   # ## Clear::SQL
@@ -88,12 +95,7 @@ module Clear
       Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
     end
 
-    @@in_transaction : Bool = false
     @@savepoint_uid : UInt64 = 0_u64
-
-    def in_transaction?
-      @@in_transaction
-    end
 
     # Create an unstackable transaction
     #
@@ -112,10 +114,10 @@ module Clear
       Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
         has_rollback = false
 
-        if @@in_transaction
+        if cnx._clear_in_transaction?
           yield(cnx) # In case we already are in transaction, we just ignore
         else
-          @@in_transaction = true
+          cnx._clear_in_transaction = true
           execute("BEGIN")
           begin
             yield(cnx)
@@ -125,8 +127,8 @@ module Clear
             execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
             raise e unless is_rollback_error
           ensure
+            cnx._clear_in_transaction = false
             execute("COMMIT") unless has_rollback
-            @@in_transaction = false
           end
         end
       end
@@ -146,14 +148,14 @@ module Clear
     # end
     # ```
     def with_savepoint(connection_name = "default", &block)
-      transaction do
+      transaction do |cnx|
         sp_name = "sp_#{@@savepoint_uid += 1}"
         begin
           execute(connection_name, "SAVEPOINT #{sp_name}")
           yield
-          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if in_transaction?
+          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
         rescue e : RollbackError
-          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if in_transaction?
+          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
         end
       end
     end
