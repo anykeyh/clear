@@ -110,6 +110,8 @@ module Clear
     #
     def transaction(connection = "default", &block)
       Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
+        has_rollback = false
+
         if @@in_transaction
           yield(cnx) # In case we already are in transaction, we just ignore
         else
@@ -117,12 +119,13 @@ module Clear
           execute("BEGIN")
           begin
             yield(cnx)
-            execute("COMMIT")
           rescue e
+            has_rollback = true
             is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
             execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
             raise e unless is_rollback_error
           ensure
+            execute("COMMIT") unless has_rollback
             @@in_transaction = false
           end
         end
