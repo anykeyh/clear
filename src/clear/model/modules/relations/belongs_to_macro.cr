@@ -29,7 +29,7 @@ module Clear::Model::Relations::BelongsToMacro
     end # /  *!
 
     def {{method_name}}=(x : {{relation_type}}?)
-      if x.persisted?
+      if x && x.persisted?
         raise "#{x.pkey_column.name} must be defined when assigning a belongs_to relation." unless x.pkey_column.defined?
         @{{foreign_key.id}}_column.value = x.pkey
       end
