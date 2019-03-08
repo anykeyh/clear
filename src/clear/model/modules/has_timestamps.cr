@@ -11,8 +11,8 @@ module Clear::Model::HasTimestamps
 
       unless model.persisted?
         now = Time.now
-        model.created_at = now unless model.created_at.defined?
-        model.updated_at = now unless model.updated_at.defined?
+        model.created_at = now unless model.created_at_column.defined?
+        model.updated_at = now unless model.updated_at_column.defined?
       end
     end
 
