@@ -74,5 +74,20 @@ class Model::Customer
 end
 ```
 
+
+So in this exemple the class will be
+
+```ruby
+class Article
+  include Clear::Model
+  self.table = "articles"↲
+  
+  column name : String
+  column description : String?
+
+  column id : Int32, primary: true, presence: false
+end
+```
+
 Next article is covering deeply the column definition and its subtleties.
 
