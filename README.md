@@ -664,3 +664,7 @@ All contributions are welcome ! As a specialized ORM for PostgreSQL,
 be sure a great contribution on a very specific PG feature will be incorporated
 to this shard.
 I hope one day we will cover all the features of PG here !
+
+### Running Tests
+
+In order to run the test suite, you will need to have the PostgresSQL service locally available via a socket for access with psql. psql will attempt to use the 'postgres' user to create the test database. If you are working with a newly installed database that may not have the postgres user, this can be created with `createuser -s postgres`.

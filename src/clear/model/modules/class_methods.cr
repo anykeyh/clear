@@ -106,7 +106,7 @@ module Clear::Model::ClassMethods
       # Returns a model using primary key equality.
       # Raises error if the model is not found.
       def self.find!(x)
-        find(x).not_nil!
+        find(x) || raise Clear::SQL::RecordNotFoundError.new
       end
 
       # Build a new empty model and fill the columns using the NamedTuple in argument.
