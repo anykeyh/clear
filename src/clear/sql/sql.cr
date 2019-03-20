@@ -115,12 +115,12 @@ module Clear
         has_rollback = false
 
         if cnx._clear_in_transaction?
-          yield(cnx) # In case we already are in transaction, we just ignore
+          return yield(cnx) # In case we already are in transaction, we just ignore
         else
           cnx._clear_in_transaction = true
           execute("BEGIN")
           begin
-            yield(cnx)
+            return yield(cnx)
           rescue e
             has_rollback = true
             is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)

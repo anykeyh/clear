@@ -129,7 +129,7 @@ module Clear::Model::HasSaving
     save(on_conflict: block)
   end
 
-  # Performs like `save`, but instead of returning `false` if validation failed,
+  # Performs `save` call, but instead of returning `false` if validation failed,
   # raise `Clear::Model::InvalidModelError` exception
   def save!(on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
     raise Clear::Model::ReadOnlyError.new(self) if self.class.read_only?
@@ -144,6 +144,29 @@ module Clear::Model::HasSaving
     save!(block)
   end
 
+  # Set the fields passed as argument and call `save` on the object
+  def update(**args)
+    set(**args)
+    save
+  end
+
+  # Set the fields passed as argument and call `save!` on the object
+  def update!(**args)
+    set(**args)
+    save!
+  end
+
+  # :nodoc:
+  def update(named_tuple : NamedTuple)
+    set(named_tuple)
+    save
+  end
+
+  # :nodoc:
+  def update!(named_tuple : NamedTuple)
+    set(named_tuple)
+    save!
+  end
 
   #  Delete the model by building and executing a `DELETE` query.
   #  A deleted model is not persisted anymore, and can be saved again.

@@ -240,6 +240,19 @@ module ModelSpec
         end
       end
 
+      it "can update the model" do
+        temporary do
+          reinit
+          u = User.new({id: 1, first_name: "x"})
+          u.notification_preferences = JSON.parse("{}")
+          u.id = 2 # Force the change!
+          u.save!
+
+          u.update!(first_name: "Malcom")
+          User.query.first!.first_name.should eq "Malcom"
+        end
+      end
+
       it "can import a number of models" do
         temporary do
           reinit
