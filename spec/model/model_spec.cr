@@ -508,6 +508,16 @@ module ModelSpec
         end
       end
 
+      it "raises a RecordNotFoundError for an empty find!" do
+        temporary do
+          reinit
+
+          expect_raises(Clear::SQL::RecordNotFoundError) do
+            User.find!(1)
+          end
+        end
+      end
+
       it "can set back a field to nil" do
         temporary do
           reinit

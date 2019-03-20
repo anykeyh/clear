@@ -7,6 +7,8 @@ module Clear::SQL
 
   class OperationNotPermittedError < Error; end
 
+  class RecordNotFoundError < Error; end
+
   # Rollback the transaction or the last savepoint.
   class RollbackError < Error; end
 
