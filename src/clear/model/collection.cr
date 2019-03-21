@@ -513,7 +513,7 @@ module Clear::Model
     # Get the first row from the collection query.
     # if not found, throw an error
     def first!(fetch_columns = false) : T
-      first(fetch_columns).not_nil!
+      first(fetch_columns) || raise Clear::SQL::RecordNotFoundError.new
     end
 
     # Get the first row from the collection query.

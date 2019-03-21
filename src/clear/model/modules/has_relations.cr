@@ -119,16 +119,35 @@ module Clear::Model::HasRelations
   #   belongs_to user : User, foreign_key: "the_user_id"
   #
   # ```
-  macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int64?)
+  macro belongs_to(name, foreign_key = nil, no_cache = false, primary = false, key_type = Int64)
     {%
     foreign_key = foreign_key.id if foreign_key.is_a?(SymbolLiteral) || foreign_key.is_a?(StringLiteral)
 
+    nilable = false
+
+    if name.type.is_a?(Union)
+      # We cannot use here call `resolve` as some of the references
+      # might not yet have been defined
+      types = name.type.types.map{ |x| "#{x.id}" }
+      # So we check for the nil type if it exists
+      nilable = types.includes?("Nil")
+
+      type = name.type.types.first
+    else
+      type = name.type
+    end
+
+    if nilable
+      unless key_type.resolve.nilable?
+        key_type = "#{key_type.id}?".id
+      end
+    end
+
     RELATIONS[name.var.id] = {
       relation_type: :belongs_to,
-
-      type: name.type,
-
+      type: type,
       foreign_key: foreign_key,
+      nilable: nilable,
       primary: primary,
       no_cache: no_cache,
       key_type: key_type
@@ -142,7 +161,7 @@ module Clear::Model::HasRelations
     {% begin %}
     {% for name, settings in RELATIONS %}
       {% if settings[:relation_type] == :belongs_to %}
-        Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
+        Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:nilable]}}, {{settings[:foreign_key]}},
           {{settings[:primary]}}, {{settings[:no_cache]}}, {{settings[:key_type]}})
       {% elsif settings[:relation_type] == :has_many %}
         Relations::HasManyMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
