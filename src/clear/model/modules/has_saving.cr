@@ -168,6 +168,16 @@ module Clear::Model::HasSaving
     save!
   end
 
+  def reload : self
+    set(self.class.query.where{ var("#{self.class.pkey}") == pkey }.fetch_first!)
+
+    @attributes.clear
+    clear_change_flags
+    @persisted = true
+
+    self
+  end
+
   #  Delete the model by building and executing a `DELETE` query.
   #  A deleted model is not persisted anymore, and can be saved again.
   #     Clear will do `INSERT` instead of `UPDATE` then

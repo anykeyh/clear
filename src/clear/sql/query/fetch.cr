@@ -60,9 +60,30 @@ module Clear::SQL::Query::Fetch
     end
   end
 
-  # Return the first line of the query as Hash(String, ::Clear::SQL::Any)
+  # Return the first line of the query as Hash(String, ::Clear::SQL::Any), or nil
+  # if not found
   def first
+    fetch_first
+  end
+
+  def first!
+    fetch_first!
+  end
+
+  # Alias for `first` because first is redefined in Collection::Base
+  # object to return a model instead.
+  def fetch_first
     limit(1).fetch(fetch_all: true) { |x| return x }
+
+    nil
+  end
+
+  def fetch_first!
+    if o = fetch_first
+      o
+    else
+      raise Clear::SQL::RecordNotFoundError.new
+    end
   end
 
   # Return an array with all the rows fetched.

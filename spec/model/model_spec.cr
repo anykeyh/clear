@@ -243,13 +243,29 @@ module ModelSpec
       it "can update the model" do
         temporary do
           reinit
-          u = User.new({id: 1, first_name: "x"})
-          u.notification_preferences = JSON.parse("{}")
-          u.id = 2 # Force the change!
-          u.save!
 
+          u = User.create!({id: 1, first_name: "x"})
           u.update!(first_name: "Malcom")
+
           User.query.first!.first_name.should eq "Malcom"
+        end
+      end
+
+      it "can reload the model" do
+        temporary do
+          reinit
+
+          u = User.create!({id: 1, first_name: "x"})
+
+          # Low level update
+          User.query.where{ id == 1 }.to_update.set(first_name: "Malcom").execute
+
+          u.first_name = "Danny"
+          u.changed?.should be_true
+
+          #reload the model now
+          u.reload.first_name.should eq "Malcom"
+          u.changed?.should be_false
         end
       end
 
