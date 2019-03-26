@@ -73,7 +73,7 @@ module UUIDSpec
       temporary do
         reinit
 
-	3.times do |x|
+        3.times do |x|
           DBObject.create!({name: "obj#{x}"})
         end
 
@@ -83,6 +83,9 @@ module UUIDSpec
 
         obj1.db_object.not_nil!.id.should eq dbo_id
         obj2.db_object.should eq nil
+
+        dbo = DBObject.find!(dbo_id)
+        dbo.db_objects.not_nil!.count.should eq 1
       end
     end
 
