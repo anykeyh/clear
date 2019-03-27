@@ -30,7 +30,7 @@ module Clear::Model::Relations::HasManyThroughMacro
 
 
       if cache && cache.active?("{{method_name}}")
-        arr = cache.hit("{{method_name}}", self.pkey, {{relation_type}})
+        arr = cache.hit("{{method_name}}", self.pkey_column.to_sql_value, {{relation_type}})
         qry.with_cached_result(arr)
       end
 
@@ -125,5 +125,4 @@ module Clear::Model::Relations::HasManyThroughMacro
     end
 
   end
-
 end
