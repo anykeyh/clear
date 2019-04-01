@@ -8,7 +8,7 @@ Let's get an example:
 class User
     include Clear::Model
 
-    with_serial_pkey
+    primary_key
 
     column role : String
     column role_level : Int32
