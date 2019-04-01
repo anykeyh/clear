@@ -8,7 +8,7 @@ Usually, it's used when another model optionally extend the current model by com
 class User
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   has_one user_info : UserInfo
 end
@@ -16,7 +16,7 @@ end
 class UserInfo
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   belongs_to user : User
 end
