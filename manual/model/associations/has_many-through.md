@@ -64,12 +64,15 @@ Addition and deletion is provided in elegant way even without model:
 {% code-tabs %}
 {% code-tabs-item title="add\_to\_post.cr" %}
 ```ruby
-p = Post.query.first!
+p = Post.new({name: "My new post"})
+p.save!
 # Add the tag Technology to the post
 p.tags << Tag.query.find_or_create({name: "Technology"}){}
 ```
 {% endcode-tabs-item %}
 {% endcode-tabs %}
+
+p has to be saved in database before linking the tag.
 
 {% code-tabs %}
 {% code-tabs-item title="delete\_tag.cr" %}
