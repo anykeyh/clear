@@ -19,7 +19,7 @@ CREATE UNIQUE INDEX tags_name ON tags (name);
 CREATE TABLE posts (
     id bigserial NOT NULL PRIMARY KEY,
     name text NOT NULL,
-    content text,
+    content text
 );
 
 CREATE TABLE post_tags (
