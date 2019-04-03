@@ -12,16 +12,15 @@ For example, let's assume we have a table `posts` and a table `tags` which are l
 CREATE TABLE tags (
     id bigserial NOT NULL PRIMARY KEY, 
     name text NOT NULL
-)
+);
 
-CREATE UNIQUE INDEX tags_name ON tags (name)
+CREATE UNIQUE INDEX tags_name ON tags (name);
 
 CREATE TABLE posts (
     id bigserial NOT NULL PRIMARY KEY,
     name text NOT NULL,
     content text,
-    category_id bigint NOT NULL
-)
+);
 
 CREATE TABLE post_tags (
     tag_id bigint NOT NULL, 
