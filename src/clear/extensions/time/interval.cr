@@ -1,8 +1,8 @@
 # Represents the "interval" object of PostgreSQL
 struct Clear::SQL::Interval
-  property microseconds : Int64 = 0
-  property days : Int32 = 0
-  property months : Int32 = 0
+  getter microseconds : Int64 = 0
+  getter days : Int32 = 0
+  getter months : Int32 = 0
 
   def initialize(
     years = 0,
@@ -34,6 +34,10 @@ struct Clear::SQL::Interval
     (o << @microseconds.to_s << "microseconds") if @microseconds != 0
 
     o.join(" ")
+  end
+
+  def +(i : Interval)
+    return Interval.new(months: self.months + i.months, day: self.days + i.days, microseconds: self.microseconds + i.microseconds)
   end
 
   def initialize(io : IO)
@@ -70,6 +74,16 @@ struct Clear::SQL::Interval
     end
   end
 
-  Clear::Model::Converter.add_converter("Clear::SQL::Interval", Clear::SQL::Interval::Converter)
-
 end
+
+struct Time
+  def +(i : Interval)
+    self + i.microseconds.microseconds + i.days.days + i.months.months
+  end
+
+  def -(t : Interval)
+    self - i.microseconds.microseconds - i.days.days - i.months.months
+  end
+end
+
+Clear::Model::Converter.add_converter("Clear::SQL::Interval", Clear::SQL::Interval::Converter)
