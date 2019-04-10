@@ -39,7 +39,7 @@ Now, let's define our models:
 class Post
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   column name : String
   column content : String?
@@ -50,7 +50,7 @@ end
 class Tag
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   column name : String
 
@@ -100,7 +100,7 @@ class Post
     self.table = "post_tags"
   end
 
-  with_serial_pkey
+  primary_key
 
   column name : String
   column content : String?
@@ -111,7 +111,7 @@ end
 class Tag
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   column name : String
 

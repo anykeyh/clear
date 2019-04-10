@@ -22,7 +22,7 @@ CREATE TABLE posts (
 class Post
   include Clear::Model
 
-  with_serial_pkey
+  primary_key
 
   column name : String
   column content : String?
@@ -31,7 +31,9 @@ class Post
 end
 
 class Category
-  with_serial_pkey
+  include Clear::Model
+
+  primary_key
 
   column name : String
 

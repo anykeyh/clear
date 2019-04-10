@@ -5,7 +5,6 @@ module UUIDSpec
     include Clear::Migration
 
     def change(dir)
-
       create_table(:dbobjects, id: :uuid) do |t|
         t.column :name, :string, null: false
       end
@@ -13,9 +12,7 @@ module UUIDSpec
       create_table(:dbobjects2, id: :uuid) do |t|
         t.references to: "dbobjects", name: "db_object_id", type: "uuid", null: true
       end
-
     end
-
   end
 
   class DBObject
@@ -83,6 +80,9 @@ module UUIDSpec
 
         obj1.db_object.not_nil!.id.should eq dbo_id
         obj2.db_object.should eq nil
+
+        dbo = DBObject.find!(dbo_id)
+        dbo.db_objects.not_nil!.count.should eq 1
       end
     end
 

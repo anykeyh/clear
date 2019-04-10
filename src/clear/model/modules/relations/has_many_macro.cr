@@ -1,7 +1,6 @@
 # :nodoc:
 module Clear::Model::Relations::HasManyMacro
-
-    # has many
+  # has many
   macro generate(self_type, method_name, relation_type, foreign_key = nil, primary_key = nil)
     # The method {{method_name}} is a `has_many` relation
     #   to {{relation_type}}
@@ -11,7 +10,7 @@ module Clear::Model::Relations::HasManyMacro
 
       cache = @cache
       query = if cache && cache.active?("{{method_name}}")
-        arr = cache.hit("{{method_name}}", %primary_key, {{relation_type}})
+        arr = cache.hit("{{method_name}}", {{(primary_key || "pkey").id}}_column.to_sql_value, {{relation_type}})
 
         # This relation will trigger the cache if it exists
         {{relation_type}}.query \
