@@ -37,7 +37,7 @@ struct Clear::SQL::Interval
   end
 
   def +(i : Interval)
-    return Interval.new(months: self.months + i.months, day: self.days + i.days, microseconds: self.microseconds + i.microseconds)
+    Interval.new(months: self.months + i.months, day: self.days + i.days, microseconds: self.microseconds + i.microseconds)
   end
 
   def initialize(io : IO)
