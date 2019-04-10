@@ -378,7 +378,6 @@ module ModelSpec
           reinit
 
           # Set from tuple
-          puts "FROM TUPLE"
           u = User.new
           u.set first_name: "hello", last_name: "world"
           u.save!
@@ -387,7 +386,6 @@ module ModelSpec
           u.changed?.should be_false
 
           # Set from hash
-          puts "FROM HASH"
           u = User.new
           u.set({"first_name" => "hello", "last_name" => "world"})
           u.save!
@@ -396,7 +394,6 @@ module ModelSpec
           u.changed?.should be_false
 
           # Set from json
-          puts "FROM JSON"
           u = User.new
           u.set(JSON.parse(%<{"first_name": "hello", "last_name": "world"}>))
           u.save!
