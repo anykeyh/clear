@@ -31,7 +31,7 @@ module UUIDSpec
 
     self.table = "dbobjects2"
 
-    belongs_to db_object : DBObject, foreign_key: "db_object_id", key_type: UUID?
+    belongs_to db_object : DBObject?, foreign_key: "db_object_id", key_type: UUID?
 
     primary_key type: :uuid
   end
@@ -70,7 +70,7 @@ module UUIDSpec
       temporary do
         reinit
 
-        3.times do |x|
+      	3.times do |x|
           DBObject.create!({name: "obj#{x}"})
         end
 

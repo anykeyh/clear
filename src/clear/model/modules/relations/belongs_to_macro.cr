@@ -1,41 +1,63 @@
 # :nodoc:
 module Clear::Model::Relations::BelongsToMacro
-  macro generate(self_type, method_name, relation_type, foreign_key, primary, no_cache, key_type)
+  macro generate(self_type, method_name, relation_type, nilable, foreign_key, primary, no_cache, key_type)
     {% foreign_key = foreign_key || method_name.stringify.underscore + "_id" %}
 
-    column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}
+    {%
+      if nilable
+        relation_type_nilable = "#{relation_type} | Nil".id
+      else
+        relation_type_nilable = relation_type
+      end
+    %}
+
+    column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}, presence: {{nilable}}
     getter _cached_{{method_name}} : {{relation_type}}?
 
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
-    def {{method_name}} : {{relation_type}}?
-      if @cached_{{method_name}}
-        @cached_{{method_name}}
+    def {{method_name}} : {{relation_type_nilable}}
+      if cached = @cached_{{method_name}}
+        cached
       else
         cache = @cache
 
         if cache && cache.active? "{{method_name}}"
-          @cached_{{method_name}} = cache.hit("{{method_name}}",
-            self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
-          ).first?
+          {% if nilable %}
+            @cached_{{method_name}} = cache.hit("{{method_name}}",
+              self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
+            ).first?
+          {% else %}
+            @cached_{{method_name}} = cache.hit("{{method_name}}",
+              self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
+            ).first? || raise Clear::SQL::RecordNotFoundError.new
+          {% end %}
+
         else
+          {% if nilable %}
           @cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
+          {% else %}
+          @cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first!
+          {% end %}
         end
       end
     end # / *
 
+    {% if nilable %}
     def {{method_name}}! : {{relation_type}}
       {{method_name}}.not_nil!
     end # /  *!
+    {% end %}
 
-    def {{method_name}}=(x : {{relation_type}}?)
+    def {{method_name}}=(x : {{relation_type_nilable}})
       if x && x.persisted?
         raise "#{x.pkey_column.name} must be defined when assigning a belongs_to relation." unless x.pkey_column.defined?
         @{{foreign_key.id}}_column.value = x.pkey
       end
 
       @cached_{{method_name}} = x
-    end # / *=
+    end
+
 
     # :nodoc:
     # save the belongs_to model first if needed

@@ -74,7 +74,7 @@ module ModelSpec
     column notification_preferences : JSON::Any, presence: false
 
     has_many posts : Post, foreign_key: "user_id"
-    has_one info : UserInfo, foreign_key: "user_id"
+    has_one info : UserInfo?, foreign_key: "user_id"
     has_many categories : Category, through: :model_posts,
       own_key: :user_id, foreign_key: :category_id
 
@@ -326,12 +326,12 @@ module ModelSpec
           p.user = u
           p.save.should eq(false) # < Must save the user first. but user is missing is first name !
 
-          p.user!.first_name = "I fix the issue!" # < Fix the issue
+          p.user.first_name = "I fix the issue!" # < Fix the issue
 
           p.save.should eq(true) # Should save now
 
           u.id.should eq(1)       # Should be set
-          p.user!.id.should eq(1) # And should be set
+          p.user.id.should eq(1) # And should be set
         end
       end
 
