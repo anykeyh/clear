@@ -144,7 +144,7 @@ class Clear::Expression
   # Clear::Expression[Time.now, date: true] # < "2017-04-03"
   # ```
   def self.safe_literal(x : Time, date : Bool = false) : String
-    {"'", x.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT), "'"}.join
+    {"'", x.to_utc.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT), "'"}.join
   end
 
   # :nodoc:
