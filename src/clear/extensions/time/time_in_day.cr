@@ -7,7 +7,7 @@ struct TimeInDay
   HOUR = 60_u64 * MINUTE
 
   def initialize(hours, minutes, seconds = 0)
-    @ms = SECOND * seconds + MINUTE * minutes + HOUR * hours
+    @ms = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
   end
 
   def initialize(@ms)
