@@ -49,7 +49,35 @@ module IntervalSpec
 
       end
     end
-  end
 
+    it "can be added and substracted to a date" do
+
+      # TimeSpan
+      [1.hour, 1.day, 1.month].each do |span|
+        i = Clear::SQL::Interval.new(span)
+        now = Time.now
+
+        (now + i).to_unix.should eq( (now+span).to_unix)
+        (now - i).to_unix.should eq( (now-span).to_unix )
+      end
+
+      i = Clear::SQL::Interval.new(months: 1, days: -1, minutes: 12)
+      now = Time.now
+
+      (now + i).to_unix.should eq( (now+1.month-1.day+12.minute).to_unix)
+      (now - i).to_unix.should eq( (now-1.month+1.day-12.minute).to_unix)
+
+    end
+
+    it "can be used in expression engine" do
+      IntervalModel.query.where{
+        (created_at - Clear::SQL::Interval.new(months: 1)) > updated_at
+      }.to_sql.should eq %(SELECT * FROM "interval_table" WHERE (("created_at" - INTERVAL '1 months') > "updated_at"))
+    end
+
+    it "can be casted into string" do
+      Clear::SQL::Interval.new(months: 1, days: 1).to_sql.to_s.should eq("INTERVAL '1 months 1 days'")
+    end
+  end
 
 end
