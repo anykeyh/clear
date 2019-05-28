@@ -4,7 +4,7 @@
 
 - Add `Clear::Interval` type
 
-This type is related to the type `Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
+This type is related to the type `Clear::Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
 with `Time` (Postgres' `datetime`) by adding or substracting it.
 
 ### Examples:
@@ -19,7 +19,7 @@ MyModel.query.where{ created_at - interval > updated_at  }.each do |model|
 end
 ```
 
-Usage in model definition:
+It might be used as column definition, and added / removed to crystal `Time` object
 
 ```crystal
 class MyModel
@@ -31,7 +31,33 @@ end
 puts "Expected time: #{Time.now + MyModel.first!.i}"
 ```
 
-- Add `TimeInDay` columns type, which stands for the `time` object in PostgreSQL.
+- Add `Clear::TimeInDay` columns type, which stands for the `time` object in PostgreSQL.
+
+### Examples:
+
+Usage as stand alone:
+```crystal
+
+time = Clear::TimeInDay.parse("12:33")
+puts time.hour # 12
+puts time.minutes # 0
+
+Time.now.at(time) # Today at 12:33:00
+time.to_s # 12:33:00
+time.to_s(false) # don't show seconds => 12:33
+
+time = time + 2.minutes #12:35
+```
+
+As with Interval, you might wanna use it as a column (use underlying `time` type in PostgreSQL):
+
+```crystal
+class MyModel
+  include Clear::Model
+
+  column i : Clear::TimeInDay
+end
+```
 
 # v0.6
 

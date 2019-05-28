@@ -1,16 +1,43 @@
-# Represents the "time" object of PostgreSQL
+# `Clear::TimeInDay` represents the "time" object of PostgreSQL
+#
+# It can be converted automatically from/to a `time` column.
+# It offers helpers which makes it usable also as a stand alone.
+#
+# ## Usage example
+#
+# ```
+#   time = Clear::TimeInDay.parse("12:33")
+#   puts time.hour # 12
+#   puts time.minutes # 0
+#
+#   Time.now.at(time) # Today at 12:33:00
+#   time.to_s # 12:33:00
+#   time.to_s(false) # don't show seconds => 12:33
+#
+#   time = time + 2.minutes #12:35
+# ```
+#
+# As with Interval, you might wanna use it as a column (use underlying `time` type in PostgreSQL):
+#
+# ```crystal
+# class MyModel
+#   include Clear::Model
+#
+#   column i : Clear::TimeInDay
+# end
+# ```
 struct Clear::TimeInDay
   getter microseconds : UInt64 = 0
 
-  SECOND = 1_000_000_u64
-  MINUTE = 60_u64 * SECOND
-  HOUR = 60_u64 * MINUTE
+  private SECOND = 1_000_000_u64
+  private MINUTE = 60_u64 * SECOND
+  private HOUR = 60_u64 * MINUTE
 
   def initialize(hours, minutes, seconds = 0)
     @microseconds = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
   end
 
-  def initialize(@microseconds)
+  def initialize(@microseconds = 0)
   end
 
   def +(t : Time::Span)
@@ -19,14 +46,6 @@ struct Clear::TimeInDay
 
   def -(t : Time::Span)
     Clear::TimeInDay.new(microseconds: @microseconds - t.total_nanoseconds.to_i64 / 1_000)
-  end
-
-  def +(t : Time)
-    t + @microseconds.microseconds
-  end
-
-  def -(t : Time)
-    t - @microseconds.microseconds
   end
 
   def +(x : self)
