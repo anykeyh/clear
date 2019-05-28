@@ -59,6 +59,11 @@ class MyModel
 end
 ```
 
+
+## Bug fixes
+- Fix #115 (Thanks @pynixwang)
+- Fix #118 (Thanks @russ)
+
 # v0.6
 
 v0.6 should have shipped polymorphic relations, spec rework and improvement in
