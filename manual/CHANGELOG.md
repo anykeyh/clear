@@ -63,6 +63,8 @@ end
 ## Bug fixes
 - Fix #115 (Thanks @pynixwang)
 - Fix #118 (Thanks @russ)
+- Fix #108
+
 
 # v0.6
 

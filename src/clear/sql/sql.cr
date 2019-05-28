@@ -56,18 +56,22 @@ module Clear
     include Clear::SQL::Logger
     extend self
 
-
     alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectBuilder
 
-    # Sanitize
-    def sanitize(x : String, delimiter = "''")
+    # Sanitize string and convert some literals (e.g. `Time`)
+    def sanitize(x)
       Clear::Expression[x]
     end
 
     # Escape the expression, double quoting it.
     #
     # It allows use of reserved keywords as table or column name
+    # NOTE: Escape is used for escaping postgresql keyword. For example
+    # if you have a column named order (which is a reserved word), you want
+    # to escape it by double-quoting it.
+    #
+    # For escaping STRING value, please use Clear::SQL.sanitize
     def escape(x : String | Symbol)
       "\"" + x.to_s.gsub("\"", "\"\"") + "\""
     end
@@ -158,6 +162,39 @@ module Clear
           execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
         end
       end
+    end
+
+
+    # Truncate a table or a model
+    #
+    # ```
+    #   User.query.count # => 200
+    #   Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
+    #   User.query.count # => 0
+    # ```
+    #
+    # SEE https://www.postgresql.org/docs/current/sql-truncate.html
+    # for more information.
+    #
+    # - `restart_sequence` set to true will append `RESTART IDENTITY` to the query
+    # - `cascade` set to true will append `CASCADE` to the query
+    # - `truncate_inherited` set to false will append `ONLY` to the query
+    # - `connection_name` will be: `Model.connection` or `default` unless optionally defined.
+    def self.truncate(tablename : T.class | String, restart_sequence = false, cascade = false, truncate_inherited = true, connection_name : String? = nil) forall T
+      if(tablename.is_a?(String))
+        connection_name ||= "default"
+      else
+        connection_name ||= tablename.connection
+        tablename ||= tablename.table
+      end
+
+      only = truncate_inherited ? "" : " ONLY "
+      restart_sequence = restart_sequence ? " RESTART IDENTITY " : ""
+      cascade = cascade ? " CASCADE " : ""
+
+      execute(connection_name,
+        {"TRUNCATE TABLE ", only, Clear::SQL.escape(tablename), restart_sequence, cascade }.join
+      )
     end
 
     # Raise a rollback, in case of transaction
