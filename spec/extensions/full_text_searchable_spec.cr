@@ -80,7 +80,7 @@ module FullTextSearchableSpec
       Series.create!({title:       "",
                       description: ""})
 
-      Series.query.each { |s| s.tsv.to_db }
+      Series.query.each { |s| s.tsv.to_sql }
     end
   end
 
@@ -103,7 +103,7 @@ module FullTextSearchableSpec
       tsvec["follow"].positions[0].weight.should eq('A')
 
       tsvec["other"]?.should be_nil
-      tsvec.to_db.should eq "'bad':12A 'better':1A 'break':11A 'call':2A " +
+      tsvec.to_sql.should eq "'bad':12A 'better':1A 'break':11A 'call':2A " +
                             "'follow':4A 'goodman':6A 'lawyer':9A " +
                             "'saul':3A,5A 'sketchi':8A"
     end

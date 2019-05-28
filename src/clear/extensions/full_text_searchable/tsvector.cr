@@ -44,7 +44,7 @@ class Clear::TSVector
     lexems[key]?
   end
 
-  def to_db
+  def to_sql
     @lexems.values.map do |v|
       {
         Clear::Expression[v.value],
@@ -87,11 +87,7 @@ class Clear::TSVector
     end
 
     def self.to_db(x : TSVector?)
-      if (x)
-        x.to_db
-      else
-        nil
-      end
+      x.try &.to_sql
     end
   end
 end

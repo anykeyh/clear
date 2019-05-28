@@ -140,6 +140,18 @@ module Clear::Model::ClassMethods
         mdl
       end
 
+      def self.create!(a : Hash) : self
+        mdl = self.new(a)
+        mdl.save!
+        mdl
+      end
+
+      def self.create(x : Hash) : self
+        mdl = self.new(a)
+        mdl.save
+        mdl
+      end
+
       # Multi-models creation. See `Collection#create(**args)`
       #
       # Returns the list of newly created model.
