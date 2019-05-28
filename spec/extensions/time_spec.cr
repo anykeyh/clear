@@ -105,6 +105,8 @@ module IntervalSpec
         i.t.not_nil!.to_s(show_seconds: false).should eq("12:32")
         i.t = i.t.not_nil! + 12.minutes
         i.save!
+
+        i.reload.t.to_s.should eq("12:44:00")
       end
 
     end
