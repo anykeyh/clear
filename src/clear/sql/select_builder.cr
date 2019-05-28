@@ -70,9 +70,9 @@ module Clear::SQL::SelectBuilder
      print_froms,
      print_joins,
      print_wheres,
-     print_havings,
      print_windows,
      print_group_bys,
+     print_havings,
      print_order_bys,
      print_limit_offsets,
      print_lock].compact.reject(&.empty?).join(" ")

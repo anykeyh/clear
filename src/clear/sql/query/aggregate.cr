@@ -1,5 +1,4 @@
 module Clear::SQL::Query::Aggregate
-
   # Use SQL `COUNT` over your query, and return this number as a Int64
   #
   # as count return always a scalar, the usage of `COUNT(*) OVER GROUP BY` can be done by
@@ -17,7 +16,7 @@ module Clear::SQL::Query::Aggregate
 
       # Optimize returning 1 if found, as we count only...
       # ... except if the subquery has distinct, otherwise will always returns "1"...
-      subquery = self.is_distinct? ? self : self.dup.clear_order_bys.clear_select.select("1")
+      subquery = self.is_distinct? ? self : self.dup.clear_order_bys.clear_select.use_connection(self.connection_name).select("1")
 
       o = X.new(Clear::SQL.select("COUNT(*)").from({query_count: subquery}).scalar(Int64))
     else
@@ -32,7 +31,7 @@ module Clear::SQL::Query::Aggregate
   # Call an custom aggregation function, like MEDIAN or other:
   #
   # ```
-  #   query.agg("MEDIAN(age)", Int64)
+  # query.agg("MEDIAN(age)", Int64)
   # ```
   #
   # Note than COUNT, MIN, MAX, SUM and AVG are already conveniently mapped.
