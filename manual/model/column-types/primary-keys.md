@@ -24,6 +24,14 @@ end
 * `type` is the type of the column in your table. Set to (Default: `bigserial`).
 * By default, types can be of type `bigserial`, `serial`, `int`, `bigint`, `text` and `uuid`.
 
+Note than primary_key directive in the model class is just a fast way of writing:
+
+```ruby
+column id : Int64, primary: true, presence: false
+```
+
+The primary key name is ID, of type bigint and it won't check the presence on save because it has default value
+
 {% hint style="info" %}
 In case of `uuid`, Clear will generate a new `uuid` at every new object creation before inserting it into the database.
 {% endhint %}
