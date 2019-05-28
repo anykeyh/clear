@@ -1,3 +1,38 @@
+# v0.7
+
+## Features
+
+- Add `Clear::Interval` type
+
+This type is related to the type `Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
+with `Time` (Postgres' `datetime`) by adding or substracting it.
+
+### Examples:
+
+Usage in Expression engine:
+
+```crystal
+interval = Clear::Interval.new(months: 1, days: 1)
+
+MyModel.query.where{ created_at - interval > updated_at  }.each do |model|
+  # ...
+end
+```
+
+Usage in model definition:
+
+```crystal
+class MyModel
+  include Clear::Model
+
+  column i : Clear::Interval
+end
+
+puts "Expected time: #{Time.now + MyModel.first!.i}"
+```
+
+- Add `TimeInDay` columns type, which stands for the `time` object in PostgreSQL.
+
 # v0.6
 
 v0.6 should have shipped polymorphic relations, spec rework and improvement in

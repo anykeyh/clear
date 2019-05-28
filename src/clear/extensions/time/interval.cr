@@ -1,5 +1,5 @@
 # Represents the "interval" object of PostgreSQL
-struct Clear::SQL::Interval
+struct Clear::Interval
   getter microseconds : Int64 = 0
   getter days : Int32 = 0
   getter months : Int32 = 0
@@ -59,15 +59,15 @@ struct Clear::SQL::Interval
 
   def self.decode(x : Slice(UInt8))
     io = IO::Memory.new(x, writeable: false)
-    Clear::SQL::Interval.new(io)
+    Clear::Interval.new(io)
   end
 
   module Converter
-    def self.to_column(x) : Clear::SQL::Interval?
+    def self.to_column(x) : Clear::Interval?
       case x
       when Slice # < Here bug of the crystal compiler with Slice(UInt8), do not want to compile
-        Clear::SQL::Interval.decode(x.as(Slice(UInt8)))
-      when Clear::SQL::Interval
+        Clear::Interval.decode(x.as(Slice(UInt8)))
+      when Clear::Interval
         x
       when Nil
         nil
@@ -76,7 +76,7 @@ struct Clear::SQL::Interval
       end
     end
 
-    def self.to_db(x : Clear::SQL::Interval?)
+    def self.to_db(x : Clear::Interval?)
       x.try &.to_sql
     end
   end
@@ -84,13 +84,13 @@ struct Clear::SQL::Interval
 end
 
 struct Time
-  def +(i : Clear::SQL::Interval)
+  def +(i : Clear::Interval)
     self + i.microseconds.microseconds + i.days.days + i.months.months
   end
 
-  def -(i : Clear::SQL::Interval)
+  def -(i : Clear::Interval)
     self - i.microseconds.microseconds - i.days.days - i.months.months
   end
 end
 
-Clear::Model::Converter.add_converter("Clear::SQL::Interval", Clear::SQL::Interval::Converter)
+Clear::Model::Converter.add_converter("Clear::Interval", Clear::Interval::Converter)

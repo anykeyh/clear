@@ -1,44 +1,56 @@
 # Represents the "time" object of PostgreSQL
-struct TimeInDay
-  getter ms : UInt64 = 0
+struct Clear::TimeInDay
+  getter microseconds : UInt64 = 0
 
   SECOND = 1_000_000_u64
   MINUTE = 60_u64 * SECOND
   HOUR = 60_u64 * MINUTE
 
   def initialize(hours, minutes, seconds = 0)
-    @ms = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
+    @microseconds = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
   end
 
-  def initialize(@ms)
+  def initialize(@microseconds)
+  end
+
+  def +(t : Time::Span)
+    Clear::TimeInDay.new(microseconds: @microseconds + t.total_nanoseconds.to_i64 / 1_000)
+  end
+
+  def -(t : Time::Span)
+    Clear::TimeInDay.new(microseconds: @microseconds - t.total_nanoseconds.to_i64 / 1_000)
   end
 
   def +(t : Time)
-    t + @ms.microseconds
+    t + @microseconds.microseconds
   end
 
   def -(t : Time)
-    t - @ms.microseconds
+    t - @microseconds.microseconds
   end
 
   def +(x : self)
-    TimeInDay.new(@ms + x.ms)
+    TimeInDay.new(@microseconds + x.ms)
   end
 
   def hour
-    ( @ms // HOUR )
+    ( @microseconds // HOUR )
   end
 
   def minutes
-    ( @ms % HOUR ) // MINUTE
+    ( @microseconds % HOUR ) // MINUTE
   end
 
   def seconds
-    (@ms % MINUTE) // SECOND
+    (@microseconds % MINUTE) // SECOND
+  end
+
+  def total_seconds
+    @microseconds / SECOND
   end
 
   def to_tuple
-    hours, left = @ms.divmod(HOUR)
+    hours, left = @microseconds.divmod(HOUR)
     minutes, left = left.divmod(MINUTE)
     seconds = left // SECOND
 
@@ -51,7 +63,7 @@ struct TimeInDay
 
   def to_s(show_seconds : Bool = true)
     io = IO::Memory.new
-    to_s(io)
+    to_s(io, show_seconds)
     io.rewind
     io.to_s
   end
@@ -76,7 +88,7 @@ struct TimeInDay
 
   # Parse a string, of format HH:MM or HH:MM:SS
   def self.parse(str : String)
-    raise "Wrong format" unless str =~ /[0-9]+:[0-9]{2}(:[0-9]{2})?/
+    raise "Wrong format" unless str =~ /^[0-9]+:[0-9]{2}(:[0-9]{2})?$/
 
     arr = str.split(/\:/).map &.try &.to_i
 
@@ -84,14 +96,14 @@ struct TimeInDay
     minutes = arr[1]
     seconds = arr[2]?
 
-    return TimeInDay.new(hours, minutes, seconds) if seconds
+    return Clear::TimeInDay.new(hours, minutes, seconds) if seconds
 
-    TimeInDay.new(hours, minutes)
+    Clear::TimeInDay.new(hours, minutes)
   end
 end
 
 struct Time
-  def at(hm : TimeInDay, timezone = nil) : Time
+  def at(hm : Clear::TimeInDay, timezone = nil) : Time
     if timezone
       if timezone.is_a?(String)
         timezone = Time::Location.load(timezone)
@@ -103,16 +115,16 @@ struct Time
     end
   end
 
-  def +(t : TimeInDay)
+  def +(t : Clear::TimeInDay)
     self + t.ms.microseconds
   end
 
-  def -(t : TimeInDay)
+  def -(t : Clear::TimeInDay)
     self - t.ms.microseconds
   end
 end
 
-module TimeInDay::Converter
+module Clear::TimeInDay::Converter
   def self.to_column(x) : TimeInDay?
     case x
     when TimeInDay
@@ -136,4 +148,4 @@ module TimeInDay::Converter
   end
 end
 
-Clear::Model::Converter.add_converter("TimeInDay", TimeInDay::Converter)
+Clear::Model::Converter.add_converter("Clear::TimeInDay", Clear::TimeInDay::Converter)
