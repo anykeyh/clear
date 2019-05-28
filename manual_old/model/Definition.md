@@ -112,7 +112,7 @@ To setup a primary key, you can add the modifier `primary: true` to the column:
 ```crystal
 class MyModel
   include Clear::Model
-  
+
   column id : Int32, primary: true, presence: false
   column my_column : String?
 end
@@ -147,7 +147,7 @@ Theses fields are automatically updated whenever you call `save` methods, and wo
 ```crystal
 class MyModel
   include Clear::Model
-  with_serial_pkey "my_primary_key"
+  primary_key "my_primary_key"
 end
 ```
 
