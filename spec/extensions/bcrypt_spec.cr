@@ -17,7 +17,7 @@ module BCryptSpec
   class User
     include Clear::Model
 
-    primary_key type: :uuid
+    primary_key :id, type: :uuid
 
     self.table = "bcrypt_users"
 

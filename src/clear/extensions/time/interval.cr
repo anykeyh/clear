@@ -85,11 +85,11 @@ end
 
 struct Time
   def +(i : Clear::Interval)
-    self + i.microseconds.microseconds + i.days.days + i.months.months
+    self + i.months.months + i.days.days + i.microseconds.microseconds
   end
 
   def -(i : Clear::Interval)
-    self - i.microseconds.microseconds - i.days.days - i.months.months
+    self - i.months.months - i.days.days - i.microseconds.microseconds
   end
 end
 
