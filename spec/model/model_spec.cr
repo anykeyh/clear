@@ -36,7 +36,7 @@ module ModelSpec
     column title : String
 
     column tags : Array(String), presence: false
-    column flags : Array(Int64), presence: false
+    column flags : Array(Int64), presence: false, column_name: "flags_other_column_name"
 
     def validate
       ensure_than(title, "is not empty", &.size.>(0))
@@ -123,7 +123,7 @@ module ModelSpec
         t.column "title", "string", index: true
 
         t.column "tags", "string", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
-        t.column "flags", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
+        t.column "flags_other_column_name", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
 
         t.references to: "model_users", name: "user_id", on_delete: "cascade"
         t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"

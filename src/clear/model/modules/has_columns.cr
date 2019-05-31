@@ -167,20 +167,29 @@ module Clear::Model::HasColumns
         end
       end %}
 
-    {% COLUMNS[name.var] = {
+    {%
+      db_column_name = column_name == nil ? name.var : column_name.id
+
+      COLUMNS["#{db_column_name.id}"] = {
          type:      _type,
          primary:   primary,
          converter: converter,
-         column_name: "#{(column_name || name.var)}",
+         db_column_name: "#{db_column_name.id}",
+         crystal_variable_name: name.var,
          presence:  presence,
-       } %}
+       }
+      %}
   end
 
   # :nodoc:
   # Used internally to gather the columns
   macro __generate_columns__
-    {% for name, settings in COLUMNS %}
+    {% for db_column_name, settings in COLUMNS %}
       {% type = settings[:type] %}
+
+      {% var_name = settings[:crystal_variable_name] %}
+      {% db_name = settings[:db_column_name] %}
+
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
       {% if converter == nil %}
@@ -188,39 +197,40 @@ module Clear::Model::HasColumns
                  "The type is probably not supported natively by Clear.\n"+
                  "Please refer to the manual to create a custom converter." %}
       {% end %}
-      @{{name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
-        Clear::Model::Column({{type}}, {{converter}}).new("{{name}}",
+
+      @{{var_name}}_column : Clear::Model::Column({{type}}, {{converter}}) =
+        Clear::Model::Column({{type}}, {{converter}}).new({{db_name}},
         has_db_default: {{has_db_default}} )
 
-      # Returns the column object used to manage `{{name}}` field
+      # Returns the column object used to manage `{{var_name}}` field
       #
       # See `Clear::Model::Column`
-      def {{name}}_column : Clear::Model::Column({{type}}, {{converter}})
-        @{{name}}_column
+      def {{var_name}}_column : Clear::Model::Column({{type}}, {{converter}})
+        @{{var_name}}_column
       end
 
-      # Returns the value of `{{name}}` column or throw an exception if the column is not defined.
-      def {{name}} : {{type}}
-        @{{name}}_column.value
+      # Returns the value of `{{var_name}}` column or throw an exception if the column is not defined.
+      def {{var_name}} : {{type}}
+        @{{var_name}}_column.value
       end
 
-      # Setter for `{{name}}` column.
-      def {{name}}=(x : {{type}})
-        @{{name}}_column.value = x
+      # Setter for `{{var_name}}` column.
+      def {{var_name}}=(x : {{type}})
+        @{{var_name}}_column.value = x
       end
 
       {% if settings[:primary] %}
         # :nodoc:
-        class_property pkey : String = "{{name}}"
+        class_property pkey : String = "{{var_name}}"
 
         # :nodoc:
         def pkey
-          @{{name}}_column.value
+          @{{var_name}}_column.value
         end
 
         # :nodoc:
         def pkey_column
-          @{{name}}_column
+          @{{var_name}}_column
         end
       {% end %}
     {% end %}
@@ -230,13 +240,13 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, typ in T %}
-        \{% if !@type.has_method?("#{name}=") %}
-          \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
-        \{% end %}
 
-        \{% if settings = COLUMNS["#{name}".id] %}
-          @\{{name}}_column.reset_convert(t[:\{{name}}])
+        \{% if settings = COLUMNS["#{name}"] %}
+          @\{{settings[:crystal_variable_name]}}_column.reset_convert(t[:\{{name}}])
         \{% else %}
+          \{% if !@type.has_method?("#{name}=") %}
+            \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+          \{% end %}
           self.\{{name}} = t[:\{{name}}]
         \{% end %}
       \{% end %}
@@ -253,8 +263,8 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, settings in COLUMNS %}
-        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
-        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+        v = h.fetch(:\{{settings[:db_column_name]}}){ Column::UNKNOWN }
+        @\{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
       \{% end %}
 
       self
@@ -265,8 +275,8 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, settings in COLUMNS %}
-        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
-        @\{{name}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+        v = h.fetch(\{{settings[:db_column_name]}}){ Column::UNKNOWN }
+        @\{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
       \{% end %}
 
       self
@@ -280,13 +290,12 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, typ in T %}
-        \{% if !@type.has_method?("#{name}=") %}
-          \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
-        \{% end %}
-
         \{% if settings = COLUMNS["#{name}".id] %}
-          @\{{name}}_column.set_convert(t[:\{{name}}])
+          @\{{settings[:crystal_variable_name]}}_column.set_convert(t[:\{{name}}])
         \{% else %}
+          \{% if !@type.has_method?("#{name}=") %}
+            \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+          \{% end %}
           self.\{{name}} = t[:\{{name}}]
         \{% end %}
       \{% end %}
@@ -303,8 +312,8 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, settings in COLUMNS %}
-        v = h.fetch(:\{{settings[:column_name]}}){ Column::UNKNOWN }
-        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+        v = h.fetch(:\{{settings[:db_column_name]}}){ Column::UNKNOWN }
+        @\{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
       \{% end %}
 
       self
@@ -315,8 +324,8 @@ module Clear::Model::HasColumns
       super
 
       \{% for name, settings in COLUMNS %}
-        v = h.fetch(\{{settings[:column_name]}}){ Column::UNKNOWN }
-        @\{{name}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+        v = h.fetch(\{{settings[:db_column_name]}}){ Column::UNKNOWN }
+        @\{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
       \{% end %}
 
       self
@@ -332,9 +341,9 @@ module Clear::Model::HasColumns
       o = super
 
       {% for name, settings in COLUMNS %}
-        if @{{name}}_column.defined? &&
-           @{{name}}_column.changed?
-          o[{{settings[:column_name]}}] = @{{name}}_column.to_sql_value
+        if @{{settings[:crystal_variable_name]}}_column.defined? &&
+           @{{settings[:crystal_variable_name]}}_column.changed?
+          o[{{settings[:db_column_name]}}] = @{{settings[:crystal_variable_name]}}_column.to_sql_value
         end
       {% end %}
 
@@ -357,8 +366,8 @@ module Clear::Model::HasColumns
 
       {% for name, settings in COLUMNS %}
         unless persisted?
-          if @{{name}}_column.failed_to_be_present?
-            add_error({{name.stringify}}, "must be present")
+          if @{{settings[:crystal_variable_name]}}_column.failed_to_be_present?
+            add_error({{settings[:crystal_variable_name].stringify}}, "must be present")
           end
         end
       {% end %}
@@ -372,7 +381,7 @@ module Clear::Model::HasColumns
     # Returns `self`
     def clear_change_flags
       {% for name, settings in COLUMNS %}
-        @{{name}}_column.clear_change_flag
+        @{{settings[:crystal_variable_name]}}_column.clear_change_flag
       {% end %}
 
       self
@@ -383,8 +392,8 @@ module Clear::Model::HasColumns
       out = super
 
       {% for name, settings in COLUMNS %}
-        if full || @{{name}}_column.defined?
-          out[{{settings[:column_name]}}] = @{{name}}_column.to_sql_value(nil)
+        if full || @{{settings[:crystal_variable_name]}}_column.defined?
+          out[{{settings[:db_column_name]}}] = @{{settings[:crystal_variable_name]}}_column.to_sql_value(nil)
         end
       {% end %}
 
@@ -395,7 +404,7 @@ module Clear::Model::HasColumns
     #   have been changed.). Return `false` otherwise.
     def changed?
       {% for name, settings in COLUMNS %}
-          return true if @{{name}}_column.changed?
+          return true if @{{settings[:crystal_variable_name]}}_column.changed?
       {% end %}
 
       return false

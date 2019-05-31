@@ -13,7 +13,7 @@ module ModelSpec
       u.last_name.should eq "boss"
       u.changed?.should eq false
 
-      json2 = JSON.parse(%<{"tags": ["a", "b", "c"], "flags": [1, 2, 3]}>)
+      json2 = JSON.parse(%<{"tags": ["a", "b", "c"], "flags_other_column_name": [1, 2, 3]}>)
 
       p = Post.new(json2)
       p.tags.should eq ["a", "b", "c"]
