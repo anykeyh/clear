@@ -61,7 +61,7 @@ module SelectSpec
           r.to_sql.should eq "SELECT DISTINCT a, b, c"
 
           r = select_request.distinct.select(:first_name, :last_name, :id)
-          r.to_sql.should eq "SELECT DISTINCT a, b, c"
+          r.to_sql.should eq "SELECT DISTINCT \"first_name\", \"last_name\", \"id\""
         end
 
         it "can select any string" do
