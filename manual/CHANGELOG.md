@@ -1,3 +1,8 @@
+# v0.8
+
+- Crystal v0.29
+- Fix issue with combinaison of `join`, `distinct` and `select`
+
 # v0.7
 
 ## Features
