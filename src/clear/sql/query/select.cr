@@ -1,6 +1,7 @@
 module Clear::SQL::Query::Select
   macro included
     getter columns : Array(SQL::Column) = [] of SQL::Column
+    getter default_wildcard_table = nil
 
     def is_distinct?
       !!@distinct_value
@@ -9,6 +10,14 @@ module Clear::SQL::Query::Select
 
   @columns : Array(SQL::Column)
   getter distinct_value : String?
+
+  # In some case you want you query to return `table.*` instead of `*`
+  #   if no select parameters has been set. This occurs in the case of joins
+  #   between models.
+  def set_default_table_wildcard(table : String? = nil)
+    @default_wildcard_table = table
+    change!
+  end
 
   # def select(name : Symbolic, var = nil)
   #  @columns << Column.new(name, var)
@@ -69,8 +78,16 @@ module Clear::SQL::Query::Select
     end
   end
 
+  protected def print_wildcard
+    if table = @default_wildcard_table
+      {table, "*"}.join('.')
+    else
+      "*"
+    end
+  end
+
   protected def print_columns
-    (@columns.any? ? @columns.map(&.to_sql.as(String)).join(", ") : "*")
+    (@columns.any? ? @columns.map(&.to_sql.as(String)).join(", ") : print_wildcard)
   end
 
   protected def print_select

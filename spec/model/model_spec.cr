@@ -686,6 +686,25 @@ module ModelSpec
           user_with_a_post_minimum.with_posts.each { } # Should just execute
         end
       end
+
+      it "should wildcard with default model only if no select is made (before OR after)" do
+        temporary do
+          reinit
+          u = User.create!({first_name: "Join User"})
+          Post.create!({title: "A Post", user_id: u.id})
+
+          user_with_a_post_minimum = User.query.distinct
+            .join(:model_posts) { model_posts.user_id == model_users.id }
+            .select(:first_name, :last_name)
+
+          user_with_a_post_minimum.to_sql.should eq \
+            "SELECT DISTINCT \"first_name\", \"last_name\" FROM \"model_users\" INNER JOIN " +
+            "\"model_posts\" ON (\"model_posts\".\"user_id\" = \"model_users\".\"id\")"
+
+          user_with_a_post_minimum.with_posts.each { } # Should just execute
+        end
+      end
+
     end
 
     context "with pagination" do

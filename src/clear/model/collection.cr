@@ -537,10 +537,7 @@ module Clear::Model
     # Redefinition of `join_impl` to avoid ambiguity on the column
     # name if no specific column have been selected.
     protected def join_impl(name, type, lateral, clear_expr)
-      if @columns.empty?
-        self.select("#{Clear::SQL.escape(T.table)}.*")
-      end
-
+      self.set_default_table_wildcard(Clear::SQL.escape(T.table))
       super(name, type, lateral, clear_expr)
     end
 
