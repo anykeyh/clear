@@ -3,6 +3,7 @@ require "admiral"
 require "./core"
 require "./cli/command"
 require "./cli/migration"
+require "./cli/seed"
 require "./cli/generator"
 
 module Clear
