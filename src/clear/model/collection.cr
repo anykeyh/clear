@@ -232,6 +232,11 @@ module Clear::Model
       T.connection
     end
 
+    # Return the model class for this collection
+    def item_class
+      T
+    end
+
 
     # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
