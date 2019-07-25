@@ -40,6 +40,7 @@ module Clear::SQL::Query::Where
   def where(**tuple)
     where(conditions: tuple)
   end
+
   # Build SQL `where` condition using a NamedTuple.
   #   this will use:
   # - the `=` operator if compared with a literal
@@ -91,18 +92,16 @@ module Clear::SQL::Query::Where
   # where("x = ? OR y = ?", {1, "l'eau"}) # WHERE x = 1 OR y = 'l''eau'
   # ```
   # Raise error if there's not enough parameters to cover all the `?` placeholders
-  def where(str : String, parameters : Array(T) | Tuple) forall T
-    idx = -1
+  def where(str : String, parameters : Tuple | Enumerable(T)) forall T
+    self.where(Clear::SQL.raw_enum(str, parameters))
+  end
 
-    clause = str.gsub("?") do |_|
-      begin
-        Clear::Expression[parameters[idx += 1]]
-      rescue e : IndexError
-        raise Clear::ErrorMessages.query_building_error(e.message)
-      end
-    end
-
-    self.where(clause)
+  def or_where(str : String, parameters : Tuple | Enumerable(T)) forall T
+    return where(str, parameters) if @wheres.empty?
+    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
+    @wheres.clear
+    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", parameters) ), "OR")
+    change!
   end
 
   # Build SQL `where` interpolating `:keyword` with the NamedTuple passed in argument.
@@ -111,17 +110,17 @@ module Clear::SQL::Query::Where
   # # WHERE id = 1 AND date >= '201x-xx-xx ...'
   # ```
   def where(str : String, parameters : NamedTuple)
-    clause = str.gsub(/\:[a-zA-Z0-9_]+/) do |question_mark|
-      begin
-        sym = question_mark[1..-1]
-        Clear::Expression[parameters[sym]]
-      rescue e : KeyError
-        raise Clear::ErrorMessages.query_building_error(e.message)
-      end
-    end
-
-    self.where(clause)
+    self.where(Clear::SQL.raw(str, **parameters))
   end
+
+  def or_where(str : String, parameters : NamedTuple)
+    return where(str, parameters) if @wheres.empty?
+    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
+    @wheres.clear
+    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{str})", **parameters) ), "OR")
+    change!
+  end
+
 
   # Build custom SQL `where`
   #   beware of SQL injections!
@@ -130,6 +129,16 @@ module Clear::SQL::Query::Where
   # ```
   def where(str : String)
     @wheres << Clear::Expression::Node::Raw.new(str)
+    change!
+  end
+
+  def or_where(str : String)
+    return where(str) if @wheres.empty?
+    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
+    @wheres = [
+      Clear::Expression::Node::DoubleOperator.new(old_clause,
+      Clear::Expression::Node::Raw.new("(#{str})"), "OR")
+    ]
     change!
   end
 

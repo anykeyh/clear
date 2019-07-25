@@ -167,6 +167,18 @@ module SelectSpec
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"user_id\" IS NULL)"
           end
 
+          it "can use or_where" do
+            select_request.from(:users).where("a = ?", {1}).or_where("b = ?", {2}).to_sql.should(
+              eq %(SELECT * FROM "users" WHERE ((a = 1) OR (b = 2)))
+            )
+
+            # First OR WHERE acts as a simple WHERE:
+            select_request.from(:users).or_where("a = ?", {1}).or_where("b = ?", {2}).to_sql.should(
+              eq %(SELECT * FROM "users" WHERE ((a = 1) OR (b = 2)))
+            )
+          end
+
+
           it "can use `in` operators in case of array" do
             r = select_request.from(:users).where({user_id: [1, 2, 3, 4, "hello"]})
             r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"user_id\" IN (1, 2, 3, 4, 'hello')"
@@ -208,6 +220,11 @@ module SelectSpec
           it "raises exception if a tuple element is not found" do
             expect_raises Clear::SQL::QueryBuildingError do
               select_request.from(:users).where("a LIKE :halo AND b LIKE :world",
+                {hello: "h", world: "w"})
+            end
+
+            expect_raises Clear::SQL::QueryBuildingError do
+              select_request.from(:users).or_where("a LIKE :halo AND b LIKE :world",
                 {hello: "h", world: "w"})
             end
           end

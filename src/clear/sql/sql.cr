@@ -66,6 +66,27 @@ module Clear
       Clear::Expression[x]
     end
 
+    # This provide a fast way to create SQL fragment while escaping items, both with `?` and `:key` system:
+    #
+    # ```
+    # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla") )
+    # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla") )
+    # ```
+    def raw(x, *params)
+      Clear::Expression.raw(x, *params)
+    end
+
+    # See `self.raw`
+    # Can pass an array to this version
+    def raw_enum(x, params : Enumerable(T)) forall T
+      Clear::Expression.raw_enum(x, params)
+    end
+
+
+    def raw(__template, **params)
+      Clear::Expression.raw(__template, **params)
+    end
+
     # Escape the expression, double quoting it.
     #
     # It allows use of reserved keywords as table or column name
