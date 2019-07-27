@@ -51,8 +51,8 @@ module Clear::Model::Relations::BelongsToMacro
     def {{method_name}}=(model : {{relation_type_nilable}})
       if model
 
-        if model.persisted? && !model.pkey_column.defined?
-          raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation."
+        if model.persisted?
+          raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation." unless model.pkey_column.defined?
           @{{foreign_key.id}}_column.value = model.pkey
         end
 
@@ -66,8 +66,8 @@ module Clear::Model::Relations::BelongsToMacro
 
     def {{method_name}}=(model : {{relation_type}})
 
-      if model.persisted? && !model.pkey_column.defined?
-        raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation."
+      if model.persisted?
+        raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation." unless model.pkey_column.defined?
         @{{foreign_key.id}}_column.value = model.pkey
       end
 
