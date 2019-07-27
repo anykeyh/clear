@@ -47,16 +47,36 @@ module Clear::Model::Relations::BelongsToMacro
     def {{method_name}}! : {{relation_type}}
       {{method_name}}.not_nil!
     end # /  *!
-    {% end %}
 
-    def {{method_name}}=(x : {{relation_type_nilable}})
-      if x && x.persisted?
-        raise "#{x.pkey_column.name} must be defined when assigning a belongs_to relation." unless x.pkey_column.defined?
-        @{{foreign_key.id}}_column.value = x.pkey
+    def {{method_name}}=(model : {{relation_type_nilable}})
+      if model
+
+        if model.persisted? && !model.pkey_column.defined?
+          raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation."
+          @{{foreign_key.id}}_column.value = model.pkey
+        end
+
+        @cached_{{method_name}} = model
+      else
+        @{{foreign_key.id}}_column.value = nil
+      end
+    end
+
+    {% else %}
+
+    def {{method_name}}=(model : {{relation_type}})
+
+      if model.persisted? && !model.pkey_column.defined?
+        raise "#{model.pkey_column.name} must be defined when assigning a belongs_to relation."
+        @{{foreign_key.id}}_column.value = model.pkey
       end
 
-      @cached_{{method_name}} = x
+
+      @cached_{{method_name}} = model
     end
+
+    {% end %}
+
 
 
     # :nodoc:
