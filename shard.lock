@@ -6,11 +6,11 @@ shards:
 
   ameba:
     github: veelenga/ameba
-    commit: 8843235f5faeeb97b2a834a60825e05ca5798e86
+    commit: 504f537208a9af8a257691bf60b3774b4487ca44
 
   db:
     github: crystal-lang/crystal-db
-    version: 0.5.1
+    version: 0.6.0
 
   generate:
     github: anykeyh/generate.cr
@@ -22,5 +22,5 @@ shards:
 
   pg:
     github: will/crystal-pg
-    version: 0.17.0
+    version: 0.18.0
 
