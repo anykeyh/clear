@@ -266,6 +266,15 @@ module ModelSpec
           #reload the model now
           u.reload.first_name.should eq "Malcom"
           u.changed?.should be_false
+
+          u2 = User.create!({id: 2, first_name: "y"})
+
+          p = Post.create! user: u, title: "Reload testing post"
+
+          p.user.id.should eq(1)
+          p.user = u2 #Change the user, DO NOT SAVE.
+          p.reload # Reload the model now:
+          p.user.id.should eq(1) # Cache should be invalidated
         end
       end
 

@@ -14,30 +14,38 @@ module Clear::Model::Relations::BelongsToMacro
     column {{foreign_key.id}} : {{key_type}}, primary: {{primary}}, presence: {{nilable}}
     getter _cached_{{method_name}} : {{relation_type}}?
 
+    protected def invalidate_caching
+      previous_def
+
+      @_cached_{{method_name}} = nil
+      puts "Remove cache?"
+      self
+    end
+
     # The method {{method_name}} is a `belongs_to` relation
     #   to {{relation_type}}
     def {{method_name}} : {{relation_type_nilable}}
-      if cached = @cached_{{method_name}}
+      if cached = @_cached_{{method_name}}
         cached
       else
         cache = @cache
 
         if cache && cache.active? "{{method_name}}"
           {% if nilable %}
-            @cached_{{method_name}} = cache.hit("{{method_name}}",
+            @_cached_{{method_name}} = cache.hit("{{method_name}}",
               self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
             ).first?
           {% else %}
-            @cached_{{method_name}} = cache.hit("{{method_name}}",
+            @_cached_{{method_name}} = cache.hit("{{method_name}}",
               self.{{foreign_key.id}}_column.to_sql_value, {{relation_type}}
             ).first? || raise Clear::SQL::RecordNotFoundError.new
           {% end %}
 
         else
           {% if nilable %}
-          @cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
+          @_cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first
           {% else %}
-          @cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first!
+          @_cached_{{method_name}} = {{relation_type}}.query.where{ raw({{relation_type}}.pkey) == self.{{foreign_key.id}} }.first!
           {% end %}
         end
       end
@@ -56,7 +64,7 @@ module Clear::Model::Relations::BelongsToMacro
           @{{foreign_key.id}}_column.value = model.pkey
         end
 
-        @cached_{{method_name}} = model
+        @_cached_{{method_name}} = model
       else
         @{{foreign_key.id}}_column.value = nil
       end
@@ -72,7 +80,7 @@ module Clear::Model::Relations::BelongsToMacro
       end
 
 
-      @cached_{{method_name}} = model
+      @_cached_{{method_name}} = model
     end
 
     {% end %}
@@ -82,7 +90,7 @@ module Clear::Model::Relations::BelongsToMacro
     # :nodoc:
     # save the belongs_to model first if needed
     def _bt_save_{{method_name}}
-      c = @cached_{{method_name}}
+      c = @_cached_{{method_name}}
       return if c.nil?
 
       unless c.persisted?
