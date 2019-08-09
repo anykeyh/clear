@@ -18,7 +18,6 @@ module Clear::Model::Relations::BelongsToMacro
       previous_def
 
       @_cached_{{method_name}} = nil
-      puts "Remove cache?"
       self
     end
 
