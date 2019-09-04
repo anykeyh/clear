@@ -3,6 +3,8 @@ require "logger"
 require "benchmark"
 
 module Clear::SQL::Logger
+  class_property colorize : Bool = STDOUT.tty? && STDERR.tty?
+
   private SQL_KEYWORDS = Set(String).new(%w(
     ADD ALL ALTER ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
     BEGIN BOTH BY CASE CAST CHECK COLLATE COLUMN COMMIT CONSTRAINT COUNT CREATE CROSS
@@ -18,6 +20,8 @@ module Clear::SQL::Logger
   ))
 
   def self.colorize_query(qry : String)
+    return qry unless @@colorize
+
     o = qry.to_s.split(/([a-zA-Z0-9_]+)/).map do |word|
       if SQL_KEYWORDS.includes?(word.upcase)
         word.colorize.bold.blue.to_s

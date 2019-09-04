@@ -1,14 +1,35 @@
 module Clear::Migration
   class AddColumn < Operation
+    # ALTER TABLE {TABLENAME}
+    # ADD {COLUMNNAME} {TYPE} {NULL|NOT NULL}
+    # CONSTRAINT {CONSTRAINT_NAME} DEFAULT {DEFAULT_VALUE}
+    # WITH VALUES
+
     @table : String
     @column : String
     @datatype : String
 
-    def initialize(@table, @column, @datatype)
+    @constraint : String?
+    @default : String?
+    @nullable : Bool
+
+    @with_values : Bool
+
+    def initialize(@table, @column, @datatype, @nullable = false, @constraint = nil, @default = nil, @with_values = false )
     end
 
     def up
-      ["ALTER TABLE #{@table} ADD #{@column} #{@datatype}"]
+      exec = [] of String
+
+      constraint = @constraint
+      default = @default
+      with_values = @with_values
+
+      [[
+        "ALTER TABLE", @table, "ADD", @column, @datatype, @nullable ? "NULL" : "NOT NULL",
+        constraint ? "CONSTRAINT #{constraint}" : nil, default ? "DEFAULT #{default}" : nil,
+        with_values ? "WITH VALUES" : nil
+      ].compact.join(" ")]
     end
 
     def down
