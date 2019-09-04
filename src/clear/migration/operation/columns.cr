@@ -101,8 +101,9 @@ end
 
 module Clear::Migration::Helper
   # Add a column to a specific table
-  def add_column(table, column, datatype)
-    self.add_operation(Clear::Migration::AddColumn.new(table, column, datatype))
+  def add_column(table, column, datatype,  nullable = false, constraint = nil, default = nil, with_values = false)
+    self.add_operation(Clear::Migration::AddColumn.new(table, column, datatype,
+      nullable, constraint, default, with_values))
   end
 
   def rename_column(table, from, to)
