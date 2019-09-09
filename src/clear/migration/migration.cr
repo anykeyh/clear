@@ -68,6 +68,24 @@ module Clear::Migration
   class IrreversibleMigration < Exception; end
 
   module Helper
+    TYPE_MAPPING = {
+      "string" => "text",
+      "int32" => "int",
+
+      "int64" => "bigint",
+      "long" => "bigint",
+
+      "datetime" => "timestamp without time zone",
+    }
+
+    # Replace some common type to their equivalent in postgresql
+    # if the type is not found in the correspondance table, then return
+    # itself
+    def self.datatype(type : String)
+      ts = type
+      TYPE_MAPPING[type]? || ts
+    end
+
     def irreversible!
       raise IrreversibleMigration.new(migration_irreversible(self.class.name))
     end

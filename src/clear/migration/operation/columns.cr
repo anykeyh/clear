@@ -15,7 +15,8 @@ module Clear::Migration
 
     @with_values : Bool
 
-    def initialize(@table, @column, @datatype, @nullable = false, @constraint = nil, @default = nil, @with_values = false )
+    def initialize(@table, @column, datatype, @nullable = false, @constraint = nil, @default = nil, @with_values = false )
+      @datatype = Clear::Migration::Helper.datatype(datatype.to_s)
     end
 
     def up
@@ -42,7 +43,8 @@ module Clear::Migration
     @column : String
     @datatype : String?
 
-    def initialize(@table, @column, @datatype = nil)
+    def initialize(@table, @column, datatype = nil)
+      @datatype = Clear::Migration::Helper.datatype(datatype)
     end
 
     def up
@@ -67,9 +69,9 @@ module Clear::Migration
     @new_column_name : String?
     @new_column_type : String?
 
-    def initialize(@table, @column_name, @column_type, new_column_name, new_column_type)
+    def initialize(@table, @column_name, column_type, new_column_name, new_column_type)
       @new_column_name ||= @column_name
-      @new_column_type ||= @column_type
+      @new_column_type ||= Clear::Migration::Helper.datatype(column_type)
     end
 
     def up
