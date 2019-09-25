@@ -37,16 +37,16 @@ module BCryptSpec
         User.create!({encrypted_password: Crypto::Bcrypt::Password.create("abcd")})
 
         User.query.count.should eq 1
-        User.query.first!.encrypted_password.should eq "abcd"
-        User.query.first!.encrypted_password.should_not eq "abce"
+        User.query.first!.encrypted_password.verify("abcd").should be_true
+        User.query.first!.encrypted_password.verify("abce").should be_false
 
         usr = User.query.first!
 
         usr.encrypted_password = Crypto::Bcrypt::Password.create("lorem.ipsum")
         usr.save!
 
-        User.query.first!.encrypted_password.should_not eq "abcd"
-        User.query.first!.encrypted_password.should eq "lorem.ipsum"
+        User.query.first!.encrypted_password.verify("abcd").should be_false
+        User.query.first!.encrypted_password.verify("lorem.ipsum").should be_true
       end
     end
   end

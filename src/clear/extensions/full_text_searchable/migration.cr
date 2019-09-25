@@ -72,11 +72,11 @@ class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operatio
     ["DROP FUNCTION #{function_name}()", "DROP TRIGGER #{trigger_name}"]
   end
 
-  def up
+  def up : Array(String)
     print_trigger + print_update_current_data
   end
 
-  def down
+  def down : Array(String)
     print_delete_trigger
   end
 end

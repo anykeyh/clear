@@ -9,20 +9,20 @@
 # Instead of writing:
 #
 # ```
-# model_collection.where("created_at BETWEEN ? AND ?", 1.day.ago, DateTime.now)
+# model_collection.where("created_at BETWEEN ? AND ?", 1.day.ago, DateTime.local)
 # ```
 #
 # You can write:
 # ```
-# model_collection.where { created_at.between(1.day.ago, DateTime.now) }
+# model_collection.where { created_at.between(1.day.ago, DateTime.local) }
 # ```
 #
 # or even:
 # ```
-# model_collection.where { created_at.in?(1.day.ago..DateTime.now) }
+# model_collection.where { created_at.in?(1.day.ago..DateTime.local) }
 # ```
 #
-# (Note for the later, it will generate `created_at > 1.day.ago AND created_at < DateTime.now`)
+# (Note for the later, it will generate `created_at > 1.day.ago AND created_at < DateTime.local`)
 #
 # ## Limitations
 #
@@ -140,8 +140,8 @@ class Clear::Expression
   #
   # ## Example
   # ```
-  # Clear::Expression[Time.now]             # < "2017-04-03 23:04:43.234 +08:00"
-  # Clear::Expression[Time.now, date: true] # < "2017-04-03"
+  # Clear::Expression[Time.local]             # < "2017-04-03 23:04:43.234 +08:00"
+  # Clear::Expression[Time.local, date: true] # < "2017-04-03"
   # ```
   def self.safe_literal(x : Time, date : Bool = false) : String
     {"'", x.to_utc.to_s(date ? DATABASE_DATE_FORMAT : DATABASE_DATE_TIME_FORMAT), "'"}.join

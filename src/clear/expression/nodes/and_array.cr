@@ -8,13 +8,13 @@ class Clear::Expression::Node::AndArray < Clear::Expression::Node
     @expression = expression.dup
   end
 
-  def resolve
+  def resolve : String
     if @expression.any?
       {
         "(",
         @expression.map(&.resolve).join(" AND "),
         ")"
-    }.join
+      }.join
     else
       ""
     end

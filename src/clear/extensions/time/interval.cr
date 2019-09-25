@@ -5,7 +5,7 @@ struct Clear::Interval
   getter months : Int32 = 0
 
   def initialize(span : Time::Span )
-    @microseconds = span.total_nanoseconds.to_i64 / 1_000
+    @microseconds = span.total_nanoseconds.to_i64 // 1_000
   end
 
   def initialize(span : Time::MonthSpan)

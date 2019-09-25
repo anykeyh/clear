@@ -55,7 +55,7 @@ class MyModel
   column i : Clear::Interval
 end
 
-puts "Expected time: #{Time.now + MyModel.first!.i}"
+puts "Expected time: #{Time.local + MyModel.first!.i}"
 ```
 
 - Add `Clear::TimeInDay` columns type, which stands for the `time` object in PostgreSQL.
@@ -69,7 +69,7 @@ time = Clear::TimeInDay.parse("12:33")
 puts time.hour # 12
 puts time.minutes # 0
 
-Time.now.at(time) # Today at 12:33:00
+Time.local.at(time) # Today at 12:33:00
 time.to_s # 12:33:00
 time.to_s(false) # don't show seconds => 12:33
 
@@ -279,7 +279,7 @@ Basically a transition version, to support Crystal 0.27. Some of the features of
   updating the documentation !
 - Add range support for `Sql::Node#in?` method:
   ```crystal
-    last_week_users = User.query.where{ created_at.in?(7.day.ago..Time.now) }.count
+    last_week_users = User.query.where{ created_at.in?(7.day.ago..Time.local) }.count
   ```
 - Refactoring of the nodes and clause of the SQL builder, avoiding array instantiation (usage of tuple instead) and starting to use Node as much as possible to build clauses.
 - Add `Clear::Expression.unsafe` which does exactly what it says:

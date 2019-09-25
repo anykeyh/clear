@@ -278,7 +278,7 @@ module SelectSpec
           end
 
           it "can stack with `AND` operator" do
-            now = Time.now
+            now = Time.local
             r = select_request.from(:users).where { users.id == nil }.where {
               var("users", "updated_at") >= now
             }

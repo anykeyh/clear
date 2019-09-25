@@ -465,7 +465,7 @@ module ModelSpec
       end
 
       it "works on date fields with different timezone" do
-        now = Time.now
+        now = Time.local
 
         temporary do
           reinit

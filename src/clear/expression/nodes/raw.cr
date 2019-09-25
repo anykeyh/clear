@@ -4,7 +4,7 @@ require "./node"
 class Clear::Expression::Node::Raw < Clear::Expression::Node
   def initialize(@raw : String); end
 
-  def resolve
+  def resolve : String
     @raw
   end
 end
