@@ -37,15 +37,15 @@ struct Clear::TimeInDay
     @microseconds = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
   end
 
-  def initialize(@microseconds = 0)
+  def initialize(@microseconds : UInt64 = 0)
   end
 
   def +(t : Time::Span)
-    Clear::TimeInDay.new(microseconds: @microseconds + t.total_nanoseconds.to_i64 / 1_000)
+    Clear::TimeInDay.new(microseconds: @microseconds + t.total_nanoseconds.to_i64 // 1_000)
   end
 
   def -(t : Time::Span)
-    Clear::TimeInDay.new(microseconds: @microseconds - t.total_nanoseconds.to_i64 / 1_000)
+    Clear::TimeInDay.new(microseconds: @microseconds - t.total_nanoseconds.to_i64 // 1_000)
   end
 
   def +(x : self)
@@ -65,7 +65,7 @@ struct Clear::TimeInDay
   end
 
   def total_seconds
-    @microseconds / SECOND
+    @microseconds // SECOND
   end
 
   def to_tuple

@@ -5,7 +5,7 @@ require "./node"
 class Clear::Expression::Node::DoubleOperator < Clear::Expression::Node
   def initialize(@a : Node, @b : Node, @op : String); end
 
-  def resolve
+  def resolve : String
     {"(", @a.resolve, " ", @op, " ", @b.resolve, ")"}.join
   end
 end

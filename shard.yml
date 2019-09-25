@@ -1,5 +1,5 @@
 name: clear
-version: 0.7
+version: 0.7.1
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -30,6 +30,6 @@ development_dependencies:
     github: veelenga/ameba
     branch: master
 
-crystal: 0.30
+crystal: 0.31
 
 license: MIT

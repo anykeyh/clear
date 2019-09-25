@@ -1,5 +1,5 @@
 class Clear::SQL::ConnectionPool
-  @@connections = {} of String => Channel::Buffered(DB::Database)
+  @@connections = {} of String => Channel(DB::Database)
 
   @@fiber_connections = {} of {String, Fiber} => { DB::Database, Int32 }
 
