@@ -17,7 +17,7 @@ class User
 
     after :create, :send_email
 
-    before(:update) { |m| m.as(User).updated_at = Time.now }
+    before(:update) { |m| m.as(User).updated_at = Time.local }
 
     def send_email
         EmailManager.send_email(subject: "welcome #{full_name} !", body: "...")

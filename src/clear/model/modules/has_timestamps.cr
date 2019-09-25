@@ -10,7 +10,7 @@ module Clear::Model::HasTimestamps
       model = model.as(self)
 
       unless model.persisted?
-        now = Time.now
+        now = Time.local
         model.created_at = now unless model.created_at_column.defined?
         model.updated_at = now unless model.updated_at_column.defined?
       end
@@ -21,7 +21,7 @@ module Clear::Model::HasTimestamps
 
       # In the case the updated_at has been changed, we do not override.
       # It happens on first insert, in the before validation setup.
-      model.updated_at = Time.now if model.changed? && !model.updated_at_column.changed?
+      model.updated_at = Time.local if model.changed? && !model.updated_at_column.changed?
     end
 
   end

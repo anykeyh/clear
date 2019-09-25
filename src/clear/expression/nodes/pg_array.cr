@@ -8,7 +8,7 @@ class Clear::Expression::Node::PGArray(T) < Clear::Expression::Node
   def initialize(@arr : Array(T))
   end
 
-  def resolve
+  def resolve : String
     {"array[", Clear::Expression[@arr].join(", "), "]"}.join
   end
 end

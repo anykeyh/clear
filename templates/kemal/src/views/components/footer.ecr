@@ -1,6 +1,6 @@
 module TreeTemplate::Components
   # This is just an example of component
-  def app_footer(content = "<%= Time.now.year %>")
+  def app_footer(content = "<%= Time.local.year %>")
     footer do
       p(style: "text-align: center") do
         # test

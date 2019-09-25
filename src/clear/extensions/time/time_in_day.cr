@@ -10,7 +10,7 @@
 #   puts time.hour # 12
 #   puts time.minutes # 0
 #
-#   Time.now.at(time) # Today at 12:33:00
+#   Time.local.at(time) # Today at 12:33:00
 #   time.to_s # 12:33:00
 #   time.to_s(false) # don't show seconds => 12:33
 #

@@ -89,20 +89,27 @@ module Clear::Migration
       str.underscore.gsub(/[^a-zA-Z0-9_]/, "_").gsub(/_+/, "_")
     end
 
-    def up
+    def up : Array(String)
       columns_and_fkeys = print_columns + print_fkeys
 
       content = "(#{columns_and_fkeys.join(", ")})" unless columns_and_fkeys.empty?
 
-      [
-        (["CREATE TABLE", @name, content].reject(&.nil?).join(" ") if is_create?),
-      ] + print_indexes
+      arr = if is_create?
+        [
+          ["CREATE TABLE", @name, content].compact.join(" "),
+        ]
+      else
+        # To implement later
+        [] of String
+      end
+
+      arr + print_indexes
     end
 
-    def down
+    def down : Array(String)
       [
-        (["DROP TABLE", @name].join(" ") if is_create?),
-      ]
+        (["DROP TABLE", @name].join(" ") if is_create?)
+      ].compact
     end
 
     private def print_fkeys
@@ -181,11 +188,11 @@ module Clear::Migration
 
     end
 
-    def up
+    def up : Array(String)
       ["CREATE TABLE #{@table}"]
     end
 
-    def down
+    def down : Array(String)
       ["DROP TABLE #{@table}"]
     end
   end
@@ -196,11 +203,11 @@ module Clear::Migration
     def initialize(@table)
     end
 
-    def up
+    def up : Array(String)
       ["DROP TABLE #{@table}"]
     end
 
-    def down
+    def down : Array(String)
       ["CREATE TABLE #{@table}"]
     end
   end

@@ -57,14 +57,14 @@ module IntervalSpec
       # TimeSpan
       [1.hour, 1.day, 1.month].each do |span|
         i = Clear::Interval.new(span)
-        now = Time.now
+        now = Time.local
 
         (now + i).to_unix.should eq( (now+span).to_unix)
         (now - i).to_unix.should eq( (now-span).to_unix )
       end
 
       i = Clear::Interval.new(months: 1, days: -1, minutes: 12)
-      now = Time.now
+      now = Time.local
 
       (now + i).to_unix.should eq( (now+1.month-1.day+12.minute).to_unix)
       (now - i).to_unix.should eq( (now-1.month+1.day-12.minute).to_unix)

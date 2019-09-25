@@ -31,11 +31,11 @@ module Clear::Migration
       {"(", @fields.join(", "), ")"}.join
     end
 
-    def up
+    def up : Array(String)
       [["CREATE", print_unique, "INDEX", safe_name(@name), "ON", @table, print_using, print_columns].compact.join(" ")]
     end
 
-    def down
+    def down : Array(String)
       # Using of IF EXISTS in the case we have a migration with
       # column created followed by index. Dropping of the column
       # will cascade the deletion of the index, therefor the migration will
