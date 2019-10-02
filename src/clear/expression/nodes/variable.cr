@@ -26,7 +26,7 @@ class Clear::Expression::Node::Variable < Clear::Expression::Node
     {% end %}
   end
 
-  def resolve
+  def resolve : String
     parent = @parent
     if parent
       {parent.resolve, ".", Clear::SQL.escape(@name)}.join

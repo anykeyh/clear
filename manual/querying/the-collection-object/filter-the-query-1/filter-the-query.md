@@ -1,7 +1,7 @@
 # Filter the query – The Expression Engine
 
-Because Collection represents SQL SELECT query, they offer way to filter the query.  
-Clear offer the Expression Engine, which is inspired by Sequel.  
+Because Collection represents SQL SELECT query, they offer way to filter the query.
+Clear offer the Expression Engine, which is inspired by Sequel.
 It basically helps you to write complex filter conditions without sacrificing on code expressiveness.
 
 ## The where clause
@@ -91,7 +91,7 @@ Expression engine manage natively range, array and other methods as see below.
 Range:
 
 ```ruby
-User.query.where{ created_at.in?(5.days.from_now .. Time.now) } # WHERE created_at > ... AND created_at < ...
+User.query.where{ created_at.in?(5.days.from_now .. Time.local) } # WHERE created_at > ... AND created_at < ...
 ```
 
 #### Array / Tuples:
