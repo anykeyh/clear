@@ -112,7 +112,7 @@ module Clear::Model::Relations::BelongsToMacro
         before_query do
           sub_query = self.dup.clear_select.select("#{{{self_type}}.table}.{{foreign_key.id}}")
 
-          cached_qry = {{relation_type}}.query.where{ raw({{relation_type}}.pkey).in?(sub_query) }
+          cached_qry = {{relation_type}}.query.where{ raw("#{{{relation_type}}.table}.#{{{relation_type}}.pkey}").in?(sub_query) }
 
           block.call(cached_qry)
 
