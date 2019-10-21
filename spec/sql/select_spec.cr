@@ -91,6 +91,13 @@ module SelectSpec
         end
       end
 
+      describe "the ORDER BY clause" do
+        it "can add NULLS FIRST and NULLS LAST" do
+          r = select_request.from("users").order_by("email", "ASC", "NULLS LAST")
+          r.to_sql.should eq "SELECT * FROM users ORDER BY email ASC NULLS LAST"
+        end
+      end
+
       describe "the FROM clause" do
         it "can build simple from" do
           r = select_request.from(:users)

@@ -45,9 +45,11 @@ module Clear::SQL::Parser
     return TokenType::Keyword if SQL_KEYWORDS.includes?(x.upcase)
     return TokenType::Number if x =~ /[0-9]+(\.[0-9]+)?(e[0-9]+)?/
     return TokenType::SimpleWord if x =~ /^[A-Za-z_]([A-Za-z_0-9]+)?$/
-    return TokenType::Symbol
+
+    TokenType::Symbol
   end
 
+  # ameba:disable Metrics/CyclomaticComplexity
   def self.parse(sql : String)
     mode = Modes::Normal
 

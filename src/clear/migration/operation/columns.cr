@@ -20,8 +20,6 @@ module Clear::Migration
     end
 
     def up : Array(String)
-      exec = [] of String
-
       constraint = @constraint
       default = @default
       with_values = @with_values

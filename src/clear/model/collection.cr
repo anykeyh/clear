@@ -555,7 +555,7 @@ module Clear::Model
 
       begin
         new_order = arr.map do |x|
-          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc))
+          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc), nil)
         end
 
         clear_order_bys.order_by(new_order)
