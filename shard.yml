@@ -1,5 +1,5 @@
 name: clear
-version: 0.7
+version: 0.7.2
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -18,7 +18,7 @@ dependencies:
     branch: master
   pg:
     github: will/crystal-pg
-    version: "~> 0.17"
+    branch: master
   inflector:
     github: phoffer/inflector.cr
     version: "~> 0.1.8"
@@ -30,6 +30,6 @@ development_dependencies:
     github: veelenga/ameba
     branch: master
 
-crystal: 0.30
+crystal: 0.31.1
 
 license: MIT

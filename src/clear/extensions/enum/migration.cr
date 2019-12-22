@@ -7,11 +7,11 @@ module Clear::Migration
     def initialize(@name, @values)
     end
 
-    def up
+    def up : Array(String)
       ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[@values].join(", ")})"]
     end
 
-    def down
+    def down : Array(String)
       ["DROP TYPE #{@name}"]
     end
   end
@@ -23,11 +23,11 @@ module Clear::Migration
     def initialize(@name, @values)
     end
 
-    def up
+    def up : Array(String)
       ["DROP TYPE #{@name}"]
     end
 
-    def down
+    def down : Array(String)
       if values = @values
         ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[values].join(", ")})"]
       else

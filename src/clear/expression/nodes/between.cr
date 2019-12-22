@@ -8,7 +8,7 @@ class Clear::Expression::Node::Between < Clear::Expression::Node
   def initialize(@target : Node, @starts : BetweenType, @ends : BetweenType)
   end
 
-  def resolve
+  def resolve : String
     {"(",
      @target.resolve,
      " BETWEEN ",

@@ -10,7 +10,7 @@ class Clear::Expression::Node::JSONB::Field < Clear::Expression::Node
   def initialize(@field, @key, @cast = nil)
   end
 
-  def resolve
+  def resolve : String
     jsonb_resolve(@field.resolve, jsonb_k2a(key), @cast)
   end
 
@@ -41,7 +41,7 @@ class Clear::Expression::Node::JSONB::Equality < Clear::Expression::Node
   def initialize(@jsonb_field, @value)
   end
 
-  def resolve
+  def resolve : String
     {@jsonb_field, Clear::Expression[@value.to_json]}.join(" @> ")
   end
 end

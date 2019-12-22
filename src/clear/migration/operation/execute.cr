@@ -9,21 +9,13 @@ module Clear::Migration
     def initialize(@up = nil, @down = nil, @irreversible = false)
     end
 
-    def up
-      if @up
-        [@up]
-      else
-        [] of String
-      end
+    def up : Array(String)
+      [@up].compact
     end
 
-    def down
-      if @down
-        [@down]
-      else
-        irreversible! if @irreversible
-        [] of String
-      end
+    def down : Array(String)
+      irreversible! if @irreversible && @down.nil?
+      [@down].compact
     end
   end
 end

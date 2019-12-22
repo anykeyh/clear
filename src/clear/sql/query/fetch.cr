@@ -25,7 +25,7 @@ module Clear::SQL::Query::Fetch
     trigger_before_query
 
     Clear::SQL.transaction do |cnx|
-      cursor_name = "__cursor_#{Time.now.to_unix ^ (rand * 0xfffffff).to_i}__"
+      cursor_name = "__cursor_#{Time.local.to_unix ^ (rand * 0xfffffff).to_i}__"
 
       cursor_declaration = "DECLARE #{cursor_name} CURSOR FOR #{to_sql}"
 

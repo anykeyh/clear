@@ -6,7 +6,7 @@ require "./node"
 class Clear::Expression::Node::InArray < Clear::Expression::Node
   def initialize(@target : Node, @array : Array(String)); end
 
-  def resolve
+  def resolve : String
     if @array.size == 0
       "FALSE" # If array is empty, return "FALSE" expression
     else
