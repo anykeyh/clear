@@ -64,7 +64,7 @@ Sometime you want special primary key, and want to disable the auto-id:
 ```crystal
 # in migration
 create_table :my_records, id: false do |t|
-  t.string :my_key primary: true
+  t.column :my_key, :string, primary: true
 end
 
 # in model

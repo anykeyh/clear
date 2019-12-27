@@ -9,8 +9,8 @@ Let's assume we have a blog and want to implement full text search over title an
 
 ```crystal
   create_table "posts" do |t|
-    t.string "title", nullable: false
-    t.string "content", nullable: false
+    t.column :title, :string, null: false
+    t.column :content, :string, null: false
 
     t.full_text_searchable on: [{"title", 'A'}, {"content", 'C'}]
   end

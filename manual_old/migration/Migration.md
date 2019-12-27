@@ -5,17 +5,17 @@ Clear offers a migration system. Migration allow you to handle state update of y
 Migration is a list of change going through a direction, up (commit changes) or down (rollback changes).
 
 In clear, a migration is defined like this:
- 
+
 ```crystal
 class MyMigration1
   include Clear::Migration
-  
+
   def change(direction)
-    direction.up do 
+    direction.up do
       #do something on commit
     end
 
-    direction.down do 
+    direction.down do
       #do something on rollback
     end
   end
@@ -32,13 +32,13 @@ To do it, just call `execute` into your direction block.
 ```crystal
 class MyMigration1
   include Clear::Migration
-  
+
   def change(direction)
     direction.up do
       execute("CREATE TABLE my_models...")
     end
 
-    direction.down do 
+    direction.down do
       execute("DROP TABLE my_models")
     end
   end
@@ -55,9 +55,9 @@ Clear provides DSL looking like ActiveRecord for creating a table.
 
 ```crystal
 create_table(:users) do |t|
-    t.string :first_name, index: true
-    t.string :last_name, unique: true
-    
+    t.column :first_name, :string, index: true
+    t.column :last_name, :string, unique: true
+
     # Will create a "user_info_id" field of type longint with a foreign key constraint
     # This reference can be null, and if the user_info is deleted then the user is deleted too.
     t.references to: "user_infos", name: "user_info_id", on_delete: "cascade", null: true
