@@ -6,7 +6,10 @@
 
 ## Setup: In existing project
 
-In this guide we assume you know how-to setup a proper Crystal project using shards. You may want to read first a shard guide for Crystal, like [this one](https://hackernoon.com/starting-a-project-with-crystal-and-kemal-90e2647e6c3b).
+```
+$ crystal init app <yourappname>
+$ cd <yourappname>
+```
 
 ### In \`shard.yml\`
 
