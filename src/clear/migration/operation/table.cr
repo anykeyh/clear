@@ -220,9 +220,9 @@ module Clear::Migration
     #
     # ```
     # create_table(:users) do |t|
-    #   t.string :first_name
-    #   t.string :last_name
-    #   t.email :email, unique: true
+    #   t.column :first_name, :string
+    #   t.column :last_name, :string
+    #   t.column :email, :string, unique: true
     #   t.timestamps
     # end
     # ```
@@ -232,11 +232,10 @@ module Clear::Migration
     #
     # ```
     # create_table(:users, id: false) do |t|
-    #   t.integer :user_id, primary: true # Use custom name for the primary key
-    #
-    #   t.string :first_name
-    #   t.string :last_name
-    #   t.email :email, unique: true
+    #   t.column :user_id, :integer, primary: true # Use custom name for the primary key
+    #   t.column :first_name, :string
+    #   t.column :last_name, :string
+    #   t.column :email, :string, unique: true
     #   t.timestamps
     # end
     # ```

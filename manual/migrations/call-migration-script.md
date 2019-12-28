@@ -55,8 +55,8 @@ Clear provides DSL looking like ActiveRecord for creating a table.
 
 ```ruby
 create_table(:users) do |t|
-    t.string :first_name, index: true
-    t.string :last_name, unique: true
+    t.column :first_name, :string, index: true
+    t.column :last_name, :string, unique: true
 
     # Will create a "user_info_id" field of type longint with a foreign key constraint
     # This reference can be null, and if the user_info is deleted then the user is deleted too.
