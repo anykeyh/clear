@@ -25,11 +25,11 @@ module Clear::Model::HasTimestamps
     end
 
     # Saves the record with the updated_at set to the current time.
-    def touch
-      now = Time.local
+    def touch(now = Time.local) : Clear::Model
+      self.updated_at = now
+      self.save!
 
-      self.updated_at = Time.local
-      self.save
+      self
     end
 
   end
