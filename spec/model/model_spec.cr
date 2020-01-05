@@ -595,6 +595,17 @@ module ModelSpec
           User.query.count.should eq 1
         end
       end
+
+      it "can touch model" do
+        temporary do
+          reinit
+
+          c = Category.create!({name: "Nature"})
+          updated_at = c.updated_at
+          c.touch
+          c.updated_at.should_not eq(updated_at)
+        end
+      end
     end
 
     it "can load a column of type Array" do
