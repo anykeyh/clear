@@ -72,8 +72,8 @@ module Clear::Migration
       raise IrreversibleMigration.new(migration_irreversible(self.class.name))
     end
 
-    def execute(up : String? = nil, down : String? = nil)
-      @operations << Clear::Migration::Execute.new( up, down )
+    def execute(sql : String)
+      @operations << Clear::Migration::Execute.new(sql)
     end
 
     def add_operation(op : Operation)
