@@ -42,18 +42,18 @@ class FirstMigration1
     dir.up { }                  # This block will be trigger only when we charge a migration into the database !
     create_table "users" do |t| # We create the table users
     # By default, a serial bigint named "id" will be created. You can remove this behavior adding `id: false` in create_table parameters
-      t.string "first_name", index: true, null: false
-      t.string "last_name", index: true, null: false
-      t.string "password_encrypted"
-      t.string "email", unique: true # Add unique constraint
+      t.column :first_name, :string, index: true, null: false
+      t.column :last_name, :string, index: true, null: false
+      t.column :password_encrypted, :string
+      t.column :email, :string, unique: true # Add unique constraint
     end
 
     create_table "posts" do |t|
       # Create a foreign key constraint in PG to users
       t.references to: "users", on_delete: "cascade", null: false
-      t.string "title", index: true # Creation of an index on title. Soon we will be able to use tsvector !
-      t.string "content", null: true
-      t.bool "published", default: false, null: false
+      t.column :title, :string, index: true # Creation of an index on title. Soon we will be able to use tsvector !
+      t.column :content, :string, null: true
+      t.column :published, :bool, default: false, null: false
     end
   end
 end
