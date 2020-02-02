@@ -1,3 +1,30 @@
+# v0.8
+
+## Features
+
+- Add `or_where` clause
+
+This provide a way to chain where clause with `or` operator instead of `and`:
+
+```crystal
+query.where{ a == b }.or_where{ b == c } # WHERE (A = B) OR (b = C)
+query.where{ a == b }.where{ c == d}.or_where{ a == nil } # WHERE ( A=B AND C=D ) OR A IS NULL
+```
+
+- Add `raw` method into `Clear::SQL` module.
+
+This provide a fast way to create SQL fragment while escaping items, both with `?` and `:key` system:
+
+```crystal
+query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla") )
+query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla") )
+```
+
+## Bugfixes
+
+- Migrate to crystal v0.29
+- Fix issue with combinaison of `join`, `distinct` and `select`
+
 # v0.7
 
 ## Features

@@ -235,17 +235,75 @@ class Clear::Expression
   #
   #
   def raw(x : String, *args)
+    Node::Raw.new(self.class.raw(x, *args))
+  end
+
+
+  # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
+  # or in case of a complex piece of computation impossible to express with the expression engine
+  # (e.g. usage of functions) you can use then raw to pass the String.
+  #
+  # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
+  #
+  # ```
+  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
+  # ```
+  #
+  #
+  def self.raw(x : String, *args)
+    raw_enum(x, args)
+  end
+
+  # See `self.raw`
+  # Can pass an array to this version
+  def self.raw_enum(x : String, args)
     idx = -1
 
-    clause = x.gsub("?") do |_|
+    x.gsub("?") do |_|
       begin
         Clear::Expression[args[idx += 1]]
       rescue e : IndexError
         raise Clear::ErrorMessages.query_building_error(e.message)
       end
     end
+  end
 
-    Node::Raw.new(clause)
+  # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
+  # or in case of a complex piece of computation impossible to express with the expression engine
+  # (e.g. usage of functions) you can use then raw to pass the String.
+  #
+  # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
+  #
+  # ```
+  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
+  # ```
+  #
+  def raw(__template : String, **tuple)
+    Node::Raw.new(self.class.raw(__template, **tuple))
+  end
+
+  # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
+  # or in case of a complex piece of computation impossible to express with the expression engine
+  # (e.g. usage of functions) you can use then raw to pass the String.
+  #
+  # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
+  #
+  # ```
+  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
+  # ```
+  #
+  def self.raw(__template : String, **tuple)
+    __template.gsub(/\:[a-zA-Z0-9_]+/) do |question_mark|
+      begin
+        sym = question_mark[1..-1]
+        Clear::Expression[tuple[sym]]
+      rescue e : KeyError
+        raise Clear::ErrorMessages.query_building_error(e.message)
+      end
+    end
   end
 
   # Use var to create expression of variable. Variables are columns with or without the namespace and tablename:

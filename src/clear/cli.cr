@@ -3,6 +3,7 @@ require "admiral"
 require "./core"
 require "./cli/command"
 require "./cli/migration"
+require "./cli/seed"
 require "./cli/generator"
 
 module Clear
@@ -19,6 +20,7 @@ module Clear
 
       register_sub_command migrate, type: Clear::CLI::Migration
       register_sub_command generate, type: Clear::CLI::Generator
+      register_sub_command seed, type: Clear::CLI::Seed
 
       def run_impl
         STDOUT.puts help

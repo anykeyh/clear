@@ -34,6 +34,10 @@ class ApplyChange2
   end
 end
 
+Clear.seed do
+  puts "This is a seed"
+end
+
 Clear.with_cli do
   puts "Usage: crystal sample/cli/cli.cr -- clear [args]"
 end

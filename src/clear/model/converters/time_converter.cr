@@ -8,7 +8,15 @@ class Clear::Model::Converter::TimeConverter
     when Time
       x.to_local
     else
-      Time.parse_local(x.to_s, "%F %X.%L")
+      time = x.to_s
+      case time
+      when /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]+/
+        Time.parse_local(x.to_s, "%F %X.%L")
+      when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/
+        Time.parse(x.to_s, "%FT%XZ", Time::Location::UTC)
+      else
+        raise Time::Format::Error.new("Bad format for Time: #{time}")
+      end
     end
   end
 

@@ -37,6 +37,8 @@ module Clear::Model::Converter::ArrayConverter{{exp.id}}
           nil
         end
       end.compact
+    when Array(::JSON::Any)
+      return x.map(&.as_{{k.id}})
     when ::JSON::Any
       if arr = x.as_a?
         return arr.map(&.as_{{k.id}})

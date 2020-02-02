@@ -1,5 +1,5 @@
 module Clear::SQL::Query::OrderBy
-  record Record, op : String, dir : Symbol
+  record Record, op : String, dir : Symbol, nulls : String?
 
   macro included
     getter order_bys : Array(Record) = [] of Record
@@ -32,23 +32,23 @@ module Clear::SQL::Query::OrderBy
 
   def order_by(tuple : NamedTuple)
     tuple.each do |k, v|
-      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s))
+      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s), nil)
     end
     change!
   end
 
-  def order_by(expression : Symbol, direction = "ASC")
-    @order_bys << Record.new(SQL.escape(expression.to_s), _order_by_to_symbol(direction))
+  def order_by(expression : Symbol, direction = "ASC", nulls : String? = nil)
+    @order_bys << Record.new(SQL.escape(expression.to_s), _order_by_to_symbol(direction), nulls)
     change!
   end
 
-  def order_by(expression : String, direction = "ASC")
-    @order_bys << Record.new(expression, _order_by_to_symbol(direction))
+  def order_by(expression : String, direction = "ASC", nulls : String? = nil)
+    @order_bys << Record.new(expression, _order_by_to_symbol(direction), nulls)
     change!
   end
 
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase].join(" ") }.join(", ")
+    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase, r.nulls].compact.join(" ") }.join(", ")
   end
 end

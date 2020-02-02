@@ -11,6 +11,33 @@ module SQLMiscSpec
 
   describe "Clear::SQL" do
     describe "miscalleanous" do
+
+      it "can escape for SQL-safe object" do
+        Clear::SQL.escape("order").should eq "\"order\""
+        Clear::SQL.escape("").should eq "\"\""
+        Clear::SQL.escape(:hello).should eq "\"hello\""
+
+        Clear::SQL.escape("some.weird.column name").should eq "\"some.weird.column name\""
+        Clear::SQL.escape("\"hello world\"").should eq "\"\"\"hello world\"\"\""
+      end
+
+      it "can sanitize for SQL-safe string" do
+        Clear::SQL.sanitize(1).should eq "1"
+        Clear::SQL.sanitize("").should eq "''"
+        Clear::SQL.sanitize(nil).should eq "NULL"
+        Clear::SQL.sanitize("l'hotel").should eq "'l''hotel'"
+      end
+
+      it "can create SQL fragment" do
+        Clear::SQL.raw("SELECT * FROM table WHERE x = ?", "hello").should eq(
+          %(SELECT * FROM table WHERE x = 'hello')
+        )
+
+        Clear::SQL.raw("SELECT * FROM table WHERE x = :x", x: 1).should eq(
+          %(SELECT * FROM table WHERE x = 1)
+        )
+      end
+
       it "can truncate a table" do
 
         begin

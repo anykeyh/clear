@@ -232,6 +232,11 @@ module Clear::Model
       T.connection
     end
 
+    # Return the model class for this collection
+    def item_class
+      T
+    end
+
 
     # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
@@ -537,10 +542,7 @@ module Clear::Model
     # Redefinition of `join_impl` to avoid ambiguity on the column
     # name if no specific column have been selected.
     protected def join_impl(name, type, lateral, clear_expr)
-      if @columns.empty?
-        self.select("#{Clear::SQL.escape(T.table)}.*")
-      end
-
+      self.set_default_table_wildcard(Clear::SQL.escape(T.table))
       super(name, type, lateral, clear_expr)
     end
 
@@ -553,7 +555,7 @@ module Clear::Model
 
       begin
         new_order = arr.map do |x|
-          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc))
+          Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc), nil)
         end
 
         clear_order_bys.order_by(new_order)

@@ -128,18 +128,18 @@ struct Time
         timezone = Time::Location.load(timezone)
       end
 
-      self.in(timezone).at_beginning_of_day + hm.ms.microseconds
+      self.in(timezone).at_beginning_of_day + hm.microseconds.microseconds
     else
-      at_beginning_of_day + hm.ms.microseconds
+      at_beginning_of_day + hm.microseconds.microseconds
     end
   end
 
   def +(t : Clear::TimeInDay)
-    self + t.ms.microseconds
+    self + t.microseconds.microseconds
   end
 
   def -(t : Clear::TimeInDay)
-    self - t.ms.microseconds
+    self - t.microseconds.microseconds
   end
 end
 
