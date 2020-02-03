@@ -12,7 +12,7 @@ module ParserSpec
           SELECT 'string' as text;
           -- This is a comment
         SQL
-        ) do |token|
+        ) do |_|
           # TODO: Finish the parser
         end
       end
