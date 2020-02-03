@@ -1,3 +1,9 @@
+struct UUID
+  def to_json(json)
+    json.string(to_s)
+  end
+end
+
 # Convert from UUID column to Crystal's UUID
 class Clear::Model::Converter::UUIDConverter
   def self.to_column(x) : UUID?

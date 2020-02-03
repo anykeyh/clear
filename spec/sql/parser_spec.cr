@@ -13,7 +13,7 @@ module ParserSpec
           -- This is a comment
         SQL
         ) do |token|
-          pp token
+          # TODO: Finish the parser
         end
       end
     end

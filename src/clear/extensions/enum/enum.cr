@@ -20,8 +20,8 @@ module Clear
       @value.to_sql
     end
 
-    def to_json(x = nil)
-      @value
+    def to_json(json)
+      json.string(@value)
     end
 
     def ==(x)

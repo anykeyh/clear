@@ -13,6 +13,20 @@ module ModelSpec
     self.table = "model_tags"
   end
 
+  class Channel
+    include Clear::Model
+    self.table = "channels"
+
+    column id : Int64, primary: true, presence: false
+    column createdby_id : Int64
+
+    column name : String
+    column description : String
+    column avatarsvg_uri : String
+
+    timestamps
+  end
+
   class Category
     include Clear::Model
 
@@ -752,7 +766,7 @@ module ModelSpec
           u.to_json.should eq %({"first_name":"Hello","last_name":"World"})
 
           u.to_json(emit_nulls: true).should eq (
-            %({"id":null,"first_name":"Hello","last_name":"World","middle_name":null,"active":null,"notification_preferences":"null","updated_at":null,"created_at":null})
+            %({"id":null,"first_name":"Hello","last_name":"World","middle_name":null,"active":null,"notification_preferences":null,"updated_at":null,"created_at":null})
           )
         end
       end
