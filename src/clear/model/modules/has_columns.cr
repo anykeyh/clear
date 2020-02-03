@@ -400,6 +400,24 @@ module Clear::Model::HasColumns
       out
     end
 
+    def to_json(emit_nulls : Bool = false)
+      JSON.build{ |json| to_json(json, emit_nulls) }
+    end
+
+    def to_json(json, emit_nulls = false)
+      json.object do
+        {% for name, settings in COLUMNS %}
+        if emit_nulls || @{{settings[:crystal_variable_name]}}_column.defined?
+          pp  {{settings[:db_column_name]}}
+          pp @{{settings[:crystal_variable_name]}}_column.value(nil)
+          json.field {{settings[:db_column_name]}} do
+            @{{settings[:crystal_variable_name]}}_column.value(nil).to_json(json)
+          end
+        end
+        {% end %}
+      end
+    end
+
     # Return `true` if the model is dirty (e.g. one or more fields
     #   have been changed.). Return `false` otherwise.
     def changed?
