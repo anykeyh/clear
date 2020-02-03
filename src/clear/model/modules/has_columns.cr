@@ -408,8 +408,6 @@ module Clear::Model::HasColumns
       json.object do
         {% for name, settings in COLUMNS %}
         if emit_nulls || @{{settings[:crystal_variable_name]}}_column.defined?
-          pp  {{settings[:db_column_name]}}
-          pp @{{settings[:crystal_variable_name]}}_column.value(nil)
           json.field {{settings[:db_column_name]}} do
             @{{settings[:crystal_variable_name]}}_column.value(nil).to_json(json)
           end
