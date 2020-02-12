@@ -155,15 +155,17 @@ module Clear
             raise e unless is_rollback_error
           ensure
             cnx._clear_in_transaction = false
-            execute("COMMIT") unless has_rollback
-            @commit_callbacks.each &.call(cnx)
-            @commit_callbacks.clear
+            unless has_rollback
+              execute("COMMIT")
+              @@commit_callbacks.each &.call(cnx)
+              @@commit_callbacks.clear
+            end
           end
         end
       end
     end
 
-    @commit_callbacks = Array( (Connection) => Void )
+    @@commit_callbacks = [] of DB::Database -> Void
 
     # Register a callback function which will be fired once when SQL `COMMIT`
     # operation is called
@@ -181,8 +183,8 @@ module Clear
     #
     # In case the transaction fail and eventually rollback, the code won't be called.
     #
-    def after_commit(&block)
-      @commit_callbacks << block
+    def after_commit(&block : DB::Database -> Void )
+      @@commit_callbacks << block
     end
 
     # Create a transaction, but this one is stackable
