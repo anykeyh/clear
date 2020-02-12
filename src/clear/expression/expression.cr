@@ -233,7 +233,6 @@ class Clear::Expression
   # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
-  #
   def raw(x : String, *args)
     Node::Raw.new(self.class.raw(x, *args))
   end
