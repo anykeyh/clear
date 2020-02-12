@@ -5,8 +5,7 @@ require "../spec_helper"
 module TransactionSpec
   extend self
 
-  describe "Clear::SQL" do
-    describe "after_commit" do
+    describe "Clear::SQL.after_commit" do
       it "executes the callback code when transaction is commited" do
         is_called = false
 
@@ -56,6 +55,14 @@ module TransactionSpec
       is_called.should eq(1)
     end
 
+    # Because after_commit is related to a specific transaction, it should raise
+    # and error if we're not currently in transaction.
+    it "should raise an error if not yet in transaction" do
+      expect_raises(Clear::SQL::Error, /in transaction/) do
+        Clear::SQL.after_commit{ puts "Do something" }
+      end
+    end
+
     it "is related to the current commit only" do
       # This test is a bit tricky to make it work
       # because the fiber scheduler is changing context on call to the database
@@ -91,5 +98,4 @@ module TransactionSpec
     end
 
 
-  end
 end

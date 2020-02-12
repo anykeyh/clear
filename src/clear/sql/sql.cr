@@ -185,7 +185,11 @@ module Clear
     #
     def after_commit(connection = "default", &block : DB::Database -> Void )
       Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
-        @@commit_callbacks[cnx] <<= block
+        if cnx._clear_in_transaction?
+          @@commit_callbacks[cnx] <<= block
+        else
+          raise Clear::SQL::Error.new("you need to be in transaction to add after_commit callback")
+        end
       end
     end
 
