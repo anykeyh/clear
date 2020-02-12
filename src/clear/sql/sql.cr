@@ -156,10 +156,33 @@ module Clear
           ensure
             cnx._clear_in_transaction = false
             execute("COMMIT") unless has_rollback
+            @commit_callbacks.each &.call(cnx)
+            @commit_callbacks.clear
           end
         end
       end
+    end
 
+    @commit_callbacks = Array( (Connection) => Void )
+
+    # Register a callback function which will be fired once when SQL `COMMIT`
+    # operation is called
+    #
+    # This can be used for example to send email, or perform others tasks
+    # when you want to be sure the data is secured in the database.
+    #
+    # ```
+    #   transaction do
+    #     @user = User.find(1)
+    #     @user.subscribe!
+    #     Clear::SQL.after_commit{ Email.deliver(ConfirmationMail.new(@user)) }
+    #   end
+    # ```
+    #
+    # In case the transaction fail and eventually rollback, the code won't be called.
+    #
+    def after_commit(&block)
+      @commit_callbacks << block
     end
 
     # Create a transaction, but this one is stackable
