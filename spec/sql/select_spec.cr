@@ -61,7 +61,7 @@ module SelectSpec
           r.to_sql.should eq "SELECT DISTINCT a, b, c"
 
           r = select_request.distinct.select(:first_name, :last_name, :id)
-          r.to_sql.should eq "SELECT DISTINCT \"first_name\", \"last_name\", \"id\""
+          r.to_sql.should eq %(SELECT DISTINCT "first_name", "last_name", "id")
         end
 
         it "can select any string" do
@@ -75,8 +75,8 @@ module SelectSpec
           r.to_sql.should eq "SELECT SUM(quantity) AS sum, COUNT(*) AS count"
         end
 
-        it "can select using multiple strings" do
-          r = select_request.select({uid: "user_id", some_cool_stuff: "column"})
+        it "can select using named tuple" do
+          r = select_request.select(uid: "user_id", some_cool_stuff: "column")
           r.to_sql.should eq "SELECT user_id AS uid, column AS some_cool_stuff"
         end
 
@@ -142,7 +142,7 @@ module SelectSpec
         end
       end
 
-      describe "cte" do
+      describe "SelectQuery#with_cte" do
         it "can build request with CTE" do
           # Simple CTE
           cte = select_request.from(:users_info).where("x > 10")

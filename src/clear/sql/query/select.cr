@@ -62,6 +62,11 @@ module Clear::SQL::Query::Select
     change!
   end
 
+  def select(**__tuple)
+    __tuple.each { |k, v| @columns << Column.new(v, k.to_s) }
+    change!
+  end
+
   def clear_select
     @columns.clear
     change!
