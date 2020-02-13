@@ -147,15 +147,15 @@ module SelectSpec
           # Simple CTE
           cte = select_request.from(:users_info).where("x > 10")
           sql = select_request.from(:ui).with_cte("ui", cte).to_sql
-          sql.should eq "WITH ui AS (SELECT * FROM \"users_info\" WHERE x > 10) SELECT * FROM \"ui\""
+          sql.should eq %[WITH ui AS (SELECT * FROM "users_info" WHERE x > 10) SELECT * FROM "ui"]
 
           # Complex CTE
           cte1 = select_request.from(:users_info).where { a == b }
           cte2 = select_request.from(:just_another_table).where { users_infos.x == just_another_table.w }
           sql = select_request.with_cte({ui: cte1, at: cte2}).from(:at).to_sql
-          sql.should eq "WITH ui AS (SELECT * FROM \"users_info\" WHERE (\"a\" = \"b\"))," +
-                        " at AS (SELECT * FROM \"just_another_table\" WHERE (" +
-                        "\"users_infos\".\"x\" = \"just_another_table\".\"w\")) SELECT * FROM \"at\""
+          sql.should eq %[WITH ui AS (SELECT * FROM "users_info" WHERE ("a" = "b")),] +
+                        %[ at AS (SELECT * FROM "just_another_table" WHERE (] +
+                        %["users_infos"."x" = "just_another_table"."w")) SELECT * FROM "at"]
         end
       end
 

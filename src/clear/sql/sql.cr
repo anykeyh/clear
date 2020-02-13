@@ -5,6 +5,7 @@ require "db"
 
 require "./errors"
 require "./logger"
+require "./transaction"
 
 # Add a field to DB::Database to handle
 #   the state of transaction of a specific
@@ -56,6 +57,7 @@ module Clear
                 Nil
 
     include Clear::SQL::Logger
+    include Clear::SQL::Transaction
     extend self
 
     alias Symbolic = String | Symbol
@@ -122,103 +124,6 @@ module Clear
       Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
     end
 
-    @@savepoint_uid : UInt64 = 0_u64
-
-    # Create an unstackable transaction
-    #
-    # Example:
-    # ```
-    # Clear::SQL.transaction do
-    #   # do something
-    #   Clear::SQL.transaction do # Technically, this block do nothing, since we already are in transaction
-    #     rollback                # < Rollback the up-most `transaction` block.
-    #   end
-    # end
-    # ```
-    # see #with_savepoint to use a stackable version using savepoints.
-    #
-    def transaction(connection = "default", &block)
-      Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
-        has_rollback = false
-
-        if cnx._clear_in_transaction?
-          return yield(cnx) # In case we already are in transaction, we just ignore
-        else
-          cnx._clear_in_transaction = true
-          execute("BEGIN")
-          begin
-            return yield(cnx)
-          rescue e
-            has_rollback = true
-            is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
-            execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
-            raise e unless is_rollback_error
-          ensure
-            cnx._clear_in_transaction = false
-            unless has_rollback
-              execute("COMMIT")
-              @@commit_callbacks[cnx].each(&.call(cnx))
-              @@commit_callbacks.delete(cnx)
-            end
-          end
-        end
-      end
-    end
-
-    @@commit_callbacks = Hash( DB::Database, Array(DB::Database -> Void) ).new { [] of DB::Database -> Void }
-
-    # Register a callback function which will be fired once when SQL `COMMIT`
-    # operation is called
-    #
-    # This can be used for example to send email, or perform others tasks
-    # when you want to be sure the data is secured in the database.
-    #
-    # ```
-    #   transaction do
-    #     @user = User.find(1)
-    #     @user.subscribe!
-    #     Clear::SQL.after_commit{ Email.deliver(ConfirmationMail.new(@user)) }
-    #   end
-    # ```
-    #
-    # In case the transaction fail and eventually rollback, the code won't be called.
-    #
-    def after_commit(connection = "default", &block : DB::Database -> Void )
-      Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
-        if cnx._clear_in_transaction?
-          @@commit_callbacks[cnx] <<= block
-        else
-          raise Clear::SQL::Error.new("you need to be in transaction to add after_commit callback")
-        end
-      end
-    end
-
-    # Create a transaction, but this one is stackable
-    # using savepoints.
-    #
-    # Example:
-    # ```
-    # Clear::SQL.with_savepoint do
-    #   # do something
-    #   Clear::SQL.with_savepoint do
-    #     rollback # < Rollback only the last `with_savepoint` block
-    #   end
-    # end
-    # ```
-    def with_savepoint(connection_name = "default", &block)
-      transaction do |cnx|
-        sp_name = "sp_#{@@savepoint_uid += 1}"
-        begin
-          execute(connection_name, "SAVEPOINT #{sp_name}")
-          yield
-          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
-        rescue e : RollbackError
-          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
-        end
-      end
-    end
-
-
     # Truncate a table or a model
     #
     # ```
@@ -251,11 +156,6 @@ module Clear
       )
     end
 
-    # Raise a rollback, in case of transaction
-    def rollback
-      raise RollbackError.new
-    end
-
     # Execute a SQL statement.
     #
     # Usage:
@@ -280,17 +180,17 @@ module Clear
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
     end
 
-    # Start a DELETE table query
+    # Prepare a new DELETE query
     def delete(table = nil)
       Clear::SQL::DeleteQuery.new("default").from(table)
     end
 
-    # Start a DELETE table query on specific connection
+    # Prepare a new DELETE query
     def delete(connection : Symbolic, table = nil)
       Clear::SQL::DeleteQuery.new(connection).from(table)
     end
 
-    # Start an INSERT INTO table query
+    # Prepare a new INSERT INTO table query
     def insert_into(table)
       Clear::SQL::InsertQuery.new(table)
     end

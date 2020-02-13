@@ -4,7 +4,7 @@ class Clear::SQL::ConnectionPool
   @@fiber_connections = {} of {String, Fiber} => { DB::Database, Int32 }
 
   def self.init(uri, name, pool_size)
-    raise "Connection pool size must be position" unless pool_size > 0
+    raise "connection pool size must be greater than zero" unless pool_size > 0
     channel = @@connections[name] = Channel(DB::Database).new(capacity: pool_size)
     pool_size.times{ channel.send DB.open(uri) }
   end

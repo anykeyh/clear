@@ -5,7 +5,15 @@ require "../spec_helper"
 module TransactionSpec
   extend self
 
-  describe "Clear::SQL#after_commit" do
+  describe "Clear::SQL::Transaction#transaction" do
+    it "can create transactional block" do
+      Clear::SQL.transaction{ Clear::SQL.select("1").execute }
+      Clear::SQL.transaction(level: Clear::SQL::Transaction::Level::ReadCommitted ){ Clear::SQL.select("1").execute }
+      Clear::SQL.transaction(level: Clear::SQL::Transaction::Level::RepeatableRead ){ Clear::SQL.select("1").execute }
+    end
+  end
+
+  describe "Clear::SQL::Transaction#after_commit" do
     it "executes the callback code when transaction is commited" do
       is_called = false
 

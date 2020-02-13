@@ -159,23 +159,23 @@ module Clear::Model::HasRelations
   # Generate the relations by calling the macro
   macro __generate_relations__
     {% begin %}
-    {% for name, settings in RELATIONS %}
-      {% if settings[:relation_type] == :belongs_to %}
-        Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:nilable]}}, {{settings[:foreign_key]}},
-          {{settings[:primary]}}, {{settings[:no_cache]}}, {{settings[:key_type]}})
-      {% elsif settings[:relation_type] == :has_many %}
-        Relations::HasManyMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
-          {{settings[:primary_key]}})
-      {% elsif settings[:relation_type] == :has_many_through %}
-        Relations::HasManyThroughMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:through]}},
-          {{settings[:own_key]}}, {{settings[:foreign_key]}})
-      {% elsif settings[:relation_type] ==  :has_one %}
-        Relations::HasOneMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
-          {{settings[:primary_key]}})
-      {% else %}
-        {% raise "I don't know this relation: #{settings[:relation_type]}" %}
+      {% for name, settings in RELATIONS %}
+        {% if settings[:relation_type] == :belongs_to %}
+          Relations::BelongsToMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:nilable]}}, {{settings[:foreign_key]}},
+            {{settings[:primary]}}, {{settings[:no_cache]}}, {{settings[:key_type]}})
+        {% elsif settings[:relation_type] == :has_many %}
+          Relations::HasManyMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
+            {{settings[:primary_key]}})
+        {% elsif settings[:relation_type] == :has_many_through %}
+          Relations::HasManyThroughMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:through]}},
+            {{settings[:own_key]}}, {{settings[:foreign_key]}})
+        {% elsif settings[:relation_type] ==  :has_one %}
+          Relations::HasOneMacro.generate({{@type}}, {{name}}, {{settings[:type]}}, {{settings[:foreign_key]}},
+            {{settings[:primary_key]}})
+        {% else %}
+          {% raise "I don't know this relation: #{settings[:relation_type]}" %}
+        {% end %}
       {% end %}
-    {% end %}
     {% end %}
   end
 
