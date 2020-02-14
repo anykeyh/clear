@@ -32,7 +32,7 @@ module MultipleConnectionsSpec
 
   def self.reinit
     reinit_migration_manager
-    ModelSpecMigration1234.new.apply(Clear::Migration::Direction::UP)
+    ModelSpecMigration1234.new.apply
   end
 
   describe "Clear::Model" do

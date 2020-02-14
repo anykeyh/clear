@@ -50,7 +50,7 @@ module PolymorphismSpec
 
   def self.reinit
     reinit_migration_manager
-    PolymorphicMigration4321.new.apply(Clear::Migration::Direction::UP)
+    PolymorphicMigration4321.new.apply
   end
 
   describe "Clear::Model::IsPolymorphic" do

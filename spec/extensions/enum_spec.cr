@@ -38,7 +38,7 @@ module EnumSpec
 
   def self.reinit!
     reinit_migration_manager
-    EnumMigration18462.new.apply(Clear::Migration::Direction::UP)
+    EnumMigration18462.new.apply
   end
 
   describe "Clear.enum" do

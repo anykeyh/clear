@@ -1,3 +1,5 @@
+# :nodoc:
+# NOT YET IMPLEMENTED
 # A view is like a read-only model.
 # It has columns and relations
 # It is automatically updated on migration by the migration manager

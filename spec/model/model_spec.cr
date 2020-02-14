@@ -162,7 +162,7 @@ module ModelSpec
 
   def self.reinit
     reinit_migration_manager
-    ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
+    ModelSpecMigration123.new.apply
   end
 
   describe "Clear::Model" do

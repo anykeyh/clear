@@ -73,7 +73,7 @@ module NestedQuerySpec
 
   def self.reinit
     reinit_migration_manager
-    NestedQuerySpecMigration9991.new.apply(Clear::Migration::Direction::UP)
+    NestedQuerySpecMigration9991.new.apply
   end
 
 

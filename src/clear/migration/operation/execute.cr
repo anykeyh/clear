@@ -6,12 +6,12 @@ module Clear::Migration
     end
 
     def up : Array(String)
-      [@sql].compact
+      [@sql]
     end
 
     def down : Array(String)
       irreversible! if @irreversible
-      [@sql].compact
+      [@sql]
     end
   end
 end

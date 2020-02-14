@@ -28,7 +28,7 @@ module FullTextSearchableSpec
 
   def self.reinit
     reinit_migration_manager
-    CreateSeriesMigration5312354.new.apply(Clear::Migration::Direction::UP)
+    CreateSeriesMigration5312354.new.apply
   end
 
   describe "test tsv searchable" do

@@ -38,7 +38,7 @@ module UUIDSpec
 
   def self.reinit
     reinit_migration_manager
-    UUIDObjectMigration43293.new.apply(Clear::Migration::Direction::UP)
+    UUIDObjectMigration43293.new.apply
   end
 
   describe "Clear::Model::HasSerialPkey with uuid" do

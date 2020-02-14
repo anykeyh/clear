@@ -1,8 +1,12 @@
 require "../spec_helper"
+require "json"
+
 
 module ConverterSpec
+
+
   describe "Clear::Model::Converter::BoolConverter" do
-    it "convert from boolean" do
+    it "converts from boolean" do
       converter = Clear::Model::Converter::BoolConverter
       converter.to_column(1).should eq(true)
       converter.to_column(-1).should eq(true)

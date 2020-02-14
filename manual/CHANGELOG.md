@@ -20,6 +20,25 @@ when you want to be sure the data is secured in the database.
 
 In case the transaction fail and eventually rollback, the code won't be called.
 
+- Add `Clear.json_serializable_converter(CustomType)`
+
+This macro help setting a converter transparently for any `CustomType`.
+Your `CustomType` must include `JSON::Serializable`.
+
+- Add `jsonb().contains?(...)` method
+
+This allow usage of Postgres `?` operator over `jsonb` fields.
+
+For example:
+
+```
+  # SELECT * FROM actors WHERE "jsonb_column"->'movies' ? 'Top Gun' LIMIT 1;
+  Actor.query.where{ var("jsonb_column").jsonb("movies").contains?("Top Gun") }.first!.name # << Tom Cruise
+```
+
+- `Clear::Migration::Direction` is now an enum instead of a struct.
+
+
 # v0.8
 
 ## Features

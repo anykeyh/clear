@@ -5,7 +5,7 @@ require "./cache_schema"
 module CacheSpec
   def self.reinit
     Clear::Migration::Manager.instance.reinit!
-    MigrateSpec10.new.apply(Clear::Migration::Direction::UP)
+    MigrateSpec10.new.apply
 
     User.create [{id: 101, name: "User 1"}]
     User.create [{id: 102, name: "User 2"}]

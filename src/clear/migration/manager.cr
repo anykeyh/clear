@@ -148,7 +148,7 @@ class Clear::Migration::Manager
     list_of_migrations.reject! { |x| @migrations_up.includes?(x.uid) }
 
     list_of_migrations.each do |migration|
-      migration.apply(Clear::Migration::Direction::UP)
+      migration.apply
       @migrations_up.add(migration.uid)
     end
   end
@@ -244,7 +244,7 @@ class Clear::Migration::Manager
 
     raise migration_already_up(number) if migrations_up.includes?(number)
 
-    m.apply(Clear::Migration::Direction::UP)
+    m.apply(Clear::Migration::Direction::Up)
     @migrations_up.add(m.uid)
   end
 
@@ -254,7 +254,7 @@ class Clear::Migration::Manager
 
     raise migration_already_down(number) unless migrations_up.includes?(number)
 
-    m.apply(Clear::Migration::Direction::DOWN)
+    m.apply(Clear::Migration::Direction::Down)
     @migrations_up.delete(m.uid)
   end
 
