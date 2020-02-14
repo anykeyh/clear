@@ -103,33 +103,39 @@ module Clear::Migration
 
     # This will apply the migration in a given direction (up or down)
     def apply(dir : Direction = Clear::Migration::Direction::Up)
-    Clear::Migration::Manager.instance.ensure_ready
+      Clear::Migration::Manager.instance.ensure_ready
 
-    Clear::SQL.transaction do
-      Clear.logger.info("[#{dir.to_s}] #{self.class.name}")
+      Clear::SQL.transaction do
+        Clear.logger.info("[#{dir.to_s}] #{self.class.name}")
 
-      change(dir)
+        # In case the migration is called twice (e.g. in Spec?)
+        # ensure the operations are clean-up before trying again
+        @operations.clear
 
-      dir.up do
-        @operations.each { |op|
-          op.up.each { |x| Clear::SQL.execute(x.as(String)) }
-        }
+        change(dir)
 
-        SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
+        dir.up do
+          @operations.each { |op|
+            op.up.each { |x| Clear::SQL.execute(x.as(String)) }
+          }
+
+          SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s})
+             .execute
+        end
+
+        dir.down do
+          @operations.reverse_each { |op|
+            op.down.each { |x| Clear::SQL.execute(x.as(String)) }
+          }
+
+          SQL.delete("default", "__clear_metadatas")
+             .where({metatype: "migration", value: uid.to_s})
+             .execute
+        end
+
+        self
       end
-
-      dir.down do
-        @operations.reverse_each { |op|
-          op.down.each { |x| Clear::SQL.execute(x.as(String)) }
-        }
-
-        SQL.delete("default", "__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
-      end
-
-      self
     end
-
-  end
 
   end
 

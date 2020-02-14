@@ -227,7 +227,7 @@ class Clear::Migration::Manager
 
     Clear::SQL.select("*")
       .from("__clear_metadatas")
-      .where({metatype: "migration"}).to_a.map { |m|
+      .where(metatype: "migration").map { |m|
         @migrations_up.add(Int64.new(m["value"].as(String)))
       }
   end
@@ -265,7 +265,10 @@ class Clear::Migration::Manager
   # Print out the status ( up | down ) of all migrations found by the manager.
   def print_status : String
     ensure_ready
-    @migrations.sort { |a, b| a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid }.map do |m|
+
+    @migrations.sort do |a, b|
+      a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid
+    end.map do |m|
       active = @migrations_up.includes?(m.uid)
       "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"
     end.join("\n")

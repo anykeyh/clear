@@ -17,14 +17,13 @@ module ViewSpec
         end
 
         Clear::Migration::Manager.instance.reinit!
-        # Create the view
         Clear::Migration::Manager.instance.apply_all
 
+        # Ensure than the view is loaded and working properly
         Clear::SQL.select.from("year_days").agg("count(day)", Int64).should eq(366)
+        Clear::View.clear
       end
     end
-
-
 
   end
 

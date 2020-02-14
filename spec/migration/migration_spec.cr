@@ -79,8 +79,9 @@ module MigrationSpec
       temporary do
         Clear::Migration::Manager.instance.reinit!
         # Ensure that multiple migration apply_all's can run without issue
-        Clear::Migration::Manager.instance.apply_all
-        Clear::Migration::Manager.instance.apply_all
+        3.times do
+          Clear::Migration::Manager.instance.apply_all
+        end
       end
     end
   end
