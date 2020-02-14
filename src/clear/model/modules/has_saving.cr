@@ -102,7 +102,7 @@ module Clear::Model::HasSaving
 
           if h.any?
             with_triggers(:update) do
-              Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
+              hash = Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
             end
           end
         else

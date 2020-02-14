@@ -1,10 +1,10 @@
 require "../spec_helper"
-require "./12345_migration_by_file"
+require "./**"
 
 module MigrationSpec
   extend self
 
-  class Migration1
+  class Migration7771
     include Clear::Migration
 
     def change(dir)
@@ -21,7 +21,7 @@ module MigrationSpec
     end
   end
 
-  class Migration2
+  class Migration7772
     include Clear::Migration
 
     def change(dir)
@@ -32,15 +32,15 @@ module MigrationSpec
 
   temporary do
     describe "Migration" do
-      it "can discover UID from class name" do
-        Migration1.new.uid.should eq 1
+      it "finds unique migration id in the class name" do
+        Migration7771.new.uid.should eq 7771
       end
 
-      it "can discover UID from file name" do
-        MigrationByFile.new.uid.should eq 12345
+      it "finds unique migration id in the file name" do
+        MigrationByFile.new.uid.should eq 7773 # 7773_migration_by_file.cr
       end
 
-      it "can apply migration" do
+      it "apply and revert migrations" do
         temporary do
           Clear::Migration::Manager.instance.reinit!
           Migration1.new.apply

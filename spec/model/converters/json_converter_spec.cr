@@ -2,6 +2,9 @@ require "../../spec_helper"
 require "json"
 
 module JSONConverterSpec
+
+  # Example found here:
+  #   https://codeblogmoney.com/json-example-with-data-types-including-json-array/
   JSON_DATA_SAMPLE = <<-JSON
   {
     "Actors": [

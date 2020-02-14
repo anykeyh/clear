@@ -2,9 +2,7 @@ require "../spec_helper"
 require "json"
 
 
-module ConverterSpec
-
-
+module BoolConverterSpec
   describe "Clear::Model::Converter::BoolConverter" do
     it "converts from boolean" do
       converter = Clear::Model::Converter::BoolConverter
