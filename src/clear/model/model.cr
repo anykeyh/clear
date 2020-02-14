@@ -39,8 +39,6 @@ module Clear::Model
   macro included
     {% raise "Do NOT include Clear::Model on struct-like objects.\n" +
              "It would behave very strangely otherwise." unless @type < Reference %}    # <~ Models are mutable objects;
-                                                                                        # they do not work with structures which are immuable
-
 
     extend Clear::Model::HasHooks::ClassMethods
 

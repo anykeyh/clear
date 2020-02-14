@@ -488,6 +488,18 @@ module Clear::Model
       where(tuple).first(fetch_columns).not_nil!
     end
 
+    # Returns a model using primary key equality
+    # Returns `nil` if not found.
+    def find(x) : T?
+      where { raw(T.pkey) == x }.first
+    end
+
+    # Returns a model using primary key equality.
+    # Raises error if the model is not found.
+    def find!(x) : T
+      find(x) || raise Clear::SQL::RecordNotFoundError.new
+    end
+
     # Try to fetch a row. If not found, build a new object and setup
     # the fields like setup in the condition tuple.
     def find_or_build(tuple : NamedTuple, &block : T -> Void) : T

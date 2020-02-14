@@ -100,13 +100,13 @@ module Clear::Model::ClassMethods
       # Returns a model using primary key equality
       # Returns `nil` if not found.
       def self.find(x)
-        query.where { raw(pkey) == x }.first
+        query.find(x)
       end
 
       # Returns a model using primary key equality.
       # Raises error if the model is not found.
       def self.find!(x)
-        find(x) || raise Clear::SQL::RecordNotFoundError.new
+        query.find!(x)
       end
 
       # Build a new empty model and fill the columns using the NamedTuple in argument.

@@ -36,6 +36,8 @@ For example:
   Actor.query.where{ var("jsonb_column").jsonb("movies").contains?("Top Gun") }.first!.name # << Tom Cruise
 ```
 
+## Breaking changes
+
 - `Clear::Migration::Direction` is now an enum instead of a struct.
 
 

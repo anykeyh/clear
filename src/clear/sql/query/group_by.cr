@@ -9,8 +9,12 @@ module Clear::SQL::Query::GroupBy
   def group_by(column : Symbolic)
     @group_bys << column
     change!
- end
+  end
 
+  def group_by(*column_list)
+    column_list.each { |col| @group_bys << column }
+    change!
+  end
 
   protected def print_group_bys
     return unless @group_bys.any?

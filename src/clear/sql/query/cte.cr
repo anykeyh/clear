@@ -38,11 +38,11 @@ module Clear::SQL::Query::CTE
   protected def print_ctes
     if cte.any?
       {"WITH ",
-       cte.map do |name, cte_declaration|
-         value = if cte_declaration.responds_to?(:to_sql)
-                   cte_declaration.to_sql
+       cte.map do |name, v|
+         value = if v.responds_to?(:to_sql)
+                   v.to_sql
                  else
-                   cte_declaration.to_s
+                   v.to_s
                  end
 
          {name, " AS (", value, ")"}.join
