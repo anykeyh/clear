@@ -1,5 +1,4 @@
 require "../spec_helper"
-require "./cache_schema"
 
 # Monkey patch of QueryCache
 # For adding statistics

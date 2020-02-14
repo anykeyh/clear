@@ -144,6 +144,8 @@ class Clear::Migration::Manager
   def apply_all
     ensure_ready
 
+    Clear::View.apply(:drop)
+
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
     list_of_migrations.reject! { |x| @migrations_up.includes?(x.uid) }
 
@@ -151,6 +153,8 @@ class Clear::Migration::Manager
       migration.apply
       @migrations_up.add(migration.uid)
     end
+
+    Clear::View.apply(:create)
   end
 
   #
