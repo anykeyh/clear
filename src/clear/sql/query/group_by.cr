@@ -6,13 +6,8 @@ module Clear::SQL::Query::GroupBy
     change!
   end
 
-  def group_by(column : Symbolic)
-    @group_bys << column
-    change!
-  end
-
   def group_by(*column_list)
-    column_list.each { |col| @group_bys << column }
+    column_list.each { |col| @group_bys << col }
     change!
   end
 

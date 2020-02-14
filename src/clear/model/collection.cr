@@ -199,7 +199,7 @@ module Clear::Model
     # :nodoc:
     def initialize(
       @distinct_value = nil,
-      @cte = {} of String => Clear::SQL::SelectBuilder | String,
+      @cte = {} of String => Clear::SQL::Query::CTE::Record,
       @columns = [] of SQL::Column,
       @froms = [] of SQL::From,
       @joins = [] of SQL::Join,

@@ -29,7 +29,7 @@ module Clear::SQL::SelectBuilder
   include Query::WithPagination
 
   def initialize(@distinct_value = nil,
-                 @cte = {} of String => Clear::SQL::SelectBuilder | String,
+                 @cte = {} of String => Clear::SQL::Query::CTE::Record,
                  @columns = [] of SQL::Column,
                  @froms = [] of SQL::From,
                  @joins = [] of SQL::Join,
@@ -44,7 +44,15 @@ module Clear::SQL::SelectBuilder
                  @before_query_triggers = [] of -> Void)
   end
 
-  # Duplicate the query
+  #
+  # Duplicate the current request.
+  # Select query are mutable objects, and many of the methods will change the state of the collection:
+  # ```ruby
+  # collection = User.query # SELECT * FROM users;
+  # collection.select("id") # SELECT id FROM users;
+  # collection.select("id") # SELECT id, id FROM users;
+  # ```
+  # Therefore, you may want to use `dup` to duplicate the current state of the collection.
   def dup : self
     self.class.new(
       distinct_value: @distinct_value,
@@ -64,6 +72,7 @@ module Clear::SQL::SelectBuilder
     ).use_connection(self.connection_name)
   end
 
+  # Resolve the query
   def to_sql : String
     [print_ctes,
      print_select,
@@ -78,10 +87,10 @@ module Clear::SQL::SelectBuilder
      print_lock].compact.reject(&.empty?).join(" ")
   end
 
-  # Construct a delete query from this select query.
-  # It uses only the `from` and the `where` clause fo the current select request.
-  # Can be useful in some case, but
-  #   use at your own risk !
+  # Construct and return a `delete` query from this select query
+  #
+  # Note: It uses only the `from` and the `where` clause from the current select
+  # request.
   def to_delete
     raise QueryBuildingError.new("Cannot build a delete query " +
                                  "from a select with multiple or none `from` clauses") unless @froms.size == 1
@@ -93,12 +102,16 @@ module Clear::SQL::SelectBuilder
     DeleteQuery.new(from: v.dup, wheres: @wheres.dup)
   end
 
+  # Construct and return an `update` query from this select query
+  #
+  # Note: It uses only the `from` and the `where` clause from the current select
+  # request.
   def to_update
     raise QueryBuildingError.new("Cannot build a update query " +
                                  "from a select with multiple or none `from` clauses") unless @froms.size == 1
     v = @froms[0].value
 
-    raise QueryBuildingError.new("Cannot delete from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
+    raise QueryBuildingError.new("Cannot update from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
 
     UpdateQuery.new(table: v.dup, wheres: @wheres.dup)
   end

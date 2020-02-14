@@ -1,11 +1,14 @@
 # Allow usage of Common Table Expressions (CTE) in the query building
 module Clear::SQL::Query::CTE
+
   # :nodoc:
   alias CTEAuthorized = Clear::SQL::SelectBuilder | String
 
+  record Record, query : CTEAuthorized, recursive : Bool
+
   # List the current CTE of the query. The key is the name of the CTE,
   # while the value is the fragment (string or Sub-select)
-  getter cte : Hash(String, CTEAuthorized) = {} of String => CTEAuthorized
+  getter cte : Hash(String, Clear::SQL::Query::CTE::Record) = {} of String => Clear::SQL::Query::CTE::Record
 
   # Add a CTE to the query.
   #
@@ -16,8 +19,8 @@ module Clear::SQL::Query::CTE
   #   .select("*").from("full_year")
   # # WITH full_year AS ( SELECT DATE(date) ... ) SELECT * FROM full_year;
   # ```
-  def with_cte(name, request : CTEAuthorized)
-    cte[name] = request
+  def with_cte(name, request : CTEAuthorized, recursive = false)
+    cte[name] = Record.new(request, recursive)
     change!
   end
 
@@ -29,25 +32,35 @@ module Clear::SQL::Query::CTE
   # ```
   def with_cte(tuple : NamedTuple)
     tuple.each do |k, v|
-      cte[k.to_s] = v
+      cte[k.to_s] = Record.new(v, false)
+    end
+    change!
+  end
+
+  # Add a CTE to the query. Use NamedTuple convention:
+  #
+  # ```crystal
+  # Clear::SQL.select.with_recursive_cte(cte: "xxx")
+  # # WITH RECURSIVE cte AS xxx SELECT...
+  # ```
+  def with_recursive_cte(tuple : NamedTuple)
+    tuple.each do |k, v|
+      cte[k.to_s] = Record.new(v, true)
     end
     change!
   end
 
   # :nodoc:
   protected def print_ctes
-    if cte.any?
-      {"WITH ",
-       cte.map do |name, v|
-         value = if v.responds_to?(:to_sql)
-                   v.to_sql
-                 else
-                   v.to_s
-                 end
+    return unless cte.any?
 
-         {name, " AS (", value, ")"}.join
-       end.join(", "),
-      }.join
-    end
+    {"WITH ",
+      cte.map do |name, v|
+        query = v.query
+        value = query.responds_to?(:to_sql) ? query.to_sql : query.to_s
+        { v.recursive ? "RECURSIVE" : "",
+          name, " AS (", value, ")" }.join
+      end.join(", "),
+    }.join
   end
 end

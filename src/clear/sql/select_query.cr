@@ -4,7 +4,7 @@ require "./sql"
 
 # A Select Query builder
 #
-# Postgres documentation:
+# Remember of PostgreSQL Select query:
 #
 # ```
 # [ WITH [ RECURSIVE ] with_query [, ...] ]

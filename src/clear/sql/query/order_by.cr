@@ -2,7 +2,7 @@ module Clear::SQL::Query::OrderBy
   record Record, op : String, dir : Symbol, nulls : String?
 
   macro included
-    getter order_bys : Array(Record) = [] of Record
+    getter order_bys : Array(Clear::SQL::Query::OrderBy::Record) = [] of Clear::SQL::Query::OrderBy::Record
   end
 
   private def _order_by_to_symbol(str)
