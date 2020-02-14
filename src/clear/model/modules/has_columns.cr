@@ -239,18 +239,20 @@ module Clear::Model::HasColumns
     def reset( **t : **T ) forall T
       super
 
-      \{% for name, typ in T %}
+      {% verbatim do %}
 
-        \{% if settings = COLUMNS["#{name}"] %}
-          @\{{settings[:crystal_variable_name]}}_column.reset_convert(t[:\{{name}}])
-        \{% else %}
-          \{% if !@type.has_method?("#{name}=") %}
-            \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
-          \{% end %}
-          self.\{{name}} = t[:\{{name}}]
-        \{% end %}
-      \{% end %}
+        {% for name, typ in T %}
 
+          {% if settings = COLUMNS["#{name}"] %}
+            @{{settings[:crystal_variable_name]}}_column.reset_convert(t[:{{name}}])
+          {% else %}
+            {% if !@type.has_method?("#{name}=") %}
+              {% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+            {% end %}
+            self.{{name}} = t[:{{name}}]
+          {% end %}
+        {% end %}
+      {% end %}
       self
     end
 
@@ -262,11 +264,12 @@ module Clear::Model::HasColumns
     def reset( h : Hash(Symbol, _) )
       super
 
-      \{% for name, settings in COLUMNS %}
-        v = h.fetch(:\{{settings[:db_column_name]}}){ Column::UNKNOWN }
-        @\{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
-      \{% end %}
-
+      {% verbatim do %}
+        {% for name, settings in COLUMNS %}
+          v = h.fetch(:\{{settings[:db_column_name]}}){ Column::UNKNOWN }
+          @{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+        {% end %}
+      {% end %}
       self
     end
 
@@ -274,10 +277,12 @@ module Clear::Model::HasColumns
     def reset( h : Hash(String, _) )
       super
 
-      \{% for name, settings in COLUMNS %}
-        v = h.fetch(\{{settings[:db_column_name]}}){ Column::UNKNOWN }
-        @\{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
-      \{% end %}
+      {% verbatim do %}
+        {% for name, settings in COLUMNS %}
+          v = h.fetch({{settings[:db_column_name]}}){ Column::UNKNOWN }
+          @{{settings[:crystal_variable_name]}}_column.reset_convert(v) unless v.is_a?(Column::UnknownClass)
+        {% end %}
+      {% end %}
 
       self
     end
@@ -289,16 +294,18 @@ module Clear::Model::HasColumns
     def set( **t : **T ) forall T
       super
 
-      \{% for name, typ in T %}
-        \{% if settings = COLUMNS["#{name}".id] %}
-          @\{{settings[:crystal_variable_name]}}_column.set_convert(t[:\{{name}}])
-        \{% else %}
-          \{% if !@type.has_method?("#{name}=") %}
-            \{% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
-          \{% end %}
-          self.\{{name}} = t[:\{{name}}]
-        \{% end %}
-      \{% end %}
+      {% verbatim do %}
+        {% for name, typ in T %}
+          {% if settings = COLUMNS["#{name}".id] %}
+            @{{settings[:crystal_variable_name]}}_column.set_convert(t[:{{name}}])
+          {% else %}
+            {% if !@type.has_method?("#{name}=") %}
+              {% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+            {% end %}
+            self.{{name}} = t[:{{name}}]
+          {% end %}
+        {% end %}
+      {% end %}
 
       self
     end
@@ -311,10 +318,12 @@ module Clear::Model::HasColumns
     def set( h : Hash(Symbol, _) )
       super
 
-      \{% for name, settings in COLUMNS %}
-        v = h.fetch(:\{{settings[:db_column_name]}}){ Column::UNKNOWN }
-        @\{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
-      \{% end %}
+      {% verbatim do %}
+        {% for name, settings in COLUMNS %}
+          v = h.fetch(:{{settings[:db_column_name]}}){ Column::UNKNOWN }
+          @{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+        {% end %}
+      {% end %}
 
       self
     end
@@ -323,10 +332,12 @@ module Clear::Model::HasColumns
     def set( h : Hash(String, _) )
       super
 
-      \{% for name, settings in COLUMNS %}
-        v = h.fetch(\{{settings[:db_column_name]}}){ Column::UNKNOWN }
-        @\{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
-      \{% end %}
+      {% verbatim do %}
+        {% for name, settings in COLUMNS %}
+          v = h.fetch({{settings[:db_column_name]}}){ Column::UNKNOWN }
+          @{{settings[:crystal_variable_name]}}_column.set_convert(v) unless v.is_a?(Column::UnknownClass)
+        {% end %}
+      {% end %}
 
       self
     end

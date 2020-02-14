@@ -88,14 +88,14 @@ class Clear::Migration::Manager
     uid_to_apply = list_of_migrations.map(&.uid).reject(&.>(version)) - @migrations_up.to_a
 
     uid_to_apply.each do |uid|
-      operations << {uid, Migration::Direction::UP}
+      operations << {uid, Migration::Direction::Up}
     end
 
     # Then we revert migration from requested version to now
     uid_to_apply = list_of_migrations.map(&.uid).select(&.>(version)) & @migrations_up.to_a
 
     uid_to_apply.each do |uid|
-      operations << {uid, Migration::Direction::DOWN}
+      operations << {uid, Migration::Direction::Down}
     end
 
     # We sort

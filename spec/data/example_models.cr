@@ -1,19 +1,18 @@
 class Tag
   include Clear::Model
+  self.table = "model_tags"
 
   column id : Int32, primary: true, presence: false
 
   column name : String
 
   has_many posts : Post, through: :model_post_tags, foreign_key: :post_id, own_key: :tag_id
-
-  self.table = "model_tags"
 end
 
 class ChannelModel
   include Clear::Model
-
   self.table = "channels"
+
 
   column id : Int64, primary: true, presence: false
   column created_by_id : Int64
@@ -25,23 +24,24 @@ class ChannelModel
   timestamps
 end
 
+
 class Category
   include Clear::Model
+  self.table = "model_categories"
 
   column id : Int32, primary: true, presence: false
 
   column name : String
 
   has_many posts : Post
-  has_many users : User, through: :model_posts, foreign_key: :post_id, own_key: :category_id
+  has_many users : User, through: Post, foreign_key: :user_id, own_key: :category_id
 
   timestamps
-
-  self.table = "model_categories"
 end
 
 class Post
   include Clear::Model
+  self.table = "model_posts"
 
   column id : Int32, primary: true, presence: false
 
@@ -49,6 +49,12 @@ class Post
 
   column tags : Array(String), presence: false
   column flags : Array(Int64), presence: false, column_name: "flags_other_column_name"
+
+  column content : String, presence: false
+
+  column published : Bool, presence: false
+
+  scope("published"){ where published: true }
 
   def validate
     ensure_than(title, "is not empty", &.size.>(0))
@@ -58,23 +64,22 @@ class Post
 
   belongs_to user : User, key_type: Int32?
   belongs_to category : Category, key_type: Int32?
-
-  self.table = "model_posts"
 end
 
 class UserInfo
   include Clear::Model
+  self.table = "model_user_infos"
 
   column id : Int32, primary: true, presence: false
 
   belongs_to user : User, key_type: Int32?
   column registration_number : Int64
-
-  self.table = "model_user_infos"
 end
 
 class User
   include Clear::Model
+
+  self.table = "model_users"
 
   column id : Int32, primary: true, presence: false
 
@@ -101,7 +106,6 @@ class User
     {self.first_name, self.last_name}.join(" ")
   end
 
-  self.table = "model_users"
 end
 
 class ExampleModelMigration1
@@ -136,6 +140,9 @@ class ExampleModelMigration1
 
       t.column "tags", "string", array: true, index: "gin", default: "ARRAY['post', 'arr 2']"
       t.column "flags_other_column_name", "bigint", array: true, index: "gin", default: "'{}'::bigint[]"
+
+      t.column "published", "boolean", default: "true", null: false
+      t.column "content", "string", default: "''", null: false
 
       t.references to: "model_users", name: "user_id", on_delete: "cascade"
       t.references to: "model_categories", name: "category_id", null: true, on_delete: "set null"

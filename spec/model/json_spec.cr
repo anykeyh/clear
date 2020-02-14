@@ -25,7 +25,7 @@ module ModelSpec
       p.tags.should eq ["a", "b", "c"]
       p.flags.should eq [1, 2, 3]
 
-      p.to_json(emit_nulls: true).should eq(%<{"id":null,"title":null,"tags":["a","b","c"],"flags_other_column_name":[1,2,3],"user_id":null,"category_id":null}>)
+      p.to_json(emit_nulls: true).should eq(%<{"id":null,"title":null,"tags":["a","b","c"],"flags_other_column_name":[1,2,3],"content":null,"published":null,"user_id":null,"category_id":null}>)
       p.to_json(emit_nulls: false).should eq(%<{"tags":["a","b","c"],"flags_other_column_name":[1,2,3]}>)
     end
   end

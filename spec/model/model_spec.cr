@@ -1,22 +1,12 @@
 require "../spec_helper"
 
 module ModelSpec
-  User = Spec::User
-  UserInfo = Spec::UserInfo
-  Post = Spec::Post
-  Tag = Spec::Tag
-  Category = Spec::Category
-
-
-  def self.reinit
-    Spec.reinit_example_models
-  end
 
   describe "Clear::Model" do
     context "fields management" do
       it "can load from tuple" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 123})
           u.id.should eq 123
           u.persisted?.should be_false
@@ -25,7 +15,7 @@ module ModelSpec
 
       it "can load link string <-> varchar" do
         temporary do
-          reinit
+          reinit_example_models
           User.create!(id: 1, first_name: "John", middle_name: "William")
 
           User.query.each do |u|
@@ -36,7 +26,7 @@ module ModelSpec
 
       it "can pluck" do
         temporary do
-          reinit
+          reinit_example_models
           User.create!(id: 1, first_name: "John", middle_name: "William")
           User.create!(id: 2, first_name: "Hans", middle_name: "Zimmer")
 
@@ -50,7 +40,7 @@ module ModelSpec
 
       it "can detect persistence" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1}, persisted: true)
           u.persisted?.should be_true
         end
@@ -58,7 +48,7 @@ module ModelSpec
 
       it "can detect change in fields" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1})
           u.id = 2
           u.update_h.should eq({"id" => 2})
@@ -69,7 +59,7 @@ module ModelSpec
 
       it "can deal with boolean nullable" do # Specific bug with converter already fixed
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1, first_name: "x", active: nil})
           u.save!
           u2 = User.query.first!
@@ -79,7 +69,7 @@ module ModelSpec
 
       it "should not try to update the model if there's nothing to update" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1, first_name: "x"})
           u.save!
           u.id = 2
@@ -92,7 +82,7 @@ module ModelSpec
 
       it "can save the model" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1, first_name: "x"})
           u.notification_preferences = JSON.parse("{}")
           u.id = 2 # Force the change!
@@ -103,7 +93,7 @@ module ModelSpec
 
       it "can update the model" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.create!({id: 1, first_name: "x"})
           u.update!(first_name: "Malcom")
@@ -114,7 +104,7 @@ module ModelSpec
 
       it "can reload the model" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.create!({id: 1, first_name: "x"})
 
@@ -141,7 +131,7 @@ module ModelSpec
 
       it "can import a number of models" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1, first_name: "x"})
           u2 = User.new({id: 2, first_name: "y"})
           u3 = User.new({id: 3, first_name: "z"})
@@ -159,7 +149,7 @@ module ModelSpec
 
       it "can save with conflict resolution" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({id: 1, first_name: "John"})
           u.save! # Create a new user
 
@@ -170,7 +160,7 @@ module ModelSpec
         end
 
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.new({id: 1, first_name: "John"})
           u.save! # Create a new user
@@ -190,7 +180,7 @@ module ModelSpec
 
       it "save in good order the belongs_to models" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new
           p = Post.new({title: "some post"})
           p.user = u
@@ -207,7 +197,7 @@ module ModelSpec
 
       it "does not set persisted on failed insert" do
         temporary do
-          reinit
+          reinit_example_models
           # There's no user_id = 999
           user_info = UserInfo.new({registration_number: 123, user_id: 999})
 
@@ -219,7 +209,7 @@ module ModelSpec
         end
 
         temporary do
-          reinit
+          reinit_example_models
 
           User.create!({id: 999, first_name: "Test"})
           user_info = UserInfo.new({registration_number: 123, user_id: 999})
@@ -231,7 +221,7 @@ module ModelSpec
 
       it "can save persisted model" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new
           u.persisted?.should eq false
           u.first_name = "hello"
@@ -245,7 +235,7 @@ module ModelSpec
 
       it "can use set to setup multiple fields at once" do
         temporary do
-          reinit
+          reinit_example_models
 
           # Set from tuple
           u = User.new
@@ -275,7 +265,7 @@ module ModelSpec
 
       it "can load models" do
         temporary do
-          reinit
+          reinit_example_models
           User.create
           User.query.each do |u|
             u.id.should_not eq nil
@@ -285,7 +275,7 @@ module ModelSpec
 
       it "can read through cursor" do
         temporary do
-          reinit
+          reinit_example_models
           User.create
           User.query.each_with_cursor(batch: 50) do |u|
             u.id.should_not eq nil
@@ -295,7 +285,7 @@ module ModelSpec
 
       it "can fetch computed column" do
         temporary do
-          reinit
+          reinit_example_models
           User.create({first_name: "a", last_name: "b"})
 
           u = User.query.select({full_name: "first_name || ' ' || last_name"}).first!(fetch_columns: true)
@@ -305,7 +295,7 @@ module ModelSpec
 
       it "can create a model using virtual fields" do
         temporary do
-          reinit
+          reinit_example_models
           User.create!(full_name: "Hello World")
 
           u = User.query.first!
@@ -316,7 +306,7 @@ module ModelSpec
 
       it "define constraints on has_many to build object" do
         temporary do
-          reinit
+          reinit_example_models
           User.create({first_name: "x"})
           u = User.query.first!
           p = User.query.first!.posts.build
@@ -329,7 +319,7 @@ module ModelSpec
         now = Time.local
 
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.new
 
@@ -347,7 +337,7 @@ module ModelSpec
 
       it "can count using offset and limit" do
         temporary do
-          reinit
+          reinit_example_models
 
           9.times do |x|
             User.create!({first_name: "user#{x}"})
@@ -360,7 +350,7 @@ module ModelSpec
 
       it "can count using group_by" do
         temporary do
-          reinit
+          reinit_example_models
           9.times do |x|
             User.create!({first_name: "user#{x}", last_name: "Doe"})
           end
@@ -371,7 +361,7 @@ module ModelSpec
 
       it "can find_or_create" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.query.find_or_create({last_name: "Henry"}) do |user|
             user.first_name = "Thierry"
@@ -393,7 +383,7 @@ module ModelSpec
 
       it "raises a RecordNotFoundError for an empty find!" do
         temporary do
-          reinit
+          reinit_example_models
 
           expect_raises(Clear::SQL::RecordNotFoundError) do
             User.find!(1)
@@ -403,7 +393,7 @@ module ModelSpec
 
       it "can set back a field to nil" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.create({first_name: "Rudolf"})
 
@@ -416,7 +406,7 @@ module ModelSpec
 
       it "can read and write jsonb" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new
 
           u.first_name = "Yacine"
@@ -435,7 +425,7 @@ module ModelSpec
 
       it "can query the last model" do
         temporary do
-          reinit
+          reinit_example_models
           User.create({first_name: "Yacine"})
           User.create({first_name: "Joan"})
           User.create({first_name: "Mary"})
@@ -448,7 +438,7 @@ module ModelSpec
 
       it "can delete a model" do
         temporary do
-          reinit
+          reinit_example_models
 
           User.create({first_name: "Malcom", last_name: "X"})
 
@@ -468,7 +458,7 @@ module ModelSpec
 
       it "can touch model" do
         temporary do
-          reinit
+          reinit_example_models
 
           c = Category.create!({name: "Nature"})
           updated_at = c.updated_at
@@ -480,7 +470,7 @@ module ModelSpec
 
     it "can load a column of type Array" do
       temporary do
-        reinit
+        reinit_example_models
 
         u = User.create!({first_name: "John"})
         p = Post.create!({title: "A post", user_id: u.id})
@@ -501,7 +491,7 @@ module ModelSpec
     context "with has_many through relation" do
       it "can query has_many through" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.create!({first_name: "John"})
 
@@ -540,7 +530,7 @@ module ModelSpec
     context "with join" do
       it "resolves by default ambiguous columns in joins" do
         temporary do
-          reinit
+          reinit_example_models
 
           u = User.create!({first_name: "Join User"})
 
@@ -554,7 +544,7 @@ module ModelSpec
 
       it "resolve ambiguous columns in with_* methods" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.create!({first_name: "Join User"})
           Post.create!({title: "A Post", user_id: u.id})
 
@@ -570,7 +560,7 @@ module ModelSpec
 
       it "should wildcard with default model only if no select is made (before OR after)" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.create!({first_name: "Join User"})
           Post.create!({title: "A Post", user_id: u.id})
 
@@ -594,7 +584,7 @@ module ModelSpec
 
       it "can pull the next 5 users from page 2" do
         temporary do
-          reinit
+          reinit_example_models
 
           15.times do |x|
             User.create!({first_name: "user#{x}"})
@@ -608,7 +598,7 @@ module ModelSpec
 
       it "can export to json" do
         temporary do
-          reinit
+          reinit_example_models
           u = User.new({first_name: "Hello", last_name: "World"})
           u.to_json.should eq %({"first_name":"Hello","last_name":"World"})
 
@@ -620,7 +610,7 @@ module ModelSpec
 
       it "can paginate with where clause" do
         temporary do
-          reinit
+          reinit_example_models
           last_names = ["smith", "jones"]
           15.times do |x|
             last_name = last_names[x % 2]?
