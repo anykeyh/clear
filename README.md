@@ -25,7 +25,6 @@ The project is quite active and well maintened, too !
 - [Online Manual and Getting Started](https://clear.gitbook.io/project/)
 - [Auto-generated API Documentation](https://anykeyh.github.io/clear/)
 - [Changelog](https://github.com/anykeyh/clear/blob/master/CHANGELOG.md)
-- [Credits](https://github.com/anykeyh/clear/tree/master/CONTRIBUTORS.md)
 
 ## Why to use Clear ?
 
