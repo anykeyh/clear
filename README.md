@@ -1,6 +1,6 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
@@ -685,6 +685,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://blog.bashme.org"><img src="https://avatars3.githubusercontent.com/u/684?v=4" width="100px;" alt=""/><br /><sub><b>Russ Smith</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=russ" title="Code">💻</a></td>
     <td align="center"><a href="http://www.amberframework.org "><img src="https://avatars2.githubusercontent.com/u/1685772?v=4" width="100px;" alt=""/><br /><sub><b>Elias Perez</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=eliasjpr" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://namechk.com"><img src="https://avatars1.githubusercontent.com/u/2391?v=4" width="100px;" alt=""/><br /><sub><b>Jeremy Woertink</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=jwoertink" title="Code">💻</a></td>
   </tr>
 </table>
 

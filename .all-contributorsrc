@@ -27,6 +27,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jwoertink",
+      "name": "Jeremy Woertink",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2391?v=4",
+      "profile": "https://namechk.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
