@@ -683,13 +683,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/anykeyh"><img src="https://avatars2.githubusercontent.com/u/2456898?v=4" width="100px;" alt=""/><br /><sub><b>Yacine Petitprez</b></sub></a><br /><a href="#maintenance-anykeyh" title="Maintenance">🚧</a></td>
     <td align="center"><a href="http://blog.bashme.org"><img src="https://avatars3.githubusercontent.com/u/684?v=4" width="100px;" alt=""/><br /><sub><b>Russ Smith</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=russ" title="Code">💻</a></td>
     <td align="center"><a href="http://www.amberframework.org "><img src="https://avatars2.githubusercontent.com/u/1685772?v=4" width="100px;" alt=""/><br /><sub><b>Elias Perez</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=eliasjpr" title="Documentation">📖</a></td>
     <td align="center"><a href="https://namechk.com"><img src="https://avatars1.githubusercontent.com/u/2391?v=4" width="100px;" alt=""/><br /><sub><b>Jeremy Woertink</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=jwoertink" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/mamantoha"><img src="https://avatars2.githubusercontent.com/u/61285?v=4" width="100px;" alt=""/><br /><sub><b>Anton Maminov</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=mamantoha" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/remydev"><img src="https://avatars1.githubusercontent.com/u/10176486?v=4" width="100px;" alt=""/><br /><sub><b>remydev</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=remydev" title="Documentation">📖</a></td>
     <td align="center"><a href="http://jack.codes"><img src="https://avatars2.githubusercontent.com/u/3958636?v=4" width="100px;" alt=""/><br /><sub><b>Jack Turnbull</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Ajackturnbull" title="Bug reports">🐛</a></td>
-    <td align="center"><a href="https://github.com/Blacksmoke16"><img src="https://avatars1.githubusercontent.com/u/12136995?v=4" width="100px;" alt=""/><br /><sub><b>Blacksmoke16</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Blacksmoke16" title="Code">💻</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/007lva"><img src="https://avatars3.githubusercontent.com/u/1860816?v=4" width="100px;" alt=""/><br /><sub><b>luigi</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=007lva" title="Code">💻</a></td>
@@ -702,7 +702,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/batarian71"><img src="https://avatars1.githubusercontent.com/u/36008612?v=4" width="100px;" alt=""/><br /><sub><b>batarian71</b></sub></a><br /><a href="#design-batarian71" title="Design">🎨</a></td>
-    <td align="center"><a href="https://github.com/anykeyh"><img src="https://avatars2.githubusercontent.com/u/2456898?v=4" width="100px;" alt=""/><br /><sub><b>Yacine Petitprez</b></sub></a><br /><a href="#maintenance-anykeyh" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/Blacksmoke16"><img src="https://avatars1.githubusercontent.com/u/12136995?v=4" width="100px;" alt=""/><br /><sub><b>Blacksmoke16</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Blacksmoke16" title="Code">💻</a></td>
   </tr>
 </table>
 
