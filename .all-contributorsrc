@@ -18,6 +18,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "eliasjpr",
+      "name": "Elias Perez",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1685772?v=4",
+      "profile": "http://www.amberframework.org ",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
