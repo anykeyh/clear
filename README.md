@@ -1,6 +1,6 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
@@ -696,6 +696,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://zauner900.net"><img src="https://avatars0.githubusercontent.com/u/30139?v=4" width="100px;" alt=""/><br /><sub><b>Matthias Zauner</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Azauner" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://westonganger.com"><img src="https://avatars3.githubusercontent.com/u/3414795?v=4" width="100px;" alt=""/><br /><sub><b>Weston Ganger</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=westonganger" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/pynixwang"><img src="https://avatars0.githubusercontent.com/u/1189879?v=4" width="100px;" alt=""/><br /><sub><b>Pynix Wang</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=pynixwang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Vici37"><img src="https://avatars2.githubusercontent.com/u/1459505?v=4" width="100px;" alt=""/><br /><sub><b>Vici37</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Vici37" title="Code">💻</a></td>
   </tr>
 </table>
 
