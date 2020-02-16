@@ -1,6 +1,6 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
@@ -689,6 +689,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mamantoha"><img src="https://avatars2.githubusercontent.com/u/61285?v=4" width="100px;" alt=""/><br /><sub><b>Anton Maminov</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=mamantoha" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/remydev"><img src="https://avatars1.githubusercontent.com/u/10176486?v=4" width="100px;" alt=""/><br /><sub><b>remydev</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=remydev" title="Documentation">📖</a></td>
     <td align="center"><a href="http://jack.codes"><img src="https://avatars2.githubusercontent.com/u/3958636?v=4" width="100px;" alt=""/><br /><sub><b>Jack Turnbull</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Ajackturnbull" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/Blacksmoke16"><img src="https://avatars1.githubusercontent.com/u/12136995?v=4" width="100px;" alt=""/><br /><sub><b>Blacksmoke16</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Blacksmoke16" title="Code">💻</a></td>
   </tr>
 </table>
 
