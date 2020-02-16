@@ -144,6 +144,15 @@
       "contributions": [
         "design"
       ]
+    },
+    {
+      "login": "anykeyh",
+      "name": "Yacine Petitprez",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2456898?v=4",
+      "profile": "https://github.com/anykeyh",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7
