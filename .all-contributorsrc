@@ -99,6 +99,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "pynixwang",
+      "name": "Pynix Wang",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1189879?v=4",
+      "profile": "https://github.com/pynixwang",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
