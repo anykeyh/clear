@@ -1,0 +1,159 @@
+{
+  "projectName": "clear",
+  "projectOwner": "anykeyh",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "russ",
+      "name": "Russ Smith",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/684?v=4",
+      "profile": "http://blog.bashme.org",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "eliasjpr",
+      "name": "Elias Perez",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1685772?v=4",
+      "profile": "http://www.amberframework.org ",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "jwoertink",
+      "name": "Jeremy Woertink",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2391?v=4",
+      "profile": "https://namechk.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mamantoha",
+      "name": "Anton Maminov",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/61285?v=4",
+      "profile": "https://github.com/mamantoha",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "remydev",
+      "name": "remydev",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10176486?v=4",
+      "profile": "https://github.com/remydev",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "jackturnbull",
+      "name": "Jack Turnbull",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3958636?v=4",
+      "profile": "http://jack.codes",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Blacksmoke16",
+      "name": "Blacksmoke16",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/12136995?v=4",
+      "profile": "https://github.com/Blacksmoke16",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "007lva",
+      "name": "luigi",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1860816?v=4",
+      "profile": "https://github.com/007lva",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "zauner",
+      "name": "Matthias Zauner",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30139?v=4",
+      "profile": "http://zauner900.net",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "westonganger",
+      "name": "Weston Ganger",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3414795?v=4",
+      "profile": "https://westonganger.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "pynixwang",
+      "name": "Pynix Wang",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1189879?v=4",
+      "profile": "https://github.com/pynixwang",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Vici37",
+      "name": "Vici37",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1459505?v=4",
+      "profile": "https://github.com/Vici37",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nik736",
+      "name": "Niklas Karoly",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1334622?v=4",
+      "profile": "http://karoly.io",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Acciaiodigitale",
+      "name": "Massimiliano Bertinetti",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/26814295?v=4",
+      "profile": "https://github.com/Acciaiodigitale",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "batarian71",
+      "name": "batarian71",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/36008612?v=4",
+      "profile": "https://github.com/batarian71",
+      "contributions": [
+        "design"
+      ]
+    },
+    {
+      "login": "anykeyh",
+      "name": "Yacine Petitprez",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2456898?v=4",
+      "profile": "https://github.com/anykeyh",
+      "contributions": [
+        "maintenance"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

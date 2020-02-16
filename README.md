@@ -1,4 +1,10 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-16-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
 # Clear
@@ -668,3 +674,40 @@ I hope one day we will cover all the features of PG here !
 ### Running Tests
 
 In order to run the test suite, you will need to have the PostgresSQL service locally available via a socket for access with psql. psql will attempt to use the 'postgres' user to create the test database. If you are working with a newly installed database that may not have the postgres user, this can be created with `createuser -s postgres`.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/anykeyh"><img src="https://avatars2.githubusercontent.com/u/2456898?v=4" width="100px;" alt=""/><br /><sub><b>Yacine Petitprez</b></sub></a><br /><a href="#maintenance-anykeyh" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://blog.bashme.org"><img src="https://avatars3.githubusercontent.com/u/684?v=4" width="100px;" alt=""/><br /><sub><b>Russ Smith</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=russ" title="Code">💻</a></td>
+    <td align="center"><a href="http://www.amberframework.org "><img src="https://avatars2.githubusercontent.com/u/1685772?v=4" width="100px;" alt=""/><br /><sub><b>Elias Perez</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=eliasjpr" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://namechk.com"><img src="https://avatars1.githubusercontent.com/u/2391?v=4" width="100px;" alt=""/><br /><sub><b>Jeremy Woertink</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=jwoertink" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mamantoha"><img src="https://avatars2.githubusercontent.com/u/61285?v=4" width="100px;" alt=""/><br /><sub><b>Anton Maminov</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=mamantoha" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/remydev"><img src="https://avatars1.githubusercontent.com/u/10176486?v=4" width="100px;" alt=""/><br /><sub><b>remydev</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=remydev" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://jack.codes"><img src="https://avatars2.githubusercontent.com/u/3958636?v=4" width="100px;" alt=""/><br /><sub><b>Jack Turnbull</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Ajackturnbull" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/007lva"><img src="https://avatars3.githubusercontent.com/u/1860816?v=4" width="100px;" alt=""/><br /><sub><b>luigi</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=007lva" title="Code">💻</a></td>
+    <td align="center"><a href="http://zauner900.net"><img src="https://avatars0.githubusercontent.com/u/30139?v=4" width="100px;" alt=""/><br /><sub><b>Matthias Zauner</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Azauner" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://westonganger.com"><img src="https://avatars3.githubusercontent.com/u/3414795?v=4" width="100px;" alt=""/><br /><sub><b>Weston Ganger</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=westonganger" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/pynixwang"><img src="https://avatars0.githubusercontent.com/u/1189879?v=4" width="100px;" alt=""/><br /><sub><b>Pynix Wang</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=pynixwang" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Vici37"><img src="https://avatars2.githubusercontent.com/u/1459505?v=4" width="100px;" alt=""/><br /><sub><b>Vici37</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Vici37" title="Code">💻</a></td>
+    <td align="center"><a href="http://karoly.io"><img src="https://avatars2.githubusercontent.com/u/1334622?v=4" width="100px;" alt=""/><br /><sub><b>Niklas Karoly</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=nik736" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Acciaiodigitale"><img src="https://avatars0.githubusercontent.com/u/26814295?v=4" width="100px;" alt=""/><br /><sub><b>Massimiliano Bertinetti</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Acciaiodigitale" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/batarian71"><img src="https://avatars1.githubusercontent.com/u/36008612?v=4" width="100px;" alt=""/><br /><sub><b>batarian71</b></sub></a><br /><a href="#design-batarian71" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/Blacksmoke16"><img src="https://avatars1.githubusercontent.com/u/12136995?v=4" width="100px;" alt=""/><br /><sub><b>Blacksmoke16</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Blacksmoke16" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
