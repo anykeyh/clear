@@ -45,6 +45,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "remydev",
+      "name": "remydev",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10176486?v=4",
+      "profile": "https://github.com/remydev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
