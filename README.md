@@ -1,4 +1,7 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
 # Clear
@@ -668,3 +671,22 @@ I hope one day we will cover all the features of PG here !
 ### Running Tests
 
 In order to run the test suite, you will need to have the PostgresSQL service locally available via a socket for access with psql. psql will attempt to use the 'postgres' user to create the test database. If you are working with a newly installed database that may not have the postgres user, this can be created with `createuser -s postgres`.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://www.amberframework.org "><img src="https://avatars2.githubusercontent.com/u/1685772?v=4" width="100px;" alt=""/><br /><sub><b>Elias Perez</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=eliasjpr" title="Documentation">📖</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
