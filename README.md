@@ -1,6 +1,6 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-14-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-15-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
@@ -699,6 +699,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Vici37"><img src="https://avatars2.githubusercontent.com/u/1459505?v=4" width="100px;" alt=""/><br /><sub><b>Vici37</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Vici37" title="Code">💻</a></td>
     <td align="center"><a href="http://karoly.io"><img src="https://avatars2.githubusercontent.com/u/1334622?v=4" width="100px;" alt=""/><br /><sub><b>Niklas Karoly</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=nik736" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Acciaiodigitale"><img src="https://avatars0.githubusercontent.com/u/26814295?v=4" width="100px;" alt=""/><br /><sub><b>Massimiliano Bertinetti</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=Acciaiodigitale" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/batarian71"><img src="https://avatars1.githubusercontent.com/u/36008612?v=4" width="100px;" alt=""/><br /><sub><b>batarian71</b></sub></a><br /><a href="#design-batarian71" title="Design">🎨</a></td>
   </tr>
 </table>
 
