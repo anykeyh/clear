@@ -54,6 +54,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jackturnbull",
+      "name": "Jack Turnbull",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/3958636?v=4",
+      "profile": "http://jack.codes",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
