@@ -117,6 +117,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "nik736",
+      "name": "Niklas Karoly",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1334622?v=4",
+      "profile": "http://karoly.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
