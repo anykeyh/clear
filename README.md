@@ -1,6 +1,6 @@
 <p align="center"><img src="design/logo1.png" alt="clear" height="200px"></p>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
@@ -694,6 +694,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/007lva"><img src="https://avatars3.githubusercontent.com/u/1860816?v=4" width="100px;" alt=""/><br /><sub><b>luigi</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=007lva" title="Code">💻</a></td>
     <td align="center"><a href="http://zauner900.net"><img src="https://avatars0.githubusercontent.com/u/30139?v=4" width="100px;" alt=""/><br /><sub><b>Matthias Zauner</b></sub></a><br /><a href="https://github.com/anykeyh/clear/issues?q=author%3Azauner" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://westonganger.com"><img src="https://avatars3.githubusercontent.com/u/3414795?v=4" width="100px;" alt=""/><br /><sub><b>Weston Ganger</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=westonganger" title="Documentation">📖</a></td>
   </tr>
 </table>
 

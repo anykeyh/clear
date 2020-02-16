@@ -90,6 +90,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "westonganger",
+      "name": "Weston Ganger",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3414795?v=4",
+      "profile": "https://westonganger.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
