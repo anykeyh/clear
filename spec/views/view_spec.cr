@@ -1,19 +1,24 @@
 require "../spec_helper"
 
 module ViewSpec
+
+  def self.view_date
+    <<-SQL
+      SELECT date.day::date as day
+      FROM   generate_series(
+        date_trunc('day', NOW()),
+        date_trunc('day', NOW() + INTERVAL '365 days'),
+        INTERVAL '1 day'
+      ) AS date(day);
+    SQL
+  end
+
   describe "Clear::View" do
     it "recreate the views on migration" do
       temporary do
         Clear::View.register do |view|
           view.name "year_days"
-          view.query <<-SQL
-            SELECT date.day::date as day
-            FROM   generate_series(
-              date_trunc('day', NOW()),
-              date_trunc('day', NOW() + INTERVAL '365 days'),
-              INTERVAL '1 day'
-            ) AS date(day);
-          SQL
+          view.query view_date
         end
 
         Clear::Migration::Manager.instance.reinit!

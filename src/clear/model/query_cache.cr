@@ -53,8 +53,8 @@ class Clear::Model::QueryCache
   def set(relation_name, relation_value, arr : Array(T)) forall T
     # We store the array as `Pointer(Void)`.
     # Thus to make happy the compiler and keep away garbage collecting.
-    # After that, I'm going to cast back to the real array type Array(T) in `hit` method
-    # to prevent array recopy on hit.
+    # After that, we cast back to the real array type Array(T) in `hit` method
+    # to prevent array recopy when `hit` is called.
     #
     # See: https://github.com/crystal-lang/crystal/issues/5289
     @cache[CacheKey.new(relation_name, relation_value, T.name)] = arr.unsafe_as(Pointer(Void))

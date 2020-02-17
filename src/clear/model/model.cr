@@ -33,6 +33,11 @@ module Clear::Model
     raise lack_of_primary_key(self.class.name)
   end
 
+  # Comparison between models is made by comparing their primary keys.
+  def ==(model : self)
+    self.pkey == model.pkey
+  end
+
   # We use here included for errors purpose.
   # The overload are shown in this case, but not in the case the constructors
   # are directly defined without the included block.
@@ -62,9 +67,9 @@ module Clear::Model
       reset(t)
     end
 
-    # Force to clean-up the caches for the relations
-    # connected to this model.
-    def invalidate_caching : self
+    # Invalidate local-to-relation cache and eager-loading cache.
+    # Useful to forcefully query again when calling relation defined method
+    def invalidate_caches : self
       @cache = nil
       self
     end

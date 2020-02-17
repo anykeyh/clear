@@ -2,6 +2,8 @@
 
 ## Features
 
+- `Collection#add_operation` has been renamed to `Collection#append_operation`
+
 - Add `Clear::SQL.after_commit` method
 
 Register a callback function which will be fired once when SQL `COMMIT`

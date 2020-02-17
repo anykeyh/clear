@@ -1,9 +1,27 @@
 # :nodoc:
 module Clear::Model::Relations::HasManyThroughMacro
   # has_many through
-  macro generate(self_type, method_name, relation_type, through, own_key = nil, foreign_key = nil)
+  macro generate(relation)
+    {%
+      foreign_key = (relation[:foreign_key] || "#{method_name.stringify.underscore}_id").id
+      foreign_key_type = relation[:foreign_key_type].id
+      method_name = relation[:name].id
+      relation_type = relation[:type].id
+
+      presence = relation[:presence]
+      primary = relation[:primary]
+
+      through = relation[:through]
+
+      nilable = relation[:nilable]
+      self_type = @type
+    %}
+
+    __define_association_cache__({{method_name}}, Array({{relation_type}}) )
 
     def {{method_name}} : {{relation_type}}::Collection
+
+
       %final_table = {{relation_type}}.table
       %final_pkey = {{relation_type}}.pkey
 

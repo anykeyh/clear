@@ -171,7 +171,7 @@ module Clear::Model::HasSaving
   def reload : self
     set(self.class.query.where{ var("#{self.class.pkey}") == pkey }.fetch_first!)
 
-    invalidate_caching
+    invalidate_caches
 
     @attributes.clear
     clear_change_flags

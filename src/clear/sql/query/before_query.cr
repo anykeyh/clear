@@ -12,12 +12,14 @@ module Clear::SQL::Query::BeforeQuery
     # ```
     def before_query(&block : -> Void)
       @before_query_triggers << block
+      self
     end
 
     # :nodoc:
     protected def trigger_before_query
       @before_query_triggers.each &.call
       @before_query_triggers.clear
+      self
     end
   end
 end

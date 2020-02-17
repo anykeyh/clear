@@ -1,7 +1,6 @@
 require "spec"
 
 require "../src/clear"
-require "./data/**"
 
 class ::Crypto::Bcrypt::Password
   # Redefine the default cost to 4 (the minimum allowed) to accelerate greatly the tests.

@@ -192,7 +192,7 @@ module Clear::Model
     @cached_result : Array(T)?
 
     # :nodoc:
-    property add_operation : Proc(T, T)?
+    property append_operation : Proc(T, T)?
     # :nodoc:
     property unlink_operation : Proc(T, T)?
 
@@ -237,6 +237,11 @@ module Clear::Model
       T
     end
 
+    # Return the model class for this collection
+    def self.item_class
+      T
+    end
+
 
     # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
@@ -246,7 +251,7 @@ module Clear::Model
     end
 
     # :nodoc:
-    def with_cached_result(r : Array(T))
+    def with_cached_result(r : Array(T)?)
       @cached_result = r
       self
     end
@@ -403,11 +408,11 @@ module Clear::Model
     #
     # Returns `self` and therefore can be chained
     def <<(item : T)
-      add_operation = self.add_operation
+      append_operation = self.append_operation
 
-      raise "Operation not permitted on this collection." unless add_operation
+      raise "Operation not permitted on this collection." unless append_operation
 
-      add_operation.call(item)
+      append_operation.call(item)
       @cached_result.try &.<<(item)
 
       self
