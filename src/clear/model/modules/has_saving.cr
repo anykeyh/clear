@@ -102,7 +102,7 @@ module Clear::Model::HasSaving
 
           if h.any?
             with_triggers(:update) do
-              hash = Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
+              hash = Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.__pkey__}") == self.__pkey__ }.execute(@@connection)
             end
           end
         else
@@ -169,7 +169,7 @@ module Clear::Model::HasSaving
   end
 
   def reload : self
-    set(self.class.query.where{ var("#{self.class.pkey}") == pkey }.fetch_first!)
+    set(self.class.query.where{ var("#{self.class.__pkey__}") == __pkey__ }.fetch_first!)
 
     invalidate_caches
 
@@ -188,7 +188,7 @@ module Clear::Model::HasSaving
     return false unless persisted?
 
     with_triggers(:delete) do
-      Clear::SQL::DeleteQuery.new.from(self.class.table).where{ var("#{self.class.pkey}") == pkey }.execute(@@connection)
+      Clear::SQL::DeleteQuery.new.from(self.class.table).where{ var("#{self.class.__pkey__}") == __pkey__ }.execute(@@connection)
 
       @persisted = false
       clear_change_flags

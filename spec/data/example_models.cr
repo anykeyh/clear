@@ -6,7 +6,15 @@ class Tag
 
   column name : String
 
-  has_many posts : Post, through: :model_post_tags, foreign_key: :post_id, own_key: :tag_id
+  has_many post_tags : PostTag, foreign_key: "post_id"
+  has_many posts : Post, through: :post_tags, relation: :posts
+end
+
+class PostTag
+  include Clear::Model
+  self.table ="model_post_tags"
+  belongs_to post : Post, foreign_key: "post_id", foreign_key_type: Int32
+  belongs_to tag : Tag, foreign_key: "tag_id", foreign_key_type: Int32
 end
 
 class ChannelModel
@@ -34,7 +42,7 @@ class Category
   column name : String
 
   has_many posts : Post
-  has_many users : User, through: Post, foreign_key: :user_id, own_key: :category_id
+  has_many users : User, through: :posts
 
   timestamps
 end
@@ -60,10 +68,11 @@ class Post
     ensure_than(title, "is not empty", &.size.>(0))
   end
 
-  has_many tag_relations : Tag, through: :model_post_tags, foreign_key: :tag_id, own_key: :post_id
+  has_many post_tags : PostTag, foreign_key: "post_id"
+  has_many tag_relations : Tag, through: :post_tags, relation: :tag
 
-  belongs_to user : User, key_type: Int32?
-  belongs_to category : Category, key_type: Int32?
+  belongs_to user : User, foreign_key_type: Int32?
+  belongs_to category : Category, foreign_key_type: Int32?
 end
 
 class UserInfo
@@ -72,7 +81,7 @@ class UserInfo
 
   column id : Int32, primary: true, presence: false
 
-  belongs_to user : User, key_type: Int32?
+  belongs_to user : User, foreign_key_type: Int32?
   column registration_number : Int64
 end
 
@@ -92,8 +101,8 @@ class User
 
   has_many posts : Post, foreign_key: "user_id"
   has_one info : UserInfo?, foreign_key: "user_id"
-  has_many categories : Category, through: :model_posts,
-    own_key: :user_id, foreign_key: :category_id
+
+  has_many categories : Category, through: :posts
 
   timestamps
 

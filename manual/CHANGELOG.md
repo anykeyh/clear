@@ -302,7 +302,7 @@ Basically a transition version, to support Crystal 0.27. Some of the features of
 
 ## Breaking changes
 - `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)
-- `with_serial_pkey` use Int32 (type `:serial`) and Int64 (type `:longserial`) pkey instead of UInt32 and UInt64. This would prevent issue with default `belongs_to` behavior and simplify static number assignation.
+- `with_serial_pkey` use Int32 (type `:serial`) and Int64 (type `:longserial`) primary key instead of `UInt32` and `UInt64`. This would prevent issue with default `belongs_to` behavior and simplify static number assignation.
 
 # v0.2
 
@@ -345,7 +345,7 @@ Basically a transition version, to support Crystal 0.27. Some of the features of
 
 ## Bugfixes
 
-- Patching segfault caused by weird architecture choice of mine over the `pkey` method.
+- Patching segfault caused by weird architecture choice of mine over the `__pkey__` method.
 - Fix issue with delete if the primary key is not `id`
 - Add watchdog to disallow inclusion of `Clear::Model` on struct objects, which
   is not intended to work.

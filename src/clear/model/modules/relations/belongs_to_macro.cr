@@ -1,26 +1,17 @@
 # :nodoc:
 module Clear::Model::Relations::BelongsToMacro
 
-  macro __filter_relation_belongs_to__(self_class, relation, final, query)
-    {% begin %}
-      {%
-        foreign_key = (relation[:foreign_key] || "#{method_name.stringify.underscore}_id").id
-        relation_type = relation[:type].id
-      %}
 
-      {{query}}.inner_join{ var( {{self_class}}.table, "{{foreign_key}}" ) == var( {{relation_type}}.table, {{relation_type}}.pkey ) }
-
-      {% debug(false) %}
-    {% end %}
-  end
 
   macro generate(self_type, relation)
     {% begin %}
       {%
-        foreign_key = (relation[:foreign_key] || "#{method_name.stringify.underscore}_id").id
-        foreign_key_type = relation[:foreign_key_type].id
         method_name = relation[:name].id
         relation_type = relation[:type].id
+
+        foreign_key = (relation[:foreign_key] || "#{method_name.stringify.underscore.id}_id").id
+
+        foreign_key_type = relation[:foreign_key_type].id
 
         presence = relation[:presence]
         primary = relation[:primary]
@@ -29,7 +20,13 @@ module Clear::Model::Relations::BelongsToMacro
       %}
 
       __define_association_cache__({{method_name}}, {{relation_type}})
+
       column {{foreign_key}} : {{foreign_key_type}}{{ nilable ? "?".id : "".id }}, primary: {{primary}}, presence: false
+
+      def self.__relation_filter_{{method_name}}__(query)
+        query.inner_join({{self_type}}.table){ var( {{self_type}}.table, "{{foreign_key}}" ) == var( {{relation_type}}.table, {{relation_type}}.__pkey__ ) }
+      end
+      RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
 
       # The method {{method_name}} is a `belongs_to` relation
       #   to {{relation_type}}
@@ -58,25 +55,23 @@ module Clear::Model::Relations::BelongsToMacro
 
           @_cached_{{method_name}} =
             {{relation_type}}.query
-              .where{ var({{relation_type}}.table, {{relation_type}}.pkey) == fkey }
+              .where{ var({{relation_type}}.table, {{relation_type}}.__pkey__) == fkey }
               .{{ !nilable ? "first!".id : "first".id }}
         end
       end
 
       {% if nilable %}
         def {{method_name}}! : {{relation_type}}
-          if model = self.{{method_name}}.nil?
-            raise Clear::SQL::RecordNotFoundError.new
-          end
-
-          model
+          model = self.{{method_name}}
+          raise Clear::SQL::RecordNotFoundError.new if model.nil?
+          model.not_nil!
         end # /  *!
       {% end %}
 
       def {{method_name}}=(model : {{ relation_type }}{{ nilable ? "?".id : "".id }})
         if model.try &.persisted?
-          raise "`#{model.pkey_column.name}` must be fetchable when assigning to a `belongs_to` relation." unless model.pkey_column.defined?
-          @{{foreign_key}}_column.value = model.pkey
+          raise "`#{model.__pkey_column__.name}` must be fetchable when assigning to a `belongs_to` relation." unless model.__pkey_column__.defined?
+          @{{foreign_key}}_column.value = model.__pkey__
         else
           {% if nilable %}
             @_cached_{{method_name}} = nil
@@ -100,7 +95,7 @@ module Clear::Model::Relations::BelongsToMacro
 
         unless c.persisted?
           if c.save
-            @{{foreign_key}}_column.value = c.pkey
+            @{{foreign_key}}_column.value = c.__pkey__
           else
             add_error("{{method_name}}", c.print_errors)
           end
@@ -119,7 +114,7 @@ module Clear::Model::Relations::BelongsToMacro
           before_query do
             sub_query = self.dup.clear_select.select("#{ item_class.table }.{{foreign_key.id}}")
 
-            cached_qry = {{relation_type}}.query.where{ var({{relation_type}}.table, {{relation_type}}.pkey ).in?(sub_query) }
+            cached_qry = {{relation_type}}.query.where{ var({{relation_type}}.table, {{relation_type}}.__pkey__ ).in?(sub_query) }
 
             block.call(cached_qry)
 
@@ -127,7 +122,7 @@ module Clear::Model::Relations::BelongsToMacro
             @cache.active cache_name
 
             cached_qry.each(fetch_columns: fetch_columns) do |mdl|
-              @cache.set(cache_name, mdl.pkey, [mdl])
+              @cache.set(cache_name, mdl.__pkey__, [mdl])
             end
           end
 

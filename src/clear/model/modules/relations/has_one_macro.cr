@@ -8,7 +8,7 @@ module Clear::Model::Relations::HasOneMacro
         relation_type = relation[:type].id
       %}
 
-      {{query}}.inner_join{ var( {{self_class}}.table, {{self_class}}.pkey ) == var( {{relation_type}}.table, "{{foreign_key}}" ) }
+      {{query}}.inner_join{ var( {{self_class}}.table, {{self_class}}.__pkey__ ) == var( {{relation_type}}.table, "{{foreign_key}}" ) }
     {% end %}
   end
 
@@ -42,7 +42,7 @@ module Clear::Model::Relations::HasOneMacro
           cache = @cache.not_nil!
 
           model = @_cached_{{method_name}} = cache.hit("{{method_name}}",
-            self.pkey_column.to_sql_value, {{relation_type}} ).first?
+            self.__pkey_column__.to_sql_value, {{relation_type}} ).first?
 
           {% if !nilable %} raise Clear::SQL::RecordNotFoundError.new if model.nil? {% end %}
 
@@ -51,7 +51,7 @@ module Clear::Model::Relations::HasOneMacro
           # no cache: load again
           @_cached_{{method_name}} =
             {{relation_type}}.query
-              .where{ var({{relation_type}}.table, "{{foreign_key}}") == self.pkey }
+              .where{ var({{relation_type}}.table, "{{foreign_key}}") == self.__pkey__ }
               .{{ !nilable ? "first!".id : "first".id }}
         end
       end
@@ -69,7 +69,7 @@ module Clear::Model::Relations::HasOneMacro
       def {{method_name}}=(model : {{ relation_type }}{{ nilable ? "?".id : "".id }})
         @_cached_{{method_name}} = model
         save! unless persisted?
-        model.try &.{{foreign_key}}=(self.pkey)
+        model.try &.{{foreign_key}}=(self.__pkey__)
         model
       end
 
@@ -79,7 +79,7 @@ module Clear::Model::Relations::HasOneMacro
 
             %foreign_key = {{"#{foreign_key}"}}
 
-            %key = {{self_type}}.pkey
+            %key = {{self_type}}.__pkey__
             %table = {{self_type}}.table
 
             #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )
@@ -116,7 +116,7 @@ module Clear::Model::Relations::HasOneMacro
     # # If the relation hasn't been cached, will call a `select` SQL operation.
     # # Otherwise, will try to find in the cache.
     # def {{method_name}} : {{relation_type}}?
-    #   %primary_key = {{(primary_key || "pkey").id}}
+    #   %primary_key = {{(primary_key || "__pkey__").id}}
     #   %foreign_key =  {{foreign_key}} || ( self.class.table.to_s.singularize + "_id" )
 
     #   {{relation_type}}.query.where{ raw(%foreign_key) == %primary_key }.first

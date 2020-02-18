@@ -6,7 +6,7 @@ Let's see the example used in the chapter [`belongs_to`](belongs_to.md):
 
 ```sql
 CREATE TABLE categories (
-    id bigserial NOT NULL PRIMARY KEY, 
+    id bigserial NOT NULL PRIMARY KEY,
     name text NOT NULL
 )
 
@@ -54,7 +54,7 @@ end
 Note: The relation can be refined after fetching:
 
 ```ruby
-# Fetch only the posts which starts by a digit: 
+# Fetch only the posts which starts by a digit:
 c.posts.where{name =~ /^[0-9]/i}.each do |post|
     puts "Post name: #{post.name}"
 end
@@ -65,14 +65,14 @@ end
 Clear uses naming convention to infer the name of the foreign key. You may want to override this behavior by adding some parameters:
 
 ```ruby
-has_many relation_name : RelationType, 
+has_many relation_name : RelationType,
     foreign_key: "column_name", own_key: "column_name", no_cache: true|false
 ```
 
 | Argument | Description | Default value |
 | :---: | :--- | :---: |
 | `foreign_key` | The foreign key which is inside the relative model | `[underscore_model_name]_id` |
-| `own_key` | The key against what the relation is tested, primary key by default | `self.class.pkey` |
+| `own_key` | The key against what the relation is tested, primary key by default | `self.class.__pkey__` |
 | `no_cache` | Never cache the relation \(note: planned feature\) | `false` |
 
 ## Adding to relation

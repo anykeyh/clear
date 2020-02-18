@@ -496,7 +496,7 @@ module Clear::Model
     # Returns a model using primary key equality
     # Returns `nil` if not found.
     def find(x) : T?
-      where { raw(T.pkey) == x }.first
+      where { raw(T.__pkey__) == x }.first
     end
 
     # Returns a model using primary key equality.
@@ -541,7 +541,7 @@ module Clear::Model
     # Get the first row from the collection query.
     # if not found, return `nil`
     def first(fetch_columns = false) : T?
-      order_by(Clear::SQL.escape("#{T.pkey}"), "ASC") unless T.pkey.nil? || order_bys.any?
+      order_by(Clear::SQL.escape("#{T.__pkey__}"), "ASC") unless order_bys.any?
 
       limit(1).fetch do |hash|
         return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
@@ -566,7 +566,7 @@ module Clear::Model
     # Get the last row from the collection query.
     # if not found, return `nil`
     def last(fetch_columns = false) : T?
-      order_by("#{T.pkey}", "ASC") unless T.pkey.nil? || order_bys.any?
+      order_by("#{T.__pkey__}", "ASC") unless order_bys.any?
 
       arr = order_bys.dup # Save current order by
 

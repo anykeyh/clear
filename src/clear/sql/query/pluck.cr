@@ -21,7 +21,9 @@ module Clear::SQL::Query::Pluck
   #    User.query.pluck_col("CASE WHEN id % 2 = 0 THEN id ELSE NULL END AS id").each do
   #    # ...
   #  ```
-  def pluck_col(field : String)
+  def pluck_col(field : Clear::SQL::Symbolic)
+    field = Clear::SQL.escape(field) if field.is_a?(Symbol)
+
     sql = self.clear_select.select(field).to_sql
     rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
@@ -36,7 +38,9 @@ module Clear::SQL::Query::Pluck
   end
 
   # See `pluck_col(field)`
-  def pluck_col(field : String, type : T.class ) forall T
+  def pluck_col(field : Clear::SQL::Symbolic, type : T.class ) forall T
+    field = Clear::SQL.escape(field) if field.is_a?(Symbol)
+
     sql = self.clear_select.select(field).to_sql
     rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
@@ -86,7 +90,8 @@ module Clear::SQL::Query::Pluck
 
   # See `pluck(*fields)`
   def pluck(fields : Tuple(*T)) forall T
-    sql = self.clear_select.select(fields.join(", ")).to_sql
+    select_clause = fields.map{ |f| Clear::SQL.escape(f) if f.is_a?(Symbol) }.join(", ")
+    sql = self.clear_select.select(select_clause).to_sql
     rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
     {% begin %}

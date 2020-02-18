@@ -1,5 +1,6 @@
 # :nodoc:
 module Clear::Model::Relations::HasManyMacro
+
   # has many
   macro generate(self_type, relation)
     {%
@@ -14,6 +15,12 @@ module Clear::Model::Relations::HasManyMacro
 
     __define_association_cache__({{method_name}}, Array({{relation_type}}))
 
+    def self.__relation_filter_{{method_name}}__(query)
+      query.inner_join({{self_type}}.table){ var( {{self_type}}.table, {{self_type}}.__pkey__ ) == var( {{relation_type}}.table, "{{foreign_key}}" ) }
+    end
+
+    RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+
     # The method {{method_name}} is a `has_many` relation
     # to {{relation_type}}
     def {{method_name}} : {{ relation_type }}::Collection
@@ -22,13 +29,13 @@ module Clear::Model::Relations::HasManyMacro
       %foreign_key = {{"#{foreign_key}"}}
 
       query = {{relation_type}}.query
-        .tags({ %foreign_key => self.pkey_column.to_sql_value })
-        .where{ var({{relation_type}}.table, %foreign_key) == self.pkey }
+        .tags({ %foreign_key => self.__pkey_column__.to_sql_value })
+        .where{ var({{relation_type}}.table, %foreign_key) == self.__pkey__ }
 
       if @_cached_{{method_name}}
         query.with_cached_result(@_cached_{{method_name}})
       elsif ( cache && cache.active?("{{method_name}}") )
-        @_cached_{{method_name}} = cache.hit("{{method_name}}", self.pkey_column.to_sql_value, {{relation_type}})
+        @_cached_{{method_name}} = cache.hit("{{method_name}}", self.__pkey_column__.to_sql_value, {{relation_type}})
         # This relation will trigger the cache if it exists
         query.with_cached_result(@_cached_{{method_name}})
       end
@@ -53,7 +60,7 @@ module Clear::Model::Relations::HasManyMacro
         before_query do
           %foreign_key = {{"#{foreign_key}"}}
 
-          %key = {{self_type}}.pkey
+          %key = {{self_type}}.__pkey__
           %table = {{self_type}}.table
 
           #SELECT * FROM foreign WHERE foreign_key IN ( SELECT primary_key FROM users )

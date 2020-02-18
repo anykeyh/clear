@@ -13,6 +13,19 @@ module Clear::Model::HasRelations
 
   macro included # In Clear::Model
     macro included # In RealModel
+      include Clear::Model::Relations::BelongsToMacro
+      include Clear::Model::Relations::HasOneMacro
+      include Clear::Model::Relations::HasManyMacro
+      include Clear::Model::Relations::HasManyThroughMacro
+
+      RELATION_FILTERS = {} of String => (Clear::SQL::SelectBuilder -> )
+
+      def self.__call_relation_filter__(name : String, query : Clear::SQL::SelectBuilder)
+        cb = RELATION_FILTERS[name]?
+        raise "Cannot find relation #{name} of #{self.name}" unless cb
+        cb.call(query)
+      end
+
       # :nodoc:
       RELATIONS = { } of String => {
         name: String,
@@ -28,6 +41,7 @@ module Clear::Model::HasRelations
         polymorphic_type_column: String?,   # The column used for polymorphism. Usually foreign_key
 
         through: String?,                   # In case of has_many through, which relation is used to pass through
+        relation: String?,                        # In case of has_many through, the field used in the relation to pass through
 
         primary: Bool,                      # For belongs_to, whether the column is primary or not.
         presence: Bool,                     # For belongs_to, check or not the presence
@@ -39,7 +53,7 @@ module Clear::Model::HasRelations
 
   # The method `has_one` declare a relation 1 to [0,1]
   # where the current model primary key is stored in the foreign table.
-  # `primary_key` method (default: `self#pkey`) and `foreign_key` method
+  # `primary_key` method (default: `self#__pkey__`) and `foreign_key` method
   # (default: table_name in singular, plus "_id" appended)
   # can be redefined
   #
@@ -107,17 +121,22 @@ module Clear::Model::HasRelations
   #     has_many posts : Post, foreign_key: "author_id"
   #  end
   # ```
-  macro has_many( name, foreign_key = nil, foreign_key_type = Int64, cache = true, polymorphic = false, polymorphic_type_column = nil, through = nil )
+  macro has_many( name, foreign_key = nil, foreign_key_type = Int64,
+      cache = true, polymorphic = false, relation = nil,
+      polymorphic_type_column = nil, through = nil )
     {%
       foreign_key = "#{foreign_key.id}" if foreign_key
       foreign_key_type = "#{foreign_key_type.id}" if foreign_key_type
       polymorphic_type_column = "#{polymorphic_type_column.id}" if polymorphic_type_column
+      relation = "#{relation.id}" if relation
+      through = "#{through.id}" if through
 
       RELATIONS["#{name.var.id}"] = {
         name: "#{name.var.id}",
         type: name.type,
 
         relation_type: through ? :has_many_through : :has_many,
+        relation: relation,
 
         foreign_key: foreign_key,
         foreign_key_type: foreign_key_type,
@@ -146,8 +165,8 @@ module Clear::Model::HasRelations
     polymorphic_type_column = nil, presence = true)
 
     {%
-    foreign_key = "#{foreign_key.id}" unless foreign_key.nil?
-    foreign_key_type = "#{foreign_key_type.id}" unless foreign_key_type.nil?
+    foreign_key = "#{foreign_key.id}" if foreign_key
+    foreign_key_type = "#{foreign_key_type.id}" if foreign_key_type
 
     nilable = false
 
@@ -196,7 +215,6 @@ module Clear::Model::HasRelations
     {% end %}
   end
 
-
   # :nodoc:
   # Generate the relations by calling the macro
   macro __generate_relations__
@@ -207,7 +225,7 @@ module Clear::Model::HasRelations
         {% elsif settings[:relation_type] == :has_many %}
           Relations::HasManyMacro.generate({{@type}}, {{settings}})
         {% elsif settings[:relation_type] == :has_many_through %}
-          #Relations::HasManyThroughMacro.generate({{settings}})
+          Relations::HasManyThroughMacro.generate({{@type}}, {{settings}}, {{ RELATIONS["#{settings[:through].id}"] }} )
         {% elsif settings[:relation_type] ==  :has_one %}
           Relations::HasOneMacro.generate({{@type}}, {{settings}})
         {% else %}

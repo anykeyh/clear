@@ -221,15 +221,15 @@ module Clear::Model::HasColumns
 
       {% if settings[:primary] %}
         # :nodoc:
-        class_property pkey : String = "{{var_name}}"
+        class_property __pkey__ : String = "{{var_name}}"
 
         # :nodoc:
-        def pkey
+        def __pkey__
           @{{var_name}}_column.value
         end
 
         # :nodoc:
-        def pkey_column
+        def __pkey_column__
           @{{var_name}}_column
         end
       {% end %}

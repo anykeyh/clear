@@ -25,17 +25,17 @@ module Clear::Model
 
   # Alias method for primary key.
   #
-  # If `Model#id` IS the primary key, then calling `Model#pkey` is exactly the same as `Model#id`.
+  # If `Model#id` IS the primary key, then calling `Model#__pkey__` is exactly the same as `Model#id`.
   #
   # This method exists to tremendously simplify the meta-programming code.
   # If no primary key has been setup to this model, raise an exception.
-  def pkey
+  def __pkey__
     raise lack_of_primary_key(self.class.name)
   end
 
   # Comparison between models is made by comparing their primary keys.
   def ==(model : self)
-    self.pkey == model.pkey
+    self.__pkey__ == model.__pkey__
   end
 
   # We use here included for errors purpose.
