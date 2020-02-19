@@ -12,7 +12,7 @@ The model and scaffold generators will create migrations appropriate for adding 
 
 ```sh
 Usage:
-  /home/eperez/snap/crystal/common/.cache/crystal/crystal-run-cli.tmp generate [flags...] [arg...]
+  clear generate [flags...] [arg...]
 
 Generate code automatically
 
@@ -33,7 +33,7 @@ Migrations are a convenient way to alter the database schema over time in a cons
 
 ```sh
 Usage:
-  /home/eperez/snap/crystal/common/.cache/crystal/crystal-run-cli.tmp migrate [flags...] [arg...]
+  clear migrate [flags...] [arg...]
 
 Manage migration state of your database
 
