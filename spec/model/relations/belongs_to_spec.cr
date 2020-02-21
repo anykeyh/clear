@@ -22,7 +22,7 @@ module RelationSpec
         reinit_migration_manager
         RelationMigration8001.new.apply
 
-        u = User.create!(id: 1000, first_name: "relation_user")
+        User.create!(id: 1000, first_name: "relation_user")
 
         expect_raises(Exception) do
           UserInfo.create!(id: 2000, user_id: nil, infos: "anything") # Bad id
@@ -78,10 +78,9 @@ module RelationSpec
 
         user_info_call = 0
         user_call = 0
-        nested_queries = 0
 
         query1 = UserInfo.query.before_query{ user_info_call+=1 }
-        query1.with_user{ |query2|  user_call += 1 }
+        query1.with_user{  user_call += 1 }
 
         query1.each do |user_info|
           user_info_call.should eq(1)

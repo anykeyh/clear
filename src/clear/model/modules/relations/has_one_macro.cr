@@ -19,11 +19,9 @@ module Clear::Model::Relations::HasOneMacro
       {%
         foreign_key = (relation[:foreign_key] || "#{self_type.stringify.underscore.gsub(/::/, "_").id}_id").id
 
-        foreign_key_type = relation[:foreign_key_type].id
         method_name = relation[:name].id
         relation_type = relation[:type].id
 
-        presence = relation[:presence]
         primary = relation[:primary]
 
         nilable = relation[:nilable]
