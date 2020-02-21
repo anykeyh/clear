@@ -158,8 +158,9 @@ module Clear
             unless has_rollback
               execute("COMMIT")
               @@commit_callbacks[cnx].each(&.call(cnx))
-              @@commit_callbacks.delete(cnx)
             end
+
+            @@commit_callbacks.delete(cnx)
           end
         end
       end

@@ -33,6 +33,8 @@ module TransactionSpec
           Clear::SQL.rollback
         end
 
+        Clear::SQL.transaction{ } # Force another transaction
+
         is_called.should be_false
       end
     end

@@ -22,5 +22,5 @@ shards:
 
   pg:
     github: will/crystal-pg
-    commit: cafebf8ae9477e7e50bd3e1281d66d8a519d645f
+    commit: cafec2c963ee3f16799fb52e0bf15b4622d6a7c7
 
