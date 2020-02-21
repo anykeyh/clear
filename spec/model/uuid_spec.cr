@@ -31,7 +31,7 @@ module UUIDSpec
 
     self.table = "dbobjects2"
 
-    belongs_to db_object : DBObject?, foreign_key: "db_object_id", key_type: UUID?
+    belongs_to db_object : DBObject?, foreign_key: "db_object_id", foreign_key_type: UUID
 
     primary_key type: :uuid
   end

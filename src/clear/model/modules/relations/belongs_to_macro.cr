@@ -23,9 +23,19 @@ module Clear::Model::Relations::BelongsToMacro
 
       column {{foreign_key}} : {{foreign_key_type}}{{ nilable ? "?".id : "".id }}, primary: {{primary}}, presence: false
 
+      # :nodoc:
       def self.__relation_filter_{{method_name}}__(query)
         query.inner_join({{self_type}}.table){ var( {{self_type}}.table, "{{foreign_key}}" ) == var( {{relation_type}}.table, {{relation_type}}.__pkey__ ) }
       end
+
+      # :nodoc:
+      def self.__relation_key_table_{{method_name}}__ : Tuple(String, String)
+        {
+          {{relation_type}}.table.to_s,
+          {{relation_type}}.__pkey__.to_s
+        }
+      end
+
       RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
 
       # The method {{method_name}} is a `belongs_to` relation

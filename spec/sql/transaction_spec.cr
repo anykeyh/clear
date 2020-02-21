@@ -29,10 +29,29 @@ module TransactionSpec
       is_called = false
 
       Clear::SQL.transaction do
-        Clear::SQL.after_commit{ is_called = true }
+        Clear::SQL.after_commit do
+          is_called = true
+        end
+
         is_called.should be_false
         Clear::SQL.rollback
       end
+
+      channel = Channel(Nil).new
+
+      5.times do
+        # Ensure the list is clear after this block
+        # Using all the connections
+        spawn do
+          Clear::SQL.transaction do
+            channel.send(nil)
+          end
+
+          channel.send(nil)
+        end
+      end
+
+      10.times{ channel.receive } # Wait for all the fibers to finish.
 
       is_called.should be_false
     end

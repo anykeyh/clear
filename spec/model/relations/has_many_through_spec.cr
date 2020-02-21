@@ -20,6 +20,8 @@ module RelationSpec
 
         c1.posts.count.should eq(1)
         p.categories.order_by("name", "ASC").pluck_col(:name).join(", ").should eq("Health, Tech")
+
+        u.categories.count.should eq 2
       end
     end
   end
@@ -81,29 +83,29 @@ module RelationSpec
       reinit_migration_manager
       RelationMigration8001.new.apply
 
-      users = {
-        User.create!(id: 1000, first_name: "relation_user"),
-        User.create!(id: 1001, first_name: "relation_user")
-      }
+      u = User.create!( first_name: "yacine")
+      p = Post.create!( content: "something", user: u )
 
-      4.times do |x|
-        UserInfo.create!(id: (2000 + x), user: users[x % users.size], infos: "#{x}")
-      end
+      c1 = Category.create!( name: "Tech" )
+      c2 = Category.create!( name: "Health" )
 
-      user_info_call  = 0
+      PostCategory.create!(post: p, category: c1)
+      PostCategory.create!(post: p, category: c2)
+
+      category_call  = 0
       user_call       = 0
-      nested_queries  = 0
 
       query1 = User.query.before_query{ user_call += 1 }
-      query1.with_user_infos{ |query2|  user_info_call += 1 }
+      query1.with_categories{ |query2|  category_call += 1 }
 
       query1.each do |user|
-        user_info_call.should eq 1
+        category_call.should eq 1
         user_call.should      eq 1
 
         # FIXME: Not sure how to check if there's queries made here.
         #        for now we assume there's none :-)
-        user.user_infos.count.should eq 2 # 2 for each
+
+        user.categories.count.should eq 2 # 2 for each
       end
     end
   end

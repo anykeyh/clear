@@ -47,6 +47,10 @@ module RelationSpec
     # Same...
     has_many user_infos : UserInfo, foreign_key: "user_id"
 
+    has_many posts : Post, foreign_key: "user_id"
+
+    has_many categories : Category, through: :posts, relation: "categories"
+
     column first_name : String
   end
 
@@ -55,7 +59,7 @@ module RelationSpec
 
     primary_key
 
-    belongs_to user : User
+    belongs_to user : User, foreign_key: :user_id
 
     column content : String
 

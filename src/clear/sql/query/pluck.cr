@@ -90,7 +90,7 @@ module Clear::SQL::Query::Pluck
 
   # See `pluck(*fields)`
   def pluck(fields : Tuple(*T)) forall T
-    select_clause = fields.map{ |f| Clear::SQL.escape(f) if f.is_a?(Symbol) }.join(", ")
+    select_clause = fields.map{ |f| f.is_a?(Symbol) ? Clear::SQL.escape(f) : f.to_s }.join(", ")
     sql = self.clear_select.select(select_clause).to_sql
     rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 

@@ -19,6 +19,15 @@ module Clear::Model::Relations::HasManyMacro
       query.inner_join({{self_type}}.table){ var( {{self_type}}.table, {{self_type}}.__pkey__ ) == var( {{relation_type}}.table, "{{foreign_key}}" ) }
     end
 
+    # :nodoc:
+    def self.__relation_key_table_{{method_name}}__ : Tuple(String, String)
+      {
+        {{relation_type}}.table.to_s,
+        {{"#{foreign_key}"}}
+      }
+    end
+
+
     RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
 
     # The method {{method_name}} is a `has_many` relation
@@ -45,6 +54,7 @@ module Clear::Model::Relations::HasManyMacro
         # value of the distant model.
       %}
       query.append_operation = -> (x : {{relation_type}}) do
+        x.{{foreign_key}} = self.__pkey__
         self.save! unless self.persisted?
         x.reset(query.tags).save!
       end

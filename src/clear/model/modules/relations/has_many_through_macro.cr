@@ -31,6 +31,11 @@ module Clear::Model::Relations::HasManyThroughMacro
       self.__call_relation_filter__( "{{through_rel[:name].id}}", query)
     end
 
+    # :nodoc:
+    def self.__relation_key_table_{{method_name}}__ : Tuple(String, String)
+      self.__relation_key_table_{{through_rel[:name].id}}__
+    end
+
     RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
 
     def {{method_name}} : {{relation_type}}::Collection
@@ -53,60 +58,51 @@ module Clear::Model::Relations::HasManyThroughMacro
 
     # Addition of the method for eager loading and N+1 avoidance.
     class Collection
-      # Eager load the relation {{method_name}}.
+          # Eager load the has many relation {{method_name}}.
       # Use it to avoid N+1 queries.
+      def with_{{method_name}}(fetch_columns = false, &block : {{relation_type}}::Collection -> ) : self
+        before_query do
+          %foreign_key = {{"#{foreign_key}"}}
 
-      # def with_{{method_name}}(&block : {{relation_type}}::Collection -> ) : self
-      before_query do
-        %final_table = {{relation_type}}.table
-        %final_pkey = {{relation_type}}.pkey
-        %through_table = {{through}}.table
+          %key = { {{self_type}}.table, {{self_type}}.__pkey__ }.map{ |x| Clear::SQL.escape(x) }.join(".")
+          sub_query = self.dup.clear_select.select(%key)
 
-        %through_key = {% if foreign_key %} "{{foreign_key}}" {% else %} {{relation_type}}.table.to_s.singularize + "_id" {% end %}
-        %own_key = {% if own_key %} "{{own_key}}" {% else %} {{self_type}}.table.to_s.singularize + "_id" {% end %}
+          %table, %key = {{self_type}}.__relation_key_table_{{method_name}}__
+          query = {{relation_type}}.query.distinct.select("#{{{relation_type}}.table}.*").select(Clear::SQL.escape(%table) + "." + Clear::SQL.escape(%key))
 
-        self_type = {{self_type}}
+          self.item_class.__relation_filter_{{method_name}}__(query)
+          query.where { var(%table, %key).in?(sub_query) }
 
-        @cache.active "{{method_name}}"
+          block.call(query)
 
-        sub_query = self.dup.clear_select.select("#{{{self_type}}.table}.#{self_type.pkey}")
+          @cache.active "{{method_name}}"
 
-        qry = {{relation_type}}.query.join(%through_table){
-          var(%through_table, %through_key) == var(%final_table, %final_pkey)
-        }.where{
-          var(%through_table, %own_key).in?(sub_query)
-        }.distinct.select( "#{Clear::SQL.escape(%final_table)}.*",
-          "#{Clear::SQL.escape(%through_table)}.#{Clear::SQL.escape(%own_key)} AS __own_id"
-        )
+          h = {} of Clear::SQL::Any => Array({{relation_type}})
 
-        block.call(qry)
+          query.each(fetch_columns: true) do |mdl|
+            unless h[mdl.attributes[%key]]?
+              h[mdl.attributes[%key]] = [] of {{relation_type}}
+            end
 
-        h = {} of Clear::SQL::Any => Array({{relation_type}})
-
-        qry.each(fetch_columns: true) do |mdl|
-          unless h[mdl.attributes["__own_id"]]?
-            h[mdl.attributes["__own_id"]] = [] of {{relation_type}}
+            h[mdl.attributes[%key]] << mdl
           end
 
-          h[mdl.attributes["__own_id"]] << mdl
+          h.each{ |key, value|
+            @cache.set("{{method_name}}", key, value)
+          }
         end
 
-        h.each do |key, value|
-          @cache.set("{{method_name}}", key, value)
-        end
+        self
       end
 
-      self
-    end
-
-    def with_{{method_name}}
-      with_{{method_name}}{}
-    end
-
+      def with_{{method_name}}(fetch_columns = false)
+        with_{{method_name}}(fetch_columns){ } #empty block
+      end
 
     end
 
   end
+
 end
 
 
