@@ -50,12 +50,58 @@ module Clear::Model::Relations::HasManyThroughMacro
 
       query
     end
-    {% debug %}
 
     # Addition of the method for eager loading and N+1 avoidance.
     class Collection
       # Eager load the relation {{method_name}}.
       # Use it to avoid N+1 queries.
+
+      # def with_{{method_name}}(&block : {{relation_type}}::Collection -> ) : self
+      before_query do
+        %final_table = {{relation_type}}.table
+        %final_pkey = {{relation_type}}.pkey
+        %through_table = {{through}}.table
+
+        %through_key = {% if foreign_key %} "{{foreign_key}}" {% else %} {{relation_type}}.table.to_s.singularize + "_id" {% end %}
+        %own_key = {% if own_key %} "{{own_key}}" {% else %} {{self_type}}.table.to_s.singularize + "_id" {% end %}
+
+        self_type = {{self_type}}
+
+        @cache.active "{{method_name}}"
+
+        sub_query = self.dup.clear_select.select("#{{{self_type}}.table}.#{self_type.pkey}")
+
+        qry = {{relation_type}}.query.join(%through_table){
+          var(%through_table, %through_key) == var(%final_table, %final_pkey)
+        }.where{
+          var(%through_table, %own_key).in?(sub_query)
+        }.distinct.select( "#{Clear::SQL.escape(%final_table)}.*",
+          "#{Clear::SQL.escape(%through_table)}.#{Clear::SQL.escape(%own_key)} AS __own_id"
+        )
+
+        block.call(qry)
+
+        h = {} of Clear::SQL::Any => Array({{relation_type}})
+
+        qry.each(fetch_columns: true) do |mdl|
+          unless h[mdl.attributes["__own_id"]]?
+            h[mdl.attributes["__own_id"]] = [] of {{relation_type}}
+          end
+
+          h[mdl.attributes["__own_id"]] << mdl
+        end
+
+        h.each do |key, value|
+          @cache.set("{{method_name}}", key, value)
+        end
+      end
+
+      self
+    end
+
+    def with_{{method_name}}
+      with_{{method_name}}{}
+    end
 
 
     end
