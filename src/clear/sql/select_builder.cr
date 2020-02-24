@@ -90,7 +90,7 @@ module Clear::SQL::SelectBuilder
 
     raise QueryBuildingError.new("Cannot delete from a select with sub-select as `from` clause") if v.is_a?(SelectBuilder)
 
-    DeleteQuery.new(from: v.dup, wheres: @wheres.dup)
+    DeleteQuery.new(v.dup, @wheres.dup)
   end
 
   def to_update

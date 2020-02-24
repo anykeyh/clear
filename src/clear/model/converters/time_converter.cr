@@ -12,6 +12,8 @@ class Clear::Model::Converter::TimeConverter
       case time
       when /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]+/
         Time.parse_local(x.to_s, "%F %X.%L")
+      when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{6}Z/
+        Time.parse(x.to_s, "%FT%X.%6NZ", Time::Location::UTC)
       when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/
         Time.parse(x.to_s, "%FT%XZ", Time::Location::UTC)
       else

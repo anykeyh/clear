@@ -688,6 +688,23 @@ module ModelSpec
           p.tag_relations.offset(1).first!.name.should eq("Why not")
         end
       end
+
+      it "can unlink has_many through" do
+        temporary do
+          reinit
+
+          u = User.create!({first_name: "John"})
+          c = Category.create!({name: "Nature"})
+          p = Post.create!({title: "Post about Poneys", user_id: u.id, category_id: c.id})
+
+          p.tag_relations << Tag.new({name: "Awesome"})
+          p.tag_relations << Tag.new({name: "Why not"})
+
+          p.tag_relations.count.should eq(2)
+          p.tag_relations.unlink(Tag.query.find!({name: "Awesome"}))
+          p.tag_relations.count.should eq(1)
+        end
+      end
     end
 
     context "with join" do
