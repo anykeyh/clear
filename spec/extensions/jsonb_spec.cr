@@ -22,7 +22,7 @@ module JSONBSpec
       it "can generate arrow writing" do
         jsonb_resolve("data", "x.y.z").should eq("data->'x'->'y'->'z'")
         jsonb_resolve("data", "x.\\.y.z").should eq("data->'x'->'.y'->'z'")
-        jsonb_resolve("data", "x.y'b.z", "text").should eq("data->'x'->'y''b'->'z'::text")
+        jsonb_resolve("data", "x.y'b.z", "text").should eq("(data->'x'->'y''b'->'z')::text")
       end
 
       it "can use `?|` operator" do
@@ -46,7 +46,7 @@ module JSONBSpec
         it "use -> operator when it cannot test presence" do
           Clear::SQL.select("*").from("users")
             .where { data.jsonb("personal email").cast("text").like "%@gmail.com" }.to_sql
-            .should eq %(SELECT * FROM users WHERE ("data"->'personal email'::text LIKE '%@gmail.com'))
+            .should eq %(SELECT * FROM users WHERE (("data"->'personal email')::text LIKE '%@gmail.com'))
 
           # v-- Complex call
           Clear::SQL.select.from("users")

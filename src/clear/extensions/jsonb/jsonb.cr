@@ -124,8 +124,11 @@ module Clear::SQL::JSONB
 
   def jsonb_resolve(field, arr : Array(String), cast = nil) : String
     return field if arr.empty?
+
     o = ([field] + Clear::Expression[arr]).join("->")
-    o += "::#{cast}" if cast
+
+    o = "(#{o})::#{cast}" if cast
+
     o
   end
 
