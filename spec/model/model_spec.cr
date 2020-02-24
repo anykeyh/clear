@@ -513,6 +513,7 @@ module ModelSpec
           u.categories.count.should eq(1)
         end
       end
+
     end
 
     context "with join" do

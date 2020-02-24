@@ -435,7 +435,7 @@ module Clear::Model
       raise "Operation not permitted on this collection." unless unlink_operation
 
       unlink_operation.call(item)
-      @cached_result.try &.remove(item)
+      @cached_result.try &.delete(item)
 
       self
     end

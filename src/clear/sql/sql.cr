@@ -180,14 +180,9 @@ module Clear
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
     end
 
-    # Prepare a new DELETE query
-    def delete(table = nil)
-      Clear::SQL::DeleteQuery.new("default").from(table)
-    end
-
-    # Prepare a new DELETE query
-    def delete(connection : Symbolic, table = nil)
-      Clear::SQL::DeleteQuery.new(connection).from(table)
+    # Start a DELETE table query
+    def delete(table : Symbolic)
+      Clear::SQL::DeleteQuery.new.from(table)
     end
 
     # Prepare a new INSERT INTO table query

@@ -10,4 +10,12 @@
 
 /bin/crystal-coverage*
 /bin/ameba
+<<<<<<< HEAD
 /bin/clear
+=======
+
+# deps of some tools
+/node_modules
+yarn.lock
+package.json
+>>>>>>> 4e0bd175857cf5cacde2bba852bb2f51f2028fc1

@@ -127,10 +127,7 @@ module Clear::Migration
           @operations.reverse_each { |op|
             op.down.each { |x| Clear::SQL.execute(x.as(String)) }
           }
-
-          SQL.delete("default", "__clear_metadatas")
-             .where({metatype: "migration", value: uid.to_s})
-             .execute
+          SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
         end
 
         self
