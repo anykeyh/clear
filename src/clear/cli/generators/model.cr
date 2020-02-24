@@ -1,7 +1,7 @@
 require "generate"
 
 class Clear::CLI::Generator
-  register_sub_command model, type: Model, description: "Create a new model and the first migration"
+  register_sub_command "model:from_database", type: Model, description: "Create a new model and the first migration"
 
   class Model < Admiral::Command
     include Clear::CLI::Command

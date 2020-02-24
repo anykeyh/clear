@@ -7,7 +7,7 @@ build: bin/clear-cli
 bin/clear-cli:
 	$(SHARDS_BIN) build
 
-spec: bin/clear-cli
+spec: build
 	$(CRYSTAL_BIN) spec -Dquiet --warnings=all
 
 ameba:
