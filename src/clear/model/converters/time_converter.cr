@@ -18,6 +18,8 @@ class Clear::Model::Converter::TimeConverter
         Time.parse!(x.to_s, "%FT%X%z")
       when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/ # 2020-02-24T11:05:28Z
         Time.parse(x.to_s, "%FT%XZ", Time::Location::UTC)
+      when /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z/ # 2020-02-11T17:54:49.000Z
+        Time.parse(x.to_s, "%FT%X.%NZ", Time::Location::UTC)
       else
         raise Time::Format::Error.new("Bad format for Time: #{time}")
       end
