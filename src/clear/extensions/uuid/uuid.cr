@@ -22,7 +22,11 @@ class Clear::Model::Converter::UUIDConverter
   end
 
   def self.to_db(x : UUID?)
-    x.to_s
+    if x.nil?
+      nil
+    else
+      x.to_s
+    end
   end
 end
 
