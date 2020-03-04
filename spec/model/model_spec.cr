@@ -106,6 +106,14 @@ module ModelSpec
     self.table = "model_users"
   end
 
+  class ModelWithUUID
+    include Clear::Model
+
+    primary_key :id, type: :uuid
+
+    self.table = "model_with_uuid"
+  end
+
   class ModelSpecMigration123
     include Clear::Migration
 
@@ -156,6 +164,9 @@ module ModelSpec
         t.column "registration_number", "int64", index: true
 
         t.timestamps
+      end
+
+      create_table("model_with_uuid", id: :uuid) do |_|
       end
     end
   end
@@ -272,12 +283,12 @@ module ModelSpec
           u = User.create!({id: 1, first_name: "x"})
 
           # Low level update
-          User.query.where{ id == 1 }.to_update.set(first_name: "Malcom").execute
+          User.query.where { id == 1 }.to_update.set(first_name: "Malcom").execute
 
           u.first_name = "Danny"
           u.changed?.should be_true
 
-          #reload the model now
+          # reload the model now
           u.reload.first_name.should eq "Malcom"
           u.changed?.should be_false
 
@@ -286,8 +297,8 @@ module ModelSpec
           p = Post.create! user: u, title: "Reload testing post"
 
           p.user.id.should eq(1)
-          p.user = u2 #Change the user, DO NOT SAVE.
-          p.reload # Reload the model now:
+          p.user = u2            # Change the user, DO NOT SAVE.
+          p.reload               # Reload the model now:
           p.user.id.should eq(1) # Cache should be invalidated
         end
       end
@@ -353,7 +364,7 @@ module ModelSpec
 
           p.save.should eq(true) # Should save now
 
-          u.id.should eq(1)       # Should be set
+          u.id.should eq(1)      # Should be set
           p.user.id.should eq(1) # And should be set
         end
       end
@@ -631,6 +642,23 @@ module ModelSpec
       end
     end
 
+    it "can create a model by generating an uuid primary key" do
+      temporary do
+        reinit
+        m = ModelWithUUID.create!
+        m.id.should_not eq Nil
+      end
+    end
+
+    it "can create a model with a predefined uuid primary key" do
+      temporary do
+        reinit
+        some_uuid = UUID.new("5ca27508-f2ce-441b-b2cf-41134793e7a1")
+        m = ModelWithUUID.create!({id: some_uuid})
+        m.id.should eq some_uuid
+      end
+    end
+
     it "can load a column of type Array" do
       temporary do
         reinit
@@ -755,7 +783,6 @@ module ModelSpec
           user_with_a_post_minimum.with_posts.each { } # Should just execute
         end
       end
-
     end
 
     context "with pagination" do
