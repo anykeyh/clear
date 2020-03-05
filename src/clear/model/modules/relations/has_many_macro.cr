@@ -7,7 +7,7 @@ module Clear::Model::Relations::HasManyMacro
       foreign_key = (relation[:foreign_key] || "#{self_type.stringify.underscore.gsub(/::/, "_").id}_id").id
 
       method_name = relation[:name].id
-      relation_type = relation[:type].id
+      relation_type = relation[:type]
     %}
 
     __define_association_cache__({{method_name}}, Array({{relation_type}}))

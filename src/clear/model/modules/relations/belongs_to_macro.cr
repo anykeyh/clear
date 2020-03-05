@@ -7,7 +7,7 @@ module Clear::Model::Relations::BelongsToMacro
     {% begin %}
       {%
         method_name = relation[:name].id
-        relation_type = relation[:type].id
+        relation_type = relation[:type]
 
         foreign_key = (relation[:foreign_key] || "#{method_name.stringify.underscore.id}_id").id
 
@@ -79,7 +79,7 @@ module Clear::Model::Relations::BelongsToMacro
       {% end %}
 
       def {{method_name}}=(model : {{ relation_type }}{{ nilable ? "?".id : "".id }})
-        if model.try &.persisted?
+        if model && model.try &.persisted?
           raise "`#{model.__pkey_column__.name}` must be fetchable when assigning to a `belongs_to` relation." unless model.__pkey_column__.defined?
           @{{foreign_key}}_column.value = model.__pkey__
         else
