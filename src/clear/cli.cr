@@ -10,7 +10,7 @@ module Clear
   module CLI
     @@barebone = false
 
-    def self.run(@@barebone)
+    def self.run(@@barebone = true)
       if @@barebone
         Clear::CLI::Barebone.run
       else
@@ -51,7 +51,7 @@ module Clear
   def self.with_cli(&block)
     if ARGV.size > 0 && ARGV[0] == "clear"
       ARGV.shift
-      Clear::CLI.run
+      Clear::CLI.run(false)
     else
       yield
     end
