@@ -33,6 +33,20 @@ module ConverterSpec
       time_obj = Time.parse(example_date, "%FT%XZ", Time::Location::UTC)
       converter.to_column(example_date).should eq(time_obj)
     end
+
+    it "converts date formated like 2020-02-24T11:05:28+07:00" do
+      converter = Clear::Model::Converter::TimeConverter
+      example_date = "2020-02-24T11:05:28+07:00"
+      time_obj = Time.parse!(example_date, "%FT%X%z")
+      converter.to_column(example_date).should eq(time_obj)
+    end
+
+    it "converts date formated like 2020-02-11T17:54:49.000Z" do
+      converter = Clear::Model::Converter::TimeConverter
+      example_date = "2020-02-11T17:54:49.000Z"
+      time_obj = Time.parse(example_date, "%FT%X.%LZ", Time::Location::UTC)
+      converter.to_column(example_date).should eq(time_obj)
+    end
   end
   describe "Clear::Model::Converter::BoolConverter" do
     it "convert from boolean" do
