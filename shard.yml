@@ -11,8 +11,8 @@ targets:
   clear-cli:
     main: src/clear/endpoints/cli.cr
 
-scripts:
-  postinstall: make bin && make run_file
+# scripts:
+#   postinstall: make bin && make run_file
 
 dependencies:
   admiral:
