@@ -60,6 +60,7 @@ module RelationSpec
     primary_key
 
     belongs_to user : User, foreign_key: :user_id
+    has_many user_infos : UserInfo, through: :user
 
     column content : String
 

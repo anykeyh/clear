@@ -110,4 +110,27 @@ module RelationSpec
     end
   end
 
+  it "passes through belongs_to association" do
+    temporary do
+      reinit_migration_manager
+      RelationMigration8001.new.apply
+
+      users = {
+        User.create!(id: 1000, first_name: "relation_user1"),
+        User.create!(id: 1001, first_name: "relation_user2")
+      }
+
+      2.times do |x|
+        UserInfo.create!(id: (2000 + x), user: users[x % users.size], infos: "#{x}")
+      end
+
+      c1 = Category.create!( name: "Tech" )
+      p = Post.create!(content: "This is a post", user: users[0])
+
+      PostCategory.create!(post: p, category: c1)
+
+      Post.query.first!.user_infos.count.should eq(1)
+    end
+  end
+
 end

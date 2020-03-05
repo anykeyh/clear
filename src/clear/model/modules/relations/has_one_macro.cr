@@ -29,6 +29,12 @@ module Clear::Model::Relations::HasOneMacro
 
       __define_association_cache__({{method_name}}, {{relation_type}})
 
+      def self.__relation_filter_{{method_name}}__(query)
+        query.inner_join({{self_type}}.table){ var( {{self_type}}.table, {{self_type}}.__pkey__ ) == var( {{relation_type}}.table, "{{foreign_key}}" ) }
+      end
+
+      RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+
       # The method {{method_name}} is a `has_one` relation
       #   to {{relation_type}}
       def {{method_name}} : {{ relation_type }}{{ nilable ? "?".id : "".id }}

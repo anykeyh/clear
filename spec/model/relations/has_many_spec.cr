@@ -80,8 +80,8 @@ module RelationSpec
       RelationMigration8001.new.apply
 
       users = {
-        User.create!(id: 1000, first_name: "relation_user"),
-        User.create!(id: 1001, first_name: "relation_user")
+        User.create!(id: 1000, first_name: "relation_user1"),
+        User.create!(id: 1001, first_name: "relation_user2")
       }
 
       4.times do |x|
@@ -103,6 +103,7 @@ module RelationSpec
         user.user_infos.count.should eq 2 # 2 for each
       end
     end
+
   end
 
 end

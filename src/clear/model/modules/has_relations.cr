@@ -22,7 +22,12 @@ module Clear::Model::HasRelations
 
       def self.__call_relation_filter__(name : String, query : Clear::SQL::SelectBuilder)
         cb = RELATION_FILTERS[name]?
-        raise "Cannot find relation #{name} of #{self.name}" unless cb
+
+        if !cb
+          raise RELATION_FILTERS.inspect
+          raise "Cannot find relation #{name} of #{self.name}"
+        end
+
         cb.call(query)
       end
 
@@ -70,7 +75,7 @@ module Clear::Model::HasRelations
   #   has_one owner : User # It assumes the table `users` have a column `passport_id`
   # end
   # ```
-  macro has_one( name, foreign_key = nil, foreign_key_type = Int64, cache = true, polymorphic = false, polymorphic_type_column = nil, through = nil)
+  macro has_one( name, foreign_key = nil, foreign_key_type = Int64, cache = true, polymorphic = false, polymorphic_type_column = nil)
     {%
       foreign_key = "#{foreign_key.id}" if foreign_key
       foreign_key_type = "#{foreign_key_type.id}" if foreign_key_type
@@ -88,7 +93,7 @@ module Clear::Model::HasRelations
         name: "#{name.var.id}",
         type: type,
 
-        relation_type:  through.nil? ? :has_one : :has_one,
+        relation_type:  :has_one,
         nilable: nilable,
 
         foreign_key: foreign_key,
@@ -100,7 +105,7 @@ module Clear::Model::HasRelations
         primary: false,
         presence: true,
 
-        through: through,
+        through: nil,
         cache: cache
       }
     %}
@@ -178,7 +183,7 @@ module Clear::Model::HasRelations
       nilable = false
     end
 
-    RELATIONS[name.var.id] = {
+    RELATIONS["#{name.var.id}"] = {
       name: "#{name.var.id}",
       type: type,
 
@@ -225,11 +230,19 @@ module Clear::Model::HasRelations
         {% elsif settings[:relation_type] == :has_many %}
           Relations::HasManyMacro.generate({{@type}}, {{settings}})
         {% elsif settings[:relation_type] == :has_many_through %}
+          {%
+            through_relation = RELATIONS["#{settings[:through].id}"]
+            if through_relation == nil
+              all_relations  = RELATIONS.keys
+              raise "[has_many #{name.id} through: ...]: Cannot find the relation `#{settings[:through].id}`" +
+                " in model #{@type}. Existing relations are: #{all_relations.join(", ").id}"
+            end
+          %}
           Relations::HasManyThroughMacro.generate({{@type}}, {{settings}}, {{ RELATIONS["#{settings[:through].id}"] }} )
         {% elsif settings[:relation_type] ==  :has_one %}
           Relations::HasOneMacro.generate({{@type}}, {{settings}})
         {% else %}
-          {% raise "I don't know this relation: #{settings[:relation_type]}" %}
+          {% raise "I don't know this relation type: #{settings[:relation_type]}" %}
         {% end %}
       {% end %}
     {% end %}
