@@ -114,8 +114,16 @@ class User
   def full_name
     {self.first_name, self.last_name}.join(" ")
   end
-
 end
+
+class ModelWithUUID
+  include Clear::Model
+
+  primary_key :id, type: :uuid
+
+  self.table = "model_with_uuid"
+end
+
 
 class ExampleModelMigration1
   include Clear::Migration
@@ -171,6 +179,8 @@ class ExampleModelMigration1
 
       t.timestamps
     end
+
+    create_table("model_with_uuid", id: :uuid){ |_| }
   end
 end
 

@@ -22,7 +22,11 @@ class Clear::Model::Converter::UUIDConverter
   end
 
   def self.to_db(x : UUID?)
-    x.to_s
+    if x.nil?
+      nil
+    else
+      x.to_s
+    end
   end
 end
 
@@ -32,6 +36,8 @@ Clear::Model::HasSerialPkey.add_pkey_type "uuid" do
   column __name__ : UUID, primary: true, presence: true
 
   before(:validate) do |m|
-      m.as(self).__name__ = UUID.random unless m.persisted?
+    if !m.persisted? && m.as(self).__name___column.value(nil).nil?
+      m.as(self).__name__ = UUID.random
+    end
   end
 end
