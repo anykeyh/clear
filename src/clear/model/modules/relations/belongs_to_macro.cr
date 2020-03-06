@@ -105,7 +105,7 @@ module Clear::Model::Relations::BelongsToMacro
 
         unless c.persisted?
           if c.save
-            @{{foreign_key}}_column.value = c.__pkey__
+            @{{foreign_key}}_column.reset_convert(c.__pkey__)
           else
             add_error("{{method_name}}", c.print_errors)
           end

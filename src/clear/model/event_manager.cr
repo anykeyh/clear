@@ -34,7 +34,14 @@ class Clear::Model::EventManager
       self.trigger(parent, direction, event, mdl) unless parent.nil?
       arr.each &.call(mdl)
     end
+  end
 
+  def self.has_trigger?(klazz, direction : Symbol, event : Symbol)
+    return true if EVENT_CALLBACKS[{klazz.to_s, direction, event}]?
+
+    parent = INHERITANCE_MAP[klazz.to_s]?
+
+    has_trigger?(parent, direction, event) unless parent.nil?
   end
 
   # Map the inheritance between models. Events which belongs to parent model are triggered when child model lifecycle

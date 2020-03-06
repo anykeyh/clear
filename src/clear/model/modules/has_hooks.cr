@@ -31,6 +31,11 @@ module Clear::Model::HasHooks
     Clear::Model::EventManager.trigger(self.class, :after, event_name, self)
   end
 
+  # Return whether there's at least a trigger connected to this event for this model.
+  def has_trigger?(event_name : Symbol, direction : Symbol)
+    Clear::Model::EventManager.has_trigger?(self.class, direction, event_name)
+  end
+
   module ClassMethods
     def before(event_name : Symbol, &block : Clear::Model -> Void)
       Clear::Model::EventManager.attach(self, :before, event_name, block)

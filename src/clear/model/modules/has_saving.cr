@@ -107,12 +107,27 @@ module Clear::Model::HasSaving
           end
         else
           with_triggers(:create) do
-            query = Clear::SQL.insert_into(self.class.table, to_h).returning("*")
-            on_conflict.call(query) if on_conflict
-            hash = query.execute(@@connection)
+            execute_insert = -> {
+              query = Clear::SQL.insert_into(self.class.table, to_h).returning("*")
+              on_conflict.try &.call(query)
+              hash = query.execute(@@connection)
 
-            self.reset(hash)
-            @persisted = true
+              self.reset(hash)
+              @persisted = true
+            }
+
+            if has_trigger?(:commit, :before) || has_trigger?(:commit, :after)
+              Clear::SQL.transaction do
+                Clear::SQL.after_commit{
+                  trigger_before_events(:commit)
+                  trigger_after_events(:commit)
+                }
+                execute_insert.call
+
+              end
+            else
+              execute_insert.call
+            end
           end
         end
 
