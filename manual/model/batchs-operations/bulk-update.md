@@ -1,7 +1,8 @@
+# Bulk update
+
 ## Bulk update
 
-Any simple query can be transformed to `update` query. The new update query will use the `where` clause as parameter
-for the update.
+Any simple query can be transformed to `update` query. The new update query will use the `where` clause as parameter for the update.
 
 ```ruby
 User.query.where(name =~ /[A-Z]/ ).
@@ -20,3 +21,4 @@ User.query.where(name !~ /[A-Z]/ ).
 {% hint style="warning" %}
 Beware: Bulk update and delete do not trigger any model lifecycle hook. Proceed with care.
 {% endhint %}
+

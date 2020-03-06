@@ -22,7 +22,7 @@ Over the `on` keyword, `'{"title", 'A'}'` means it allows search of the content 
 Now, let's build some models:
 
 ```ruby
-  model Post
+  class Post
     include Clear::Model
     #...
 
@@ -80,3 +80,4 @@ t.full_text_searchable on: [{"title", 'A'}, {"content", 'C'}], dest_field: "tsv"
 # in your model
 full_text_searchable "tsv"
 ```
+

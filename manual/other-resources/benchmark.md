@@ -18,7 +18,7 @@ Another good performance improvement would be to connect through [PGBouncer](htt
 
 Here is a simple benchmark comparing the different layers of Clear and how they impact the performance, over a 100k row very simple table:
 
-```
+```text
 With Model: With attributes and cursor    7.4  (135.09ms) (± 6.44%)  116409530 B/op   5.64× slower
                With Model: With cursor   8.61  (116.08ms) (± 2.82%)   97209247 B/op   4.84× slower
            With Model: With attributes  13.78  ( 72.59ms) (± 3.61%)   83101520 B/op   3.03× slower

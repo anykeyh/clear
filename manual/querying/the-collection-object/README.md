@@ -10,13 +10,14 @@ users = User.query
 
 ## Collection and SELECT query
 
-When instantiated, the collection is Crystal's coexistence of the a SELECT query:
+When instantiated, the collection is Crystal implementation of a SELECT query:
 
 ```sql
+-- Users.query ==
 SELECT * FROM users
 ```
 
-Therefore, calling to\_a over the Collection will fetch all the models from the database to your crystal code:
+Therefore, calling `to_a` over the Collection will fetch all the models from the database to your crystal code:
 
 ```sql
 array_of_users = User.query.to_a
@@ -29,12 +30,19 @@ Collection will really perform SQL request only on resolution time, when calling
 Collection are mutable objects, and many of the methods will change the state of the collection:
 
 ```ruby
-collection = User.query # SELECT * FROM users;
-collection.select("id") # SELECT id FROM users;
-collection.select("id") # SELECT id, id FROM users;
+query = User.query # SELECT * FROM users;
+query.select("id") # SELECT id FROM users;
+query.select("id") # SELECT id, id FROM users;
 ```
 
-Therefore, you may want to use `Collection#dup` to duplicate the current state of the collection.
+Therefore, you may want to use `Collection#dup` to duplicate the current state of the collection:
+
+```ruby
+query = User.query # SELECT * FROM users;
+query.select("id") # SELECT id FROM users;
+
+query2 = collection.dup # SELECT id FROM users;
+```
 
 Collection can be filtered and refined to query exactly what you want. Actually, they are refined version of `SQL::SelectBuilder` object [described in Low-level SQL chapter](../low-level-sql/).
 

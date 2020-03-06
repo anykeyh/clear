@@ -1,4 +1,4 @@
-# Bulk insert
+# Bulk insert & delete
 
 You can insert multiple models at the same time \(using just one `INSERT` query\) using the `Collection#import` method:
 
