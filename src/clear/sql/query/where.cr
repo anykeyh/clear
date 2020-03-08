@@ -27,6 +27,43 @@ module Clear::SQL::Query::Where
     change!
   end
 
+
+  # Build SQL `or_where` condition using a Clear::Expression::Node
+  # ```crystal
+  # query.or_where(Clear::Expression::Node::InArray.new("id", ['1', '2', '3', '4']))
+  # # Note: in this example, InArray node use unsafe strings
+  # ```
+  # If useful for moving a where clause from a request to another one:
+  # ```crystal
+  # query1.or_where { a == b } # WHERE a = b
+  # ```
+  # ```
+  # query2.or_where(query1.wheres[0]) # WHERE a = b
+  # ```
+  def or_where(node : Clear::Expression::Node)
+    return where(node) if @wheres.empty?
+
+    # Optimisation: if we have a OR Array as root, we use it and append directly the element.
+    if @wheres.size == 1 &&
+      (n = @wheres.first) &&
+      n.is_a?(Clear::Expression::Node::NodeArray) &&
+      n.link == "OR"
+        n.expression << node
+    else
+      # Concatenate the old clauses in a list of AND conditions
+      if @wheres.size == 1
+        old_clause = @wheres.first
+      else
+        old_clause = Clear::Expression::Node::NodeArray.new(@wheres, "AND")
+      end
+
+      @wheres.clear
+      @wheres << Clear::Expression::Node::NodeArray.new([old_clause, node], "OR")
+    end
+
+    change!
+  end
+
   # Build SQL `where` condition using the Expression engine.
   # ```crystal
   # query.where { id == 1 }
@@ -48,7 +85,7 @@ module Clear::SQL::Query::Where
   # ```
   # - the `IN` operator if compared with an array:
   # ```crystal
-  # query.where({x: [1, 2]}) # WHERE x in (1,2)
+  # query.where({x: [1, 2]}) # WHERE x in (1, 2)
   # ```
   # - the `>=` and `<=` | `<` if compared with a range:
   # ```crystal
@@ -103,20 +140,21 @@ module Clear::SQL::Query::Where
     where(Clear::Expression::Node::Raw.new(Clear::SQL.raw(__template, *__args)))
   end
 
-  def or_where(str : String, **__named_tuple)
-    return where(str, **__named_tuple) if @wheres.empty?
-    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
-    @wheres.clear
-    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{str})", **__named_tuple) ), "OR")
-    change!
+  def or_where(__template : String, **__named_tuple)
+    or_where( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", **__named_tuple)) )
   end
 
-  def or_where(str : String, *__args)
-    return where(str, *__args) if @wheres.empty?
-    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
-    @wheres.clear
-    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", __args) ), "OR")
-    change!
+  def or_where(__template : String, *__args)
+    or_where( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", *__args)) )
+  end
+
+
+  # Build SQL `where` condition using the Expression engine.
+  # ```crystal
+  # query.or_where { id == 1 }
+  # ```
+  def or_where(&block)
+    or_where(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
   # Clear all the where clauses and return `self`

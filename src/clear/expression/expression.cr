@@ -317,26 +317,25 @@ class Clear::Expression
   # ```
   #
   def var(*parts)
-    _var(parts)
+    __var_parts(parts)
   end
 
   # :nodoc:
-  private def _var(parts : Tuple, pos = parts.size - 1)
+  private def __var_parts(parts : Tuple, pos = parts.size - 1)
     if pos == 0
       Node::Variable.new(parts[pos].to_s)
     else
-      Node::Variable.new(parts[pos].to_s, _var(parts, pos - 1))
+      Node::Variable.new(parts[pos].to_s, __var_parts(parts, pos - 1))
     end
   end
 
   # Because many postgresql operators are not transcriptable in Crystal lang,
-  # this helpers helps to write the expressions:
+  # this helpers helps to write operation expressions:
   #
   # ```crystal
-  # where { op(jsonb_field, "something", "?") } #<< Return "jsonb_field ? 'something'"
+  # where { op(jsonb_field, "?", "something") } #<< Return "jsonb_field ? 'something'"
   # ```
-  #
-  def op(a : (Node | AvailableLiteral), b : (Node | AvailableLiteral), op : String)
+  def op(a : (Node | AvailableLiteral), op : String, b : (Node | AvailableLiteral))
     a = Node::Literal.new(a) if a.is_a?(AvailableLiteral)
     b = Node::Literal.new(b) if b.is_a?(AvailableLiteral)
 

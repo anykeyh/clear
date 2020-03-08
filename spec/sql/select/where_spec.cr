@@ -54,17 +54,6 @@ module WhereSpec
       r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'hello'"
     end
 
-
-    it "can use or_where" do
-      Clear::SQL.select.from(:users).where("a = ?", 1).or_where("b = ?", 2).to_sql.should(
-        eq %(SELECT * FROM "users" WHERE ((a = 1) OR (b = 2)))
-      )
-      # First OR WHERE acts as a simple WHERE:
-      Clear::SQL.select.from(:users).or_where("a = ?", 1).or_where("b = ?", 2).to_sql.should(
-        eq %(SELECT * FROM "users" WHERE ((a = 1) OR (b = 2)))
-      )
-    end
-
     it "manages ranges" do
       Clear::SQL.select.from(:users).where({x: 1..4}).to_sql
         .should eq "SELECT * FROM \"users\" WHERE (\"x\" >= 1 AND \"x\" <= 4)"
@@ -76,7 +65,6 @@ module WhereSpec
     it "can prepare query" do
       r = Clear::SQL.select.from(:users).where("a LIKE ?", "hello")
       r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'hello'"
-
     end
 
     it "raises exception with prepared query" do
@@ -147,71 +135,125 @@ module WhereSpec
       r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL)"
     end
 
-    it "can stack with `AND` operator" do
-      now = Time.local
-      r = Clear::SQL.select.from(:users).where { users.id == nil }.where {
-        var("users", "updated_at") >= now
-      }
-      r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL) " +
-                        "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
-    end
+    describe "Where Expression engine Nodes" do
 
-    it "can use subquery into where clause" do
-      r = Clear::SQL.select.from(:users).where { users.id.in?(complex_query.clear_select.select(:id)) }
-      r.to_sql.should eq "SELECT * FROM \"users\" WHERE \"users\".\"id\" IN (" +
-                        "SELECT \"id\" FROM \"users\" INNER JOIN \"role_users\" ON " +
-                        "(\"role_users\".\"user_id\" = \"users\".\"id\") INNER JOIN \"roles\"" +
-                        " ON (\"role_users\".\"role_id\" = \"roles\".\"id\") WHERE \"role\" IN" +
-                        " ('admin', 'superadmin') ORDER BY \"priority\" DESC, " +
-                        "\"name\" ASC LIMIT 50 OFFSET 50)"
-    end
+      it "can stack with `AND` operator" do
+        now = Time.local
+        r = Clear::SQL.select.from(:users).where { users.id == nil }.where {
+          var("users", "updated_at") >= now
+        }
+        r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL) " +
+                          "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
+      end
 
-    it "can build locks" do
-      r = Clear::SQL.select.from(:users).with_lock("FOR UPDATE")
-      r.to_sql.should eq "SELECT * FROM \"users\" FOR UPDATE"
+      it "can stack with `OR` operator" do
+        now = Time.local
+        r = Clear::SQL.select.from(:users).where { users.id == nil }.or_where {
+          var("users", "updated_at") >= now
+        }
+        r.to_sql.should eq "SELECT * FROM \"users\" WHERE ((\"users\".\"id\" IS NULL) " +
+                          "OR (\"users\".\"updated_at\" >= #{Clear::Expression[now]}))"
+      end
 
-      r = Clear::SQL.select.from(:users).with_lock("FOR SHARE")
-      r.to_sql.should eq "SELECT * FROM \"users\" FOR SHARE"
-    end
+      it "AND and OR" do
+        r = Clear::SQL.select.from(:users).where {
+          ((raw("users.id") > 100) & (raw("users.visible") == true)) |
+            (raw("users.role") == "superadmin")
+        }
 
-    it "can join lateral" do
-      Clear::SQL::SelectQuery.new.from(:a)
-        .inner_join(:b, lateral: true) { a.b_id == b.id }.to_sql
-        .should eq %(SELECT * FROM "a" INNER JOIN LATERAL "b" ON ("a"."b_id" = "b"."id"))
-    end
+        r.to_sql.should eq "SELECT * FROM \"users\" WHERE (((users.id > 100) " +
+                          "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
+      end
 
-    it "can use & as AND and | as OR" do
-      r = Clear::SQL.select.from(:users).where {
-        ((raw("users.id") > 100) & (raw("users.visible") == true)) |
-          (raw("users.role") == "superadmin")
-      }
+      it "Operators" do
+      end
 
-      r.to_sql.should eq "SELECT * FROM \"users\" WHERE (((users.id > 100) " +
-                        "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
-    end
+      it "Between" do
+        Clear::SQL.select.where{ x.between(1, 2) }
+        .to_sql.should eq(%[SELECT * WHERE ("x" BETWEEN 1 AND 2)])
 
-    it "can check presence into array" do
-      r = Clear::SQL.select.from(:users).where { raw("users.id").in?([1, 2, 3, 4]) }
-      r.to_sql.should eq "SELECT * FROM \"users\" WHERE users.id IN (1, 2, 3, 4)"
-    end
+        Clear::SQL.select.where{ not(x.between(1, 2)) }
+          .to_sql.should eq(%[SELECT * WHERE NOT ("x" BETWEEN 1 AND 2)])
+      end
 
-    it "can check presence into range" do
-      # Simple number
-      Clear::SQL.select.from(:users).where { users.id.in?(1..3) }.to_sql
-        .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1 AND \"users\".\"id\" <= 3)"
+      it "Function" do
+        Clear::SQL.select.where{ ops_transform(x, "string", raw("INTERVAL '2 seconds'")) }
+          .to_sql.should eq(%[SELECT * WHERE ops_transform("x", 'string', INTERVAL '2 seconds')])
+      end
 
-      # Date range.
-      range = 2.day.ago..1.day.ago
+      it "InArray" do
+        Clear::SQL.select.where{ x.in?([1,2,3,4]) }
+          .to_sql.should eq(%[SELECT * WHERE "x" IN (1, 2, 3, 4)])
 
-      Clear::SQL.select.from(:users).where { created_at.in?(range) }.to_sql
-        .should eq "SELECT * FROM \"users\" WHERE " +
-                  "(\"created_at\" >= #{Clear::Expression[range.begin]} AND" +
-                  " \"created_at\" <= #{Clear::Expression[range.end]})"
+        Clear::SQL.select.where{ x.in?({1,2,3,4}) }
+          .to_sql.should eq(%[SELECT * WHERE "x" IN (1, 2, 3, 4)])
+      end
 
-      # Exclusive range
-      Clear::SQL.select.from(:users).where { users.id.in?(1...3) }.to_sql
-        .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1" +
-                  " AND \"users\".\"id\" < 3)"
+      it "InRange" do
+        # Simple number
+        Clear::SQL.select.from(:users).where { users.id.in?(1..3) }.to_sql
+          .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1 AND \"users\".\"id\" <= 3)"
+
+        # Date range.
+        range = 2.day.ago..1.day.ago
+
+        Clear::SQL.select.from(:users).where { created_at.in?(range) }.to_sql
+          .should eq "SELECT * FROM \"users\" WHERE " +
+                    "(\"created_at\" >= #{Clear::Expression[range.begin]} AND" +
+                    " \"created_at\" <= #{Clear::Expression[range.end]})"
+
+        # Exclusive range
+        Clear::SQL.select.from(:users).where { users.id.in?(1...3) }.to_sql
+          .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1" +
+                    " AND \"users\".\"id\" < 3)"
+      end
+
+      it "InSelect" do
+        sub_query = Clear::SQL.select("id").from("users")
+        Clear::SQL.select.where{ x.in?(sub_query) }
+          .to_sql.should eq(%[SELECT * WHERE "x" IN (SELECT id FROM users)])
+      end
+
+      it "Minus" do
+        Clear::SQL.select.where{ -x > 2 }
+          .to_sql.should eq(%[SELECT * WHERE (-"x" > 2)])
+      end
+
+      it "Not" do
+        Clear::SQL.select.where{ not(raw("TRUE")) }
+          .to_sql.should eq(%[SELECT * WHERE NOT TRUE])
+
+        Clear::SQL.select.where{ ~(raw("TRUE")) }
+          .to_sql.should eq(%[SELECT * WHERE NOT TRUE])
+      end
+
+      it "Null" do
+        Clear::SQL.select.where{ x == nil }
+          .to_sql.should eq(%[SELECT * WHERE ("x" IS NULL)])
+        Clear::SQL.select.where{ x != nil }
+          .to_sql.should eq(%[SELECT * WHERE ("x" IS NOT NULL)])
+      end
+
+      it "Raw" do
+        Clear::SQL.select.where{ raw("Anything") }
+          .to_sql.should eq(%[SELECT * WHERE Anything])
+
+        Clear::SQL.select.where{ raw("x > ?", 1) }
+          .to_sql.should eq(%[SELECT * WHERE x > 1])
+
+        Clear::SQL.select.where{ raw("x > :num", num: 2) }
+          .to_sql.should eq(%[SELECT * WHERE x > 2])
+      end
+
+      pending "PgArray" do
+        # FIXME: It is related to jsonb system.
+      end
+
+      it "Variable" do
+        Clear::SQL.select.where{ var("public", "users", "id") < 1000 }
+          .to_sql.should eq(%[SELECT * WHERE ("public"."users"."id" < 1000)])
+      end
+
     end
   end
 end
