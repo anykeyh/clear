@@ -2,6 +2,11 @@ module Clear::SQL
   module Query::From
     getter froms : Array(SQL::From)
 
+    def from(**__named_tuple)
+      __named_tuple.each { |k, v| @froms << Clear::SQL::From.new(v, k.to_s) }
+      change!
+    end
+
     def from(*args)
       args.each do |arg|
         case arg
