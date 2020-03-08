@@ -176,6 +176,7 @@ module Clear::Model
     # Redefinition of the fields,
     # because of a bug in the compiler
     # https://github.com/crystal-lang/crystal/issues/5281
+    # :nodoc:
     @limit : Int64?
     @offset : Int64?
     @lock : String?
@@ -201,6 +202,7 @@ module Clear::Model
       @distinct_value = nil,
       @cte = {} of String => Clear::SQL::Query::CTE::Record,
       @columns = [] of SQL::Column,
+      @forced_columns = [] of SQL::Column,
       @froms = [] of SQL::From,
       @joins = [] of SQL::Join,
       @wheres = [] of Clear::Expression::Node,
@@ -212,6 +214,7 @@ module Clear::Model
       @offset = nil,
       @lock = nil,
       @before_query_triggers = [] of -> Void,
+      # collection specific parameters ---v
       @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
       @cached_result = nil,
@@ -451,12 +454,12 @@ module Clear::Model
       o
     end
 
-    # Basically a custom way to write `OFFSET x LIMIT 1`
+    # Basically a fancy way to write `OFFSET x LIMIT 1`
     def [](off, fetch_columns = false) : T
       self[off, fetch_columns]?.not_nil!
     end
 
-    # Basically a custom way to write `OFFSET x LIMIT 1`
+    # Basically a fancy way to write `OFFSET x LIMIT 1`
     def []?(off, fetch_columns = false) : T?
       self.offset(off).first(fetch_columns)
     end

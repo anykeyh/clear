@@ -218,7 +218,7 @@ module Clear
       Clear::SQL::UpdateQuery.new(table)
     end
 
-    # Start a SELECT FROM table query
+    # Start a SELECT ... query
     def select(*args)
       if args.size > 0
         Clear::SQL::SelectQuery.new.select(*args)
@@ -226,6 +226,12 @@ module Clear
         Clear::SQL::SelectQuery.new
       end
     end
+
+    # Start a SELECT ... query
+    def select(**args)
+      Clear::SQL::SelectQuery.new.select(**args)
+    end
+
   end
 end
 

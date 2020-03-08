@@ -26,7 +26,16 @@ class Clear::SQL::SelectQuery
   include Enumerable(Hash(String, Clear::SQL::Any))
   include SelectBuilder
 
+  # Enumerable items
   def each
     fetch{ |h| yield(h) }
+  end
+
+  def count(&block)
+    to_a.count(&block)
+  end
+
+  def size
+    to_a.size
   end
 end
