@@ -24,7 +24,6 @@ module Clear::SQL::Query::Where
   # ```
   def where(node : Clear::Expression::Node)
     @wheres << node
-
     change!
   end
 
@@ -38,7 +37,7 @@ module Clear::SQL::Query::Where
 
 
   def where(**tuple)
-    where(conditions: tuple)
+    where(__conditions: tuple)
   end
 
   # Build SQL `where` condition using a NamedTuple.
@@ -60,8 +59,8 @@ module Clear::SQL::Query::Where
   # ```crystal
   # query.where({x: another_select}) # WHERE x IN (SELECT ... )
   # ```
-  def where(conditions : NamedTuple | Hash(String, Clear::SQL::Any))
-    conditions.each do |k, v|
+  def where(__conditions : NamedTuple | Hash(String, Clear::SQL::Any))
+    __conditions.each do |k, v|
       k = Clear::Expression::Node::Variable.new(k.to_s)
 
       @wheres <<
@@ -85,60 +84,38 @@ module Clear::SQL::Query::Where
     change!
   end
 
+  # Build SQL `where` interpolating `:keyword` with the NamedTuple passed in argument.
+  # ```crystal
+  # where("id = :id OR date >= :start", id: 1, start: 1.day.ago)
+  # # WHERE id = 1 AND date >= '201x-xx-xx ...'
+  # ```
+  def where(__template : String, **__tuple)
+    where(Clear::Expression::Node::Raw.new(Clear::SQL.raw(__template, **__tuple)))
+  end
 
   # Build SQL `where` condition using a template string and
   # interpolating `?` characters with parameters given in a tuple or array.
   # ```crystal
-  # where("x = ? OR y = ?", {1, "l'eau"}) # WHERE x = 1 OR y = 'l''eau'
+  # where("x = ? OR y = ?", 1, "l'eau") # WHERE x = 1 OR y = 'l''eau'
   # ```
   # Raise error if there's not enough parameters to cover all the `?` placeholders
-  def where(str : String, parameters : Tuple | Enumerable(T)) forall T
-    self.where(Clear::SQL.raw_enum(str, parameters))
+  def where(__template : String, *__args)
+    where(Clear::Expression::Node::Raw.new(Clear::SQL.raw(__template, *__args)))
   end
 
-  # Build SQL `where` interpolating `:keyword` with the NamedTuple passed in argument.
-  # ```crystal
-  # where("id = :id OR date >= :start", {id: 1, start: 1.day.ago})
-  # # WHERE id = 1 AND date >= '201x-xx-xx ...'
-  # ```
-  def where(str : String, parameters : NamedTuple)
-    self.where(Clear::SQL.raw(str, **parameters))
-  end
-
-  def or_where(str : String, parameters : NamedTuple)
-    return where(str, parameters) if @wheres.empty?
+  def or_where(str : String, **__named_tuple)
+    return where(str, **__named_tuple) if @wheres.empty?
     old_clause = Clear::Expression::Node::AndArray.new(@wheres)
     @wheres.clear
-    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{str})", **parameters) ), "OR")
+    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{str})", **__named_tuple) ), "OR")
     change!
   end
 
-
-  # Build custom SQL `where`
-  #   beware of SQL injections!
-  # ```crystal
-  # where("ADD_SOME_DANGEROUS_SQL_HERE") # WHERE ADD_SOME_DANGEROUS_SQL_HERE
-  # ```
-  def where(str : String)
-    @wheres << Clear::Expression::Node::Raw.new(str)
-    change!
-  end
-
-  def or_where(str : String)
-    return where(str) if @wheres.empty?
-    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
-    @wheres = [
-      Clear::Expression::Node::DoubleOperator.new(old_clause,
-      Clear::Expression::Node::Raw.new("(#{str})"), "OR")
-    ]
-    change!
-  end
-
-  def or_where(str : String, parameters : Tuple | Enumerable(T)) forall T
-    return where(str, parameters) if @wheres.empty?
+  def or_where(str : String, *__args)
+    return where(str, *__args) if @wheres.empty?
     old_clause = Clear::Expression::Node::AndArray.new(@wheres)
     @wheres.clear
-    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", parameters) ), "OR")
+    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", __args) ), "OR")
     change!
   end
 

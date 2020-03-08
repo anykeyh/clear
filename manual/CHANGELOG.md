@@ -3,6 +3,34 @@
 v0.9 is a big overhaul from the shard. It simplifies a lot of the internal code,
 add tons of specs and focus on things like more understandable error on compile time.
 
+Note of warning: This version break tons of stuff.
+
+## Breaking changes
+
+- `Clear::Migration::Direction` is now an enum instead of a struct.
+- where and having clauses use splat and named tuple always. This is breaking change.
+  - Before you had to do:
+
+  ```crystal
+    where("a = ?", [1])
+  ```
+
+  Now you can do much more easy:
+
+  ```crystal
+    where("a = ?", 1)
+  ```
+
+  Same apply for the named parameters version:
+
+  ```crystal
+    # Instead of
+    where("a = :a", { a: 1 } )
+    # Do
+    where("a = :a", a: 1)
+  ```
+
+
 ## Features
 
 - `Collection#add_operation` has been renamed to `Collection#append_operation`
@@ -14,7 +42,7 @@ operation is called
 This can be used for example to send email, or perform others tasks
 when you want to be sure the data is secured in the database.
 
-```
+```crystal
   transaction do
     @user = User.find(1)
     @user.subscribe!
@@ -26,7 +54,7 @@ In case the transaction fail and eventually rollback, the code won't be called.
 
 Same method exists now on the model level, using before and after hooks:
 
-```
+```crystal
   class User
     include Clear::Model
 
@@ -43,7 +71,7 @@ This macro help setting a converter transparently for any `CustomType`.
 Your `CustomType` must be `JSON::Serializable`, and the database column
 must be of type `jsonb`, `json` or `text`.
 
-```
+```crystal
   class Color
     include JSON::Serializable
 
@@ -68,7 +96,7 @@ must be of type `jsonb`, `json` or `text`.
 
 This allow usage of Postgres `?` operator over `jsonb` fields:
 
-```
+```crystal
   # SELECT * FROM actors WHERE "jsonb_column"->'movies' ? 'Top Gun' LIMIT 1;
   Actor.query.where{ var("jsonb_column").jsonb("movies").contains?("Top Gun") }.first!.name # << Tom Cruise
 ```
@@ -78,10 +106,6 @@ This allow usage of Postgres `?` operator over `jsonb` fields:
 A convenient method to reverse all the order by clauses,
 turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
 
-## Breaking changes
-
-- `Clear::Migration::Direction` is now an enum instead of a struct.
-- We've made some change over
 
 # v0.8
 
