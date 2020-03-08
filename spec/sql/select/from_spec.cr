@@ -24,7 +24,7 @@ module FromSpec
     end
 
     it "accepts multiple from clauses" do
-      r = select_request.from(:users, :posts)
+      r = Clear::SQL.select.from(:users, :posts)
       r.to_sql.should eq "SELECT * FROM \"users\", \"posts\""
     end
 
@@ -35,13 +35,13 @@ module FromSpec
 
     it "raises error if the from clause is a subquery but is not aliased" do
       expect_raises Clear::SQL::QueryBuildingError do
-        r = Clear::SQL.select.from(complex_query)
+        r = Clear::SQL.select.from(Clear::SQL.select("1"))
         r.to_sql
       end
     end
 
     it "can be cleared" do
-      r = select_request.from("x").clear_from.from("y")
+      r = Clear::SQL.select.from("x").clear_from.from("y")
       r.to_sql.should eq "SELECT * FROM y"
     end
 
