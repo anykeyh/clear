@@ -96,14 +96,6 @@ module Clear::SQL::Query::Where
     self.where(Clear::SQL.raw_enum(str, parameters))
   end
 
-  def or_where(str : String, parameters : Tuple | Enumerable(T)) forall T
-    return where(str, parameters) if @wheres.empty?
-    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
-    @wheres.clear
-    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", parameters) ), "OR")
-    change!
-  end
-
   # Build SQL `where` interpolating `:keyword` with the NamedTuple passed in argument.
   # ```crystal
   # where("id = :id OR date >= :start", {id: 1, start: 1.day.ago})
@@ -139,6 +131,14 @@ module Clear::SQL::Query::Where
       Clear::Expression::Node::DoubleOperator.new(old_clause,
       Clear::Expression::Node::Raw.new("(#{str})"), "OR")
     ]
+    change!
+  end
+
+  def or_where(str : String, parameters : Tuple | Enumerable(T)) forall T
+    return where(str, parameters) if @wheres.empty?
+    old_clause = Clear::Expression::Node::AndArray.new(@wheres)
+    @wheres.clear
+    @wheres << Clear::Expression::Node::DoubleOperator.new(old_clause, Clear::Expression::Node::Raw.new( Clear::Expression.raw_enum("(#{str})", parameters) ), "OR")
     change!
   end
 

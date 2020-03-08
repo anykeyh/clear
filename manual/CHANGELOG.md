@@ -1,9 +1,11 @@
 # v0.9
 
+v0.9 is a big overhaul from the shard. It simplifies a lot of the internal code,
+add tons of specs and focus on things like more understandable error on compile time.
+
 ## Features
 
 - `Collection#add_operation` has been renamed to `Collection#append_operation`
-
 - Add `Clear::SQL.after_commit` method
 
 Register a callback function which will be fired once when SQL `COMMIT`
@@ -22,16 +24,49 @@ when you want to be sure the data is secured in the database.
 
 In case the transaction fail and eventually rollback, the code won't be called.
 
+Same method exists now on the model level, using before and after hooks:
+
+```
+  class User
+    include Clear::Model
+
+    after(:commit){ |mdl| WelcomeEmail.new(mdl.as(User)).deliver_now }
+  end
+```
+
+Note: `before(:commit)` and `after(:commit)` are both called after the transaction has been commited.
+      Before hook always call before after hook.
+
 - Add `Clear.json_serializable_converter(CustomType)`
 
 This macro help setting a converter transparently for any `CustomType`.
-Your `CustomType` must include `JSON::Serializable`.
+Your `CustomType` must be `JSON::Serializable`, and the database column
+must be of type `jsonb`, `json` or `text`.
+
+```
+  class Color
+    include JSON::Serializable
+
+    @[JSON::Field]; property r: Int8
+    @[JSON::Field]; property g: Int8
+    @[JSON::Field]; property b: Int8
+    @[JSON::Field]; property a: Int8
+  end
+
+  Clear.json_serializable_converter(Color)
+
+  # Now you can use Color in your models:
+
+  class MyModel
+    include Clear::Model
+
+    column color : Color
+  end
+```
 
 - Add `jsonb().contains?(...)` method
 
-This allow usage of Postgres `?` operator over `jsonb` fields.
-
-For example:
+This allow usage of Postgres `?` operator over `jsonb` fields:
 
 ```
   # SELECT * FROM actors WHERE "jsonb_column"->'movies' ? 'Top Gun' LIMIT 1;
@@ -41,7 +76,7 @@ For example:
 ## Breaking changes
 
 - `Clear::Migration::Direction` is now an enum instead of a struct.
-
+- We've made some change over
 
 # v0.8
 

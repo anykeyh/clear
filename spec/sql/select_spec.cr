@@ -116,7 +116,7 @@ module SelectSpec
 
         it "raise works with subquery as from" do
           r = select_request.from({q: complex_query})
-          r.to_sql.should eq "SELECT * FROM ( #{complex_query.to_sql} ) q"
+          r.to_sql.should eq "SELECT * FROM (#{complex_query.to_sql}) q"
         end
 
         it "can write from by string" do
