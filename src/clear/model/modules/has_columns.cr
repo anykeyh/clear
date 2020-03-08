@@ -249,7 +249,7 @@ module Clear::Model::HasColumns
             @{{settings[:crystal_variable_name]}}_column.reset_convert(t[:{{name}}])
           {% else %}
             {% if !@type.has_method?("#{name}=") %}
-              {% raise "No method #{@type}##{name}= while trying to set value of #{name}" %}
+              {% raise "Cannot find the column `#{name}` of the model `#{@type}`" %}
             {% end %}
             self.{{name}} = t[:{{name}}]
           {% end %}

@@ -98,50 +98,6 @@ module SelectSpec
         end
       end
 
-      describe "the FROM clause" do
-        it "can build simple from" do
-          r = select_request.from(:users)
-          r.to_sql.should eq "SELECT * FROM \"users\""
-        end
-
-        it "can build multiple from" do
-          r = select_request.from(:users, :posts)
-          r.to_sql.should eq "SELECT * FROM \"users\", \"posts\""
-        end
-
-        it "can build named from" do
-          r = select_request.from({customers: "users"})
-          r.to_sql.should eq "SELECT * FROM users AS customers"
-        end
-
-        it "raise works with subquery as from" do
-          r = select_request.from({q: complex_query})
-          r.to_sql.should eq "SELECT * FROM (#{complex_query.to_sql}) q"
-        end
-
-        it "can write from by string" do
-          r = select_request.from("(SELECT * FROM users LIMIT 10) users")
-          r.to_sql.should eq "SELECT * FROM (SELECT * FROM users LIMIT 10) users"
-        end
-
-        it "can stack" do
-          r = select_request.from("x").from(:y)
-          r.to_sql.should eq "SELECT * FROM x, \"y\""
-        end
-
-        it "can be cleared" do
-          r = select_request.from("x").clear_from.from("y")
-          r.to_sql.should eq "SELECT * FROM y"
-        end
-
-        it "raise error if from subquery is not named" do
-          expect_raises Clear::SQL::QueryBuildingError do
-            r = select_request.from(complex_query)
-            r.to_sql
-          end
-        end
-      end
-
       describe "SelectQuery#with_cte" do
         it "can build request with CTE" do
           # Simple CTE

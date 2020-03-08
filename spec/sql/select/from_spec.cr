@@ -23,5 +23,27 @@ module FromSpec
       Clear::SQL.select.from(series: subquery).to_sql.should eq("SELECT * FROM (SELECT generate_series(1, 100, 1)) series")
     end
 
+    it "accepts multiple from clauses" do
+      r = select_request.from(:users, :posts)
+      r.to_sql.should eq "SELECT * FROM \"users\", \"posts\""
+    end
+
+    it "stacks" do
+      r = Clear::SQL.select.from("x").from(:y)
+      r.to_sql.should eq "SELECT * FROM x, \"y\""
+    end
+
+    it "raises error if the from clause is a subquery but is not aliased" do
+      expect_raises Clear::SQL::QueryBuildingError do
+        r = Clear::SQL.select.from(complex_query)
+        r.to_sql
+      end
+    end
+
+    it "can be cleared" do
+      r = select_request.from("x").clear_from.from("y")
+      r.to_sql.should eq "SELECT * FROM y"
+    end
+
   end
 end
