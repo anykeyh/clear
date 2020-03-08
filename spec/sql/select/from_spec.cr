@@ -4,7 +4,7 @@ require "../../spec_helper"
 module FromSpec
   extend self
 
-  describe "Clear::SQL::Query::From" do
+  describe Clear::SQL::Query::From do
     it "allows simple string" do
       Clear::SQL.select.from("users").to_sql.should eq("SELECT * FROM users")
     end

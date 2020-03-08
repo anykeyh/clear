@@ -47,57 +47,6 @@ module SelectSpec
         r.to_update.set(x: 1).to_sql.should eq "UPDATE \"users\" SET \"x\" = 1 WHERE (\"users\".\"id\" > 1000)"
       end
 
-      describe "the SELECT clause" do
-        it "can select wildcard *" do
-          r = select_request.select("*")
-          r.to_sql.should eq "SELECT *"
-        end
-
-        it "can select distinct" do
-          r = select_request.distinct.select("*")
-          r.to_sql.should eq "SELECT DISTINCT *"
-
-          r = select_request.distinct.select("a", "b", "c")
-          r.to_sql.should eq "SELECT DISTINCT a, b, c"
-
-          r = select_request.distinct.select(:first_name, :last_name, :id)
-          r.to_sql.should eq %(SELECT DISTINCT "first_name", "last_name", "id")
-        end
-
-        it "can select any string" do
-          r = select_request.select("1")
-          r.to_sql.should eq "SELECT 1"
-        end
-
-        it "can select using variables" do
-          r = select_request.select("SUM(quantity) AS sum", "COUNT(*) AS count")
-          # No escape with string, escape must be done manually
-          r.to_sql.should eq "SELECT SUM(quantity) AS sum, COUNT(*) AS count"
-        end
-
-        it "can select using named tuple" do
-          r = select_request.select(uid: "user_id", some_cool_stuff: "column")
-          r.to_sql.should eq "SELECT user_id AS uid, column AS some_cool_stuff"
-        end
-
-        it "can reset the select" do
-          r = select_request.select("1").clear_select.select("2")
-          r.to_sql.should eq "SELECT 2"
-        end
-
-        it "can select a subquery" do
-          r = select_request.select({max_updated_at: one_request})
-          r.to_sql.should eq "SELECT ( #{one_request.to_sql} ) AS max_updated_at"
-        end
-      end
-
-      describe "the ORDER BY clause" do
-        it "can add NULLS FIRST and NULLS LAST" do
-          r = select_request.from("users").order_by("email", "ASC", "NULLS LAST")
-          r.to_sql.should eq "SELECT * FROM users ORDER BY email ASC NULLS LAST"
-        end
-      end
-
       describe "SelectQuery#with_cte" do
         it "can build request with CTE" do
           # Simple CTE
@@ -255,8 +204,8 @@ module SelectSpec
                                "SELECT \"id\" FROM \"users\" INNER JOIN \"role_users\" ON " +
                                "(\"role_users\".\"user_id\" = \"users\".\"id\") INNER JOIN \"roles\"" +
                                " ON (\"role_users\".\"role_id\" = \"roles\".\"id\") WHERE \"role\" IN" +
-                               " ('admin', 'superadmin') ORDER BY priority DESC, " +
-                               "name ASC LIMIT 50 OFFSET 50)"
+                               " ('admin', 'superadmin') ORDER BY \"priority\" DESC, " +
+                               "\"name\" ASC LIMIT 50 OFFSET 50)"
           end
 
           it "can build locks" do

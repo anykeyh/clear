@@ -19,7 +19,7 @@ module RelationSpec
         PostCategory.create!(post: p, category: c2)
 
         c1.posts.count.should eq(1)
-        p.categories.order_by("name", "ASC").pluck_col(:name).join(", ").should eq("Health, Tech")
+        p.categories.order_by("name", :asc).pluck_col(:name).join(", ").should eq("Health, Tech")
 
         u.categories.count.should eq 2
       end

@@ -1,54 +1,106 @@
+# Encode for:
+#
+# `ORDER BY expression [ASC | DESC | USING operator] [NULLS FIRST | NULLS LAST];`
+#
+# Current implementation:
+#
+# [x] Multiple Order by clauses
+# [x] ASC/DESC
+# [x] NULLS FIRST / NULLS LAST
+# [ ] NOT IMPLEMENTED: USING OPERATOR
 module Clear::SQL::Query::OrderBy
-  record Record, op : String, dir : Symbol, nulls : String?
+  record Record, op : String, dir : Symbol, nulls : Symbol?
 
   macro included
     getter order_bys : Array(Clear::SQL::Query::OrderBy::Record) = [] of Clear::SQL::Query::OrderBy::Record
   end
 
-  private def _order_by_to_symbol(str)
-    case str.upcase
-    when "DESC"
-      :desc
-    when "ASC"
-      :asc
-    else
-      raise Clear::ErrorMessages.order_by_error_invalid_order(str)
-    end
-  end
-
+  # Remove all order by clauses
   def clear_order_bys
     @order_bys.clear
     change!
   end
 
+  # :nodoc:
+  private def sanitize_direction(x)
+    case x
+    when :asc, :desc
+      x
+    else
+      raise QueryBuildingError.new("Unknown direction for ORDER_BY: #{x.to_s.upcase}")
+    end
+  end
+
+  # :nodoc:
+  private def sanitize_nulls(x)
+    case x
+    when nil, :last, :first
+      x
+    else
+      raise QueryBuildingError.new("Unknown ORDER_BY ... NULLS directive: #{x.to_s.upcase}")
+    end
+  end
+
+  # Flip over all order bys by switching the ASC direction to DESC and the NULLS FIRST to NULLS LAST
+  # ```
+  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc).order_by(:company, nulls: :last)
+  #  query.reverse_order_by
+  #  query.to_sql # SELECT * FROM users ORDER BY "id" ASC, "name" DESC, "company" DESC NULLS FIRST
+  # ```
+  #
+  # return `self`
+  def reverse_order_by
+    @order_bys = @order_bys.map{ |rec|
+      Record.new(rec.op,
+        rec.dir == :desc ? :asc : :desc,
+        rec.nulls.try{ |n| n == :last ? :first : :last }
+      )
+    }
+    change!
+  end
+
+  # :nodoc:
   def order_by(x : Array(Record))
     @order_bys = x
     change!
   end
 
+  # Add multiple ORDER BY clause using a tuple:
+  #
+  # ```
+  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc)
+  #  query.to_sql # > SELECT * FROM users ORDER BY "id" DESC, "name" ASC
+  # ```
+  #
+  # Note: To declare NULLS direction, please refer to the `order_by(expression, direction, nulls)` method
   def order_by(**tuple)
     order_by(tuple)
   end
 
   def order_by(tuple : NamedTuple)
     tuple.each do |k, v|
-      @order_bys << Record.new(k.to_s, _order_by_to_symbol(v.to_s), nil)
+      @order_bys << Record.new(SQL.escape(k.to_s), v, nil)
     end
     change!
   end
 
-  def order_by(expression : Symbol, direction = "ASC", nulls : String? = nil)
-    @order_bys << Record.new(SQL.escape(expression.to_s), _order_by_to_symbol(direction), nulls)
+  # Add one ORDER BY clause
+  # ```
+  # query = Clear::SQL.select.from("users").order_by(:id, :desc, nulls: :last)
+  # query.to_sql #> SELECT * FROM users ORDER BY "id" DESC NULLS LAST
+  # ```
+  def order_by(expression : Symbol, direction : Symbol  = :asc, nulls : Symbol? = nil)
+    @order_bys << Record.new(SQL.escape(expression.to_s), sanitize_direction(direction), sanitize_nulls(nulls))
     change!
   end
 
-  def order_by(expression : String, direction = "ASC", nulls : String? = nil)
-    @order_bys << Record.new(expression, _order_by_to_symbol(direction), nulls)
+  def order_by(expression : String, direction : Symbol = :asc, nulls : Symbol? = nil)
+    @order_bys << Record.new(expression, sanitize_direction(direction), sanitize_nulls(nulls))
     change!
   end
 
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase, r.nulls].compact.join(" ") }.join(", ")
+    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase, r.nulls.try{ |n| "NULLS #{n.to_s.upcase}" } ].compact.join(" ") }.join(", ")
   end
 end

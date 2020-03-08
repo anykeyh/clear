@@ -73,6 +73,11 @@ This allow usage of Postgres `?` operator over `jsonb` fields:
   Actor.query.where{ var("jsonb_column").jsonb("movies").contains?("Top Gun") }.first!.name # << Tom Cruise
 ```
 
+- Add `SelectQuery#reverse_order_by` method
+
+A convenient method to reverse all the order by clauses,
+turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
+
 ## Breaking changes
 
 - `Clear::Migration::Direction` is now an enum instead of a struct.

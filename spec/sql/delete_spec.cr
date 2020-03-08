@@ -36,7 +36,7 @@ module DeleteSpec
                            "INNER JOIN \"role_users\" ON (\"role_users\".\"user_id\" = \"users\".\"id\") " +
                            "INNER JOIN \"roles\" ON (\"role_users\".\"role_id\" = \"roles\".\"id\") " +
                            "WHERE \"role\" IN ('admin', 'superadmin') " +
-                           "ORDER BY priority DESC, name ASC " +
+                           "ORDER BY \"priority\" DESC, \"name\" ASC " +
                            "LIMIT 1)"
       end
     end
