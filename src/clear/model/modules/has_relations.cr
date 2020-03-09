@@ -24,7 +24,6 @@ module Clear::Model::HasRelations
         cb = RELATION_FILTERS[name]?
 
         if !cb
-          raise RELATION_FILTERS.inspect
           raise "Cannot find relation #{name} of #{self.name}"
         end
 
