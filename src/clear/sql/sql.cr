@@ -74,19 +74,12 @@ module Clear
     # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla") )
     # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla") )
     # ```
-    def raw(x, *params)
-      Clear::Expression.raw(x, *params)
+    def raw(__template, *__args)
+      __args.size > 0 ? Clear::Expression.raw(__template, *__args) : __template
     end
 
-    # See `self.raw`
-    # Can pass an array to this version
-    def raw_enum(x, params : Enumerable(T)) forall T
-      Clear::Expression.raw_enum(x, params)
-    end
-
-
-    def raw(__template, **params)
-      Clear::Expression.raw(__template, **params)
+    def raw(__template, **__keys)
+      __keys.size > 0 ? Clear::Expression.raw(__template, **__keys) : __template
     end
 
     # Escape the expression, double quoting it.
