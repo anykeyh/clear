@@ -499,7 +499,7 @@ module Clear::Model
     # Returns a model using primary key equality
     # Returns `nil` if not found.
     def find(x) : T?
-      where { raw(T.__pkey__) == x }.first
+      where { var(T.table, T.__pkey__) == x }.first
     end
 
     # Returns a model using primary key equality.
@@ -544,7 +544,8 @@ module Clear::Model
     # Get the first row from the collection query.
     # if not found, return `nil`
     def first(fetch_columns = false) : T?
-      order_by(Clear::SQL.escape("#{T.__pkey__}"), :asc) unless order_bys.any?
+      key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
+      order_by(key, :asc) unless order_bys.any?
 
       limit(1).fetch do |hash|
         return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
