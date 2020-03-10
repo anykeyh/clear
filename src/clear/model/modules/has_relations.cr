@@ -24,7 +24,7 @@ module Clear::Model::HasRelations
         cb = RELATION_FILTERS[name]?
 
         if !cb
-          raise "Cannot find relation #{name} of #{self.name}"
+          raise "Cannot find relation #{name} of #{self.name}. Candidates are: #{RELATION_FILTERS.keys.join("\n")}"
         end
 
         cb.call(query)

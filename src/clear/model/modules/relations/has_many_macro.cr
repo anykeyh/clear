@@ -24,7 +24,9 @@ module Clear::Model::Relations::HasManyMacro
       }
     end
 
-    RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+    __on_init__ do
+      {{self_type}}::RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+    end
 
     # The method {{method_name}} is a `has_many` relation
     # to {{relation_type}}

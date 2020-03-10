@@ -31,7 +31,9 @@ module Clear::Model::Relations::HasManyThroughMacro
       self.__relation_key_table_{{through_rel[:name].id}}__
     end
 
-    RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+    __on_init__ do
+      {{self_type}}::RELATION_FILTERS["{{method_name}}"] = -> (x : Clear::SQL::SelectBuilder) { __relation_filter_{{method_name}}__(x) }
+    end
 
     def {{method_name}} : {{relation_type}}::Collection
 
