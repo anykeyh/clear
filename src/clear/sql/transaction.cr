@@ -114,22 +114,33 @@ module Clear::SQL::Transaction
   #   end
   # end
   # ```
-  def with_savepoint(connection_name = "default", &block)
+  def with_savepoint(sp_name = nil, connection_name = "default", &block)
     transaction do |cnx|
-      sp_name = "sp_#{@@savepoint_uid += 1}"
-      begin
-        execute(connection_name, "SAVEPOINT #{sp_name}")
-        yield
-        execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
-      rescue e : RollbackError
-        execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
+      sp_name ||= "sp_#{@@savepoint_uid += 1}"
+      execute(connection_name, "SAVEPOINT #{sp_name}")
+      yield
+      execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
+    rescue e : RollbackError
+      if cnx._clear_in_transaction?
+        execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}")
+        raise e if e.savepoint_id.try &.!=(sp_name)
       end
     end
+
   end
 
-  # Raise a rollback, in case of transaction
-  def rollback
-    raise RollbackError.new
+  # Rollback a transaction or return to the previous savepoint in case of a
+  # with_savepoint block.
+  # The params `to` offer
+  def rollback(to = nil)
+    raise RollbackError.new(to)
   end
+
+  # Rollback the transaction. In case the call is made inside a savepoint block
+  # rollback everything.
+  def rollback_transaction
+    raise CancelTransactionError.new
+  end
+
 
 end

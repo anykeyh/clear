@@ -65,6 +65,18 @@ Same method exists now on the model level, using before and after hooks:
 Note: `before(:commit)` and `after(:commit)` are both called after the transaction has been commited.
       Before hook always call before after hook.
 
+- Add possibility to name and rollback to a specific savepoint:
+
+```crystal
+  Clear::SQL.with_savepoint("a") do
+    Clear::SQL.with_savepoint("b") do
+      Clear::SQL.rollback("a") # < Exit to "a"
+    end
+    puts "This won't be called"
+  end
+  puts "This will be called"
+```
+
 - Add `Clear.json_serializable_converter(CustomType)`
 
 This macro help setting a converter transparently for any `CustomType`.
