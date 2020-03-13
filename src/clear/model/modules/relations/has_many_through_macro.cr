@@ -61,14 +61,15 @@ module Clear::Model::Relations::HasManyThroughMacro
         before_query do
           %foreign_key = {{"#{foreign_key}"}}
 
-          %key = { {{self_type}}.table, {{self_type}}.__pkey__ }.map{ |x| Clear::SQL.escape(x) }.join(".")
-          sub_query = self.dup.clear_select.select(%key)
+          %sub_query_key = { {{self_type}}.table, {{self_type}}.__pkey__ }.map{ |x| Clear::SQL.escape(x) }.join(".")
+          sub_query = self.dup.clear_select.select(%sub_query_key)
 
           %table, %key = {{self_type}}.__relation_key_table_{{method_name}}__
-          query = {{relation_type}}.query.distinct.select("#{{{relation_type}}.table}.*").select(Clear::SQL.escape(%table) + "." + Clear::SQL.escape(%key))
+          %target = Clear::SQL.escape(%table) + "." + Clear::SQL.escape(%key)
+          query = {{relation_type}}.query.distinct.select("#{{{relation_type}}.table}.*").select( __own_key__: %sub_query_key )
 
           self.item_class.__relation_filter_{{method_name}}__(query)
-          query.where { var(%table, %key).in?(sub_query) }
+          query.where { raw(%sub_query_key).in?(sub_query) }
 
           block.call(query)
 
@@ -77,11 +78,11 @@ module Clear::Model::Relations::HasManyThroughMacro
           h = {} of Clear::SQL::Any => Array({{relation_type}})
 
           query.each(fetch_columns: true) do |mdl|
-            unless h[mdl.attributes[%key]]?
-              h[mdl.attributes[%key]] = [] of {{relation_type}}
+            unless h[mdl.attributes["__own_key__"]]?
+              h[mdl.attributes["__own_key__"]] = [] of {{relation_type}}
             end
 
-            h[mdl.attributes[%key]] << mdl
+            h[mdl.attributes["__own_key__"]] << mdl
           end
 
           h.each{ |key, value|
