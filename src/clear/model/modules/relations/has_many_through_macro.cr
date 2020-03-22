@@ -78,11 +78,12 @@ module Clear::Model::Relations::HasManyThroughMacro
           h = {} of Clear::SQL::Any => Array({{relation_type}})
 
           query.each(fetch_columns: true) do |mdl|
-            unless h[mdl.attributes["__own_key__"]]?
-              h[mdl.attributes["__own_key__"]] = [] of {{relation_type}}
+            key = mdl.attributes["__own_key__"]
+            unless h[key]?
+              h[key] = [] of {{relation_type}}
             end
 
-            h[mdl.attributes["__own_key__"]] << mdl
+            h[key] << mdl
           end
 
           h.each{ |key, value|
