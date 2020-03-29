@@ -92,7 +92,9 @@ module Clear::Model::Relations::BelongsToMacro
       c = @_cached_{{method_name}}
       return if c.nil?
 
-      unless c.persisted?
+      if c.persisted?
+        @{{foreign_key.id}}_column.value = c.pkey
+      else
         if c.save
           @{{foreign_key.id}}_column.value = c.pkey
         else

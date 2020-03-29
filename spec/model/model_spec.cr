@@ -369,6 +369,20 @@ module ModelSpec
         end
       end
 
+      it "save in good order the belongs_to models2" do
+        temporary do
+          reinit
+
+          u = User.new({first_name: "John"})
+          post = Post.new({user: u, title: "some post" })
+
+          u.save!
+          post.save! # Exception
+
+          post.user_id.should eq(u.id)
+        end
+      end
+
       it "does not set persisted on failed insert" do
         temporary do
           reinit
