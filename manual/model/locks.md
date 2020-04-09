@@ -1,5 +1,7 @@
 # Locks
 
+### Model lock
+
 You can use lock using `with_lock` method on query collection:
 
 ```ruby
@@ -16,6 +18,8 @@ end
 See PostgreSQL [deep explanation about locking here](https://www.postgresql.org/docs/current/explicit-locking.html).
 
 {% hint style="warning" %}
-Locking works only in transaction.
+Lock work only inside transaction. Without transaction block, the call might fail.
 {% endhint %}
+
+
 

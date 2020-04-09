@@ -20,11 +20,11 @@ class Product
 end
 ```
 
-* `name` is the name of your column in your table. (Default: `id`)
-* `type` is the type of the column in your table. Set to (Default: `bigserial`).
+* `name` is the name of your column in your table. \(Default: `id`\)
+* `type` is the type of the column in your table. Set to \(Default: `bigserial`\).
 * By default, types can be of type `bigserial`, `serial`, `int`, `bigint`, `text` and `uuid`.
 
-Note than primary_key directive in the model class is just a fast way of writing:
+Note than primary\_key directive in the model class is just a fast way of writing:
 
 ```ruby
 column id : Int64, primary: true, presence: false

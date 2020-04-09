@@ -11,7 +11,11 @@ After reading this guide, you will know:
 
 ## What is Clear ?
 
-Clear is an ORM \(Object Relation Mapping\) built with Crystal language. It offers a Model layer for MVC applications. Clear is built specifically for PostgreSQL, meaning it's not compatible with MariaDB or SQLite for example. On the other hand, because it's specific, it achieves to delivers a tremendous amount of PostgreSQL advanced features out of the box.
+Clear is an ORM \(Object Relation Mapping\) built for Crystal language. 
+
+It offers the Model layer of your applications. 
+
+Clear is built especially for PostgreSQL, meaning it's not compatible with MariaDB or SQLite for example. Therefore, it achieves to delivers a tremendous amount of PostgreSQL advanced features out of the box.
 
 Clear is largely based on Active Record pattern, and freely inspired by [Rails Active Record](https://github.com/rails/rails/tree/master/activerecord) and [Sequel](https://github.com/jeremyevans/sequel). Thus, it follow some philosophical concepts, as:
 
@@ -22,8 +26,10 @@ Clear is largely based on Active Record pattern, and freely inspired by [Rails A
 | **class** ModelName | **TABLE** model\_names |
 | **belongs\_to** foreign\_object | **COLUMN** foreign\_object\_id : bigint |
 
-You can notice, if you already did some Rails application, that the naming convention is mostly like in Active Record.
+{% hint style="info" %}
+If you already works with Ruby on Rails, you will notice that the naming convention follow ActiveRecord pattern.
+{% endhint %}
 
-* **Multiple way of doing things:** Philosophically, Clear try to reduce the gap between the mind of the developer and the code itself. The code is meant to be read as close to written English as possible. Therefore, there's often multiple way to do things, based on the feeling of the developer writing the code.
+* **Multiple way of doing things:** Philosophically, Clear try to reduce the gap between the mind of the developer and the code itself. The code is meant to be read as close to written English as possible. Therefore, there's often multiple way to do things, based on the feeling of the developer writing the code. 
 * **Less boilerplate = more happiness:** The "magic" under Clear allows to write as minimum as possible boilerplate code, like type-checking, validations or even SQL fragment writing.
 

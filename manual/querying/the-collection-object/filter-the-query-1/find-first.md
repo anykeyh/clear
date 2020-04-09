@@ -20,9 +20,9 @@ p = Product.query.find!{ id == 1234 } # Return Product or throw an exception if 
 
 First and last return the first and last row of a SELECT query.
 
-In the case of first, it will order by `$pkey ASC` if no `order_by` directive is found. In the case of last, it will invert the direction of the order directive of the query before performing the call.
+In the case of first, it will order by `[primary key column] ASC` if no `order_by` directive is found. In the case of last, it will invert the direction of the order directive, turning each `ASC` to `DESC` and vice-versa before performing the call.
 
-Both limit the request to only 1 element and return the model instead of an enumeration of models.
+Both return a model instead of an enumeration of models.
 
 ```ruby
 # SELECT * FROM products ORDER BY created_at ASC LIMIT 1
@@ -32,9 +32,13 @@ p = Product.query.order_by("created_at", "DESC").last!
 p = Product.query.order_by("created_at", "DESC").first!
 ```
 
-## Offset, Limit
+{% hint style="info" %}
+Like with `find`,  `first!`/`first` and `last`/`last!` are existing variant of the method
+{% endhint %}
 
-Offset and limit provide a way to scope the request or do some pagination.
+## Offset and Limit
+
+Offset and limit provide a way to scope a request or do some pagination.
 
 ### Offset
 
@@ -51,10 +55,8 @@ products = Product.query.order_by("id")[5..10]
 ```
 
 {% hint style="warning" %}
-There's a difference of usage: Usage of `[]` operator will trigger the call to the query and return an Array of product, and not a Collection object anymore.
-{% endhint %}
+Nothing to be aware:  `[]` operator will resolve the query, calling it and return an Array of model, not a Collection object anymore.
 
-{% hint style="info" %}
-You may use the `[]` operator with a number as parameter instead of range. In this case, it's equivalent to `offset(number).first!`. The `[]?` operator provides the `Collection#first` method and will return `nilable` reference.
+You may use the `[]` operator with a number as parameter instead of range. In this case, it's equivalent to `offset(number).first!`. The `[]?` operator is equivalent to `offset(number).first` and will return `nilable` reference.
 {% endhint %}
 

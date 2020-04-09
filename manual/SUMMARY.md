@@ -9,7 +9,7 @@
 ## Model
 
 * [Defining your model](model/column-types/README.md)
-  * [The column feature](model/column-types/model-definition.md)
+  * [Describing your columns](model/column-types/model-definition.md)
   * [Primary Keys](model/column-types/primary-keys.md)
   * [Converters](model/column-types/converters.md)
 * [Associations](model/associations/README.md)
@@ -42,10 +42,10 @@
     * [Cursored fetching](querying/the-collection-object/fetching-the-query/cursored-fetching.md)
     * [Model extra attributes](querying/the-collection-object/fetching-the-query/model-attributes.md)
   * [Joins](querying/the-collection-object/joins.md)
-  * [Eager Loading – Resolving the N+1 query problem](querying/the-collection-object/n+1-query-avoidance.md)
+  * [Eager Loading](querying/the-collection-object/n+1-query-avoidance.md)
   * [Window and CTE](querying/the-collection-object/window-and-cte.md)
   * [Scopes](querying/the-collection-object/scopes.md)
-* [Low-level SQL](querying/low-level-sql/README.md)
+* [Writing low-level SQL](querying/low-level-sql/README.md)
   * [Select Clause](querying/low-level-sql/select-clause.md)
   * [Insert Clause](querying/low-level-sql/insert-clause.md)
   * [Delete Clause](querying/low-level-sql/delete-clause.md)
@@ -58,15 +58,16 @@
 
 ## Additional and advanced features
 
+* [JSONB](additional-and-advanced-features/jsonb.md)
 * [Symbol vs String](additional-and-advanced-features/symbol-vs-string.md)
 * [Enums](additional-and-advanced-features/enums.md)
 * [BCrypt](additional-and-advanced-features/bcrypt.md)
 * [Full Text Search](additional-and-advanced-features/full-text-search.md)
-* [JSONB](additional-and-advanced-features/jsonb.md)
 * [Handling multi-connection](additional-and-advanced-features/handling-multi-connection.md)
 
 ## Other resources
 
+* [API Documentation](https://anykeyh.github.io/clear/)
 * [Inline documentation](https://anykeyh.github.io/clear/)
 * [Github repository](https://github.com/anykeyh/clear)
 * [Credits](https://github.com/anykeyh/clear/blob/master/CONTRIBUTORS.md)
