@@ -124,8 +124,12 @@ class Clear::Expression
   end
 
   # Transform multiple objects into a string which is SQL-Injection safe.
-  def self.safe_literal(x : Enumerable(AvailableLiteral)) : Enumerable(String)
-    x.map { |item| self.safe_literal(item) }
+  def self.safe_literal(x : Enumerable(AvailableLiteral)) : String
+    self.safe_literal({
+      "{",
+      x.map { |item| self.safe_literal(item) }.join(", "),
+      "}"
+    }.join)
   end
 
   # Return unsafe string injected to the query.

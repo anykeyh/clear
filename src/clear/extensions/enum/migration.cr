@@ -8,7 +8,8 @@ module Clear::Migration
     end
 
     def up : Array(String)
-      ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[@values].join(", ")})"]
+      safe_values = @values.map{ |v| Clear::Expression[v] }
+      ["CREATE TYPE #{@name} AS ENUM (#{safe_values.join(", ")})"]
     end
 
     def down : Array(String)
@@ -29,7 +30,8 @@ module Clear::Migration
 
     def down : Array(String)
       if values = @values
-        ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[values].join(", ")})"]
+        safe_values = values.map{ |v| Clear::Expression[v] }
+        ["CREATE TYPE #{@name} AS ENUM (#{safe_values.join(", ")})"]
       else
         irreversible!
       end
