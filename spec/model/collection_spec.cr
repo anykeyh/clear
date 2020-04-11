@@ -2,7 +2,7 @@ require "../spec_helper"
 require "../data/example_models"
 
 module CollectionSpec
-  describe Clear::Collection do
+  describe Clear::Model::CollectionBase do
     pending "[]"
     pending "[]?"
 
