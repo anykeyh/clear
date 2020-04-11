@@ -106,7 +106,7 @@ module Clear::Migration
       Clear::Migration::Manager.instance.ensure_ready
 
       Clear::SQL.transaction do
-        Clear.logger.info("[#{dir.to_s}] #{self.class.name}")
+        Clear.logger.info("[#{dir}] #{self.class.name}")
 
         # In case the migration is called twice (e.g. in Spec?)
         # ensure the operations are clean-up before trying again

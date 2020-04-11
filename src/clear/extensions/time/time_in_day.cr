@@ -77,7 +77,7 @@ struct Clear::TimeInDay
   end
 
   def inspect
-    "#{self.class.name}(#{self.to_s})"
+    "#{self.class.name}(#{self})"
   end
 
   def to_s(show_seconds : Bool = true)
