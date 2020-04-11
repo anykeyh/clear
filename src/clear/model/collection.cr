@@ -591,5 +591,12 @@ module Clear::Model
         clear_order_bys.order_by(order_bys)
       end
     end
+
+    # Delete all the rows which would have been returned by this collection.
+    # Is equivalent to `collection.to_delete.execute`
+    def delete_all : self
+      to_delete.execute
+      change! #because we want to clear the caches in case we do something with the collection later
+    end
   end
 end
