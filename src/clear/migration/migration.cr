@@ -60,6 +60,8 @@
 #
 ###
 module Clear::Migration
+  Log = ::Log.for("clear.migration")
+
   include Clear::ErrorMessages
 
   abstract def uid : Int64
@@ -106,7 +108,7 @@ module Clear::Migration
       Clear::Migration::Manager.instance.ensure_ready
 
       Clear::SQL.transaction do
-        Clear.logger.info("[#{dir}] #{self.class.name}")
+        Log.info{ "[#{dir}] #{self.class.name}" }
 
         # In case the migration is called twice (e.g. in Spec?)
         # ensure the operations are clean-up before trying again

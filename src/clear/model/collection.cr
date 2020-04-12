@@ -544,8 +544,10 @@ module Clear::Model
     # Get the first row from the collection query.
     # if not found, return `nil`
     def first(fetch_columns = false) : T?
-      key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
-      order_by(key, :asc) unless order_bys.any?
+      if order_bys.empty?
+        key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
+        order_by(key, :asc)
+      end
 
       limit(1).fetch do |hash|
         return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)
@@ -570,16 +572,18 @@ module Clear::Model
     # Get the last row from the collection query.
     # if not found, return `nil`
     def last(fetch_columns = false) : T?
-      order_by("#{T.__pkey__}", :asc) unless order_bys.any?
-
-      arr = order_bys.dup # Save current order by
+      if order_bys.empty?
+        key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
+        order_by(key, :asc)
+      end
 
       begin
-        new_order = arr.map do |x|
+        reversed_order = order_bys.map do |x|
+          # I don't think this works with NULL FIRST
           Clear::SQL::Query::OrderBy::Record.new(x.op, (x.dir == :asc ? :desc : :asc), nil)
         end
 
-        clear_order_bys.order_by(new_order)
+        clear_order_bys.order_by(reversed_order)
 
         limit(1).fetch do |hash|
           return Clear::Model::Factory.build(T, hash, persisted: true, cache: @cache, fetch_columns: fetch_columns)

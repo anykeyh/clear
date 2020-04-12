@@ -1,5 +1,5 @@
 require "colorize"
-require "logger"
+require "log"
 require "benchmark"
 
 module Clear::SQL::Logger
@@ -47,9 +47,9 @@ module Clear::SQL::Logger
     elsif (x > 1)
       ("%.2f" % x) + "s"
     elsif (x > 0.001)
-      (1_000*x).to_i.to_s + "ms"
+      (1_000 * x).to_i.to_s + "ms"
     else
-      (1_000_000*x).to_i.to_s + "µs"
+      (1_000_000 * x).to_i.to_s + "µs"
     end
   end
 
@@ -59,7 +59,7 @@ module Clear::SQL::Logger
     o = yield
     elapsed_time = Time.monotonic - start_time
 
-    Clear.logger.debug(("[" + Clear::SQL::Logger.display_time(elapsed_time.to_f).colorize.bold.white.to_s + "] #{SQL::Logger.colorize_query(sql)}"))
+    Clear::Log.debug{ ("[" + Clear::SQL::Logger.display_time(elapsed_time.to_f).colorize.bold.white.to_s + "] #{Clear::SQL::Logger.colorize_query(sql)}") }
 
     o
   rescue e

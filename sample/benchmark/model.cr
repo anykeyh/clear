@@ -5,8 +5,6 @@ require "benchmark"
 `echo "DROP DATABASE IF EXISTS benchmark_clear;" | psql -U postgres`
 `echo "CREATE DATABASE benchmark_clear;" | psql -U postgres`
 Clear::SQL.init("postgres://postgres@localhost/benchmark_clear")
-# Setting log level to DEBUG will allow you to see the requests made by the system
-# Clear.logger.level = ::Logger::DEBUG
 
 init = <<-SQL
   CREATE TABLE benchmark (id serial PRIMARY KEY NOT NULL, y int);
