@@ -15,12 +15,8 @@ module Clear::Model::Converter::BcryptPasswordConverter
   end
 
   def self.to_db(x : ::Crypto::Bcrypt::Password?)
-    case x
-    when ::Crypto::Bcrypt::Password?
-      x.to_s
-    when Nil
-      nil
-    end
+    return nil if x.nil?
+    x.to_s
   end
 end
 

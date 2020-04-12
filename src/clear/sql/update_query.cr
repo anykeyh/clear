@@ -53,7 +53,7 @@ class Clear::SQL::UpdateQuery
         x
       when Hash(String, Updatable)
         print_value(x)
-      when Nil
+      else
         "NULL"
       end
     end.join(", ")

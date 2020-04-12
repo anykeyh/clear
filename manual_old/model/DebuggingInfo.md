@@ -26,10 +26,10 @@ be saved on the database.
 #### Log SQL queries
 
 Clear is offering SQL logging tools, with SQL syntax colorizing in your terminal.
-For activation, simply setup the logger to `DEBUG` level
+For activation, simply setup the logger to `Debug` level
 
 ```
-::Log.builder.bind "clear.*", Log::Severity::Debug, Log::IOBackend.new
+::Log.builder.bind "clear.*", ::Log::Severity::Debug, ::Log::IOBackend.new
 ```
 
 Also, Clear will log all query made, and when exception will show you the last query

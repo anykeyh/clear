@@ -14,7 +14,7 @@ module Clear::CLI::Command
     def run
       Colorize.enabled = !flags.no_color
 
-      ::Log.builder.bind "*", Log::Severity::Debug, Log::IOBackend.new if flags.verbose
+      ::Log.builder.bind "*", ::Log::Severity::Debug, ::Log::IOBackend.new if flags.verbose
 
       run_impl
     end
