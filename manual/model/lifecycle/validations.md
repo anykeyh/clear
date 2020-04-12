@@ -16,18 +16,18 @@ To create a custom validator, just override the `validate` method:
 
 ```ruby
 class Article
-    include Clear::Model
+  include Clear::Model
 
-    column name : String
-    column description : String
+  column name : String
+  column description : String
 
-    def validate
-        if description_column.present?
-            if description.size < 100
-                add_error("description", "must contains at least 100 characters")
-            end
+  def validate
+    if description_column.present?
+        if description.size < 100
+          add_error("description", "must contains at least 100 characters")
         end
     end
+  end
 end
 ```
 
@@ -41,14 +41,14 @@ To simplify the writing of validation code, you may want to use `on_presence(fie
 
 ```ruby
 class Article
-    include Clear::Model
+  include Clear::Model
 
-    column name : String
-    column description : String
+  column name : String
+  column description : String
 
-    def validate
-        ensure_than :description, "must contains at least 100 characters", &.size.<(100)
-    end
+  def validate
+    ensure_than :description, "must contains at least 100 characters", &.size.<(100)
+  end
 end
 ```
 
@@ -65,9 +65,9 @@ a = Article.new
 a.content = "Lorem ipsum"
 
 unless a.valid?
-    a.errors.each do |err|
-        puts "Error on column: #{err.column} => #{err.reason}"
-    end
+  a.errors.each do |err|
+    puts "Error on column: #{err.column} => #{err.reason}"
+  end
 end
 ```
 

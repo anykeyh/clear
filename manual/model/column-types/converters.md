@@ -1,7 +1,6 @@
 # Converters
 
-Any type from PostgreSQL can be converted using converter objects.
-By default, Clear converts already the main type of PostgreSQL.
+Any type from PostgreSQL can be converted using converter objects. By default, Clear converts already the main type of PostgreSQL.
 
 However, custom type may not be supported yet. Clear offers you the possibility to add a custom converter.
 
@@ -65,8 +64,7 @@ end
 
 ## `converter` option
 
-Optionally, you may want to use a converter which is not related to the type itself. To do so, you can pass the
-converter name as optional argument in the `column` declaration:
+Optionally, you may want to use a converter which is not related to the type itself. To do so, you can pass the converter name as optional argument in the `column` declaration:
 
 ```ruby
 class MyApp::MyModel
@@ -76,5 +74,5 @@ class MyApp::MyModel
 end
 ```
 
-By convention, converters which map struct and class directly are named using CamelCase, while converters which are not
-automatic should be named using the underscore notation.
+By convention, converters which map struct and class directly are named using CamelCase, while converters which are not automatic should be named using the underscore notation.
+

@@ -2,11 +2,14 @@
 
 ## Setup: As new project
 
-**Note**: Clear offers a CLI but still in Alpha. Documentation for building a new project with Clear + [Kemal](https://github.com/kemalcr/kemal) will be written once the feature is done. As of now, you can just follow the paragraph below.
+{% hint style="info" %}
+Clear offers a CLI \(_Command Line Interface_\) which is still in Alpha.   
+Documentation for building a new project with Clear + [Kemal](https://github.com/kemalcr/kemal) will be written once the feature is done. As of now, you can just follow the paragraph below.
+{% endhint %}
 
 ## Setup: In existing project
 
-```
+```text
 $ crystal init app <yourappname>
 $ cd <yourappname>
 ```
@@ -15,33 +18,33 @@ $ cd <yourappname>
 
 Add your dependency in the dependencies list of your `shard.yml`
 
-{% code-tabs %}
-{% code-tabs-item title="/shard.yml" %}
+{% tabs %}
+{% tab title="/shard.yml" %}
 ```yaml
 dependencies:
   clear:
     github: anykeyh/clear
     branch: master
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
+{% endtab %}
+{% endtabs %}
 
 Then download the library:
 
-{% code-tabs %}
-{% code-tabs-item title="terminal" %}
+{% tabs %}
+{% tab title="terminal" %}
 ```text
 $ shards install
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
+{% endtab %}
+{% endtabs %}
 
 ### In your source code
 
 Assuming your main entry point of your application is `src/main.cr` , you can require and initialize Clear:
 
-{% code-tabs %}
-{% code-tabs-item title="src/main.cr" %}
+{% tabs %}
+{% tab title="src/main.cr" %}
 ```ruby
 # append to your require list on top:
 require "clear"
@@ -50,8 +53,8 @@ require "clear"
 Clear::SQL.init("postgres://postgres@localhost/my_database", 
     connection_pool_size: 5)
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
+{% endtab %}
+{% endtabs %}
 
 #### Step by Step
 

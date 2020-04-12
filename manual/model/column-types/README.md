@@ -10,10 +10,9 @@ CREATE TABLE articles (
 );
 ```
 
-The definition of this model is quite straight forward:
+The definition of this model is straight forward:
 
-{% code-tabs %}
-{% code-tabs-item title="article.cr" %}
+{% code title="article.cr" %}
 ```ruby
 class Article
   include Clear::Model
@@ -24,34 +23,33 @@ class Article
   column id : Int32, primary: true, presence: false
 end
 ```
-{% endcode-tabs-item %}
-{% endcode-tabs %}
+{% endcode %}
 
 Cut step by step, this is what happens:
+
+First, we include all the magic of Clear in our class:
 
 ```ruby
 include Clear::Model
 ```
 
-First, we include all the magic in our class
+Second, we define `name` column as String. Clear will map automatically the column to the model attribute. 
 
 ```ruby
 column name : String
 ```
 
-Second, we define `name` column as String. Clear do the mapping automatically. You may notice the column is not nilable. It's because we said `NOT NULL` for this column in our database.
+Third, we define `description` . We defined `description`as `NULLABLE` in our database. To reflect this choice, we add `Nilable` `?` operator to our column.
 
-```ruby
+```
 column description : String?
 ```
 
-Third, we define `description`, this time a nilable string.
+Finally, we define `id` as our primary key for this model. While being declared as `NOT NULL`, the column is defined with a default value in PostgreSQL. Therefore, we tell Clear to not check value presence on save/validate by adding `presence: false` to the column definition.
 
 ```ruby
 column id : Int32, primary: true, presence: false
 ```
-
-Finally, we define `id` as our primary key for this model. While being declared as `NOT NULL`, the serial type offers an auto-increment default value. Therefore, we ask Clear to not check the presence of `id`.
 
 You may now use your model :
 
@@ -63,29 +61,16 @@ a.save!
 puts "Article has been properly saved as id=#{a.id}"
 ```
 
-By default, Clear use inflector to evaluate the name of the table from the model's name. You may want to override this behavior, by redefining `self.table` :
+By default, Clear will inflect the model name and use plural lower case version of the model name as table name \(here `articles`\).
+
+You may want to override this behavior, by redefining `self.table` :
 
 ```ruby
 class Model::Customer
   include Clear::Model
 
-  self.table = "clients" #< Different from infered "customers" table.
+  self.table = "clients" #< Different from infered "model_customers" table.
   # ...
-end
-```
-
-
-So in this exemple the class will be
-
-```ruby
-class Article
-  include Clear::Model
-  self.table = "articles"↲
-  
-  column name : String
-  column description : String?
-
-  column id : Int32, primary: true, presence: false
 end
 ```
 

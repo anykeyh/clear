@@ -1,8 +1,10 @@
 # Call migration script
 
+## Call migration script
+
 Clear offers a migration system. Migration allow you to handle state update of your database.
 
-Migration is a list of change going through a direction, up (commit changes) or down (rollback changes).
+Migration is a list of change going through a direction, up \(commit changes\) or down \(rollback changes\).
 
 In clear, a migration is defined like this:
 
@@ -21,13 +23,14 @@ class MyMigration1
   end
 end
 ```
-# Executing custom SQL
 
-The basic usage is to execute your own SQL (e.g. CREATE TABLE, ALTER, GRANT etc...).
+## Executing custom SQL
+
+The basic usage is to execute your own SQL \(e.g. CREATE TABLE, ALTER, GRANT etc...\).
 
 To do it, just call `execute` into your direction block.
 
-## Example
+### Example
 
 ```ruby
 class MyMigration1
@@ -45,11 +48,11 @@ class MyMigration1
 end
 ```
 
-# Built-in helpers
+## Built-in helpers
 
 Clear offers helpers for simplify declaring your migration
 
-## Creating a table
+### Creating a table
 
 Clear provides DSL looking like ActiveRecord for creating a table.
 
@@ -69,11 +72,11 @@ create_table(:users) do |t|
 end
 ```
 
-# Migration ordering
+## Migration ordering
 
 Migration should be ordered by a number. This number can be written in different way:
 
-- In case of mixing multiple classes into the same file, you can append the number at the end of the class name:
+* In case of mixing multiple classes into the same file, you can append the number at the end of the class name:
 
 ```ruby
 class Migration1
@@ -87,7 +90,7 @@ end
 
 If you're using one file per migration, you can prepend the ordering number at the start of the file name:
 
-```
+```text
 1234_migration.cr
 ```
 
@@ -107,7 +110,7 @@ class Migration1
 end
 ```
 
-# Calling your migration
+## Calling your migration
 
 Clear will offers soon a CLI; meanwhile, you can call migration update using methods in the Migration Manager:
 
@@ -121,3 +124,4 @@ Clear::Migration::Manager.instance.apply_all
 # All migrations with a version number below will be activated if not yet up.
 Clear::Migration::Manager.instance.apply_to(version_number)
 ```
+

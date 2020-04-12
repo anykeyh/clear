@@ -1,4 +1,6 @@
-# Eager Loading – Resolving the N+1 query problem
+# Eager Loading
+
+### Resolving the N+1 query problem
 
 N+1 query is a common anti-pattern which happens when you call a relation inside a collection of model. Let's take this example:
 
@@ -17,9 +19,9 @@ end
 # ....
 ```
 
-The problem is that it's way faster to query once 100 models than to query 100 times one model.
+Since it's  faster to query once 100 models than to query 100 times for each model, we could optimize it by calling two requests: one for the posts then one for the related categories.
 
-To deal with that, Clear offers convenient methods called `with_[model]` which build the query and cache the related model. Let's try it:
+Clear offers convenient methods called `with_[relation]` which build the query and cache the related model. Let's try it:
 
 ```ruby
 Post.query.with_category.each do |post|
@@ -31,11 +33,11 @@ end
 # SELECT * FROM posts;
 ```
 
-We just resolved our problem, and the ORM will call only two time the database !
+We just resolved our problem, and we will execute only two requests.
 
 ## Deep inclusion
 
-`with_[model]` helper allow you to pass a block, which can refine the related object. Therefore, it's easy to include far-related model like in this example:
+`with_[relation]` helper allows you to pass a block, which can refine the related objects. Therefore, it's easy to include far-related model like in this example:
 
 ```ruby
 User.query.with_posts(&.with_category).each do |user|
@@ -46,7 +48,7 @@ User.query.with_posts(&.with_category).each do |user|
 end
 ```
 
-Since the `with_[model]` helper return a collection in the block, you may want to even more optimize your query:
+Since the `with_[relation]` helper return a collection in the block, you can apply filtering over the query:
 
 ```ruby
 User.query.with_posts{ |p|  

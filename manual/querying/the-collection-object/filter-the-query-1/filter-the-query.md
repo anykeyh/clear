@@ -1,8 +1,6 @@
 # Filter the query – The Expression Engine
 
-Because Collection represents SQL SELECT query, they offer way to filter the query.
-Clear offer the Expression Engine, which is inspired by Sequel.
-It basically helps you to write complex filter conditions without sacrificing on code expressiveness.
+Because Collection represents SQL SELECT query, they offer way to filter the query. Clear offer the Expression Engine, which is inspired by Sequel. It basically helps you to write complex filter conditions without sacrificing on code expressiveness.
 
 ## The where clause
 

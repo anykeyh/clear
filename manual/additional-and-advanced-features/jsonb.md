@@ -14,7 +14,7 @@ The main limitation of JSONB is the "simple" syntax is not indexable. For exampl
   SELECT * FROM events WHERE payload->'source'->>'name' = 'Asana'
 ```
 
-will not use any indexes and will do a sequencial scan over your table.
+The code above will not use any indexes and will do a sequencial scan over your table.
 
 However, using the `@>` operator and a `gin` index on your column will improve drastically the performances:
 
