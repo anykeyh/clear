@@ -106,7 +106,7 @@ module Clear::Migration
     Clear::Migration::Manager.instance.ensure_ready
 
     Clear::SQL.transaction do
-      Clear.logger.info("[#{dir.to_s}] #{self.class.name}")
+      Log.info { "[#{dir.to_s}] #{self.class.name}" }
 
       change(dir)
 
