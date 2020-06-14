@@ -18,7 +18,7 @@ def initdb
   Clear::SQL.init("postgres://postgres@localhost/clear_spec", connection_pool_size: 5)
   Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec", connection_pool_size: 5)
 
-  Clear.logger.level = {% if flag?(:quiet) %} ::Logger::ERROR {% else %} Clear.logger.level = ::Logger::DEBUG {% end %}
+  {% if flag?(:quiet) %} Log.setup(:error) {% else %} Log.setup(:debug) {% end %}
 end
 
 def reinit_migration_manager
