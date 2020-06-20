@@ -29,5 +29,4 @@ module ModelSpec
       p.to_json(emit_nulls: false).should eq(%<{"tags":["a","b","c"],"flags_other_column_name":[1,2,3]}>)
     end
   end
-
 end

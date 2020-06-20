@@ -71,5 +71,4 @@ module Clear::Model::HasFactory
       Clear::Model::Factory.add("\{{@type}}", Clear::Model::Factory::SimpleFactory(\{{@type}}).new )
     end
   end
-
 end

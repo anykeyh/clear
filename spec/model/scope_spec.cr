@@ -52,9 +52,6 @@ module ScopeSpec
         ScopeModel.with_values(1,2,3).where{id < 10}.to_sql.should eq("SELECT * FROM \"scope_models\" WHERE \"value\" IN (1, 2, 3) AND (\"id\" < 10)")
         ScopeModel.with_values(1,2,3).count.should eq 3
       end
-
     end
-
   end
-
 end
