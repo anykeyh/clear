@@ -2,11 +2,11 @@ version: 1.0
 shards:
   admiral:
     github: jwaldrip/admiral.cr
-    commit: 09a81513a47535c4b59cbf0ab98cadcbf6ab70fb
+    commit: c3c3467953654554b72c24e7b853d6fbb23f10c0
 
   ameba:
     github: veelenga/ameba
-    commit: 1a255830363aa2e0c5bce25725f0f3eda5d15af4
+    commit: 3448de30daaf5e206a0c52132e11a47f7e8d0d6d
 
   db:
     github: crystal-lang/crystal-db
@@ -22,5 +22,5 @@ shards:
 
   pg:
     github: will/crystal-pg
-    commit: cafee448dc09ef487bd3941febce8796830f1bd7
+    commit: cafe111fc28e366c219144d5f656c3718d7357dd
 

@@ -120,7 +120,6 @@ class Clear::Expression
 
   # :nodoc:
   def self.safe_literal(x : ::Clear::Expression::Node)
-    raise "NODE?"
     x.resolve
   end
 

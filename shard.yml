@@ -2,6 +2,8 @@ name: clear
 
 version: 0.9
 
+crystal: 0.35.1
+
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
 
@@ -34,7 +36,5 @@ development_dependencies:
   ameba:
     github: veelenga/ameba
     branch: master
-
-crystal: 0.34
 
 license: MIT

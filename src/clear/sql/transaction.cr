@@ -25,7 +25,7 @@ module Clear::SQL::Transaction
   end
 
   @@savepoint_uid : UInt64 = 0_u64
-  @@commit_callbacks = Hash( DB::Database, Array(DB::Database -> Void) ).new { [] of DB::Database -> Void }
+  @@commit_callbacks = Hash( DB::Database, Array(DB::Database ->) ).new { [] of DB::Database -> }
 
   # Check whether the current pair of fiber/connection is in transaction
   # block or not.
