@@ -2,6 +2,15 @@ require "spec"
 
 require "../src/clear"
 
+# Avoiding migration number collisions
+MIGRATION_SPEC_MIGRATION_UID = 0x0100000000000000_u64
+MIGRATION_SPEC_MODEL_UID     = 0x0200000000000000_u64
+
+def get_uid(name : String)
+
+end
+
+
 class ::Crypto::Bcrypt::Password
   # Redefine the default cost to 4 (the minimum allowed) to accelerate greatly the tests.
   DEFAULT_COST = 4
