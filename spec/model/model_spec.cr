@@ -371,6 +371,7 @@ module ModelSpec
           u = User.new({first_name: "John"})
           post = Post.new({user: u, title: "some post" })
 
+          puts "Save user"
           u.save!
           post.save! # Exception
 
