@@ -43,8 +43,6 @@ class Clear::SQL::UpdateQuery
 
   # :nodoc:
   protected def print_value(row : Hash(String, Updatable)) : String
-    puts row.inspect
-
     row.map { |k, v| [Clear::SQL.escape(k.to_s), Clear::Expression[v]].join(" = ") }.join(", ")
   end
 
