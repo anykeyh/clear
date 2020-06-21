@@ -8,7 +8,8 @@ require "../../src/clear"
 # Initialize the connection
 Clear::SQL.init("postgres://postgres@localhost/sample_for_wiki")
 # Setting log level to DEBUG will allow you to see the requests made by the system
-Clear.logger.level = ::Logger::DEBUG
+
+Log.setup("clear.*", :debug)
 
 # Because it's a step by step tutorial
 def pause

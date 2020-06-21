@@ -1,3 +1,7 @@
+module Clear
+  Log = ::Log.for("clear")
+end
+
 # Require everything except the extensions and the CLI
 require "./version"
 require "./util"

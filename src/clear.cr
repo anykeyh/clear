@@ -1,4 +1,4 @@
-require "logger"
+require "log"
 
 # # Welcome to Clear ORM !
 #

@@ -31,8 +31,8 @@ By choice, Clear doesn't offers any configuration file (e.g. `database.yml`), so
 
 # Logging
 
-By default, logging of SQL output is disabled. To enable it, you need to change the logger verbosity level:
+By default, logging of SQL output is disabled. To enable it, you need to change the log module verbosity level:
 
 ```crystal
-Clear.logger.level = ::Logger::DEBUG
+::Log.setup("clear.*", :debug)
 ```

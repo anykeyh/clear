@@ -23,13 +23,13 @@ We've reimplemented `inspect` on models, to offer debugging insights:
 In this case, the `*` means a column is changed and the object is dirty and must
 be saved on the database.
 
-#### SQL Logging
+#### Log SQL queries
 
 Clear is offering SQL logging tools, with SQL syntax colorizing in your terminal.
 For activation, simply setup the logger to `DEBUG` level
 
 ```
-Clear.logger.level = ::Logger::DEBUG
+::Log.setup("clear.*", :debug)
 ```
 
 Also, Clear will log all query made, and when exception will show you the last query

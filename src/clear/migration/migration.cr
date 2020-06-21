@@ -60,6 +60,8 @@
 #
 ###
 module Clear::Migration
+  Log = ::Log.for("clear.migration")
+
   include Clear::ErrorMessages
 
   abstract def uid : Int64
