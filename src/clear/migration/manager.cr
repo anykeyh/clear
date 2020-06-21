@@ -120,13 +120,13 @@ class Clear::Migration::Manager
     end
 
     if operations.empty?
-      Log.verbose{ "Nothing to do." }
+      Log.info{ "Nothing to do." }
       return
     end
 
-    Log.verbose{ "Migrations will be applied (in this order):" }
+    Log.info{ "Migrations will be applied (in this order):" }
     operations.each do |(uid, d)|
-      Log.verbose{ "#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}" }
+      Log.info{ "#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}" }
     end
 
     operations.each do |(uid, d)|
