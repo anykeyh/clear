@@ -250,13 +250,18 @@ module Clear
     end
 
     # Start a DELETE table query
-    def delete(table : Symbolic)
-      Clear::SQL::DeleteQuery.new.from(table)
+    def delete(table = nil)
+      Clear::SQL::DeleteQuery.new("default").from(table)
+    end
+
+    # Start a DELETE table query on specific connection
+    def delete(connection : Symbolic, table = nil)
+      Clear::SQL::DeleteQuery.new(connection).from(table)
     end
 
     # Start an INSERT INTO table query
-    def insert_into(table)
-      Clear::SQL::InsertQuery.new(table)
+    def insert_into(table, schema = nil)
+      Clear::SQL::InsertQuery.new(table, schema)
     end
 
     # Start an INSERT INTO table query
@@ -264,8 +269,12 @@ module Clear
     # ```
     # Clear::SQL.insert_into("table", id: 1, name: "hello")
     # ```
-    def insert_into(table, *args)
-      Clear::SQL::InsertQuery.new(table).values(*args)
+    def insert_into(table, schema, *args)
+      Clear::SQL::InsertQuery.new(table, schema).values(*args)
+    end
+
+    def insert_into(table, args : NamedTuple)
+      Clear::SQL::InsertQuery.new(table, nil).values(*args)
     end
 
     # Create a new INSERT query
@@ -274,17 +283,28 @@ module Clear
     end
 
     # Alias of `insert_into`, for hurry developers
+    def insert(table, schema, *args)
+      insert_into(table, schema, *args)
+    end
     def insert(table, *args)
-      insert_into(table, *args)
+      insert_into(table, nil, *args)
+    end
+
+    def insert(table, schema, args : NamedTuple)
+      insert_into(table, schema, args)
     end
 
     def insert(table, args : NamedTuple)
-      insert_into(table, args)
+      insert_into(table, nil, args)
     end
 
     # Start a UPDATE table query
     def update(table)
-      Clear::SQL::UpdateQuery.new(table)
+      Clear::SQL::UpdateQuery.new(table, nil)
+    end
+
+    def update(table, schema)
+      Clear::SQL::UpdateQuery.new(table, schema)
     end
 
     # Start a SELECT FROM table query

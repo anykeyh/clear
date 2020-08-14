@@ -32,7 +32,7 @@ module Clear::Model::HasSaving
           item.to_h
         end
 
-        query = Clear::SQL.insert_into(self.table, hashes).returning("*")
+        query = Clear::SQL.insert_into(self.table, self.schema, hashes).returning("*")
         on_conflict.call(query) if on_conflict
 
         o = [] of self
@@ -102,12 +102,12 @@ module Clear::Model::HasSaving
 
           if h.any?
             with_triggers(:update) do
-              Clear::SQL.update(self.class.table).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
+              Clear::SQL.update(self.class.table, self.class.schema).set(update_h).where { var("#{self.class.pkey}") == pkey }.execute(@@connection)
             end
           end
         else
           with_triggers(:create) do
-            query = Clear::SQL.insert_into(self.class.table, to_h).returning("*")
+            query = Clear::SQL.insert_into(self.class.table, self.class.schema, to_h).returning("*")
             on_conflict.call(query) if on_conflict
             hash = query.execute(@@connection)
 

@@ -28,16 +28,17 @@ class Clear::SQL::InsertQuery
   getter keys : Array(Symbolic) = [] of Symbolic
   getter values : SelectBuilder | Array(Array(Inserable)) = [] of Array(Inserable)
   getter! table : Symbol | String
+  getter! schema : Symbol | String | Nil
   getter returning : String?
 
-  def initialize(@table : Symbol | String)
+  def initialize(@table : Symbol | String, @schema : Symbol | String | Nil)
   end
 
-  def initialize(@table : Symbol | String, values)
+  def initialize(@table : Symbol | String, @schema : Symbol | String | Nil, values)
     self.values(values)
   end
 
-  def into(@table : Symbol | String)
+  def into(@table : Symbol | String, @schema : Symbol | String | Nil)
   end
 
   def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Void)
@@ -188,7 +189,7 @@ class Clear::SQL::InsertQuery
   def to_sql
     raise QueryBuildingError.new "You must provide a `into` clause" unless table = @table
 
-    table = Clear::SQL.escape(table.to_s)
+    table = [Clear::SQL.escape((schema||"public").to_s), Clear::SQL.escape(table.to_s)].join(".")
 
     o = [print_ctes, "INSERT INTO", table, print_keys]
     v = @values

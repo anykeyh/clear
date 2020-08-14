@@ -9,6 +9,7 @@ class Clear::SQL::UpdateQuery
 
   @values : Array(UpdateInstruction) = [] of UpdateInstruction
   @table : Symbolic?
+  @table : String | Symbol | Nil
 
   include Query::CTE
   include Query::Connection
@@ -16,7 +17,7 @@ class Clear::SQL::UpdateQuery
   include Query::Where
   include Query::Execute
 
-  def initialize(@table, @wheres = [] of Clear::Expression::Node)
+  def initialize(@table, @schema : String | Symbol | Nil, @wheres = [] of Clear::Expression::Node)
   end
 
   def set(row : NamedTuple)
@@ -61,7 +62,7 @@ class Clear::SQL::UpdateQuery
 
   def to_sql
     # raise Clear::ErrorMessages.query_building_error("Update Query must have a table clause.") if @table.nil?
-    table = @table.is_a?(Symbol) ? SQL.escape(@table.to_s) : @table
+    table = [Clear::SQL.escape((@schema||"public").to_s), Clear::SQL.escape(@table.to_s)].join(".")
 
     [print_ctes, "UPDATE", table, "SET", print_values, print_wheres].compact.join(" ")
   end
