@@ -6,7 +6,7 @@ However, custom type may not be supported yet. Clear offers you the possibility 
 
 ## Declare a new converter
 
-The example below with a converter for a `Color` structure shoudl be straight-forward:
+The example below with a converter for a `Color` structure should be straight-forward:
 
 ```ruby
 require "./base"
