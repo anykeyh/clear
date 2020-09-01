@@ -75,4 +75,3 @@ end
 ```
 
 By convention, converters which map struct and class directly are named using CamelCase, while converters which are not automatic should be named using the underscore notation.
-
