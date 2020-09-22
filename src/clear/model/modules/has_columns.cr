@@ -456,16 +456,16 @@ module Clear::Model::HasColumns
 
     # # Usage
 
-    def self.pure_from_json(request_body)
-      Assigner.from_json(request_body)
+    def self.pure_from_json(string_or_io)
+      Assigner.from_json(string_or_io)
     end
 
-    def self.new_from_json(request_body)
-      Assigner.from_json(request_body).new_with_json
+    def self.new_from_json(string_or_io)
+      Assigner.from_json(string_or_io).new_with_json
     end
 
-    def self.update_from_json(model, request_body)
-      Assigner.from_json(request_body).update_with_json(model)
+    def self.update_from_json(model, string_or_io)
+      Assigner.from_json(string_or_io).update_with_json(model)
     end
   end
 end
