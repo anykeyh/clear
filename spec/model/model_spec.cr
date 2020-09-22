@@ -374,7 +374,7 @@ module ModelSpec
           reinit
 
           u = User.new({first_name: "John"})
-          post = Post.new({user: u, title: "some post" })
+          post = Post.new({user: u, title: "some post"})
 
           u.save!
           post.save! # Exception
@@ -690,6 +690,24 @@ module ModelSpec
 
         # Test insertion of empty array
         Post.create!({title: "A post", user_id: u.id, tags: [] of String})
+      end
+    end
+
+    it "can create a new model from json", focus: true do
+      temporary do
+        reinit
+
+        u1_body = {first_name: "Duke"}
+        u1 = User.pure_from_json(u1_body.to_json)
+        u1.first_name.should eq(u1_body["first_name"])
+
+        u2_body = {first_name: "Steve"}
+        u2 = User.new_from_json(u2_body.to_json)
+        u2.first_name.should eq(u2_body["first_name"])
+
+        u3_body = {first_name: "Caspian"}
+        u3 = User.update_from_json(u2, u3_body.to_json)
+        u3.first_name.should eq(u3_body["first_name"])
       end
     end
 

@@ -23,7 +23,7 @@ module Clear::Model::HasColumns
   # to the given value, while the `changed?` flag remains false.
   # If you call save on a persisted model, the reset columns won't be
   # commited in the UPDATE query.
-  def reset( **t : **T ) forall T
+  def reset(**t : **T) forall T
     # Dev note:
     # ---------
     # The current implementation of reset is overriden on finalize (see below).
@@ -32,22 +32,21 @@ module Clear::Model::HasColumns
   end
 
   # See `reset(**t : **T)`
-  def reset( h : Hash(String, _) )
+  def reset(h : Hash(String, _))
   end
 
   # See `reset(**t : **T)`
-  def reset( h : Hash(Symbol, _) )
+  def reset(h : Hash(Symbol, _))
   end
-
 
   # Set one or multiple columns to a specific value
   # This two are equivalents:
   #
   # ```
-  #   model.set(a: 1)
-  #   model.a = 1
+  # model.set(a: 1)
+  # model.a = 1
   # ```
-  def set( ** t : **T ) forall T
+  def set(**t : **T) forall T
     # Dev note:
     # ---------
     # The current implementation of set is overriden on finalize (see below).
@@ -56,20 +55,19 @@ module Clear::Model::HasColumns
   end
 
   # See `set(**t : **T)`
-  def set( h : Hash(String, _) )
+  def set(h : Hash(String, _))
   end
 
   # See `set(**t : **T)`
-  def set( h : Hash(Symbol, _) )
+  def set(h : Hash(Symbol, _))
   end
-
 
   # Access to direct SQL attributes given by the request used to build the model.
   # Access is read only and updating the model columns will not apply change to theses columns.
   #
   # ```
-  #   model = Model.query.select("MIN(id) as min_id").first(fetch_columns: true)
-  #   id = model["min_id"].to_i32
+  # model = Model.query.select("MIN(id) as min_id").first(fetch_columns: true)
+  # id = model["min_id"].to_i32
   # ```
   def [](x) : ::Clear::SQL::Any
     attributes[x]
@@ -86,14 +84,14 @@ module Clear::Model::HasColumns
 
   # Returns the current hash of the modified values:
   #
-  #```
+  # ```
   # model = Model.query.first!
   # model.update_h # => {}
   # model.first_name = "hello"
   # model.update_h # => { "first_name" => "hello" }
   # model.save!
   # model.update_h # => {}
-  #```
+  # ```
   def update_h
     {} of String => ::Clear::SQL::Any
   end
@@ -106,7 +104,7 @@ module Clear::Model::HasColumns
   # ```
   # # Assuming our model has a primary key, a first name and last name and two timestamp columns:
   # model = Model.query.select("first_name, last_name").first!
-  # model.to_h # => { "first_name" => "Johnny", "last_name" => "Walker" }
+  # model.to_h             # => { "first_name" => "Johnny", "last_name" => "Walker" }
   # model.to_h(full: true) # => {"id" => nil, "first_name" => "Johnny", "last_name" => "Walker", "created_at" => nil, "updated_at" => nil}
   # ```
   def to_h(full = false)
@@ -165,20 +163,21 @@ module Clear::Model::HasColumns
         else
           raise "Unknown: #{_type}, #{_type.class}"
         end
-      end %}
+      end
+    %}
 
     {%
       db_column_name = column_name == nil ? name.var : column_name.id
 
       COLUMNS["#{db_column_name.id}"] = {
-         type:      _type,
-         primary:   primary,
-         converter: converter,
-         db_column_name: "#{db_column_name.id}",
-         crystal_variable_name: name.var,
-         presence:  presence,
-       }
-      %}
+        type:                  _type,
+        primary:               primary,
+        converter:             converter,
+        db_column_name:        "#{db_column_name.id}",
+        crystal_variable_name: name.var,
+        presence:              presence,
+      }
+    %}
   end
 
   # :nodoc:
@@ -193,8 +192,8 @@ module Clear::Model::HasColumns
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
       {% if converter == nil %}
-        {% raise "No converter found for `#{settings[:converter].id}`.\n"+
-                 "The type is probably not supported natively by Clear.\n"+
+        {% raise "No converter found for `#{settings[:converter].id}`.\n" +
+                 "The type is probably not supported natively by Clear.\n" +
                  "Please refer to the manual to create a custom converter." %}
       {% end %}
 
@@ -425,6 +424,48 @@ module Clear::Model::HasColumns
 
       return false
     end
+  end
 
+  # Used to generate a struct with instance variables from COLUMNS
+  macro __generate_from_json_methods__
+    struct Assigner
+      include JSON::Serializable
+
+      {% for name, settings in COLUMNS %}
+        getter {{name.id}} : {{settings[:type]}}?
+      {% end %}
+
+      def new_with_json
+        generate_from_json({{@type}}.new) # Loop through instance variables and assign to the newly created orm instance
+      end
+
+      def update_with_json(to_update_model)
+        generate_from_json(to_update_model) # Loop through instance variables and assign to the orm instance you are updating
+      end
+
+      macro finished
+        private def generate_from_json(model)
+          {% for name, settings in COLUMNS %}
+            model.{{name.id}} = @{{name.id}}.not_nil! unless @{{name.id}}.nil?
+          {% end %}
+
+          model
+        end
+      end
+    end
+
+    # # Usage
+
+    def self.pure_from_json(request_body)
+      Assigner.from_json(request_body)
+    end
+
+    def self.new_from_json(request_body)
+      Assigner.from_json(request_body).new_with_json
+    end
+
+    def self.update_from_json(model, request_body)
+      Assigner.from_json(request_body).update_with_json(model)
+    end
   end
 end
