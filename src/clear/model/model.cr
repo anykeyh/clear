@@ -20,6 +20,7 @@ module Clear::Model
   include Clear::Model::ClassMethods
   include Clear::Model::HasFactory
   include Clear::Model::Initializer
+  include Clear::Model::JSONDeserialize
 
   getter cache : Clear::Model::QueryCache?
 
