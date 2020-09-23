@@ -42,23 +42,28 @@ macro columns_to_instance_vars
 end
 
 module Clear::Model::JSONSerializable
-  macro included # When included into Model
-    macro inherited #Polymorphism
+  macro included
+    macro included # When included into Model
+      macro inherited #Polymorphism
+        macro finished
+          columns_to_instance_vars
+        end
+      end
+
       macro finished
         columns_to_instance_vars
       end
     end
-
-    macro finished
-      columns_to_instance_vars
-    end
   end
+end
+
+module Clear::Model
+  include Clear::Model::JSONSerializable
 end
 
 # # Usage
 class ItemTest
   include Clear::Model
-  include Clear::Model::JSONSerializable
 
   column id : Int64, primary: true, presence: false
   column title : String
