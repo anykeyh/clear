@@ -176,42 +176,6 @@ module ModelSpec
     ModelSpecMigration123.new.apply(Clear::Migration::Direction::UP)
   end
 
-  describe "Clear::Model::JSONSerializable" do
-    it "can create a new model from json", focus: true do
-      temporary do
-        reinit
-
-        u1_body = {first_name: "Duke"}
-        u1 = User.from_json(u1_body.to_json)
-        u1.first_name.should eq(u1_body["first_name"])
-
-        u2_body = {first_name: "Steve"}
-        u2 = User.new(u2_body.to_json)
-        u2.first_name.should eq(u2_body["first_name"])
-
-        u3_body = {first_name: "Caspian"}
-        u3 = User.set(u2, u3_body.to_json)
-        u3.first_name.should eq(u3_body["first_name"])
-
-        u4_body = {first_name: "George"}
-        u4 = User.create(u4_body.to_json)
-        u4.should eq(true)
-
-        u5_body = {first_name: "Eliza"}
-        u5 = User.create!(u5_body.to_json)
-        u5.first_name.should eq(u5_body["first_name"])
-
-        u6_body = {first_name: "Angelica"}
-        u6 = User.update(u3, u6_body.to_json)
-        u6.should eq(true)
-
-        u7_body = {first_name: "Aaron"}
-        u7 = User.update!(u5, u7_body.to_json)
-        u7.first_name.should eq(u7_body["first_name"])
-      end
-    end
-  end
-
   describe "Clear::Model" do
     context "fields management" do
       it "can load from tuple" do
@@ -878,6 +842,42 @@ module ModelSpec
           users.map(&.first_name).should eq ["user0", "user2", "user4", "user6", "user8"]
           users.total_entries.should eq 8
         end
+      end
+    end
+  end
+
+  describe "Clear::Model::JSONSerializable" do
+    it "can create a new model from json", focus: true do
+      temporary do
+        reinit
+
+        u1_body = {first_name: "Duke"}
+        u1 = User.from_json(u1_body.to_json)
+        u1.first_name.should eq(u1_body["first_name"])
+
+        u2_body = {first_name: "Steve"}
+        u2 = User.new(u2_body.to_json)
+        u2.first_name.should eq(u2_body["first_name"])
+
+        u3_body = {first_name: "Caspian"}
+        u3 = User.set(u2, u3_body.to_json)
+        u3.first_name.should eq(u3_body["first_name"])
+
+        u4_body = {first_name: "George"}
+        u4 = User.create(u4_body.to_json)
+        u4.should eq(true)
+
+        u5_body = {first_name: "Eliza"}
+        u5 = User.create!(u5_body.to_json)
+        u5.first_name.should eq(u5_body["first_name"])
+
+        u6_body = {first_name: "Angelica"}
+        u6 = User.update(u3, u6_body.to_json)
+        u6.should eq(true)
+
+        u7_body = {first_name: "Aaron"}
+        u7 = User.update!(u5, u7_body.to_json)
+        u7.first_name.should eq(u7_body["first_name"])
       end
     end
   end
