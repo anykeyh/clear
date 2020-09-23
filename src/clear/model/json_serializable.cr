@@ -33,10 +33,6 @@ macro columns_to_instance_vars
     Assigner.from_json(string_or_io).json_to_new
   end
 
-  def self.set(model, string_or_io : String | IO)
-    Assigner.from_json(string_or_io).json_to_update(model)
-  end
-
   def self.create(string_or_io : String | IO)
     self.new(string_or_io).save
   end
@@ -45,12 +41,16 @@ macro columns_to_instance_vars
     self.new(string_or_io).save!
   end
 
-  def self.update(model, string_or_io : String | IO)
-    self.set(model, string_or_io).save
+  def set(string_or_io : String | IO)
+    Assigner.from_json(string_or_io).json_to_update(self)
   end
 
-  def self.update!(model, string_or_io : String | IO)
-    self.set(model, string_or_io).save!
+  def update(string_or_io : String | IO)
+    set(string_or_io).save
+  end
+
+  def update!(string_or_io : String | IO)
+    set(string_or_io).save!
   end
 end
 
