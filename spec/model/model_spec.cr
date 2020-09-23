@@ -863,4 +863,40 @@ module ModelSpec
       end
     end
   end
+
+  describe "Clear::Model::JSONSerializable" do
+    it "can create a new model from json", focus: true do
+      temporary do
+        reinit
+
+        u1_body = {first_name: "Duke"}
+        u1 = User.from_json(u1_body.to_json)
+        u1.first_name.should eq(u1_body["first_name"])
+
+        u2_body = {first_name: "Steve"}
+        u2 = User.new(u2_body.to_json)
+        u2.first_name.should eq(u2_body["first_name"])
+
+        u3_body = {first_name: "Caspian"}
+        u3 = u2.set(u3_body.to_json)
+        u3.first_name.should eq(u3_body["first_name"])
+
+        u4_body = {first_name: "George"}
+        u4 = User.create(u4_body.to_json)
+        u4.should eq(true)
+
+        u5_body = {first_name: "Eliza"}
+        u5 = User.create!(u5_body.to_json)
+        u5.first_name.should eq(u5_body["first_name"])
+
+        u6_body = {first_name: "Angelica"}
+        u6 = u3.update(u6_body.to_json)
+        u6.should eq(true)
+
+        u7_body = {first_name: "Aaron"}
+        u7 = u5.update!(u7_body.to_json)
+        u7.first_name.should eq(u7_body["first_name"])
+      end
+    end
+  end
 end
