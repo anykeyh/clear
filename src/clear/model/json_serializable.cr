@@ -1,6 +1,3 @@
-require "spec"
-require "json"
-
 macro columns_to_instance_vars
   struct Assigner
     include JSON::Serializable
@@ -39,6 +36,22 @@ macro columns_to_instance_vars
   def self.set(model, string_or_io : String | IO)
     Assigner.from_json(string_or_io).json_to_update(model)
   end
+
+  def self.create(string_or_io : String | IO)
+    self.new(string_or_io).save
+  end
+
+  def self.create!(string_or_io : String | IO)
+    self.new(string_or_io).save!
+  end
+
+  def self.update(model, string_or_io : String | IO)
+    self.set(model, string_or_io).save
+  end
+
+  def self.update!(model, string_or_io : String | IO)
+    self.set(model, string_or_io).save!
+  end
 end
 
 module Clear::Model::JSONSerializable
@@ -55,38 +68,4 @@ module Clear::Model::JSONSerializable
       end
     end
   end
-end
-
-module Clear::Model
-  include Clear::Model::JSONSerializable
-end
-
-# # Usage
-class ItemTest
-  include Clear::Model
-
-  column id : Int64, primary: true, presence: false
-  column title : String
-  column body : String?
-  column published : Bool?
-end
-
-it "should create a new ItemTest", focus: true do
-  i1_body = {title: "Pure Title", body: "Pure Body", published: false}
-  i1 = ItemTest.from_json(i1_body.to_json)
-  i1.title.should eq(i1_body["title"])
-  i1.body.should eq(i1_body["body"])
-  i1.published.should eq(i1_body["published"])
-
-  i2_body = {title: "New Title", body: "New Body", published: true}
-  i2 = ItemTest.new(i2_body.to_json)
-  i2.title.should eq(i2_body["title"])
-  i2.body.should eq(i2_body["body"])
-  i2.published.should eq(i2_body["published"])
-
-  i3_body = {title: "Updated Title"}
-  i3 = ItemTest.set(i2, i3_body.to_json)
-  i3.title.should eq(i3_body["title"])
-  i3.body.should eq(i2_body["body"])
-  i3.published.should eq(i2_body["published"])
 end
