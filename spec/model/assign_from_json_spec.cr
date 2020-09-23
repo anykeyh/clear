@@ -8,16 +8,16 @@ macro columns_to_instance_vars
       getter {{name.id}} : {{settings[:type]}}?
     {% end %}
 
-    def new_with_json
-      generate_from_json({{@type}}.new) # Loop through instance variables and assign to the newly created orm instance
+    def json_to_new
+      assign_model_from_json({{@type}}.new) # Loop through instance variables and assign to the newly created orm instance
     end
 
-    def update_with_json(to_update_model)
-      generate_from_json(to_update_model) # Loop through instance variables and assign to the orm instance you are updating
+    def json_to_update(to_update_model)
+      assign_model_from_json(to_update_model) # Loop through instance variables and assign to the orm instance you are updating
     end
 
     macro finished
-      def generate_from_json(model)
+      def assign_model_from_json(model)
         {% for name, settings in COLUMNS %}
           model.{{name.id}} = @{{name.id}}.not_nil! unless @{{name.id}}.nil?
         {% end %}
@@ -32,11 +32,11 @@ macro columns_to_instance_vars
   end
 
   def self.new_from_json(string_or_io)
-    Assigner.from_json(string_or_io).new_with_json
+    Assigner.from_json(string_or_io).json_to_new
   end
 
   def self.update_from_json(model, string_or_io)
-    Assigner.from_json(string_or_io).update_with_json(model)
+    Assigner.from_json(string_or_io).json_to_update(model)
   end
 end
 
