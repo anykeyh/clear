@@ -846,7 +846,7 @@ module ModelSpec
     end
   end
 
-  describe "Clear::Model::JSONSerializable" do
+  describe "Clear::Model::JSONDeserialize" do
     it "can create a new model from json", focus: true do
       temporary do
         reinit

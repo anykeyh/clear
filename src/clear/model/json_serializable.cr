@@ -6,16 +6,16 @@ macro columns_to_instance_vars
       getter {{name.id}} : {{settings[:type]}}?
     {% end %}
 
-    def json_to_new
-      assign_model_from_json({{@type}}.new) # Loop through instance variables and assign to the newly created orm instance
+    def to_create
+      parse_from_json({{@type}}.new) # Loop through instance variables and assign to the newly created orm instance
     end
 
-    def json_to_update(to_update_model)
-      assign_model_from_json(to_update_model) # Loop through instance variables and assign to the orm instance you are updating
+    def to_update(to_update_model)
+      parse_from_json(to_update_model) # Loop through instance variables and assign to the orm instance you are updating
     end
 
     macro finished
-      def assign_model_from_json(model)
+      def parse_from_json(model)
         {% for name, settings in COLUMNS %}
           model.{{name.id}} = @{{name.id}}.not_nil! unless @{{name.id}}.nil?
         {% end %}
@@ -30,7 +30,7 @@ macro columns_to_instance_vars
   end
 
   def self.new(string_or_io : String | IO)
-    Assigner.from_json(string_or_io).json_to_new
+    Assigner.from_json(string_or_io).to_create
   end
 
   def self.create(string_or_io : String | IO)
@@ -42,7 +42,7 @@ macro columns_to_instance_vars
   end
 
   def set(string_or_io : String | IO)
-    Assigner.from_json(string_or_io).json_to_update(self)
+    Assigner.from_json(string_or_io).to_update(self)
   end
 
   def update(string_or_io : String | IO)
@@ -54,7 +54,7 @@ macro columns_to_instance_vars
   end
 end
 
-module Clear::Model::JSONSerializable
+module Clear::Model::JSONDeserialize
   macro included
     macro included # When included into Model
       macro inherited #Polymorphism
