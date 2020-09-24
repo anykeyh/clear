@@ -846,7 +846,7 @@ module ModelSpec
     end
   end
 
-  describe "Clear::Model::JSONDeserialize" do
+  describe "Clear::Model::JSONDeserialize", focus: true do
     it "can create a new model from json" do
       temporary do
         reinit
@@ -865,7 +865,7 @@ module ModelSpec
 
         u4_body = {first_name: "George"}
         u4 = User.create(u4_body.to_json)
-        u4.should eq(true)
+        u4.first_name.should eq(u4_body["first_name"])
 
         u5_body = {first_name: "Eliza"}
         u5 = User.create!(u5_body.to_json)
@@ -873,7 +873,7 @@ module ModelSpec
 
         u6_body = {first_name: "Angelica"}
         u6 = u3.update(u6_body.to_json)
-        u6.should eq(true)
+        u6.first_name.should eq(u6_body["first_name"])
 
         u7_body = {first_name: "Aaron"}
         u7 = u5.update!(u7_body.to_json)

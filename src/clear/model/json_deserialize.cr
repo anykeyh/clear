@@ -34,7 +34,9 @@ macro columns_to_instance_vars
   end
 
   def self.create(string_or_io : String | IO)
-    self.new(string_or_io).save
+    mdl = self.new(string_or_io)
+    mdl.save
+    mdl
   end
 
   def self.create!(string_or_io : String | IO)
@@ -46,7 +48,9 @@ macro columns_to_instance_vars
   end
 
   def update(string_or_io : String | IO)
-    set(string_or_io).save
+    mdl = set(string_or_io)
+    mdl.save
+    mdl
   end
 
   def update!(string_or_io : String | IO)
