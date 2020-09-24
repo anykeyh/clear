@@ -26,35 +26,31 @@ macro columns_to_instance_vars
   end
 
   def self.from_json(string_or_io : String | IO)
-    Assigner.from_json(string_or_io)
-  end
-
-  def self.new(string_or_io : String | IO)
     Assigner.from_json(string_or_io).create
   end
 
-  def self.create(string_or_io : String | IO)
-    mdl = self.new(string_or_io)
+  def self.create_from_json(string_or_io : String | IO)
+    mdl = self.from_json(string_or_io)
     mdl.save
     mdl
   end
 
-  def self.create!(string_or_io : String | IO)
-    self.new(string_or_io).save!
+  def self.create_from_json!(string_or_io : String | IO)
+    self.from_json(string_or_io).save!
   end
 
-  def set(string_or_io : String | IO)
+  def set_from_json(string_or_io : String | IO)
     Assigner.from_json(string_or_io).update(self)
   end
 
-  def update(string_or_io : String | IO)
-    mdl = set(string_or_io)
+  def update_from_json(string_or_io : String | IO)
+    mdl = set_from_json(string_or_io)
     mdl.save
     mdl
   end
 
-  def update!(string_or_io : String | IO)
-    set(string_or_io).save!
+  def update_from_json!(string_or_io : String | IO)
+    set_from_json(string_or_io).save!
   end
 end
 
