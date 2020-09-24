@@ -15,13 +15,26 @@ module Clear::Model::JSONDeserialize
   end
 end
 
+module Missing
+  extend self
+
+  def self.new(pull : ::JSON::PullParser) : Missing
+    raise "will never serialize"
+  end
+
+  def self.from_json(string)
+    raise "will never serialize from json"
+  end
+end
+
 # Used internally to deserialise json
 macro columns_to_instance_vars
+   # :nodoc:
   struct Assigner
-    include JSON::Serializable
+    include ::JSON::Serializable
 
     {% for name, settings in COLUMNS %}
-      getter {{name.id}} : {{settings[:type]}}?
+      getter {{name.id}} : {{settings[:type]}} | Missing = Missing
     {% end %}
 
     # Create a new empty model and fill the columns with object's instance variables
@@ -38,7 +51,7 @@ macro columns_to_instance_vars
       # Assign properties to the model inputted with object's instance variables
       protected def assign_columns(model)
         {% for name, settings in COLUMNS %}
-          model.{{name.id}} = @{{name.id}}.not_nil! unless @{{name.id}}.nil?
+          model.{{name.id}} = @{{name.id}}.as({{settings[:type]}}) if @{{name.id}}.is_a?({{settings[:type]}})
         {% end %}
 
         model
