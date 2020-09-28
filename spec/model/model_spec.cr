@@ -82,7 +82,7 @@ module ModelSpec
 
     column first_name : String
     column last_name : String?
-    column middle_name : String?
+    column middle_name : String?, mass_assign: false
     column active : Bool?
 
     column notification_preferences : JSON::Any, presence: false
@@ -849,9 +849,7 @@ module ModelSpec
   describe "Clear::Model::JSONDeserialize" do
     it "can create a model json IO" do
       user_body = {first_name: "foo"}
-      io = IO::Memory.new
-      io << user_body.to_json
-      io.rewind
+      io = IO::Memory.new user_body.to_json
       user = User.from_json(io)
       user.first_name.should eq user_body["first_name"]
     end
@@ -901,6 +899,30 @@ module ModelSpec
         u4_body = {first_name: "Aaron"}
         u4 = u3.update_from_json!(u4_body.to_json)
         u4.first_name.should eq(u4_body["first_name"])
+      end
+    end
+  end
+
+  describe "Clear::Model::HasColumns mass_assign" do
+    it "should do mass_assignment" do
+      temporary do
+        reinit
+        u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
+        u1 = User.create_from_json(u1_body.to_json, trusted: true)
+        u1.first_name.should eq u1_body["first_name"]
+        u1.last_name.should eq u1_body["last_name"]
+        u1.middle_name.should eq u1_body["middle_name"]
+      end
+    end
+
+    it "should not do mass_assignment" do
+      temporary do
+        reinit
+        u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
+        u1 = User.create_from_json(u1_body.to_json)
+        u1.first_name.should eq u1_body["first_name"]
+        u1.last_name.should eq u1_body["last_name"]
+        u1.middle_name.should be_nil
       end
     end
   end
