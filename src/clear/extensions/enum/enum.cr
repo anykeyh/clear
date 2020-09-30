@@ -40,6 +40,21 @@ module Clear
         end
       end
     end
+
+    # Allow from_json method for Clear::Enum
+    macro inherited
+      macro finished
+        def initialize(value : (::JSON::PullParser | String))
+          if value.is_a?(String)
+            @value = value
+          else
+            str = value.read_string
+            str.in?(self.class.authorized_values) || raise ::Clear::IllegalEnumValueError.new("Illegal enum value for `#{self.class}`: '#{str}'")
+            @value = str
+          end
+        end
+      end
+    end
   end
 
   # ## Enum
@@ -80,35 +95,35 @@ module Clear
   # Now, you can assign the enum:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = MyApp::Gender::Male
+  # u = User.new
+  # u.gender = MyApp::Gender::Male
   # ```
   #
   # You can dynamically check and build the enumeration values:
   #
   # ```crystal
-  #   MyApp::Gender.authorized_values # < return ["male", "female"]
-  #   MyApp::Gender.all               # < return [MyApp::Gender::Male, MyApp::Gender::Female]
+  # MyApp::Gender.authorized_values # < return ["male", "female"]
+  # MyApp::Gender.all               # < return [MyApp::Gender::Male, MyApp::Gender::Female]
   #
-  #   MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
-  #   MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
+  # MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
+  # MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
   #
-  #   MyApp::Gender.valid?("female")  # < Return true
-  #   MyApp::Gender.valid?("unknown") # < Return false
+  # MyApp::Gender.valid?("female")  # < Return true
+  # MyApp::Gender.valid?("unknown") # < Return false
   # ```
   #
   # However, you cannot write:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = "male"
+  # u = User.new
+  # u.gender = "male"
   # ```
   #
   # But instead:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = MyApp::Gender::Male
+  # u = User.new
+  # u.gender = MyApp::Gender::Male
   # ```
   macro enum(name, *values, &block)
     struct {{name.id}} < ::Clear::Enum

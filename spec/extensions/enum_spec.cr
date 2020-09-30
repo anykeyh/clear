@@ -1,7 +1,5 @@
 require "../spec_helper"
 
-
-
 module EnumSpec
   extend self
 
@@ -77,6 +75,10 @@ module EnumSpec
         u = User.query.first!
         u.to_json.should eq %<{"gender":"male","name":"Test"}>
       end
+    end
+
+    it "can create from json" do
+      GenderType.from_json("male".to_json).should eq(GenderType::Male)
     end
   end
 end
