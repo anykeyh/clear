@@ -1,7 +1,6 @@
 require "../../src/clear"
 
 def initdb
-  Clear.logger.level = ::Logger::INFO
   Clear::SQL.init("postgres://postgres@localhost/clear_spec")
 end
 

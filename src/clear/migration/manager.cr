@@ -120,13 +120,13 @@ class Clear::Migration::Manager
     end
 
     if operations.empty?
-      Clear.logger.debug("Nothing to do.")
+      Log.debug { "Nothing to do." }
       return
     end
 
-    Clear.logger.debug("Migrations will be applied (in this order):")
+    Log.debug { "Migrations will be applied (in this order):" }
     operations.each do |(uid, d)|
-      Clear.logger.debug("#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}")
+      Log.debug { "#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}" }
     end
 
     operations.each do |(uid, d)|

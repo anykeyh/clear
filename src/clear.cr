@@ -1,5 +1,3 @@
-require "logger"
-
 # # Welcome to Clear ORM !
 #
 # Clear ORM is currently in heavy development.

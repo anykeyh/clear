@@ -1,5 +1,4 @@
 require "colorize"
-require "logger"
 require "benchmark"
 
 module Clear::SQL::Logger

@@ -11,8 +11,6 @@ module Application
   end
 end
 
-Clear.logger.level = ::Logger::DEBUG if Application.env == "development"
-
 require "./db/init.cr"
 
 require "./views/**"

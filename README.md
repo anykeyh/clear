@@ -406,9 +406,8 @@ Clear is offering SQL logging tools, with SQL syntax colorizing in your terminal
 
 For activation, simply setup the logger to `DEBUG` level !
 
-
 ```
-Clear.logger.level = ::Logger::DEBUG
+Log.builder.bind "clear.*", :debug, Log::IOBackend.new(STDOUT)
 ```
 
 ### Save & validation

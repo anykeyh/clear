@@ -13,7 +13,6 @@ module Clear::CLI::Command
 
     def run
       Colorize.enabled = !flags.no_color
-      Clear.logger.level = ::Logger::DEBUG if flags.verbose
 
       run_impl
     end
