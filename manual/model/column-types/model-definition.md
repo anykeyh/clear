@@ -111,6 +111,7 @@ end
 | `Int32` | `int`, `serial` |
 | `Int64` | `bigint`, `bigserial` |
 | `Array(Type)` | `type[]` \(_**note**: type can be of any primitives above_\) |
+| `BigDecimal` | `numeric`|
 | `JSON::Any` | `jsonb` |
 | `Time` | `timestamp without time zone` |
 

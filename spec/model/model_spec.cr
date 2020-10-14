@@ -180,10 +180,10 @@ module ModelSpec
       end
 
       create_table(:model_spec_data) do |t|
-        t.column :num1, "numeric", index: true
-        t.column :num2, "numeric(18, 8)"
-        t.column :num3, "numeric(9)"
-        t.column :num4, "numeric(8)"
+        t.column "num1", "bigdecimal", index: true
+        t.column "num2", "numeric(18, 8)"
+        t.column "num3", "numeric(9)"
+        t.column "num4", "numeric(8)"
 
         t.timestamps
       end

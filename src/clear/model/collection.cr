@@ -91,7 +91,7 @@ require "../sql/select_query"
 # By default, Clear map theses columns types:
 #
 # - `String` => `text`
-# - `Numbers` (any from 8 to 64 bits, float, double, big number, big float, numeric(arbitrary precision number)) => `int, large int etc... (depends of your choice)`
+# - `Numbers` (any from 8 to 64 bits, float, double, big number, big float, big decimal) => `int, large int, numeric(arbitrary precision number) etc... (depends of your choice)`
 # - `Bool` => `text or bool`
 # - `Time` => `timestamp without timezone or text`
 # - `JSON::Any` => `json and jsonb`
