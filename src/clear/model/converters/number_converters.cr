@@ -40,4 +40,5 @@ module Clear::Model::Converter
 
   number_converter(BigInt)
   number_converter(BigFloat)
+  number_converter(BigDecimal)
 end
