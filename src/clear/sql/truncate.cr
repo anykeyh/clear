@@ -19,7 +19,7 @@ module Clear
 
       case tablename
       when String
-        # do nothing
+        # do nothing. This is important as I can't use T in the case block
       when Symbol
         tablename = Clear::SQL.escape(tablename.to_s)
       else

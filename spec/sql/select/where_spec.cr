@@ -76,6 +76,15 @@ module WhereSpec
       r = Clear::SQL.select.from(:users).where("a LIKE :hello AND b LIKE :world",
         hello: "h", world: "w")
       r.to_sql.should eq "SELECT * FROM \"users\" WHERE a LIKE 'h' AND b LIKE 'w'"
+
+      # check escaping `::`
+      r = Clear::SQL.select.from(:users).where("a::text LIKE :hello",
+        hello: "h")
+      r.to_sql.should eq "SELECT * FROM \"users\" WHERE a::text LIKE 'h'"
+
+      # check escaping the first character because of the regexp solution I used
+      r = Clear::SQL.select.from(:users).where(":text", text: "ok")
+      r.to_sql.should eq "SELECT * FROM \"users\" WHERE 'ok'"
     end
 
     it "raises exception if a tuple element is not found" do
