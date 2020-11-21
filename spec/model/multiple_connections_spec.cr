@@ -69,7 +69,7 @@ module MultipleConnectionsSpec
 
           p = PostStat.query.first.not_nil!
           p.post_id = 2
-          p.save
+          p.save!
 
           p = PostStat.query.first.not_nil!
           p.post_id.should eq(2)

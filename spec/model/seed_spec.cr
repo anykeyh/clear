@@ -27,11 +27,11 @@ module SeedSpec
   end
 
   Clear.seed do
-    SeedModel.create!({value: "val_a"})
+    SeedModel.create!(value: "val_a")
   end
 
   Clear.seed do
-    SeedModel.create!({value: "val_b"})
+    SeedModel.create!(value: "val_b")
   end
 
   describe "Clear::Model::HasScope" do

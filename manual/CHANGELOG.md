@@ -123,6 +123,7 @@ turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
 ## Bugfixes
 
 - Prepare the code to make it compatible with crystal 1.0. Change `Void` to `Nil`
+- `first` and `last` on collection object does not change the collection anymore (previously would add limit/offset and change order_by clauses)
 
 # v0.8
 
