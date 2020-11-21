@@ -111,5 +111,4 @@ module IntervalSpec
 
     end
   end
-
 end

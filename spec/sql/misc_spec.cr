@@ -60,6 +60,4 @@ module SQLMiscSpec
       end
     end
   end
-
-
 end

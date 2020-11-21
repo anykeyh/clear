@@ -46,6 +46,4 @@ module ConnectionPoolSpec
       end
     end
   end
-
-
 end

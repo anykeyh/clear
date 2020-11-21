@@ -53,8 +53,8 @@ module Clear
                 Array(PG::NumericArray) |
                 Bool | Char | Float32 | Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | JSON::Any::Type | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
-                PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
-                UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql |
+                PG::Geo::Polygon | PG::Numeric | PG::Interval | Slice(UInt8) | String | Time |
+                UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql | UUID |
                 Nil
 
     include Clear::SQL::Logger

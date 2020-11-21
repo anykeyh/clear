@@ -152,6 +152,4 @@ module Clear::Model::Relations::BelongsToMacro
     {% end %} # / begin block
   end # / macro
 
-
-
 end

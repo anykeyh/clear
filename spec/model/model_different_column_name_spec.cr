@@ -40,6 +40,4 @@ module ModelDifferentColumnNameSpec
       end
     end
   end
-
-
 end
