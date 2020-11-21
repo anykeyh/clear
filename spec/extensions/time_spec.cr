@@ -27,11 +27,11 @@ module IntervalSpec
 
     self.table = "interval_table"
 
-    column i : Clear::Interval
+    column i : PG::Interval
     column t : Clear::TimeInDay?
   end
 
-  describe Clear::Interval do
+  describe PG::Interval do
     it "Can be saved into database (and converted to pg interval type)" do
       temporary do
         reinit!
@@ -41,7 +41,7 @@ module IntervalSpec
           days = Random.rand(-1000..1000)
           microseconds = Random.rand(-10000000..10000000)
 
-          IntervalModel.create! id: x, i: Clear::Interval.new(months: mth, days: days, microseconds: microseconds)
+          IntervalModel.create! id: x, i: PG::Interval.new(months: mth, days: days, microseconds: microseconds.to_i64)
 
           mdl = IntervalModel.find! x
           mdl.i.months.should eq mth
@@ -52,34 +52,15 @@ module IntervalSpec
       end
     end
 
-    it "can be added and substracted to a date" do
-
-      # TimeSpan
-      [1.hour, 1.day, 1.month].each do |span|
-        i = Clear::Interval.new(span)
-        now = Time.local
-
-        (now + i).to_unix.should eq( (now+span).to_unix)
-        (now - i).to_unix.should eq( (now-span).to_unix )
-      end
-
-      i = Clear::Interval.new(months: 1, days: -1, minutes: 12)
-      now = Time.local
-
-      (now + i).to_unix.should eq( (now+1.month-1.day+12.minute).to_unix)
-      (now - i).to_unix.should eq( (now-1.month+1.day-12.minute).to_unix)
-
-    end
-
     it "can be used in expression engine" do
       IntervalModel.query.where{
-        (created_at - Clear::Interval.new(months: 1)) > updated_at
+        (created_at - PG::Interval.new(months: 1)) > updated_at
       }.to_sql.should eq %(SELECT * FROM "interval_table" WHERE (("created_at" - INTERVAL '1 months') > "updated_at"))
     end
 
-    it "can be casted into string" do
-      Clear::Interval.new(months: 1, days: 1).to_sql.to_s.should eq("INTERVAL '1 months 1 days'")
-    end
+    # it "can be casted into string" do
+    #   PG::Interval.new(months: 1, days: 1).to_sql.to_s.should eq("INTERVAL '1 months 1 days'")
+    # end
   end
 
   describe Clear::TimeInDay do
@@ -101,7 +82,7 @@ module IntervalSpec
       temporary do
         reinit!
 
-        i = IntervalModel.create! i: Clear::Interval.new(days: 1), t: "12:32"
+        i = IntervalModel.create! i: PG::Interval.new(days: 1), t: "12:32"
         i.t.not_nil!.to_s(show_seconds: false).should eq("12:32")
         i.t = i.t.not_nil! + 12.minutes
         i.save!

@@ -6,7 +6,7 @@ shards:
 
   ameba:
     git: https://github.com/veelenga/ameba.git
-    version: 0.13.0+git.commit.3448de30daaf5e206a0c52132e11a47f7e8d0d6d
+    version: 0.13.2+git.commit.5b4b1e817d867110cf8ca6b061743b0b8e0c67c7
 
   db:
     git: https://github.com/crystal-lang/crystal-db.git
@@ -22,5 +22,5 @@ shards:
 
   pg:
     git: https://github.com/will/crystal-pg.git
-    version: 0.22.1
+    version: 0.22.1+git.commit.cafeaf6127d8d50cfc345ae987f63e8d39fd9041
 

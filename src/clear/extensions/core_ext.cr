@@ -8,6 +8,29 @@ struct Char
   end
 end
 
+struct PG::Interval
+  def to_json(json)
+    json.object do
+      json.field("microseconds") { json.number microseconds }
+      json.field("days")         { json.number days }
+      json.field("months")       { json.number months }
+    end
+  end
+
+  def to_sql
+    o = [] of String
+
+    (o << @months.to_s       << "months") if @months != 0
+    (o << @days.to_s         << "days") if @days != 0
+    (o << @microseconds.to_s << "microseconds") if @microseconds != 0
+
+    Clear::SQL.unsafe({
+      "INTERVAL",
+      Clear::Expression[o.join(" ")]
+    }.join(" "))
+  end
+end
+
 struct PG::Geo::Box
   # :nodoc:
   def to_json(json)
