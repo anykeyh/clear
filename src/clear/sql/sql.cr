@@ -137,7 +137,7 @@ module Clear
         connection_name ||= "default"
       else
         connection_name ||= tablename.connection
-        tablename ||= tablename.table
+        tablename = tablename.table
       end
 
       only = truncate_inherited ? "" : " ONLY "
