@@ -25,7 +25,9 @@ def initdb
   # {% if flag?(:quiet) %}
   #   Log.builder.bind "clear.*", Log::Severity::Warning, Log::IOBackend.new
   # {% else %}
-  Log.builder.bind "clear.*", Log::Severity::Debug, Log::IOBackend.new
+  puts "setup logger to log debug?"
+  ::Log.setup(:debug)
+  ::Log.for("clear").debug{ "Started!" }
   # {% end %}
 end
 

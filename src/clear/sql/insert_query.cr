@@ -188,7 +188,7 @@ class Clear::SQL::InsertQuery
   def to_sql
     raise QueryBuildingError.new "You must provide a `into` clause" unless table = @table
 
-    table = Clear::SQL.escape(table.to_s)
+    table = table.is_a?(Symbol) ? Clear::SQL.escape(table) : table
 
     o = [print_ctes, "INSERT INTO", table, print_keys]
     v = @values

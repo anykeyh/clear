@@ -12,6 +12,9 @@
 /bin/ameba
 /bin/clear-cli
 
+# I use this file to test some complex Crystal syntax sometime
+/test.cr
+
 # deps of some tools
 /node_modules
 yarn.lock
