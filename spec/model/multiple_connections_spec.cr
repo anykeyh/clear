@@ -65,14 +65,17 @@ module MultipleConnectionsSpec
         temporary do
           reinit
           p = PostStat.new({post_id: 1})
-          p.save
+          p.save!
+          puts "1"
 
           p = PostStat.query.first.not_nil!
           p.post_id = 2
           p.save
+          puts "2"
 
           p = PostStat.query.first.not_nil!
           p.post_id.should eq(2)
+          puts "3"
         end
       end
 

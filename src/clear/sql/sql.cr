@@ -10,7 +10,8 @@ require "./transaction"
 # Add a field to DB::Database to handle
 #   the state of transaction of a specific
 #   connection
-abstract class DB::Database
+abstract class DB::Connection
+  # add getter to transaction status for this specific DB::Connection
   property? _clear_in_transaction : Bool = false
 end
 
@@ -98,23 +99,22 @@ module Clear
       Clear::Expression::UnsafeSql.new(x)
     end
 
-    def init(url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, "default", connection_pool_size)
+    def init(url : String)
+      Clear::SQL::ConnectionPool.init(url, "default")
     end
 
-    def init(name : String, url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
-      #@@connections[name] = DB.open(url)
+    def init(name : String, url : String)
+      Clear::SQL::ConnectionPool.init(url, name)
     end
 
-    def init(connections : Hash(Symbolic, String), connection_pool_size = 5)
+    def init(connections : Hash(Symbolic, String))
       connections.each do |name, url|
-        Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+        Clear::SQL::ConnectionPool.init(url, name)
       end
     end
 
-    def add_connection(name : String, url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+    def add_connection(name : String, url : String)
+      Clear::SQL::ConnectionPool.init(url, name)
     end
 
     # Truncate a table or a model
@@ -155,7 +155,7 @@ module Clear
     # Clear::SQL.execute("SELECT 1 FROM users")
     #
     def execute(sql)
-      log_query(sql) { Clear::SQL::ConnectionPool.with_connection("default", &.exec(sql)) }
+      execute("default", sql)
     end
 
     # Execute a SQL statement on a specific connection.
@@ -163,9 +163,7 @@ module Clear
     # Usage:
     # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
     def execute(connection_name : String, sql)
-      log_query(sql) do
-        Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec(sql))
-      end
+      log_query(sql){ Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec_all(sql)) }
     end
 
     # :nodoc:

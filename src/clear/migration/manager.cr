@@ -243,7 +243,7 @@ class Clear::Migration::Manager
   end
 
   # Force up a migration; throw error if the migration is already up
-  def up(number : Int64) : Void
+  def up(number : Int64) : Nil
     m = find(number)
 
     raise migration_already_up(number) if migrations_up.includes?(number)
@@ -253,7 +253,7 @@ class Clear::Migration::Manager
   end
 
   # Force down a migration; throw error if the mgiration is already down
-  def down(number : Int64) : Void
+  def down(number : Int64) : Nil
     m = find(number)
 
     raise migration_already_down(number) unless migrations_up.includes?(number)

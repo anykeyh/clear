@@ -3,7 +3,7 @@
 # This class acts as a storage and can trigger events
 # This class a singleton.
 class Clear::Model::EventManager
-  alias HookFunction = Clear::Model -> Void
+  alias HookFunction = Clear::Model -> Nil
   alias EventKey = {String, Symbol, Symbol}
 
   EVENT_CALLBACKS = {} of EventKey => Array(HookFunction)

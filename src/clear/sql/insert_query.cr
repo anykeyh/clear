@@ -40,7 +40,7 @@ class Clear::SQL::InsertQuery
   def into(@table : Symbol | String)
   end
 
-  def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Nil)
     Clear::SQL.log_query to_sql do
       h = {} of String => ::Clear::SQL::Any
 

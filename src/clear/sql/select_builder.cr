@@ -42,7 +42,7 @@ module Clear::SQL::SelectBuilder
                  @limit = nil,
                  @offset = nil,
                  @lock = nil,
-                 @before_query_triggers = [] of -> Void)
+                 @before_query_triggers = [] of -> Nil)
   end
 
   #

@@ -213,7 +213,7 @@ module Clear::Model
       @limit = nil,
       @offset = nil,
       @lock = nil,
-      @before_query_triggers = [] of -> Void,
+      @before_query_triggers = [] of -> Nil,
       # collection specific parameters ---v
       @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
@@ -510,7 +510,7 @@ module Clear::Model
 
     # Try to fetch a row. If not found, build a new object and setup
     # the fields like setup in the condition tuple.
-    def find_or_build(tuple : NamedTuple, &block : T -> Void) : T
+    def find_or_build(tuple : NamedTuple, &block : T -> Nil) : T
       r = where(tuple).first
 
       return r if r
@@ -529,7 +529,7 @@ module Clear::Model
     # Try to fetch a row. If not found, build a new object and setup
     # the fields like setup in the condition tuple.
     # Just after building, save the object.
-    def find_or_create(tuple : NamedTuple, &block : T -> Void) : T
+    def find_or_create(tuple : NamedTuple, &block : T -> Nil) : T
       r = find_or_build(tuple, &block)
       r.save
       r

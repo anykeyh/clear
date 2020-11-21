@@ -3,10 +3,11 @@
 v0.9 is a big overhaul from the shard. It simplifies a lot of the internal code,
 add tons of specs and focus on things like more understandable error on compile time.
 
-Note of warning: This version break tons of stuff.
+Note of warning: This version might break some stuff.
 
 ## Breaking changes
 
+- `Clear::SQL::ConnectionPool` now returns DB::Connection instead of DB::Database (fix #177)
 - `Clear::Migration::Direction` is now an enum instead of a struct.
 - where and having clauses use splat and named tuple always. This is breaking change.
   - Before you had to do:
@@ -118,6 +119,10 @@ This allow usage of Postgres `?` operator over `jsonb` fields:
 A convenient method to reverse all the order by clauses,
 turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
 
+
+## Bugfixes
+
+- Prepare the code to make it compatible with crystal 1.0. Change `Void` to `Nil`
 
 # v0.8
 

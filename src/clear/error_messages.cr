@@ -155,7 +155,7 @@ module Clear::ErrorMessages
         op_string,
         "Build a way to revert the migration",
         "Do not revert the migration",
-        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded "+
+        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table stores loaded "+
         "migrations. Good luck !",
       ].compact,
       {

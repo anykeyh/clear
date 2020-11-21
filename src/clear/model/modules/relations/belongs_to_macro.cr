@@ -111,6 +111,8 @@ module Clear::Model::Relations::BelongsToMacro
           else
             add_error("{{method_name}}", c.print_errors)
           end
+        else # relation model has been persisted after assigned to current model
+          self.{{foreign_key}} = c.__pkey__
         end
 
       end # / _bt_save_*

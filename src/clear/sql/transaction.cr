@@ -25,7 +25,7 @@ module Clear::SQL::Transaction
   end
 
   @@savepoint_uid : UInt64 = 0_u64
-  @@commit_callbacks = Hash( DB::Database, Array(DB::Database ->) ).new { [] of DB::Database -> }
+  @@commit_callbacks = Hash( DB::Connection, Array(DB::Connection ->) ).new { [] of DB::Connection -> }
 
   # Check whether the current pair of fiber/connection is in transaction
   # block or not.
@@ -92,7 +92,7 @@ module Clear::SQL::Transaction
   #
   # In case the transaction fail and eventually rollback, the code won't be called.
   #
-  def after_commit(connection = "default", &block : DB::Database -> Void )
+  def after_commit(connection = "default", &block : DB::Connection -> Nil )
     Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
       if cnx._clear_in_transaction?
         @@commit_callbacks[cnx] <<= block
