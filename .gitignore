@@ -10,6 +10,7 @@
 
 /bin/crystal-coverage*
 /bin/ameba
+/bin/clear-cli
 
 # deps of some tools
 /node_modules
