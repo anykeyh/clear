@@ -15,7 +15,9 @@ module Clear
     # - `cascade` set to true will append `CASCADE` to the query
     # - `truncate_inherited` set to false will append `ONLY` to the query
     # - `connection_name` will be: `Model.connection` or `default` unless optionally defined.
-    def self.truncate(tablename : T.class | String | Symbol, restart_sequence = false, cascade = false, truncate_inherited = true, connection_name : String = "default" ) forall T
+    def self.truncate(tablename : Clear::Model.class | String | Symbol,
+      restart_sequence : Bool = false, cascade : Bool = false,
+      truncate_inherited : Bool = true, connection_name : String = "default") forall T
 
       case tablename
       when String

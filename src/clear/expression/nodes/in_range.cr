@@ -17,7 +17,7 @@ require "./node"
 # Inclusion and exclusion of the last number of the range is featured
 #
 class Clear::Expression::Node::InRange < Clear::Expression::Node
-  def initialize(@target : Node, @range : Range(String, String), @exclusive = false); end
+  def initialize(@target : Node, @range : Range(String, String), @exclusive : Bool = false); end
 
   def resolve : String
     rt = @target.resolve

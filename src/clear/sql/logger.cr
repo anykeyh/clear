@@ -34,14 +34,14 @@ module Clear::SQL::Logger
     o.gsub(/(--.*)$/) { |x| x.colorize.dark_gray }
   end
 
-  def self.display_mn_sec(x) : String
+  def self.display_mn_sec(x : Float64) : String
     mn = x.to_i / 60
     sc = x.to_i % 60
 
     {mn > 9 ? mn : "0#{mn}", sc > 9 ? sc : "0#{sc}"}.join("mn") + "s"
   end
 
-  def self.display_time(x) : String
+  def self.display_time(x : Float64) : String
     if (x > 60)
       display_mn_sec(x)
     elsif (x > 1)
@@ -54,7 +54,7 @@ module Clear::SQL::Logger
   end
 
   # Log a specific query, wait for it to return
-  def log_query(sql, &block)
+  def log_query(sql : String, &block)
     start_time = Time.monotonic
 
     o = yield

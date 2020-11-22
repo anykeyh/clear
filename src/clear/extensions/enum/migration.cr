@@ -4,7 +4,7 @@ module Clear::Migration
     @name : String
     @values : Array(String)
 
-    def initialize(@name, @values)
+    def initialize(@name : String, @values : Array(String))
     end
 
     def up : Array(String)
@@ -21,7 +21,7 @@ module Clear::Migration
     @name : String
     @values : Array(String)?
 
-    def initialize(@name, @values)
+    def initialize(@name : String, @values : Array(String)?)
     end
 
     def up : Array(String)
@@ -40,15 +40,15 @@ module Clear::Migration
   end
 
   module Clear::Migration::Helper
-    def create_enum(name, arr : Enumerable(T)) forall T
+    def create_enum(name : Clear::SQL::Symbolic, arr : Enumerable(T)) forall T
       self.add_operation(CreateEnum.new(name.to_s, arr.map(&.to_s) ))
     end
 
-    def drop_enum(name, arr : Enumerable(T)? = nil ) forall T
+    def drop_enum(name : Clear::SQL::Symbolic, arr : Enumerable(T)? = nil ) forall T
       self.add_operation( DropEnum.new(name.to_s, arr.try &.map(&.to_s)) )
     end
 
-    def create_enum(name, e)
+    def create_enum(name : Clear::SQL::Symbolic, e : ::Clear::Enum.class )
       self.add_operation(CreateEnum.new(name.to_s, e.authorized_values))
     end
   end

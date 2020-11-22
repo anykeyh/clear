@@ -9,7 +9,7 @@ module Clear::Util
   end
 
   # Return a new hash which is union of two hash (some kind of deep merge)
-  def hash_union(h1 : Hash(A, B), h2 : Hash(C, D)) forall A, B, C, D
+  def hash_union(h1 : Hash(A, B), h2 : Hash(C, D)) : Hash(A | C, B | D) forall A, B, C, D
     o = Hash(A | C, B | D).new
 
     h1.each do |k, v|

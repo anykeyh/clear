@@ -159,7 +159,7 @@ module Clear
     end
 
     # :ditto:
-    def execute(sql)
+    def execute(sql : String)
       execute("default", sql)
     end
 
@@ -179,24 +179,24 @@ module Clear
     # ```
     # Clear::SQL.insert_into("table", {id: 1, name: "hello"}, {id: 2, name: "World"} )
     # ```
-    def insert_into(table, *args)
+    def insert_into(table : Symbolic, *args)
       Clear::SQL::InsertQuery.new(table).values(*args)
     end
 
     # Prepare a new INSERT INTO table query
     # :ditto:
-    def insert_into(table)
+    def insert_into(table : Symbolic)
       Clear::SQL::InsertQuery.new(table)
     end
 
     # Alias of `insert_into`, for developers in hurry
     # :ditto:
-    def insert(table, *args)
+    def insert(table : Symbolic, *args)
       insert_into(table, *args)
     end
 
     # :ditto:
-    def insert(table, args : NamedTuple)
+    def insert(table : Symbolic, args : NamedTuple)
       insert_into(table, args)
     end
 
@@ -206,7 +206,7 @@ module Clear
     end
 
     # Start a UPDATE table query. See `Clear::SQL::UpdateQuery`
-    def update(table)
+    def update(table : Symbolic)
       Clear::SQL::UpdateQuery.new(table)
     end
 

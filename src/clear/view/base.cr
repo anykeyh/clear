@@ -55,7 +55,7 @@ class Clear::View
   #     # describe the view here.
   # end
   # ```
-  def self.register(name, &)
+  def self.register(name : Clear::SQL::Symbolic, &)
     view = Clear::View.new
     view.name(name)
     yield view
@@ -67,7 +67,7 @@ class Clear::View
   end
 
   # install the view into postgresql using CREATE VIEW
-  def self.apply(direction, apply_cache = Set(String).new)
+  def self.apply(direction : Symbol, apply_cache = Set(String).new)
     @@views.values.each do |view|
       next if apply_cache.includes?(view.name)
       apply(direction, view.name, apply_cache)
@@ -75,7 +75,7 @@ class Clear::View
   end
 
   # :ditto:
-  def self.apply(direction, view_name : String, apply_cache : Set(String))
+  def self.apply(direction : Symbol, view_name : String, apply_cache : Set(String))
     return if apply_cache.includes?(view_name)
 
     view = @@views[view_name]
@@ -112,18 +112,18 @@ class Clear::View
   end
 
   # query body related to the view. Must be a SELECT clause
-  def query(query)
+  def query(query : String)
     @query = query
   end
 
   # database connection where is installed the view
-  def connection(connection)
+  def connection(connection : String)
     @connection = connection
   end
 
   # whether the view is materialized or not. I would recommend to use
   # migration execute create/drop whenever the view is a materialized view
-  def materialized(mat)
+  def materialized(mat : Bool)
     @materialized = mat
   end
 

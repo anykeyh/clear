@@ -12,11 +12,11 @@ module Clear
     protected def initialize(@value)
     end
 
-    def to_s
+    def to_s : String
       @value.to_s
     end
 
-    def to_sql
+    def to_sql : String
       @value.to_sql
     end
 
