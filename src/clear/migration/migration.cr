@@ -70,10 +70,11 @@ module Clear::Migration
   module Helper
     TYPE_MAPPING = {
       "string" => "text",
-      "int32" => "int",
+      "int32"  => "int",
 
-      "int64" => "bigint",
-      "long" => "bigint",
+      "int64"      => "bigint",
+      "long"       => "bigint",
+      "bigdecimal" => "numeric",
 
       "datetime" => "timestamp without time zone",
     }
@@ -103,38 +104,35 @@ module Clear::Migration
 
     # This will apply the migration in a given direction (up or down)
     def apply(dir : Direction)
-    Clear::Migration::Manager.instance.ensure_ready
+      Clear::Migration::Manager.instance.ensure_ready
 
-    Clear::SQL.transaction do
-      Log.info { "[#{dir}] #{self.class.name}" }
+      Clear::SQL.transaction do
+        Log.info { "[#{dir}] #{self.class.name}" }
 
-      change(dir)
+        change(dir)
 
-      dir.up do
-        @operations.each { |op|
-          op.up.each { |x| Clear::SQL.execute(x.as(String)) }
-        }
+        dir.up do
+          @operations.each { |op|
+            op.up.each { |x| Clear::SQL.execute(x.as(String)) }
+          }
 
-        SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
+          SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s}).execute
+        end
+
+        dir.down do
+          @operations.reverse_each { |op|
+            op.down.each { |x| Clear::SQL.execute(x.as(String)) }
+          }
+
+          SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
+        end
+
+        self
       end
-
-      dir.down do
-        @operations.reverse_each { |op|
-          op.down.each { |x| Clear::SQL.execute(x.as(String)) }
-        }
-
-        SQL.delete("__clear_metadatas").where({metatype: "migration", value: uid.to_s}).execute
-      end
-
-      self
     end
-
-  end
-
   end
 
   include Helper
-
 
   macro included
 

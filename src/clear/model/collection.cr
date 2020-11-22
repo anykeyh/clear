@@ -16,9 +16,9 @@ require "../sql/select_query"
 # Now, you can play with your model:
 #
 # ```crystal
-#   row = MyModel.new # create an empty row
-#   row.my_column = "This is a content"
-#   row.save! # insert the new row in the database !
+# row = MyModel.new # create an empty row
+# row.my_column = "This is a content"
+# row.save! # insert the new row in the database !
 # ```
 #
 # By convention, the table name will follow an underscore, plural version of your model: `my_models`.
@@ -43,8 +43,8 @@ require "../sql/select_query"
 # For example, this code will compile:
 #
 # ```crystal
-#   row = MyModel.new # create an empty row
-#   puts row.my_column
+# row = MyModel.new # create an empty row
+# puts row.my_column
 # ```
 #
 # However, it will throw a runtime exception `You cannot access to the field 'my_column' because it never has been initialized`
@@ -52,8 +52,8 @@ require "../sql/select_query"
 # Same way, trying to save the object will raise an error:
 #
 # ```crystal
-#   row.save # Will return false
-#   pp row.errors # Will tell you than `my_column` presence is mandatory.
+# row.save      # Will return false
+# pp row.errors # Will tell you than `my_column` presence is mandatory.
 # ```
 #
 # Thanks to expressiveness of the Crystal language, we can handle presence validation by simply using the `Nilable` type in crystal:
@@ -91,7 +91,7 @@ require "../sql/select_query"
 # By default, Clear map theses columns types:
 #
 # - `String` => `text`
-# - `Numbers` (any from 8 to 64 bits, float, double, big number, big float) => `int, large int etc... (depends of your choice)`
+# - `Numbers` (any from 8 to 64 bits, float, double, big number, big float, big decimal) => `int, large int, numeric(arbitrary precision number) etc... (depends of your choice)`
 # - `Bool` => `text or bool`
 # - `Time` => `timestamp without timezone or text`
 # - `JSON::Any` => `json and jsonb`
@@ -137,7 +137,7 @@ require "../sql/select_query"
 # ```crystal
 # class MyModel
 #   include Clear::Model
-#   timestamps #Will map the two columns 'created_at' and 'updated_at', and map some hooks to update their values.
+#   timestamps # Will map the two columns 'created_at' and 'updated_at', and map some hooks to update their values.
 # end
 # ```
 #
@@ -156,7 +156,6 @@ require "../sql/select_query"
 #
 # Argument is optional (default = id)
 module Clear::Model
-
   # `CollectionBase(T)` is the base class for collection of model.
   # Collection of model are a SQL `SELECT` query mapping & building system. They are Enumerable and are
   # `Clear::SQL::SelectBuilder` behavior; therefore, they can be used array-like and are working with low-level SQL
@@ -214,7 +213,7 @@ module Clear::Model
       @before_query_triggers = [] of -> Void,
       @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
-      @cached_result = nil,
+      @cached_result = nil
     )
     end
 
@@ -237,7 +236,6 @@ module Clear::Model
       T
     end
 
-
     # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
     def cached(cache : Clear::Model::QueryCache)
@@ -256,7 +254,7 @@ module Clear::Model
     def flag_as_polymorphic!(@polymorphic_key, scope : Enumerable(String))
       @polymorphic = true
       polymorphic_scope = @polymorphic_scope = Set(String).new
-      scope.each{ |x| polymorphic_scope.add(x) }
+      scope.each { |x| polymorphic_scope.add(x) }
 
       self
     end

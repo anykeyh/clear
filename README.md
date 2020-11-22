@@ -118,6 +118,7 @@ end
 #### Column types
 
 - `Number`, `String`, `Time`, `Boolean` and `Jsonb` structures are already mapped.
+- `Numeric` ([arbitrary precision number](https://www.postgresql.org/docs/9.6/datatype-numeric.html)) is also supported
 - `Array` of primitives too.
 For other type of data, just create your own converter !
 
