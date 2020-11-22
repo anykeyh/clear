@@ -111,6 +111,48 @@ end
 | `Int32` | `int`, `serial` |
 | `Int64` | `bigint`, `bigserial` |
 | `Array(Type)` | `type[]` \(_**note**: type can be of any primitives above_\) |
+| `BigDecimal` | `numeric`|
 | `JSON::Any` | `jsonb` |
 | `Time` | `timestamp without time zone` |
 
+#### Using BigDecimal (in Model) and Numeric (in Migrations)
+`BigDecimal` ([in `.cr`](https://crystal-lang.org/api/0.35.1/BigDecimal.html)) is mapped to `Numeric` ([in `pg`](https://www.postgresql.org/docs/9.6/datatype-numeric.html)) in migration columns (i.e. declaring column data type as `"bigdecimal"` would be equal to the column being declared with type `"numeric"`, if you wish to specify precision, and scale, please use `"numeric(precision, scale)"` or `"numeric(precision)"` (with scale defaulting to 0), instead of `"bigdecimal"`)
+
+Please take note that PostgreSQL will throw a `numeric field overflow` (and in Clear: `Clear::SQl::Error`) if you `INSERT` into the database a BigDecimal/ numeric value with the integer part (to the left of the radix point) of a size that is bigger than the precision that is specified in the numeric type that you declare. This can be seen from the following example taken from specs:
+
+```
+
+  class Data
+    include Clear::Model
+
+    column id : Int32, primary: true, presence: false
+    column num3 : BigDecimal?
+    column num4 : BigDecimal?
+  end
+
+  class ModelSpecMigration123
+    include Clear::Migration
+
+    def change(dir)
+      create_table(:model_spec_data) do |t|
+        t.column "num3", "numeric(9)"
+        t.column "num4", "numeric(8)"
+      end
+    end
+end
+
+data = Data.new
+big_number = BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40) # this is the same as "-102938719.2083710928371092837019283701982370918237"
+```
+
+The following case would not throw an error
+```
+data.num3 = big_number
+data.save!
+```
+
+However this case would throw an error
+```
+data.num4 = big_number
+data.save!
+```

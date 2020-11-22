@@ -199,7 +199,7 @@ module ModelSpec
           reinit_example_models
 
           u = User.new({first_name: "John"})
-          post = Post.new({user: u, title: "some post" })
+          post = Post.new({user: u, title: "some post"})
 
           u.save!
           post.save! # Exception
@@ -623,6 +623,116 @@ module ModelSpec
           users = User.query.where { last_name == "smith" }.paginate(page: 1, per_page: 5)
           users.map(&.first_name).should eq ["user0", "user2", "user4", "user6", "user8"]
           users.total_entries.should eq 8
+        end
+      end
+    end
+  end
+
+  describe "Clear::Model::JSONDeserialize" do
+    it "can create a model json IO" do
+      user_body = {first_name: "foo"}
+      io = IO::Memory.new user_body.to_json
+      user = User.from_json(io)
+      user.first_name.should eq user_body["first_name"]
+    end
+
+    it "can create a new model instance from json" do
+      user_body = {first_name: "Steve"}
+      user = User.from_json(user_body.to_json)
+      user.first_name.should eq(user_body["first_name"])
+    end
+
+    it "sets fields from json" do
+      user_body = {first_name: "Steve"}
+      update_body = {first_name: "stevo"}
+      user = User.new(user_body)
+      user.set_from_json(update_body.to_json)
+      user.first_name.should eq update_body["first_name"]
+    end
+
+    it "sets nillable fields to nil" do
+      user = User.new({first_name: "Foo", last_name: "Bar"})
+      user.set_from_json({last_name: nil}.to_json)
+      user.last_name.should be_nil
+    end
+
+    it "does not set unnillable fields to nil" do
+      user_body = {first_name: "Foo"}
+      user = User.new(user_body)
+      user.set_from_json({first_name: nil}.to_json)
+      user.first_name.should eq user_body["first_name"]
+    end
+
+    it "create and update a model from json" do
+      temporary do
+        reinit_example_models
+
+        u1_body = {first_name: "George"}
+        u1 = User.create_from_json(u1_body.to_json)
+        u1.first_name.should eq u1_body["first_name"]
+
+        u2_body = {first_name: "Eliza"}
+        u2 = User.create_from_json!(u2_body.to_json)
+        u2.first_name.should eq(u2_body["first_name"])
+
+        u3_body = {first_name: "Angelica"}
+        u3 = u2.update_from_json(u3_body.to_json)
+        u3.first_name.should eq(u3_body["first_name"])
+
+        u4_body = {first_name: "Aaron"}
+        u4 = u3.update_from_json!(u4_body.to_json)
+        u4.first_name.should eq(u4_body["first_name"])
+      end
+    end
+  end
+
+  describe "Clear::Model::HasColumns mass_assign" do
+    it "should do mass_assignment" do
+      temporary do
+        reinit_example_models
+
+        u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
+        u1 = User.create_from_json(u1_body.to_json, trusted: true)
+        u1.first_name.should eq u1_body["first_name"]
+        u1.last_name.should eq u1_body["last_name"]
+        u1.middle_name.should eq u1_body["middle_name"]
+      end
+    end
+
+    it "should not do mass_assignment" do
+      temporary do
+        reinit_example_models
+
+        u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
+        u1 = User.create_from_json(u1_body.to_json)
+        u1.first_name.should eq u1_body["first_name"]
+        u1.last_name.should eq u1_body["last_name"]
+        u1.middle_name.should be_nil
+      end
+    end
+  end
+
+  describe "BigDecimal / Numeric column in Migration" do
+    it "should create a new model with BigDecimal fields" do
+      temporary do
+        reinit_example_models
+
+        data = BigDecimalData.new({num1: 42.0123, num2: "42_42_42_24.0123_456_789", num3: "-102938719.2083710928371092837019283701982370918237"})
+        data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
+        data.num2.should eq(BigDecimal.new(BigInt.new(424242240123456789), 10))
+        data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40))
+
+        data.save!
+
+        data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
+        data.num2.should eq(42424224.01234568)
+        data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40).trunc)
+
+        # Clear::SQL::Error:numeric field overflow
+        data.num4 = BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40)
+
+        expect_raises(Clear::SQL::Error) do
+          data.save!
         end
       end
     end

@@ -101,14 +101,13 @@ module Clear::Migration
       content = "(#{columns_and_fkeys.join(", ")})" unless columns_and_fkeys.empty?
 
       arr = if is_create?
-        [
-          ["CREATE TABLE", full_name, content].compact.join(" "),
-        ]
-      else
-        # To implement later
-        [] of String
-      end
-
+              [
+                ["CREATE TABLE", full_name, content].compact.join(" "),
+              ]
+            else
+              # To implement later
+              [] of String
+            end
       arr + print_indexes
     end
 
@@ -163,24 +162,25 @@ module Clear::Migration
     # column type (ActiveRecord's style)
     macro method_missing(caller)
       {% raise "Migration: usage of Table##{caller.name} is deprecated.\n" +
-                "Tip: use instead `self.column(NAME, \"#{caller.name}\", ...)`" %}
+               "Tip: use instead `self.column(NAME, \"#{caller.name}\", ...)`" %}
     end
 
     def column(name, type, default = nil, null = true, primary = false,
-      index = false, unique = false, array = false )
-
+               index = false, unique = false, array = false)
       type = case type.to_s
-      when "string"
-        "text"
-      when "int32", "integer"
-        "integer"
-      when "int64", "long"
-        "bigint"
-      when "datetime"
-        "timestamp without time zone"
-      else
-        type.to_s
-      end
+             when "string"
+               "text"
+             when "int32", "integer"
+               "integer"
+             when "int64", "long"
+               "bigint"
+             when "bigdecimal", "numeric"
+               "numeric"
+             when "datetime"
+               "timestamp without time zone"
+             else
+               type.to_s
+             end
 
       self.add_column(name.to_s, type: type, default: default, null: null,
         primary: primary, index: index, unique: unique, array: array)
@@ -269,7 +269,7 @@ module Clear::Migration
       when false
       else
         raise "Unknown key type while try to create new table: `#{id}`. Candidates are :bigserial, :serial and :uuid" +
-          "Please proceed with `id: false` and add the column manually"
+              "Please proceed with `id: false` and add the column manually"
       end
 
       yield(table)

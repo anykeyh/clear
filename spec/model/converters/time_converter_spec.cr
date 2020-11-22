@@ -47,4 +47,29 @@ module TimeConverterSpec
     end
 
   end
+  describe "Clear::Model::Converter::BigDecimal" do
+    converter = Clear::Model::Converter::BigDecimalConverter
+
+    it "converts to column" do
+      converter.to_column(BigDecimal.new(42.0123))
+        .should eq(BigDecimal.new(BigInt.new(420123), 4))
+
+      converter.to_column(BigDecimal.new("42_42_42_24.0123_456_789"))
+        .should eq(BigDecimal.new(BigInt.new(424242240123456789), 10))
+
+      converter.to_column(BigDecimal.new("-0.1029387192083710928371092837019283701982370918237"))
+        .should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 49))
+    end
+
+    it "converts to db" do
+      converter.to_db(BigDecimal.new(42.0123))
+        .should eq(BigDecimal.new(BigInt.new(420123), 4))
+
+      converter.to_db(BigDecimal.new("42_42_42_24.0123_456_789"))
+        .should eq(BigDecimal.new(BigInt.new(424242240123456789), 10))
+
+      converter.to_db(BigDecimal.new("-0.1029387192083710928371092837019283701982370918237"))
+        .should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 49))
+    end
+  end
 end

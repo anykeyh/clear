@@ -105,7 +105,8 @@ class User
 
   column first_name : String
   column last_name : String?
-  column middle_name : String?
+  column middle_name : String?, mass_assign: false
+
   column active : Bool?
 
   column notification_preferences : JSON::Any, presence: false
@@ -133,6 +134,16 @@ class ModelWithUUID
   primary_key :id, type: :uuid
 
   self.table = "model_with_uuid"
+end
+
+class BigDecimalData
+  include Clear::Model
+
+  column id : Int32, primary: true, presence: false
+  column num1 : BigDecimal?
+  column num2 : BigDecimal?
+  column num3 : BigDecimal?
+  column num4 : BigDecimal?
 end
 
 
@@ -198,6 +209,16 @@ class ExampleModelMigration1
     end
 
     create_table("model_with_uuid", id: :uuid){ |_| }
+
+    create_table :big_decimal_data do |t|
+      t.column "num1", "bigdecimal", index: true
+      t.column "num2", "numeric(18, 8)"
+      t.column "num3", "numeric(9)"
+      t.column "num4", "numeric(8)"
+
+      t.timestamps
+    end
+
   end
 end
 

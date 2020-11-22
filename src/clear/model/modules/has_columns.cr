@@ -23,7 +23,7 @@ module Clear::Model::HasColumns
   # to the given value, while the `changed?` flag remains false.
   # If you call save on a persisted model, the reset columns won't be
   # commited in the UPDATE query.
-  def reset( **t : **T ) forall T
+  def reset(**t : **T) forall T
     # Dev note:
     # ---------
     # The current implementation of reset is overriden on finalize (see below).
@@ -32,22 +32,21 @@ module Clear::Model::HasColumns
   end
 
   # See `reset(**t : **T)`
-  def reset( h : Hash(String, _) )
+  def reset(h : Hash(String, _))
   end
 
   # See `reset(**t : **T)`
-  def reset( h : Hash(Symbol, _) )
+  def reset(h : Hash(Symbol, _))
   end
-
 
   # Set one or multiple columns to a specific value
   # This two are equivalents:
   #
   # ```
-  #   model.set(a: 1)
-  #   model.a = 1
+  # model.set(a: 1)
+  # model.a = 1
   # ```
-  def set( ** t : **T ) forall T
+  def set(**t : **T) forall T
     # Dev note:
     # ---------
     # The current implementation of set is overriden on finalize (see below).
@@ -56,20 +55,19 @@ module Clear::Model::HasColumns
   end
 
   # See `set(**t : **T)`
-  def set( h : Hash(String, _) )
+  def set(h : Hash(String, _))
   end
 
   # See `set(**t : **T)`
-  def set( h : Hash(Symbol, _) )
+  def set(h : Hash(Symbol, _))
   end
-
 
   # Access to direct SQL attributes given by the request used to build the model.
   # Access is read only and updating the model columns will not apply change to theses columns.
   #
   # ```
-  #   model = Model.query.select("MIN(id) as min_id").first(fetch_columns: true)
-  #   id = model["min_id"].to_i32
+  # model = Model.query.select("MIN(id) as min_id").first(fetch_columns: true)
+  # id = model["min_id"].to_i32
   # ```
   def [](x) : ::Clear::SQL::Any
     attributes[x]
@@ -86,14 +84,14 @@ module Clear::Model::HasColumns
 
   # Returns the current hash of the modified values:
   #
-  #```
+  # ```
   # model = Model.query.first!
   # model.update_h # => {}
   # model.first_name = "hello"
   # model.update_h # => { "first_name" => "hello" }
   # model.save!
   # model.update_h # => {}
-  #```
+  # ```
   def update_h
     {} of String => ::Clear::SQL::Any
   end
@@ -106,7 +104,7 @@ module Clear::Model::HasColumns
   # ```
   # # Assuming our model has a primary key, a first name and last name and two timestamp columns:
   # model = Model.query.select("first_name, last_name").first!
-  # model.to_h # => { "first_name" => "Johnny", "last_name" => "Walker" }
+  # model.to_h             # => { "first_name" => "Johnny", "last_name" => "Walker" }
   # model.to_h(full: true) # => {"id" => nil, "first_name" => "Johnny", "last_name" => "Walker", "created_at" => nil, "updated_at" => nil}
   # ```
   def to_h(full = false)
@@ -144,7 +142,11 @@ module Clear::Model::HasColumns
   # During validation before saving, the presence will not be checked on this field
   #   and Clear will try to insert without the field value.
   #
-  macro column(name, primary = false, converter = nil, column_name = nil, presence = true)
+  # * `mass_assign : Bool (default = true)`: Use this option to turn on/ off mass assignment
+  #   when instantiating or updating a new model from json through `.from_json` methods from
+  #   the `Clear::Model::JSONDeserialize` module.
+  #
+  macro column(name, primary = false, converter = nil, column_name = nil, presence = true, mass_assign = true)
     {% _type = name.type %}
     {%
       unless converter
@@ -165,20 +167,22 @@ module Clear::Model::HasColumns
         else
           raise "Unknown: #{_type}, #{_type.class}"
         end
-      end %}
+      end
+    %}
 
     {%
       db_column_name = column_name == nil ? name.var : column_name.id
 
       COLUMNS["#{db_column_name.id}"] = {
-         type:      _type,
-         primary:   primary,
-         converter: converter,
-         db_column_name: "#{db_column_name.id}",
-         crystal_variable_name: name.var,
-         presence:  presence,
-       }
-      %}
+        type:                  _type,
+        primary:               primary,
+        converter:             converter,
+        db_column_name:        "#{db_column_name.id}",
+        crystal_variable_name: name.var,
+        presence:              presence,
+        mass_assign:           mass_assign,
+      }
+    %}
   end
 
   # :nodoc:
