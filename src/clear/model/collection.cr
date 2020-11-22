@@ -295,7 +295,15 @@ module Clear::Model
     # redefine where with tuple as argument which add tags
     def where(**tuple)
       hash = tuple.to_h.transform_keys &.to_s
-      tags(hash)
+
+      any_hash = {} of String => Clear::SQL::Any
+
+      # remove terms which are not real value but conditions like range or array
+      hash.each{ |k, v|
+        any_hash[k] = v if v.is_a?(Clear::SQL::Any)
+      }
+
+      tags(any_hash)
       super(__conditions: tuple)
     end
 

@@ -34,7 +34,7 @@ module Clear::SQL::Query::OrderBy
   # :nodoc:
   private def sanitize_nulls(x)
     case x
-    when nil, :last, :first
+    when nil, :nulls_last, :nulls_first
       x
     else
       raise QueryBuildingError.new("Unknown ORDER_BY ... NULLS directive: #{x.to_s.upcase}")
@@ -43,7 +43,7 @@ module Clear::SQL::Query::OrderBy
 
   # Flip over all order bys by switching the ASC direction to DESC and the NULLS FIRST to NULLS LAST
   # ```
-  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc).order_by(:company, nulls: :last)
+  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc, company: {:asc, :nulls_last})
   #  query.reverse_order_by
   #  query.to_sql # SELECT * FROM users ORDER BY "id" ASC, "name" DESC, "company" DESC NULLS FIRST
   # ```
@@ -53,7 +53,7 @@ module Clear::SQL::Query::OrderBy
     @order_bys = @order_bys.map{ |rec|
       Record.new(rec.op,
         rec.dir == :desc ? :asc : :desc,
-        rec.nulls.try{ |n| n == :last ? :first : :last }
+        rec.nulls.try{ |n| n == :nulls_last ? :nulls_first : :nulls_last }
       )
     }
     change!
@@ -68,25 +68,33 @@ module Clear::SQL::Query::OrderBy
   # Add multiple ORDER BY clause using a tuple:
   #
   # ```
-  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc)
-  #  query.to_sql # > SELECT * FROM users ORDER BY "id" DESC, "name" ASC
+  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: { :asc, :nulls_last } )
+  #  query.to_sql # > SELECT * FROM users ORDER BY "id" DESC, "name" ASC NULLS LAST
   # ```
   #
-  # Note: To declare NULLS direction, please refer to the `order_by(expression, direction, nulls)` method
   def order_by(**tuple)
     order_by(tuple)
   end
 
-  def order_by(tuple : NamedTuple)
-    tuple.each do |k, v|
-      @order_bys << Record.new(SQL.escape(k.to_s), v, nil)
+  # :ditto:
+  def order_by(__tuple : NamedTuple)
+    __tuple.each do |k, v|
+      case v
+      when Symbol, String
+        order_by(k, v, nil)
+      when Tuple # order_by(column: {:asc, :nulls_first})
+        order_by(k, v[0], v[1])
+      else
+        raise "order_by with namedtuple must be called with value of the tuple as Symbol, String or Tuple describing direction and nulls directive"
+      end
     end
-    change!
+
+    self
   end
 
   # Add one ORDER BY clause
   # ```
-  # query = Clear::SQL.select.from("users").order_by(:id, :desc, nulls: :last)
+  # query = Clear::SQL.select.from("users").order_by(:id, :desc, nulls_last)
   # query.to_sql #> SELECT * FROM users ORDER BY "id" DESC NULLS LAST
   # ```
   def order_by(expression : Symbol, direction : Symbol  = :asc, nulls : Symbol? = nil)
@@ -94,13 +102,27 @@ module Clear::SQL::Query::OrderBy
     change!
   end
 
+  # :ditto:
   def order_by(expression : String, direction : Symbol = :asc, nulls : Symbol? = nil)
     @order_bys << Record.new(expression, sanitize_direction(direction), sanitize_nulls(nulls))
     change!
   end
 
+  # :nodoc:
+  private def to_nulls_statement(symbol)
+    case symbol
+    when :nulls_first
+      "NULLS FIRST"
+    when :nulls_last
+      "NULLS LAST"
+    else
+      nil
+    end
+  end
+
+  # :nodoc:
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase, r.nulls.try{ |n| "NULLS #{n.to_s.upcase}" } ].compact.join(" ") }.join(", ")
+    "ORDER BY " + @order_bys.map { |r| [ r.op, r.dir.to_s.upcase, to_nulls_statement(r.nulls) ].compact.join(" ") }.join(", ")
   end
 end
