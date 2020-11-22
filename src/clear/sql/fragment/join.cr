@@ -21,11 +21,11 @@ module Clear::SQL
       from = @from
 
       from = case from
-      when SQL::SelectBuilder
-        "(#{from.to_sql})"
-      else
-        from.to_s
-      end
+             when SQL::SelectBuilder
+               "(#{from.to_sql})"
+             else
+               from.to_s
+             end
 
       if c = @condition
         [type,

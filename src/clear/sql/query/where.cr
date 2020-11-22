@@ -27,7 +27,6 @@ module Clear::SQL::Query::Where
     change!
   end
 
-
   # Build SQL `or_where` condition using a Clear::Expression::Node
   # ```crystal
   # query.or_where(Clear::Expression::Node::InArray.new("id", ['1', '2', '3', '4']))
@@ -45,10 +44,10 @@ module Clear::SQL::Query::Where
 
     # Optimisation: if we have a OR Array as root, we use it and append directly the element.
     if @wheres.size == 1 &&
-      (n = @wheres.first) &&
-      n.is_a?(Clear::Expression::Node::NodeArray) &&
-      n.link == "OR"
-        n.expression << node
+       (n = @wheres.first) &&
+       n.is_a?(Clear::Expression::Node::NodeArray) &&
+       n.link == "OR"
+      n.expression << node
     else
       # Concatenate the old clauses in a list of AND conditions
       if @wheres.size == 1
@@ -71,7 +70,6 @@ module Clear::SQL::Query::Where
   def where(&block)
     where(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
-
 
   def where(**tuple)
     where(__conditions: tuple)
@@ -141,13 +139,12 @@ module Clear::SQL::Query::Where
   end
 
   def or_where(__template : String, **__named_tuple)
-    or_where( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", **__named_tuple)) )
+    or_where(Clear::Expression::Node::Raw.new(Clear::Expression.raw("(#{__template})", **__named_tuple)))
   end
 
   def or_where(__template : String, *__args)
-    or_where( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", *__args)) )
+    or_where(Clear::Expression::Node::Raw.new(Clear::Expression.raw("(#{__template})", *__args)))
   end
-
 
   # Build SQL `where` condition using the Expression engine.
   # ```crystal

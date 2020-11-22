@@ -45,7 +45,6 @@ module TimeConverterSpec
       time_obj = Time.parse(example_date, "%FT%X.%LZ", Time::Location::UTC)
       converter.to_column(example_date).should eq(time_obj)
     end
-
   end
   describe "Clear::Model::Converter::BigDecimal" do
     converter = Clear::Model::Converter::BigDecimalConverter

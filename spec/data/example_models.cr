@@ -12,7 +12,7 @@ end
 
 class PostTag
   include Clear::Model
-  self.table ="model_post_tags"
+  self.table = "model_post_tags"
   belongs_to post : Post, foreign_key: "post_id", foreign_key_type: Int32
   belongs_to tag : Tag, foreign_key: "tag_id", foreign_key_type: Int32
 end
@@ -20,7 +20,6 @@ end
 class ChannelModel
   include Clear::Model
   self.table = "channels"
-
 
   column id : Int64, primary: true, presence: false
   column created_by_id : Int64
@@ -42,7 +41,6 @@ class ModelWithinAnotherSchema
 
   column title : String?
 end
-
 
 class Category
   include Clear::Model
@@ -73,7 +71,7 @@ class Post
 
   column published : Bool, presence: false
 
-  scope("published"){ where published: true }
+  scope("published") { where published: true }
 
   def validate
     ensure_than(title, "is not empty", &.size.>(0))
@@ -146,7 +144,6 @@ class BigDecimalData
   column num4 : BigDecimal?
 end
 
-
 class ExampleModelMigration1
   include Clear::Migration
 
@@ -202,13 +199,13 @@ class ExampleModelMigration1
       t.timestamps
     end
 
-    dir.up{ execute "CREATE SCHEMA another_schema" }
+    dir.up { execute "CREATE SCHEMA another_schema" }
 
     create_table "model_within_another_schemas", schema: "another_schema" do |t|
       t.column "title", "string", null: true
     end
 
-    create_table("model_with_uuid", id: :uuid){ |_| }
+    create_table("model_with_uuid", id: :uuid) { |_| }
 
     create_table :big_decimal_data do |t|
       t.column "num1", "bigdecimal", index: true
@@ -218,7 +215,6 @@ class ExampleModelMigration1
 
       t.timestamps
     end
-
   end
 end
 

@@ -47,7 +47,6 @@ module SelectSpec
         .to_sql
         .should eq("SELECT something_else")
     end
-
   end
 
   describe "SelectQuery#distinct" do
@@ -66,7 +65,6 @@ module SelectSpec
   end
 
   describe "SelectQuery#force_select" do
-
     it "allows simple string" do
       Clear::SQL.select("1").force_select("2").to_sql.should eq(%[SELECT 1, 2])
     end

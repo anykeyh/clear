@@ -1,8 +1,5 @@
 # :nodoc:
 module Clear::Model::Relations::BelongsToMacro
-
-
-
   macro generate(self_type, relation)
     {% begin %}
       {%

@@ -129,6 +129,5 @@ module PolymorphismSpec
     it "call validators of both parent and children" do
       ConcreteClass1.new.save.should eq false
     end
-
   end
 end

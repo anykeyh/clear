@@ -16,7 +16,6 @@ module HavingSpec
   end
 
   describe Clear::SQL::Query::Having do
-
     it "accepts simple string as parameter" do
       r = Clear::SQL.select.from(:users).having("a = b")
       r.to_sql.should eq %[SELECT * FROM "users" HAVING a = b]
@@ -129,14 +128,13 @@ module HavingSpec
     end
 
     describe "HAVING Expression engine Nodes" do
-
       it "can stack with `AND` operator" do
         now = Time.local
         r = Clear::SQL.select.from(:users).having { users.id == nil }.having {
           var("users", "updated_at") >= now
         }
         r.to_sql.should eq "SELECT * FROM \"users\" HAVING (\"users\".\"id\" IS NULL) " +
-                          "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
+                           "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
       end
 
       it "can stack with `OR` operator" do
@@ -145,7 +143,7 @@ module HavingSpec
           var("users", "updated_at") >= now
         }
         r.to_sql.should eq "SELECT * FROM \"users\" HAVING ((\"users\".\"id\" IS NULL) " +
-                          "OR (\"users\".\"updated_at\" >= #{Clear::Expression[now]}))"
+                           "OR (\"users\".\"updated_at\" >= #{Clear::Expression[now]}))"
       end
 
       it "AND and OR" do
@@ -155,30 +153,30 @@ module HavingSpec
         }
 
         r.to_sql.should eq "SELECT * FROM \"users\" HAVING (((users.id > 100) " +
-                          "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
+                           "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
       end
 
       it "Operators" do
       end
 
       it "Between" do
-        Clear::SQL.select.having{ x.between(1, 2) }
-        .to_sql.should eq(%[SELECT * HAVING ("x" BETWEEN 1 AND 2)])
+        Clear::SQL.select.having { x.between(1, 2) }
+          .to_sql.should eq(%[SELECT * HAVING ("x" BETWEEN 1 AND 2)])
 
-        Clear::SQL.select.having{ not(x.between(1, 2)) }
+        Clear::SQL.select.having { not(x.between(1, 2)) }
           .to_sql.should eq(%[SELECT * HAVING NOT ("x" BETWEEN 1 AND 2)])
       end
 
       it "Function" do
-        Clear::SQL.select.having{ ops_transform(x, "string", raw("INTERVAL '2 seconds'")) }
+        Clear::SQL.select.having { ops_transform(x, "string", raw("INTERVAL '2 seconds'")) }
           .to_sql.should eq(%[SELECT * HAVING ops_transform("x", 'string', INTERVAL '2 seconds')])
       end
 
       it "InArray" do
-        Clear::SQL.select.having{ x.in?([1,2,3,4]) }
+        Clear::SQL.select.having { x.in?([1, 2, 3, 4]) }
           .to_sql.should eq(%[SELECT * HAVING "x" IN (1, 2, 3, 4)])
 
-        Clear::SQL.select.having{ x.in?({1,2,3,4}) }
+        Clear::SQL.select.having { x.in?({1, 2, 3, 4}) }
           .to_sql.should eq(%[SELECT * HAVING "x" IN (1, 2, 3, 4)])
       end
 
@@ -192,54 +190,54 @@ module HavingSpec
 
         Clear::SQL.select.from(:users).having { created_at.in?(range) }.to_sql
           .should eq "SELECT * FROM \"users\" HAVING " +
-                    "(\"created_at\" >= #{Clear::Expression[range.begin]} AND" +
-                    " \"created_at\" <= #{Clear::Expression[range.end]})"
+                     "(\"created_at\" >= #{Clear::Expression[range.begin]} AND" +
+                     " \"created_at\" <= #{Clear::Expression[range.end]})"
 
         # Exclusive range
         Clear::SQL.select.from(:users).having { users.id.in?(1...3) }.to_sql
           .should eq "SELECT * FROM \"users\" HAVING (\"users\".\"id\" >= 1" +
-                    " AND \"users\".\"id\" < 3)"
+                     " AND \"users\".\"id\" < 3)"
       end
 
       it "InSelect" do
         sub_query = Clear::SQL.select("id").from("users")
-        Clear::SQL.select.having{ x.in?(sub_query) }
+        Clear::SQL.select.having { x.in?(sub_query) }
           .to_sql.should eq(%[SELECT * HAVING "x" IN (SELECT id FROM users)])
       end
 
       it "Minus" do
-        Clear::SQL.select.having{ -x > 2 }
+        Clear::SQL.select.having { -x > 2 }
           .to_sql.should eq(%[SELECT * HAVING (-"x" > 2)])
       end
 
       it "Not" do
-        Clear::SQL.select.having{ not(raw("TRUE")) }
+        Clear::SQL.select.having { not(raw("TRUE")) }
           .to_sql.should eq(%[SELECT * HAVING NOT TRUE])
 
-        Clear::SQL.select.having{ ~(raw("TRUE")) }
+        Clear::SQL.select.having { ~(raw("TRUE")) }
           .to_sql.should eq(%[SELECT * HAVING NOT TRUE])
       end
 
       it "Null" do
-        Clear::SQL.select.having{ x == nil }
+        Clear::SQL.select.having { x == nil }
           .to_sql.should eq(%[SELECT * HAVING ("x" IS NULL)])
-        Clear::SQL.select.having{ x != nil }
+        Clear::SQL.select.having { x != nil }
           .to_sql.should eq(%[SELECT * HAVING ("x" IS NOT NULL)])
       end
 
       it "Raw" do
-        Clear::SQL.select.having{ raw("Anything") }
+        Clear::SQL.select.having { raw("Anything") }
           .to_sql.should eq(%[SELECT * HAVING Anything])
 
-        Clear::SQL.select.having{ raw("x > ?", 1) }
+        Clear::SQL.select.having { raw("x > ?", 1) }
           .to_sql.should eq(%[SELECT * HAVING x > 1])
 
-        Clear::SQL.select.having{ raw("x > :num", num: 2) }
+        Clear::SQL.select.having { raw("x > :num", num: 2) }
           .to_sql.should eq(%[SELECT * HAVING x > 2])
       end
 
       it "Variable" do
-        Clear::SQL.select.having{ var("public", "users", "id") < 1000 }
+        Clear::SQL.select.having { var("public", "users", "id") < 1000 }
           .to_sql.should eq(%[SELECT * HAVING ("public"."users"."id" < 1000)])
       end
     end

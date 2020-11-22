@@ -109,7 +109,7 @@ module Clear::Migration
       Clear::Migration::Manager.instance.ensure_ready
 
       Clear::SQL.transaction do
-        Log.info{ "[#{dir}] #{self.class.name}" }
+        Log.info { "[#{dir}] #{self.class.name}" }
 
         # In case the migration is called twice (e.g. in Spec?)
         # ensure the operations are clean-up before trying again
@@ -123,7 +123,7 @@ module Clear::Migration
           }
 
           SQL.insert("__clear_metadatas", {metatype: "migration", value: uid.to_s})
-             .execute
+            .execute
         end
 
         dir.down do

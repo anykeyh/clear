@@ -1,4 +1,3 @@
-
 class RelationMigration8001
   include Clear::Migration
 
@@ -22,7 +21,7 @@ class RelationMigration8001
     end
 
     create_table "relation_spec_post_categories" do |t|
-      t.references to: "relation_spec_posts",      name: "post_id", on_delete: "cascade", null: true
+      t.references to: "relation_spec_posts", name: "post_id", on_delete: "cascade", null: true
       t.references to: "relation_spec_categories", name: "category_id", on_delete: "cascade", null: true
     end
   end

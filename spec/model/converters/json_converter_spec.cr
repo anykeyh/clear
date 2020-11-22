@@ -2,7 +2,6 @@ require "../../spec_helper"
 require "json"
 
 module JSONConverterSpec
-
   # Example found here:
   #   https://codeblogmoney.com/json-example-with-data-types-including-json-array/
   JSON_DATA_SAMPLE = <<-JSON
@@ -95,7 +94,6 @@ module JSONConverterSpec
     end
   end
 
-
   class JsonModel
     include ::Clear::Model
 
@@ -108,7 +106,6 @@ module JSONConverterSpec
 
   describe "Clear::Model::Converter::JSON::AnyConverter" do
     it "converts from JSON::Any" do
-
       json_any = JSON.parse(JSON_DATA_SAMPLE)
       converter = Clear::Model::Converter::JSON::AnyConverter
 
@@ -133,13 +130,11 @@ module JSONConverterSpec
         model.actor_column.dirty!
         model.save!
 
-        tommy = JsonModel.query.where{ var("actor").jsonb("children").contains?("Suri") }.first!
+        tommy = JsonModel.query.where { var("actor").jsonb("children").contains?("Suri") }.first!
         tommy.actor.name.should eq("Tommy Cruise")
       end
     end
-
   end
-
 end
 
-Clear.json_serializable_converter( JSONConverterSpec::Actor )
+Clear.json_serializable_converter(JSONConverterSpec::Actor)

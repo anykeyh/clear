@@ -11,7 +11,6 @@ end
 class ModelInBetween1
   include Clear::Model
   belongs_to my_model : MyModel
-
 end
 
 class HasManyThroughModel

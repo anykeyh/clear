@@ -100,7 +100,7 @@ class Clear::SQL::InsertQuery
     case v = @values
     when Array(Array(Inserable))
       v << row.values.to_a.map(&.as(Inserable))
-    else #when SelectBuilder
+    else # when SelectBuilder
       raise "Cannot insert both from SELECT query and from data"
     end
 

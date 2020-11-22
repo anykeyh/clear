@@ -4,7 +4,6 @@ module LockSpec
   extend self
 
   describe Clear::SQL::Query::Lock do
-
     it "can lock a table" do
       # ! We can't use transactional block here because we're testing behavior between different connections
       Clear::SQL.execute("CREATE TABLE to_lock ( id serial NOT NULL )")

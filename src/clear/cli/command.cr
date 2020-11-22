@@ -1,4 +1,3 @@
-
 module Clear::CLI::Command
   macro included
     define_flag verbose : Bool,

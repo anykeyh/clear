@@ -76,9 +76,9 @@ module Clear::SQL::Query::Select
   # for example this is used in relations caching under the hood.
   #
   # ```
-  #  query.force_select("id")
-  #  query.select("a, b").to_sql  # => Output "SELECT a, b, id"
-  #  query.clear_select.to_sql    # => Output "SELECT *, id"
+  # query.force_select("id")
+  # query.select("a, b").to_sql # => Output "SELECT a, b, id"
+  # query.clear_select.to_sql   # => Output "SELECT *, id"
   # ```
   def force_select(*__args)
     __args.each do |arg|

@@ -71,7 +71,7 @@ module UUIDSpec
       temporary do
         reinit
 
-      	3.times do |x|
+        3.times do |x|
           DBObject.create!({name: "obj#{x}"})
         end
 

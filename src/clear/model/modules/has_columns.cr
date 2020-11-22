@@ -197,9 +197,9 @@ module Clear::Model::HasColumns
       {% has_db_default = !settings[:presence] %}
       {% converter = Clear::Model::Converter::CONVERTERS[settings[:converter]] %}
       {% if converter == nil %}
-        {% raise "No converter found for `#{settings[:converter].id}`.\n"+
-                 "The type is probably not supported natively by Clear.\n"+
-                 "Please refer to the manual to create a custom converter.\n"+
+        {% raise "No converter found for `#{settings[:converter].id}`.\n" +
+                 "The type is probably not supported natively by Clear.\n" +
+                 "Please refer to the manual to create a custom converter.\n" +
                  "If this errors appears when settings belongs_to relation, ensure than `foreign_key_type` is set to\n" +
                  "not nilable type (e.g. Int32 instead of Int32?). Clear will use the nilable parameter of the model instead." %}
       {% end %}

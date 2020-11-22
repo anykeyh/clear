@@ -1,5 +1,6 @@
 require "../spec_helper"
 require "../data/example_models"
+
 module ModelSpec
   describe "Clear::Model" do
     context "fields management" do
@@ -481,8 +482,6 @@ module ModelSpec
       end
     end
 
-
-
     it "can load a column of type Array" do
       temporary do
         reinit_example_models
@@ -528,7 +527,6 @@ module ModelSpec
           u.categories.count.should eq(1)
         end
       end
-
     end
 
     context "with join" do

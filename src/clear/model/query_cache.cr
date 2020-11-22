@@ -7,7 +7,6 @@
 # Each cache can references multiples relations at the same time.
 # This cache use an underlying hash to access to the references keys.
 class Clear::Model::QueryCache
-
   # :nodoc:
   record CacheKey, relation_name : String, relation_value : Clear::SQL::Any, relation_model : String
 

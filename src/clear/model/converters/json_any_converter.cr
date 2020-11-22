@@ -25,15 +25,15 @@ module Clear
   # [More info about how to use JSON::Serializable it can be found here](https://crystal-lang.org/api/latest/JSON/Serializable.html)
   #
   # ```
-  #   Clear.json_serializable_converter(MyJsonType)
+  # Clear.json_serializable_converter(MyJsonType)
   #
+  # # ...
+  #
+  # class YourModel
+  #   include Clear::Model
   #   # ...
-  #
-  #   class YourModel
-  #     include Clear::Model
-  #     # ...
-  #     column my_column : MyJsonType # jsonb (recommended), json or string column in postgresql.
-  #   end
+  #   column my_column : MyJsonType # jsonb (recommended), json or string column in postgresql.
+  # end
   # ```
   macro json_serializable_converter(type)
     {% type = type.resolve %}

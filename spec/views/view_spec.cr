@@ -1,11 +1,9 @@
 require "../spec_helper"
 
 module ViewSpec
-
   describe "Clear::View" do
     it "recreate the views on migration" do
       temporary do
-
         Clear::View.register :room_per_days do |view|
           view.require(:rooms, :year_days)
 
@@ -42,6 +40,5 @@ module ViewSpec
         Clear::View.clear
       end
     end
-
   end
 end

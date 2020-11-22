@@ -4,7 +4,6 @@ module Clear
     #
     # ```
     # Clear::SQL.lock("my_table") do
-    #
     # end
     # ```
     #

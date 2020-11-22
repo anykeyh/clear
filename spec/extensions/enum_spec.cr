@@ -1,7 +1,5 @@
 require "../spec_helper"
 
-
-
 module EnumSpec
   extend self
 

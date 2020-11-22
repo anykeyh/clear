@@ -2,10 +2,8 @@ require "../spec_helper"
 require "../data/example_models"
 
 module ColumnSpec
-
   describe "Clear::Model" do
     context "columns" do
-
       it "handles persistance flag" do
         temporary do
           reinit_example_models
@@ -18,7 +16,7 @@ module ColumnSpec
           u = User.new({id: 2, first_name: "John"}, persisted: true)
           u.persisted?.should be_true
           u.first_name = "Rick"
-          u.save! #Will try to update model with id=2.
+          u.save! # Will try to update model with id=2.
 
           User.query.where(id: 2).any?.should be_false
         end
@@ -49,7 +47,7 @@ module ColumnSpec
           u = User.new({id: 1, first_name: "Henry"})
 
           u.last_name_column.defined?.should be_false
-          expect_raises(Exception){ u.last_name }
+          expect_raises(Exception) { u.last_name }
         end
       end
 
@@ -85,7 +83,6 @@ module ColumnSpec
           u.last_name_column.value("Doe").should eq("Wick")
         end
       end
-
     end
   end
 end

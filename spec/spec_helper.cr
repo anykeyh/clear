@@ -49,7 +49,7 @@ struct CrystalCall
   property status
 
   def initialize(script, is_spec = false)
-    @status = Process.run("crystal",  [is_spec ? "spec" : nil, "spec/data/compile_time/#{script}.cr", "--error-trace"].compact,
+    @status = Process.run("crystal", [is_spec ? "spec" : nil, "spec/data/compile_time/#{script}.cr", "--error-trace"].compact,
       output: stdout, error: stderr)
   end
 
@@ -61,7 +61,6 @@ struct CrystalCall
     puts stdout
     puts stderr
   end
-
 end
 
 def compile_and_run(script)

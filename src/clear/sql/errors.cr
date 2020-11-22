@@ -12,6 +12,7 @@ module Clear::SQL
   # Rollback the transaction or the last savepoint.
   class RollbackError < Error
     getter savepoint_id : String?
+
     def initialize(@savepoint_id = nil)
     end
   end

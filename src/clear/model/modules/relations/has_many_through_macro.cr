@@ -1,6 +1,5 @@
 # :nodoc:
 module Clear::Model::Relations::HasManyThroughMacro
-
   # has_many through
   macro generate(self_type, relation, through_rel)
     {%

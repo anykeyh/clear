@@ -9,7 +9,7 @@ class Clear::Expression::Node::PGArray(T) < Clear::Expression::Node
   end
 
   def resolve : String
-    safe_array = @arr.map{ |elm| Clear::Expression[elm] }
+    safe_array = @arr.map { |elm| Clear::Expression[elm] }
     {"array[", safe_array.join(", "), "]"}.join
   end
 end

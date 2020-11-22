@@ -1,6 +1,6 @@
 module Clear::Validation::Helper
   macro on_presence(*fields, &block)
-    if {{ fields.map{ |x| "self.#{x.id}_column.defined?" }.join(" && ").id }}
+    if {{ fields.map { |x| "self.#{x.id}_column.defined?" }.join(" && ").id }}
       {{yield}}
     end
   end

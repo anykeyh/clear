@@ -20,6 +20,6 @@ module Clear::SQL::Query::GroupBy
 
   protected def print_group_bys
     return unless @group_bys.any?
-    "GROUP BY " + @group_bys.map{ |x| x.is_a?(Symbol) ? SQL.escape(x) : x }.join(", ")
+    "GROUP BY " + @group_bys.map { |x| x.is_a?(Symbol) ? SQL.escape(x) : x }.join(", ")
   end
 end

@@ -1,7 +1,6 @@
 require "../spec_helper"
 require "../data/example_models"
 
-
 module CollectionSpec
   describe Clear::Model::CollectionBase do
     it "[] / []?" do
@@ -30,11 +29,11 @@ module CollectionSpec
           User.create! first_name: "user #{x}"
         end
 
-        User.query.find{ first_name == "user 2" }.not_nil!.first_name.should eq("user 2")
-        User.query.find{ first_name == "not_exists" }.should be_nil
+        User.query.find { first_name == "user 2" }.not_nil!.first_name.should eq("user 2")
+        User.query.find { first_name == "not_exists" }.should be_nil
 
         expect_raises(Clear::SQL::RecordNotFoundError) {
-          User.query.find!{ first_name == "not_exists" }
+          User.query.find! { first_name == "not_exists" }
         }
       end
     end
@@ -148,7 +147,7 @@ module CollectionSpec
         end
 
         User.query.count.should eq(10)
-        User.query.where{ id <= 5 }.delete_all
+        User.query.where { id <= 5 }.delete_all
         User.query.count.should eq(5)
       end
     end

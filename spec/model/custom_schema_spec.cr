@@ -14,7 +14,7 @@ module CustomSchemaSpec
         )
         model.persisted?.should eq(true)
 
-        mdl  = ModelWithinAnotherSchema.query.where{ title == "Some title" }.first!
+        mdl = ModelWithinAnotherSchema.query.where { title == "Some title" }.first!
 
         mdl.title = "A new title"
         mdl.save! # Ensure update works
@@ -24,10 +24,10 @@ module CustomSchemaSpec
         ModelWithinAnotherSchema.query.count.should eq(0)
 
         model = ModelWithinAnotherSchema.create! title: "Some title" # Ensure create works
-        model.delete # Ensure delete one works
+        model.delete                                                 # Ensure delete one works
 
         ModelWithinAnotherSchema.create! title: "Some title" # Ensure create works
-        Clear::SQL.truncate(ModelWithinAnotherSchema) # ensure truncate works
+        Clear::SQL.truncate(ModelWithinAnotherSchema)        # ensure truncate works
       end
     end
   end

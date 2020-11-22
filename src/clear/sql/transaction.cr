@@ -1,5 +1,4 @@
 module Clear::SQL::Transaction
-
   # Represents the differents levels of transactions
   #   as described in https://www.postgresql.org/docs/9.5/transaction-iso.html
   #
@@ -11,7 +10,6 @@ module Clear::SQL::Transaction
 
     # :nodoc:
     def to_begin_operation
-
       case self
       when ReadCommitted
         "BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED"
@@ -20,12 +18,11 @@ module Clear::SQL::Transaction
       else # Serializable is the default
         "BEGIN"
       end
-
     end
   end
 
   @@savepoint_uid : UInt64 = 0_u64
-  @@commit_callbacks = Hash( DB::Connection, Array(DB::Connection ->) ).new { [] of DB::Connection -> }
+  @@commit_callbacks = Hash(DB::Connection, Array(DB::Connection ->)).new { [] of DB::Connection -> }
 
   # Check whether the current pair of fiber/connection is in transaction
   # block or not.
@@ -75,7 +72,6 @@ module Clear::SQL::Transaction
     end
   end
 
-
   # Register a callback function which will be fired once when SQL `COMMIT`
   # operation is called
   #
@@ -83,16 +79,16 @@ module Clear::SQL::Transaction
   # when you want to be sure the data is secured in the database.
   #
   # ```
-  #   transaction do
-  #     @user = User.find(1)
-  #     @user.subscribe!
-  #     Clear::SQL.after_commit{ Email.deliver(ConfirmationMail.new(@user)) }
-  #   end
+  # transaction do
+  #   @user = User.find(1)
+  #   @user.subscribe!
+  #   Clear::SQL.after_commit { Email.deliver(ConfirmationMail.new(@user)) }
+  # end
   # ```
   #
   # In case the transaction fail and eventually rollback, the code won't be called.
   #
-  def after_commit(connection : String = "default", &block : DB::Connection -> Nil )
+  def after_commit(connection : String = "default", &block : DB::Connection -> Nil)
     Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
       if cnx._clear_in_transaction?
         @@commit_callbacks[cnx] <<= block
@@ -126,7 +122,6 @@ module Clear::SQL::Transaction
         raise e if e.savepoint_id.try &.!=(sp_name)
       end
     end
-
   end
 
   # Rollback a transaction or return to the previous savepoint in case of a

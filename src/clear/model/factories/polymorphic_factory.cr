@@ -10,10 +10,9 @@ module Clear::Model::Factory
     end
 
     def build(h : Hash(String, ::Clear::SQL::Any),
-      cache : Clear::Model::QueryCache? = nil,
-      persisted : Bool = false,
-      fetch_columns : Bool = false) : Clear::Model
-
+              cache : Clear::Model::QueryCache? = nil,
+              persisted : Bool = false,
+              fetch_columns : Bool = false) : Clear::Model
       v = h[@type_field]
 
       case v

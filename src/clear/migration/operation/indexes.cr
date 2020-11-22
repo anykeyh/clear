@@ -15,19 +15,19 @@ module Clear::Migration
       @name = name || safe_name([table, field.to_s.underscore].join("_") + "_idx")
     end
 
-    def safe_name(x)
+    def safe_name(x) : String
       x.gsub(/[^A-Za-z_0-9]/, "_")
     end
 
-    private def print_unique
+    private def print_unique : String?
       @unique ? "UNIQUE" : nil
     end
 
-    private def print_using
+    private def print_using : String?
       @using ? "USING #{@using}" : nil
     end
 
-    private def print_columns
+    private def print_columns : String
       {"(", @fields.join(", "), ")"}.join
     end
 

@@ -3,7 +3,6 @@ module Clear::SQL::Query::Having
     getter havings : Array(Clear::Expression::Node)
   end
 
-
   # Build SQL `having` condition using a Clear::Expression::Node
   # ```crystal
   # query.having(Clear::Expression::Node::InArray.new("id", ['1', '2', '3', '4']))
@@ -20,7 +19,6 @@ module Clear::SQL::Query::Having
     @havings << node
     change!
   end
-
 
   # Build SQL `or_having` condition using a Clear::Expression::Node
   # ```crystal
@@ -39,10 +37,10 @@ module Clear::SQL::Query::Having
 
     # Optimisation: if we have a OR Array as root, we use it and append directly the element.
     if @havings.size == 1 &&
-      (n = @havings.first) &&
-      n.is_a?(Clear::Expression::Node::NodeArray) &&
-      n.link == "OR"
-        n.expression << node
+       (n = @havings.first) &&
+       n.is_a?(Clear::Expression::Node::NodeArray) &&
+       n.link == "OR"
+      n.expression << node
     else
       # Concatenate the old clauses in a list of AND conditions
       if @havings.size == 1
@@ -65,7 +63,6 @@ module Clear::SQL::Query::Having
   def having(&block)
     having(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
-
 
   def having(**tuple)
     having(__conditions: tuple)
@@ -135,13 +132,12 @@ module Clear::SQL::Query::Having
   end
 
   def or_having(__template : String, **__named_tuple)
-    or_having( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", **__named_tuple)) )
+    or_having(Clear::Expression::Node::Raw.new(Clear::Expression.raw("(#{__template})", **__named_tuple)))
   end
 
   def or_having(__template : String, *__args)
-    or_having( Clear::Expression::Node::Raw.new( Clear::Expression.raw("(#{__template})", *__args)) )
+    or_having(Clear::Expression::Node::Raw.new(Clear::Expression.raw("(#{__template})", *__args)))
   end
-
 
   # Build SQL `having` condition using the Expression engine.
   # ```crystal
@@ -162,5 +158,4 @@ module Clear::SQL::Query::Having
   protected def print_havings
     {"HAVING ", @havings.map(&.resolve).join(" AND ")}.join if @havings.any?
   end
-
 end

@@ -69,8 +69,8 @@ module RelationSpec
         reinit_migration_manager
         RelationMigration8001.new.apply
 
-        users = { User.create!(id: 1000, first_name: "relation_user"),
-          User.create!(id: 1001, first_name: "relation_user")}
+        users = {User.create!(id: 1000, first_name: "relation_user"),
+                 User.create!(id: 1001, first_name: "relation_user")}
 
         5.times do |x|
           UserInfo.create!(id: (2000 + x), user: users.sample, infos: "#{x}")
@@ -79,8 +79,8 @@ module RelationSpec
         user_info_call = 0
         user_call = 0
 
-        query1 = UserInfo.query.before_query{ user_info_call+=1 }
-        query1.with_user{  user_call += 1 }
+        query1 = UserInfo.query.before_query { user_info_call += 1 }
+        query1.with_user { user_call += 1 }
 
         query1.each do |user_info|
           user_info_call.should eq(1)

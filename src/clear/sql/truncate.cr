@@ -3,9 +3,9 @@ module Clear
     # Truncate a table or a model
     #
     # ```
-    #   User.query.count # => 200
-    #   Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
-    #   User.query.count # => 0
+    # User.query.count          # => 200
+    # Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
+    # User.query.count          # => 0
     # ```
     #
     # SEE https://www.postgresql.org/docs/current/sql-truncate.html
@@ -16,9 +16,8 @@ module Clear
     # - `truncate_inherited` set to false will append `ONLY` to the query
     # - `connection_name` will be: `Model.connection` or `default` unless optionally defined.
     def self.truncate(tablename : Clear::Model.class | String | Symbol,
-      restart_sequence : Bool = false, cascade : Bool = false,
-      truncate_inherited : Bool = true, connection_name : String = "default") forall T
-
+                      restart_sequence : Bool = false, cascade : Bool = false,
+                      truncate_inherited : Bool = true, connection_name : String = "default") forall T
       case tablename
       when String
         # do nothing. This is important as I can't use T in the case block
@@ -35,7 +34,7 @@ module Clear
       cascade = cascade ? " CASCADE " : ""
 
       execute(connection_name,
-        {"TRUNCATE TABLE ", only, tablename, restart_sequence, cascade }.join
+        {"TRUNCATE TABLE ", only, tablename, restart_sequence, cascade}.join
       )
     end
   end

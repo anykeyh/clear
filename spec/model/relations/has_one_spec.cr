@@ -2,7 +2,6 @@ require "../../spec_helper"
 require "./fixture"
 
 module RelationSpec
-
   describe("has_one relation (not nilable)") do
     it "can access" do
       temporary do
@@ -53,7 +52,6 @@ module RelationSpec
     end
   end
 
-
   it "raises an exception if the model is not persisted and cannot be saved" do
     temporary do
       reinit_migration_manager
@@ -79,7 +77,7 @@ module RelationSpec
 
       users = {
         User.create!(id: 1000, first_name: "relation_user"),
-        User.create!(id: 1001, first_name: "relation_user")
+        User.create!(id: 1001, first_name: "relation_user"),
       }
 
       5.times do |x|
@@ -89,8 +87,8 @@ module RelationSpec
       user_info_call = 0
       user_call = 0
 
-      query1 = User.query.before_query{ user_call+=1 }
-      query1.with_user_info{ user_info_call += 1 }
+      query1 = User.query.before_query { user_call += 1 }
+      query1.with_user_info { user_info_call += 1 }
 
       query1.each do |user|
         user_info_call.should eq(1)

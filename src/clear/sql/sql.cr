@@ -60,7 +60,7 @@ module Clear
     include Clear::SQL::Transaction
     extend self
 
-    alias Symbolic   = String | Symbol
+    alias Symbolic = String | Symbol
     alias Selectable = Symbolic | Clear::SQL::SelectBuilder
 
     # Sanitize string and convert some literals (e.g. `Time`)
@@ -155,14 +155,13 @@ module Clear
     # ```
     #
     def execute(connection_name : String, sql)
-      log_query(sql){ Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec_all(sql)) }
+      log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec_all(sql)) }
     end
 
     # :ditto:
     def execute(sql : String)
       execute("default", sql)
     end
-
 
     # :nodoc:
     def sel_str(s : Selectable)
@@ -177,7 +176,7 @@ module Clear
     # Start an INSERT INTO table query
     #
     # ```
-    # Clear::SQL.insert_into("table", {id: 1, name: "hello"}, {id: 2, name: "World"} )
+    # Clear::SQL.insert_into("table", {id: 1, name: "hello"}, {id: 2, name: "World"})
     # ```
     def insert_into(table : Symbolic, *args)
       Clear::SQL::InsertQuery.new(table).values(*args)
@@ -223,7 +222,6 @@ module Clear
     def select(**args)
       Clear::SQL::SelectQuery.new.select(**args)
     end
-
   end
 end
 

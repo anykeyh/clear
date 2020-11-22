@@ -128,7 +128,7 @@ class Clear::Expression
     self.safe_literal({
       "{",
       x.map { |item| self.safe_literal(item) }.join(", "),
-      "}"
+      "}",
     }.join)
   end
 
@@ -233,14 +233,13 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }           # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
   def raw(x : String, *args)
     Node::Raw.new(self.class.raw(x, *args))
   end
-
 
   # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
   # or in case of a complex piece of computation impossible to express with the expression engine
@@ -249,7 +248,7 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }           # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
@@ -279,7 +278,7 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }                       # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
@@ -294,7 +293,7 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }                       # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
@@ -315,9 +314,9 @@ class Clear::Expression
   # This is useful to escape SQL keywords or `.` and `"` character in the name of a column.
   #
   # ```crystal
-  #   var("template1", "users", "name") # "template1"."users"."name"
-  #   var("template1", "users.table2", "name") # "template1"."users.table2"."name"
-  #   var("order") # "order"
+  # var("template1", "users", "name")        # "template1"."users"."name"
+  # var("template1", "users.table2", "name") # "template1"."users.table2"."name"
+  # var("order")                             # "order"
   # ```
   #
   def var(*parts)
@@ -337,7 +336,7 @@ class Clear::Expression
   # this helpers helps to write operation expressions:
   #
   # ```crystal
-  # where { op(jsonb_field, "?", "something") } #<< Return "jsonb_field ? 'something'"
+  # where { op(jsonb_field, "?", "something") } # << Return "jsonb_field ? 'something'"
   # ```
   def op(a : (Node | AvailableLiteral), op : String, b : (Node | AvailableLiteral))
     a = Node::Literal.new(a) if a.is_a?(AvailableLiteral)

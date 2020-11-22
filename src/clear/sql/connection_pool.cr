@@ -13,7 +13,7 @@ class Clear::SQL::ConnectionPool
   def self.with_connection(target : String, &block)
     fiber_target = {target, Fiber.current}
 
-    database = @@databases.fetch(target){ raise Clear::ErrorMessages.uninitialized_db_connection(target) }
+    database = @@databases.fetch(target) { raise Clear::ErrorMessages.uninitialized_db_connection(target) }
 
     cnx = @@fiber_connections[fiber_target]?
 
@@ -29,7 +29,5 @@ class Clear::SQL::ConnectionPool
         end
       end
     end
-
   end
-
 end

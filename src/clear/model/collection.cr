@@ -244,7 +244,6 @@ module Clear::Model
       T
     end
 
-
     # :nodoc:
     # Set a query cache on this Collection. Fetching and enumerate will use the cache instead of calling the SQL.
     def cached(cache : Clear::Model::QueryCache)
@@ -299,7 +298,7 @@ module Clear::Model
       any_hash = {} of String => Clear::SQL::Any
 
       # remove terms which are not real value but conditions like range or array
-      hash.each{ |k, v|
+      hash.each { |k, v|
         any_hash[k] = v if v.is_a?(Clear::SQL::Any)
       }
 
@@ -519,7 +518,7 @@ module Clear::Model
     end
 
     def find_or_build(**tuple) : T
-      find_or_build(**tuple){ }
+      find_or_build(**tuple) { }
     end
 
     # Try to fetch a row. If not found, build a new object and setup
@@ -573,7 +572,7 @@ module Clear::Model
       clone = dup
 
       if clone.order_bys.empty?
-        key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
+        key = {Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__)}.join(".")
         clone.order_by(key, :asc)
       end
 
@@ -583,7 +582,6 @@ module Clear::Model
 
       nil
     end
-
 
     # Redefinition of `join_impl` to avoid ambiguity on the column
     # name if no specific column have been selected.
@@ -598,7 +596,7 @@ module Clear::Model
       clone = dup
 
       if clone.order_bys.empty?
-        key = { Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__) }.join(".")
+        key = {Clear::SQL.escape(T.table), Clear::SQL.escape(T.__pkey__)}.join(".")
         clone.order_by(key, :asc)
       end
 
@@ -619,7 +617,7 @@ module Clear::Model
     # Is equivalent to `collection.to_delete.execute`
     def delete_all : self
       to_delete.execute
-      change! #because we want to clear the caches in case we do something with the collection later
+      change! # because we want to clear the caches in case we do something with the collection later
     end
   end
 end

@@ -6,9 +6,9 @@ module Clear::Model::HasHooks
   # - Call triggers `after` the event
   #
   # ```
-  #    model.with_triggers("email_sent") do |m|
-  #       model.send_email
-  #    end
+  # model.with_triggers("email_sent") do |m|
+  #   model.send_email
+  # end
   # ```
   #
   # Returns `self`
@@ -57,5 +57,4 @@ module Clear::Model::HasHooks
       mdl.as({{@type}}).{{method_name.id}}
     }
   end
-
 end

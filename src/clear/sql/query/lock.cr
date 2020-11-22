@@ -19,10 +19,10 @@ module Clear::SQL::Query::Lock
   #
   # ```
   # Clear::SQL.transaction do
-  #     # SELECT * FROM users WHERE organization = 'Crystal Lang' FOR UPDATE
-  #     User.where(organization: "Crystal Lang").with_lock.each do |user|
-  #         # Do something with your users
-  #     end
+  #   # SELECT * FROM users WHERE organization = 'Crystal Lang' FOR UPDATE
+  #   User.where(organization: "Crystal Lang").with_lock.each do |user|
+  #     # Do something with your users
+  #   end
   # end
   # ```
   #

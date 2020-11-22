@@ -83,7 +83,6 @@ module CacheSpec
           end
         end
       end
-
     end
   end
 end

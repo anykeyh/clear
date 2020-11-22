@@ -66,7 +66,7 @@ module Clear::Migration
     end
 
     def full_name
-      { Clear::SQL.escape(@schema), Clear::SQL.escape(@name) }.join(".")
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
     end
 
     # Add or replace an index for this table.
@@ -113,7 +113,7 @@ module Clear::Migration
 
     def down : Array(String)
       [
-        (["DROP TABLE", full_name].join(" ") if is_create?)
+        (["DROP TABLE", full_name].join(" ") if is_create?),
       ].compact
     end
 
@@ -195,7 +195,7 @@ module Clear::Migration
     end
 
     def full_name
-      { Clear::SQL.escape(@schema), Clear::SQL.escape(@name) }.join(".")
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
     end
 
     def up : Array(String)
@@ -208,14 +208,14 @@ module Clear::Migration
   end
 
   class DropTable < Operation
-    getter table  : String
+    getter table : String
     getter schema : String
 
     def initialize(@table, @schema)
     end
 
     def full_name
-      { Clear::SQL.escape(@schema), Clear::SQL.escape(@name) }.join(".")
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
     end
 
     def up : Array(String)

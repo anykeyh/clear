@@ -43,7 +43,7 @@ module SelectSpec
       end
 
       it "can transfert to update method" do
-        r = select_request.select("*").from(:users).where { var("users","id") > 1000 }
+        r = select_request.select("*").from(:users).where { var("users", "id") > 1000 }
         r.to_update.set(x: 1).to_sql.should eq "UPDATE \"users\" SET \"x\" = 1 WHERE (\"users\".\"id\" > 1000)"
       end
 

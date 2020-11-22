@@ -6,5 +6,4 @@ class Clear::CLI::Seed < Admiral::Command
   def run_impl
     Clear.apply_seeds
   end
-
 end

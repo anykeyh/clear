@@ -4,7 +4,7 @@ module Clear::SQL
 
     # FROM fragment of the SQL query
     # ```crystal
-    #   Clear::SQL.select.from("airplanes").to_sql # < SELECT * FROM airplanes
+    # Clear::SQL.select.from("airplanes").to_sql # < SELECT * FROM airplanes
     # ```
     def from(*__args)
       __args.each do |arg|

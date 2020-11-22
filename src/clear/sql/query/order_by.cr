@@ -43,17 +43,17 @@ module Clear::SQL::Query::OrderBy
 
   # Flip over all order bys by switching the ASC direction to DESC and the NULLS FIRST to NULLS LAST
   # ```
-  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc, company: {:asc, :nulls_last})
-  #  query.reverse_order_by
-  #  query.to_sql # SELECT * FROM users ORDER BY "id" ASC, "name" DESC, "company" DESC NULLS FIRST
+  # query = Clear::SQL.select.from("users").order_by(id: :desc, name: :asc, company: {:asc, :nulls_last})
+  # query.reverse_order_by
+  # query.to_sql # SELECT * FROM users ORDER BY "id" ASC, "name" DESC, "company" DESC NULLS FIRST
   # ```
   #
   # return `self`
   def reverse_order_by
-    @order_bys = @order_bys.map{ |rec|
+    @order_bys = @order_bys.map { |rec|
       Record.new(rec.op,
         rec.dir == :desc ? :asc : :desc,
-        rec.nulls.try{ |n| n == :nulls_last ? :nulls_first : :nulls_last }
+        rec.nulls.try { |n| n == :nulls_last ? :nulls_first : :nulls_last }
       )
     }
     change!
@@ -68,8 +68,8 @@ module Clear::SQL::Query::OrderBy
   # Add multiple ORDER BY clause using a tuple:
   #
   # ```
-  #  query = Clear::SQL.select.from("users").order_by(id: :desc, name: { :asc, :nulls_last } )
-  #  query.to_sql # > SELECT * FROM users ORDER BY "id" DESC, "name" ASC NULLS LAST
+  # query = Clear::SQL.select.from("users").order_by(id: :desc, name: {:asc, :nulls_last})
+  # query.to_sql # > SELECT * FROM users ORDER BY "id" DESC, "name" ASC NULLS LAST
   # ```
   #
   def order_by(**tuple)
@@ -95,9 +95,9 @@ module Clear::SQL::Query::OrderBy
   # Add one ORDER BY clause
   # ```
   # query = Clear::SQL.select.from("users").order_by(:id, :desc, nulls_last)
-  # query.to_sql #> SELECT * FROM users ORDER BY "id" DESC NULLS LAST
+  # query.to_sql # > SELECT * FROM users ORDER BY "id" DESC NULLS LAST
   # ```
-  def order_by(expression : Symbol, direction : Symbol  = :asc, nulls : Symbol? = nil)
+  def order_by(expression : Symbol, direction : Symbol = :asc, nulls : Symbol? = nil)
     @order_bys << Record.new(SQL.escape(expression.to_s), sanitize_direction(direction), sanitize_nulls(nulls))
     change!
   end
@@ -123,6 +123,6 @@ module Clear::SQL::Query::OrderBy
   # :nodoc:
   protected def print_order_bys
     return unless @order_bys.any?
-    "ORDER BY " + @order_bys.map { |r| [ r.op, r.dir.to_s.upcase, to_nulls_statement(r.nulls) ].compact.join(" ") }.join(", ")
+    "ORDER BY " + @order_bys.map { |r| [r.op, r.dir.to_s.upcase, to_nulls_statement(r.nulls)].compact.join(" ") }.join(", ")
   end
 end

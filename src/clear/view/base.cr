@@ -1,4 +1,3 @@
-
 # Create and maintain your database views directly in the code.
 #
 # You could use the migration system to create and drop your views. However this
@@ -52,7 +51,7 @@ class Clear::View
   # Call the DSL to register a new view
   # ```
   # Clear::View.register(:name) do |view|
-  #     # describe the view here.
+  #   # describe the view here.
   # end
   # ```
   def self.register(name : Clear::SQL::Symbolic, &)
@@ -79,9 +78,9 @@ class Clear::View
     return if apply_cache.includes?(view_name)
 
     view = @@views[view_name]
-    view.requirement.each{ |dep_view| apply(direction, dep_view, apply_cache) }
+    view.requirement.each { |dep_view| apply(direction, dep_view, apply_cache) }
 
-    Clear::SQL.execute(view.connection, direction == :drop ? view.to_drop_sql : view.to_create_sql )
+    Clear::SQL.execute(view.connection, direction == :drop ? view.to_drop_sql : view.to_create_sql)
     apply_cache << view_name
   end
 
@@ -129,7 +128,7 @@ class Clear::View
 
   # list of dependencies from the other view related to this view
   def require(*req)
-    req.map(&.to_s).each{ |s| @requirement.add(s) }
+    req.map(&.to_s).each { |s| @requirement.add(s) }
   end
 
   def to_drop_sql
@@ -137,11 +136,10 @@ class Clear::View
   end
 
   def full_name
-    {@schema, @name}.map{ |x| Clear::SQL.escape(x) }.join(".")
+    {@schema, @name}.map { |x| Clear::SQL.escape(x) }.join(".")
   end
 
   def to_create_sql
-    { "CREATE OR REPLACE", ( @materialized ? "MATERIALIZED VIEW" : "VIEW" ) , full_name , "AS (", @query, ")" }.join(' ')
+    {"CREATE OR REPLACE", (@materialized ? "MATERIALIZED VIEW" : "VIEW"), full_name, "AS (", @query, ")"}.join(' ')
   end
-
 end

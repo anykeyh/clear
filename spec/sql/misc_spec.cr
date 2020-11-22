@@ -11,7 +11,6 @@ module SQLMiscSpec
 
   describe "Clear::SQL" do
     describe "miscalleanous" do
-
       it "can escape for SQL-safe object" do
         Clear::SQL.escape("order").should eq "\"order\""
         Clear::SQL.escape("").should eq "\"\""
@@ -39,12 +38,11 @@ module SQLMiscSpec
       end
 
       it "can truncate a table" do
-
         begin
           Clear::SQL.execute("CREATE TABLE truncate_tests (id serial PRIMARY KEY, value int)")
 
           5.times do |x|
-            Clear::SQL.insert("truncate_tests", { value: x } ).execute
+            Clear::SQL.insert("truncate_tests", {value: x}).execute
           end
 
           count = Clear::SQL.select.from("truncate_tests").count

@@ -14,7 +14,7 @@ class Clear::Expression::Node::NodeArray < Clear::Expression::Node
       {
         "(",
         @expression.map(&.resolve).join(" #{@link} "),
-        ")"
+        ")",
       }.join
     else
       ""

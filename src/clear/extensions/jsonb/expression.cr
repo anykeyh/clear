@@ -37,7 +37,6 @@ class Clear::Expression::Node::JSONB::Field < Clear::Expression::Node
   def contains?(expression)
     Clear::Expression::Node::JSONB::ArrayContains.new(resolve, Clear::Expression[expression])
   end
-
 end
 
 # Define a __value match? (@>)__ operation between a jsonb column and a json hash

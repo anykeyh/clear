@@ -28,7 +28,7 @@ class Clear::SQL::SelectQuery
 
   # Enumerable items
   def each
-    fetch{ |h| yield(h) }
+    fetch { |h| yield(h) }
   end
 
   def count(&block)

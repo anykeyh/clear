@@ -9,9 +9,8 @@ module InsertSpec
     describe "UpdateQuery" do
       it "allows usage of unsafe SQL fragment" do
         Clear::SQL.update(:model)
-        .set("array":
-          Clear::SQL.unsafe("array_replace(array, 'a', 'b')")
-        ).to_sql.should eq %(UPDATE "model" SET "array" = array_replace(array, 'a', 'b'))
+          .set("array": Clear::SQL.unsafe("array_replace(array, 'a', 'b')")
+          ).to_sql.should eq %(UPDATE "model" SET "array" = array_replace(array, 'a', 'b'))
       end
     end
   end

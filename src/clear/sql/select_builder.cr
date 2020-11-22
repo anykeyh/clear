@@ -1,7 +1,6 @@
 require "./query/**"
 
 module Clear::SQL::SelectBuilder
-
   include Query::Select
   include Query::From
   include Query::Join
@@ -17,7 +16,6 @@ module Clear::SQL::SelectBuilder
   include Query::CTE
   include Query::Window
   include Query::Lock
-
 
   include Query::Execute
   include Query::Fetch
@@ -117,5 +115,4 @@ module Clear::SQL::SelectBuilder
 
     UpdateQuery.new(table: v.dup, wheres: @wheres.dup)
   end
-
 end

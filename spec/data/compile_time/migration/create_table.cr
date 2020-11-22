@@ -10,9 +10,7 @@ class CreateTableMigration
   def change(dir)
     # 1) create table with some fields
     create_table(:table1) do |_|
-
     end
-
   end
 end
 

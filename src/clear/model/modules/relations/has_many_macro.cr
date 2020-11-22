@@ -1,6 +1,5 @@
 # :nodoc:
 module Clear::Model::Relations::HasManyMacro
-
   # has many
   macro generate(self_type, relation)
     {%
@@ -47,9 +46,9 @@ module Clear::Model::Relations::HasManyMacro
         query.with_cached_result(@_cached_{{method_name}})
       end
 
-      {%
-        # Allow to add an element in this collection by changing the `foreign_key`
-        # value of the distant model.
+      {% # Allow to add an element in this collection by changing the `foreign_key`
+# value of the distant model.
+
       %}
       query.append_operation = -> (x : {{relation_type}}) do
         x.{{foreign_key}} = self.__pkey__
