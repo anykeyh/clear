@@ -25,33 +25,42 @@ module Clear::SQL::Query::Pluck
     field = Clear::SQL.escape(field) if field.is_a?(Symbol)
 
     sql = self.clear_select.select(field).to_sql
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
-    o = [] of Clear::SQL::Any
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-    while rs.move_next
-      o << rs.read
+      o = [] of Clear::SQL::Any
+
+      while rs.move_next
+        o << rs.read
+      end
+      o
+    ensure
+      rs.try &.close
     end
-    o
-  ensure
-    rs.try &.close
+
   end
 
-  # See `pluck_col(field)`
+  # :ditto:
   def pluck_col(field : Clear::SQL::Symbolic, type : T.class ) forall T
     field = Clear::SQL.escape(field) if field.is_a?(Symbol)
 
     sql = self.clear_select.select(field).to_sql
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
 
-    o = [] of T
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-    while rs.move_next
-      o << rs.read(T)
+      o = [] of T
+
+      while rs.move_next
+        o << rs.read(T)
+      end
+
+      o
+
+    ensure
+      rs.try &.close
     end
-    o
-  ensure
-    rs.try &.close
   end
 
   # Select specifics columns and return an array of Tuple(*Clear::SQL::Any) containing the columns in the order of the selected
@@ -66,47 +75,49 @@ module Clear::SQL::Query::Pluck
     pluck(fields)
   end
 
+   # :ditto:
+   def pluck(fields : Tuple(*T)) forall T
+    select_clause = fields.map{ |f| f.is_a?(Symbol) ? Clear::SQL.escape(f) : f.to_s }.join(", ")
+    sql = self.clear_select.select(select_clause).to_sql
+
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
+
+      {% begin %}
+        o = [] of Tuple({% for t in T %}Clear::SQL::Any,{% end %})
+
+        while rs.move_next
+            o << { {% for t in T %} rs.read, {% end %} }
+        end
+        o
+      {% end %}
+    ensure
+      rs.try &.close
+    end
+  end
+
   # Select specifics columns and returns on array of tuple of type of the named tuple passed as parameter:
   #
   # ```crystal
   #   User.query.pluck(id: Int64, "UPPER(last_name)": String).each do #...
   # ```
-
   def pluck(**fields : **T) forall T
-    sql = self.clear_select.select(fields.keys.join(", ")).to_sql
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
+    sql = clear_select.select(fields.keys.join(", ")).to_sql
 
-    {% begin %}
-      o = [] of Tuple({% for k,v in T %}{{v.instance}},{% end %})
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-      while rs.move_next
-        o << { {% for k,v in T  %} rs.read({{v.instance}}), {% end %}}
-      end
-      o
-    {% end %}
-  ensure
-    rs.try &.close
-  end
+      {% begin %}
+        o = [] of Tuple({% for k,v in T %}{{v.instance}},{% end %})
 
-  # See `pluck(*fields)`
-  def pluck(fields : Tuple(*T)) forall T
-    select_clause = fields.map{ |f| f.is_a?(Symbol) ? Clear::SQL.escape(f) : f.to_s }.join(", ")
-    sql = self.clear_select.select(select_clause).to_sql
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
-
-    {% begin %}
-      o = [] of Tuple({% for t in T %}Clear::SQL::Any,{% end %})
-
-    while rs.move_next
-        o << {
-          {% for t in T %}
-            rs.read,
-          {% end %}
-        }
+        while rs.move_next
+          o << { {% for k,v in T  %} rs.read({{v.instance}}), {% end %}}
+        end
+        o
+      {% end %}
+    ensure
+      rs.try &.close
     end
-    o
-    {% end %}
-  ensure
-    rs.try &.close
   end
+
 end

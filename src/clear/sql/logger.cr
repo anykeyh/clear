@@ -53,6 +53,7 @@ module Clear::SQL::Logger
     end
   end
 
+  # Log a specific query, wait for it to return
   def log_query(sql, &block)
     start_time = Time.monotonic
 

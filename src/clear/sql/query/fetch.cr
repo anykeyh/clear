@@ -94,12 +94,16 @@ module Clear::SQL::Query::Fetch
 
     sql = self.to_sql
 
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-    o = [] of Hash(String, ::Clear::SQL::Any)
-    fetch_result_set(h, rs) { |x| o << x.dup }
+      o = [] of Hash(String, ::Clear::SQL::Any)
+      fetch_result_set(h, rs) { |x| o << x.dup }
 
-    o
+      o
+    ensure
+      rs.try &.close
+    end
   end
 
   # Fetch the result set row per row

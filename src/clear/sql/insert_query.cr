@@ -41,15 +41,15 @@ class Clear::SQL::InsertQuery
   end
 
   def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Nil)
-    Clear::SQL.log_query to_sql do
-      h = {} of String => ::Clear::SQL::Any
+    h = {} of String => ::Clear::SQL::Any
 
-      Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
-        cnx.query(to_sql) do |rs|
-          fetch_result_set(h, rs) { |x| yield(x) }
-        end
-      end
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      sql = to_sql
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
+      fetch_result_set(h, rs) { |x| yield(x) }
+    ensure
+      rs.try &.close
     end
   end
 
