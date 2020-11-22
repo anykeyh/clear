@@ -125,3 +125,9 @@ struct PG::Numeric
     json.string(s.to_s)
   end
 end
+
+struct BigDecimal
+  def to_json(json)
+    json.string(to_s)
+  end
+end
