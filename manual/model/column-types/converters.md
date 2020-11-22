@@ -6,7 +6,7 @@ However, custom type may not be supported yet. Clear offers you the possibility 
 
 ## Declare a new converter
 
-The example below with a converter for a `Color` structure shoudl be straight-forward:
+The example below with a converter for a `Color` structure should be straight-forward:
 
 ```ruby
 require "./base"
@@ -75,4 +75,3 @@ end
 ```
 
 By convention, converters which map struct and class directly are named using CamelCase, while converters which are not automatic should be named using the underscore notation.
-

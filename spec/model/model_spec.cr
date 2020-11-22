@@ -106,6 +106,16 @@ module ModelSpec
     self.table = "model_users"
   end
 
+  class Data
+    include Clear::Model
+
+    column id : Int32, primary: true, presence: false
+    column num1 : BigDecimal?
+    column num2 : BigDecimal?
+    column num3 : BigDecimal?
+    column num4 : BigDecimal?
+  end
+
   class ModelWithUUID
     include Clear::Model
 
@@ -167,6 +177,15 @@ module ModelSpec
       end
 
       create_table("model_with_uuid", id: :uuid) do |_|
+      end
+
+      create_table(:model_spec_data) do |t|
+        t.column "num1", "bigdecimal", index: true
+        t.column "num2", "numeric(18, 8)"
+        t.column "num3", "numeric(9)"
+        t.column "num4", "numeric(8)"
+
+        t.timestamps
       end
     end
   end
@@ -845,7 +864,7 @@ module ModelSpec
       end
     end
   end
-
+  
   describe "Clear::Model::JSONDeserialize" do
     it "can create a model json IO" do
       user_body = {first_name: "foo"}
@@ -923,6 +942,32 @@ module ModelSpec
         u1.first_name.should eq u1_body["first_name"]
         u1.last_name.should eq u1_body["last_name"]
         u1.middle_name.should be_nil
+      end
+    end
+  end
+
+  describe "BigDecimal / Numeric column in Migration" do
+    it "should create a new model with BigDecimal fields" do
+      temporary do
+        reinit
+
+        data = Data.new({num1: 42.0123, num2: "42_42_42_24.0123_456_789", num3: "-102938719.2083710928371092837019283701982370918237"})
+        data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
+        data.num2.should eq(BigDecimal.new(BigInt.new(424242240123456789), 10))
+        data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40))
+
+        data.save!
+
+        data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
+        data.num2.should eq(42424224.01234568)
+        data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40).trunc)
+
+        # Clear::SQL::Error:numeric field overflow
+        data.num4 = BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40)
+
+        expect_raises(Clear::SQL::Error) do
+          data.save!
+        end
       end
     end
   end

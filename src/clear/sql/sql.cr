@@ -49,10 +49,10 @@ module Clear
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
                 Array(PG::Int64Array) | Array(PG::StringArray) | Array(PG::TimeArray) |
                 Array(PG::NumericArray) |
-                Bool | Char | Float32 | Float64 | Int8 | Int16 | Int32 | Int64 | JSON::Any | JSON::Any::Type | PG::Geo::Box | PG::Geo::Circle |
+                Bool | Char | Float32 | Float64 | Int8 | Int16 | Int32 | Int64 | BigDecimal | JSON::Any | JSON::Any::Type | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
-                PG::Geo::Polygon | PG::Numeric | Slice(UInt8) | String | Time |
-                UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql |
+                PG::Geo::Polygon | PG::Numeric | PG::Interval | Slice(UInt8) | String | Time |
+                UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql | UUID |
                 Nil
 
     include Clear::SQL::Logger
@@ -69,8 +69,8 @@ module Clear
     # This provide a fast way to create SQL fragment while escaping items, both with `?` and `:key` system:
     #
     # ```
-    # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla") )
-    # query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla") )
+    # query = Mode.query.select(Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla"))
+    # query = Mode.query.select(Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla"))
     # ```
     def raw(x, *params)
       Clear::Expression.raw(x, *params)
@@ -81,7 +81,6 @@ module Clear
     def raw_enum(x, params : Enumerable(T)) forall T
       Clear::Expression.raw_enum(x, params)
     end
-
 
     def raw(__template, **params)
       Clear::Expression.raw(__template, **params)
@@ -109,7 +108,7 @@ module Clear
 
     def init(name : String, url : String, connection_pool_size = 5)
       Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
-      #@@connections[name] = DB.open(url)
+      # @@connections[name] = DB.open(url)
     end
 
     def init(connections : Hash(Symbolic, String), connection_pool_size = 5)
@@ -159,7 +158,6 @@ module Clear
           end
         end
       end
-
     end
 
     # Create a transaction, but this one is stackable
@@ -187,13 +185,12 @@ module Clear
       end
     end
 
-
     # Truncate a table or a model
     #
     # ```
-    #   User.query.count # => 200
-    #   Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
-    #   User.query.count # => 0
+    # User.query.count          # => 200
+    # Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
+    # User.query.count          # => 0
     # ```
     #
     # SEE https://www.postgresql.org/docs/current/sql-truncate.html
@@ -204,7 +201,7 @@ module Clear
     # - `truncate_inherited` set to false will append `ONLY` to the query
     # - `connection_name` will be: `Model.connection` or `default` unless optionally defined.
     def self.truncate(tablename : T.class | String, restart_sequence = false, cascade = false, truncate_inherited = true, connection_name : String? = nil) forall T
-      if(tablename.is_a?(String))
+      if (tablename.is_a?(String))
         connection_name ||= "default"
       else
         connection_name ||= tablename.connection
@@ -216,7 +213,7 @@ module Clear
       cascade = cascade ? " CASCADE " : ""
 
       execute(connection_name,
-        {"TRUNCATE TABLE ", only, Clear::SQL.escape(tablename), restart_sequence, cascade }.join
+        {"TRUNCATE TABLE ", only, Clear::SQL.escape(tablename), restart_sequence, cascade}.join
       )
     end
 
