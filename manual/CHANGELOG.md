@@ -1,9 +1,25 @@
 # v0.9
 
-v0.9 is a big overhaul from the shard. It simplifies a lot of the internal code,
-add tons of specs and focus on things like more understandable error on compile time.
+I'm pleased to announce the version 0.9 of Crystal Clear ORM !
+This version is probably the biggest version released since Clear is born.
 
-Note of warning: This version might break some stuff.
+Under the hood, it simplifies a lot of code, push testing to another level with
+a great amount of new specs.
+
+On the feature part, it add full support for serializing to and from json, with mass assignment secure check, big decimal
+type, PostgreSQL view management at migration, new callbacks methods, support for postgres interval object and so on...
+
+Finally, the code has been tweaked to be compatible with release of Crystal 1.0.
+
+With that in mind, Clear starts to mature, with only CLI, polymorphic relations and model inheritance still lacking.
+
+_Note of warning_: some changes will break your code. However everything can be fixed in matter of minutes (hopefully)
+
+Special thanks to all contributors of this version:
+
+@007lva @anykeyh @GabFitzgerald @dukeraphaelng @mamantoha @watzon @yujiri8
+
+(hopefully I did not forget someone)
 
 ## Breaking changes
 
@@ -34,6 +50,9 @@ Note of warning: This version might break some stuff.
 
 ## Features
 
+- PR #187 Add methods to import from and to `json`, with mass_assignment security
+  (thanks @dukeraphaelng and Caspian Baska for this awesome work!)
+- PR #191 Add Big Decimal support (@dukeraphaelng)
 - `Collection#add_operation` has been renamed to `Collection#append_operation`
 - Add `Clear::SQL.after_commit` method
 
@@ -124,6 +143,7 @@ turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
 
 - Prepare the code to make it compatible with crystal 1.0. Change `Void` to `Nil`
 - `first` and `last` on collection object does not change the collection anymore (previously would add limit/offset and change order_by clauses)
+- Dozen of other bugs not tracked here have been fixed, by usage or new test sets.
 
 # v0.8
 
@@ -156,9 +176,9 @@ query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as ch
 
 ## Features
 
-- Add `Clear::Interval` type
+- Add support for `PG::Interval` type
 
-This type is related to the type `Clear::Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
+This type is related to the type `PG::Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
 with `Time` (Postgres' `datetime`) by adding or substracting it.
 
 ### Examples:
@@ -166,20 +186,20 @@ with `Time` (Postgres' `datetime`) by adding or substracting it.
 Usage in Expression engine:
 
 ```crystal
-interval = Clear::Interval.new(months: 1, days: 1)
+interval = PG::Interval.new(months: 1, days: 1)
 
 MyModel.query.where{ created_at - interval > updated_at  }.each do |model|
   # ...
 end
 ```
 
-It might be used as column definition, and added / removed to crystal `Time` object
+It might be used as column definition as well.
 
 ```crystal
 class MyModel
   include Clear::Model
 
-  column i : Clear::Interval
+  column i : PG::Interval
 end
 
 puts "Expected time: #{Time.local + MyModel.first!.i}"
