@@ -103,7 +103,5 @@ module RelationSpec
         user.user_infos.count.should eq 2 # 2 for each
       end
     end
-
   end
-
 end

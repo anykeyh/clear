@@ -132,5 +132,4 @@ module RelationSpec
       Post.query.first!.user_infos.count.should eq(1)
     end
   end
-
 end

@@ -24,7 +24,4 @@ module Clear::Model::Schema
 
   COLUMNS = Hash(String, Hash(String, Column)).new
   RELATIONS = Hash(String, Hash(String, Relation)).new
-
-  # def self.build_relation(collection : T, relation_name : String) forall T
-  # end
 end

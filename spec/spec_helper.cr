@@ -21,14 +21,14 @@ def initdb
 
   Clear::SQL.init("postgres://postgres@localhost/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
   Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+end
 
-  # {% if flag?(:quiet) %}
-  #   Log.builder.bind "clear.*", Log::Severity::Warning, Log::IOBackend.new
-  # {% else %}
-  puts "setup logger to log debug?"
-  ::Log.setup(:debug)
-  ::Log.for("clear").debug{ "Started!" }
-  # {% end %}
+Spec.before_suite do
+  {% if flag?(:quiet) %}
+    ::Log.setup(:warning)
+  {% else %}
+    ::Log.setup(:debug)
+  {% end %}
 end
 
 def reinit_migration_manager
@@ -40,6 +40,36 @@ def temporary(&block)
     yield
     Clear::SQL.rollback
   end
+end
+
+# Structure used to call the compile-time tests.
+struct CrystalCall
+  property stdout = IO::Memory.new
+  property stderr = IO::Memory.new
+  property status
+
+  def initialize(script, is_spec = false)
+    @status = Process.run("crystal",  [is_spec ? "spec" : nil, "spec/data/compile_time/#{script}.cr", "--error-trace"].compact,
+      output: stdout, error: stderr)
+  end
+
+  def stderr_contains?(regexp)
+    !!(stderr.to_s =~ regexp)
+  end
+
+  def debug
+    puts stdout
+    puts stderr
+  end
+
+end
+
+def compile_and_run(script)
+  CrystalCall.new(script)
+end
+
+def compile_and_spec(script)
+  CrystalCall.new(script, true)
 end
 
 initdb

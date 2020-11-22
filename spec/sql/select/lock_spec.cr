@@ -25,6 +25,5 @@ module LockSpec
     ensure
       Clear::SQL.execute("DROP TABLE to_lock")
     end
-
   end
 end

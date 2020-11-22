@@ -27,6 +27,5 @@ module OrderBySpec
       Clear::SQL.select.from("users").order_by("email", :asc, nulls: :last)
             .to_sql.should eq("SELECT * FROM users ORDER BY email ASC NULLS LAST")
     end
-
   end
 end

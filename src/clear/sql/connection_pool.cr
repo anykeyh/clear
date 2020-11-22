@@ -20,10 +20,10 @@ class Clear::SQL::ConnectionPool
     if cnx
       yield cnx
     else
-      database.using_connection do |cnx|
+      database.using_connection do |new_connection|
         begin
-          @@fiber_connections[fiber_target] = cnx
-          yield cnx
+          @@fiber_connections[fiber_target] = new_connection
+          yield new_connection
         ensure
           @@fiber_connections.delete(fiber_target)
         end

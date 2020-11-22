@@ -143,9 +143,8 @@ module WhereSpec
       r.to_sql.should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" IS NULL)"
     end
 
-    describe "Where Expression engine Nodes" do
-
-      it "can stack with `AND` operator" do
+    describe "where expressions" do
+      it "where.where" do
         now = Time.local
         r = Clear::SQL.select.from(:users).where { users.id == nil }.where {
           var("users", "updated_at") >= now
@@ -154,7 +153,7 @@ module WhereSpec
                           "AND (\"users\".\"updated_at\" >= #{Clear::Expression[now]})"
       end
 
-      it "can stack with `OR` operator" do
+      it "where.or_where" do
         now = Time.local
         r = Clear::SQL.select.from(:users).where { users.id == nil }.or_where {
           var("users", "updated_at") >= now
@@ -163,7 +162,7 @@ module WhereSpec
                           "OR (\"users\".\"updated_at\" >= #{Clear::Expression[now]}))"
       end
 
-      it "AND and OR" do
+      it "op(:&)/op(:|)" do
         r = Clear::SQL.select.from(:users).where {
           ((raw("users.id") > 100) & (raw("users.visible") == true)) |
             (raw("users.role") == "superadmin")
@@ -173,10 +172,7 @@ module WhereSpec
                           "AND (users.visible = TRUE)) OR (users.role = 'superadmin'))"
       end
 
-      it "Operators" do
-      end
-
-      it "Between" do
+      it "between(a, b)" do
         Clear::SQL.select.where{ x.between(1, 2) }
         .to_sql.should eq(%[SELECT * WHERE ("x" BETWEEN 1 AND 2)])
 
@@ -184,12 +180,12 @@ module WhereSpec
           .to_sql.should eq(%[SELECT * WHERE NOT ("x" BETWEEN 1 AND 2)])
       end
 
-      it "Function" do
+      it "custom functions" do
         Clear::SQL.select.where{ ops_transform(x, "string", raw("INTERVAL '2 seconds'")) }
           .to_sql.should eq(%[SELECT * WHERE ops_transform("x", 'string', INTERVAL '2 seconds')])
       end
 
-      it "InArray" do
+      it "in?(array)" do
         Clear::SQL.select.where{ x.in?([1,2,3,4]) }
           .to_sql.should eq(%[SELECT * WHERE "x" IN (1, 2, 3, 4)])
 
@@ -197,7 +193,7 @@ module WhereSpec
           .to_sql.should eq(%[SELECT * WHERE "x" IN (1, 2, 3, 4)])
       end
 
-      it "InRange" do
+      it "in?(range)" do
         # Simple number
         Clear::SQL.select.from(:users).where { users.id.in?(1..3) }.to_sql
           .should eq "SELECT * FROM \"users\" WHERE (\"users\".\"id\" >= 1 AND \"users\".\"id\" <= 3)"
@@ -216,18 +212,18 @@ module WhereSpec
                     " AND \"users\".\"id\" < 3)"
       end
 
-      it "InSelect" do
+      it "in?(sub_query)" do
         sub_query = Clear::SQL.select("id").from("users")
         Clear::SQL.select.where{ x.in?(sub_query) }
           .to_sql.should eq(%[SELECT * WHERE "x" IN (SELECT id FROM users)])
       end
 
-      it "Minus" do
+      it "unary minus" do
         Clear::SQL.select.where{ -x > 2 }
           .to_sql.should eq(%[SELECT * WHERE (-"x" > 2)])
       end
 
-      it "Not" do
+      it "not()" do
         Clear::SQL.select.where{ not(raw("TRUE")) }
           .to_sql.should eq(%[SELECT * WHERE NOT TRUE])
 
@@ -235,14 +231,14 @@ module WhereSpec
           .to_sql.should eq(%[SELECT * WHERE NOT TRUE])
       end
 
-      it "Null" do
+      it "nil" do
         Clear::SQL.select.where{ x == nil }
           .to_sql.should eq(%[SELECT * WHERE ("x" IS NULL)])
         Clear::SQL.select.where{ x != nil }
           .to_sql.should eq(%[SELECT * WHERE ("x" IS NOT NULL)])
       end
 
-      it "Raw" do
+      it "raw()" do
         Clear::SQL.select.where{ raw("Anything") }
           .to_sql.should eq(%[SELECT * WHERE Anything])
 
@@ -253,15 +249,10 @@ module WhereSpec
           .to_sql.should eq(%[SELECT * WHERE x > 2])
       end
 
-      pending "PgArray" do
-        # FIXME: It is related to jsonb system.
-      end
-
-      it "Variable" do
+      it "var()" do
         Clear::SQL.select.where{ var("public", "users", "id") < 1000 }
           .to_sql.should eq(%[SELECT * WHERE ("public"."users"."id" < 1000)])
       end
-
     end
   end
 end

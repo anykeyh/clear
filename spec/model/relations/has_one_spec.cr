@@ -102,5 +102,4 @@ module RelationSpec
       end
     end
   end
-
 end

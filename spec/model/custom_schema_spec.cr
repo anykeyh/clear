@@ -26,10 +26,9 @@ module CustomSchemaSpec
         model = ModelWithinAnotherSchema.create! title: "Some title" # Ensure create works
         model.delete # Ensure delete one works
 
-        model = ModelWithinAnotherSchema.create! title: "Some title" # Ensure create works
+        ModelWithinAnotherSchema.create! title: "Some title" # Ensure create works
         Clear::SQL.truncate(ModelWithinAnotherSchema) # ensure truncate works
       end
     end
-
   end
 end

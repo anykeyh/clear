@@ -141,6 +141,4 @@ module Clear::SQL::Transaction
   def rollback_transaction
     raise CancelTransactionError.new
   end
-
-
 end

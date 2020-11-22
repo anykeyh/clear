@@ -1,4 +1,3 @@
-
 require "../../../src/clear"
 
 class MyModel

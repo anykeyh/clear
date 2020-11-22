@@ -242,7 +242,6 @@ module HavingSpec
         Clear::SQL.select.having{ var("public", "users", "id") < 1000 }
           .to_sql.should eq(%[SELECT * HAVING ("public"."users"."id" < 1000)])
       end
-
     end
   end
 end

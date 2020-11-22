@@ -99,5 +99,4 @@ module SelectSpec
         .should eq("SELECT *")
     end
   end
-
 end

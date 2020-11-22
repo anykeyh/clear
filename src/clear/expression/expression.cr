@@ -299,7 +299,7 @@ class Clear::Expression
   # ```
   #
   def self.raw(__template : String, **tuple)
-    __template.gsub(/(^|[^:])\:([a-zA-Z0-9_]+)/) do |question_mark, match|
+    __template.gsub(/(^|[^:])\:([a-zA-Z0-9_]+)/) do |_, match|
       begin
         sym = match[2]
         match[1] + Clear::Expression[tuple[sym]]

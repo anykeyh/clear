@@ -26,6 +26,5 @@ module JoinSpec
         Clear::SQL.select.from("posts").{{join.id}}_join("users")
       {% end %}
     end
-
   end
 end

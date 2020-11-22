@@ -43,6 +43,5 @@ module FromSpec
       r = Clear::SQL.select.from("x").clear_from.from("y")
       r.to_sql.should eq "SELECT * FROM y"
     end
-
   end
 end

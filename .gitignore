@@ -15,6 +15,9 @@
 # I use this file to test some complex Crystal syntax sometime
 /test.cr
 
+# will migrate to github action one day
+/.github
+
 # deps of some tools
 /node_modules
 yarn.lock
