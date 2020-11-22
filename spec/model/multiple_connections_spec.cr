@@ -32,7 +32,7 @@ module MultipleConnectionsSpec
 
   def self.reinit
     reinit_migration_manager
-    ModelSpecMigration1234.new.apply(Clear::Migration::Direction::UP)
+    ModelSpecMigration1234.new.apply
   end
 
   describe "Clear::Model" do
@@ -65,11 +65,11 @@ module MultipleConnectionsSpec
         temporary do
           reinit
           p = PostStat.new({post_id: 1})
-          p.save
+          p.save!
 
           p = PostStat.query.first.not_nil!
           p.post_id = 2
-          p.save
+          p.save!
 
           p = PostStat.query.first.not_nil!
           p.post_id.should eq(2)

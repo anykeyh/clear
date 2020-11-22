@@ -50,12 +50,14 @@ module Clear::Model::ClassMethods
       #   end
       #   MyModel.query.to_sql # SELECT * FROM "my_schema"."my_models"
       # ```
-      class_property schema : Clear::SQL::Symbolic? = nil
+      class_property schema : Clear::SQL::Symbolic? = "public"
 
-      # :nodoc:
-      # Returns the composition of schema + table
-      def self.esc_schema_table
-        if s = schema
+      # returns the fully qualified and escaped name for this table.
+      # add schema if schema is different from 'public' (default schema)
+      #
+      # ex: "schema"."table"
+      def self.full_table_name
+        if (s = schema) != "public"
           {schema, table}.map{ |x| Clear::SQL.escape(x.to_s) }.join(".")
         else
           # Default schema
@@ -64,21 +66,7 @@ module Clear::Model::ClassMethods
 
       end
 
-      # Returns the name of the `pkey` field
-      class_property pkey : String = "id"      # <~~ FIXME
-
-      # :nodoc:
-      # FIXME
-      # @@pkey : String? = nil
-      # def self.pkey
-      #   pkey = @@pkey
-      #   raise Clear::ErrorMessages.lack_of_primary_key(self.name) unless pkey
-      #   pkey
-      # end
-      #
-      # def self.pkey=(value)
-      #   @@pkey = value
-      # end
+      class_property __pkey__ : String = "id"
 
       # :doc:
       # {{@type}}::Collection
@@ -94,19 +82,19 @@ module Clear::Model::ClassMethods
 
       # Return a new empty query `SELECT * FROM [my_model_table]`. Can be refined after that.
       def self.query
-        Collection.new.use_connection(connection).from(self.esc_schema_table)
+        Collection.new.use_connection(connection).from(self.full_table_name)
       end
 
       # Returns a model using primary key equality
       # Returns `nil` if not found.
       def self.find(x)
-        query.where { raw(pkey) == x }.first
+        query.find(x)
       end
 
       # Returns a model using primary key equality.
       # Raises error if the model is not found.
       def self.find!(x)
-        find(x) || raise Clear::SQL::RecordNotFoundError.new
+        query.find!(x)
       end
 
       # Build a new empty model and fill the columns using the NamedTuple in argument.

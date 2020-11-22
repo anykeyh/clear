@@ -75,7 +75,7 @@ Thankfully, the expression engine will reject any "static code" and throw an exc
 User.query.where{ var("id") == id } # WHERE "id" = ?
 User.query.where{ raw("id") == id } # WHERE id = ?
 User.query.where{ raw("users.id") == id } # WHERE users.id = ?
-User.query.where{var("users", "id") == id} # WHERE "users"."id" = ?
+User.query.where{ var("users", "id") == id } # WHERE "users"."id" = ?
 ```
 
 {% hint style="danger" %}

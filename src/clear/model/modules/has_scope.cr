@@ -24,25 +24,27 @@ module Clear::Model::HasScope
     # Scope can be used for other purpose than just filter (e.g. ordering),
     # but I would not recommend it.
     macro scope(name, &block)
-      \{% parameters = "" %}
-      \{% for arg, idx in block.args %}
-        \{% parameters = parameters + "*" if(block.splat_index && idx == block.splat_index) %}
-        \{% parameters = parameters + "#{arg}"  %}
-        \{% parameters = parameters + ", " unless (idx == block.args.size - 1)  %}
-      \{% end %}
-      \{% parameters = parameters.id %}
+      {% verbatim do %}
+        {% parameters = "" %}
+        {% for arg, idx in block.args %}
+          {% parameters = parameters + "*" if (block.splat_index && idx == block.splat_index) %}
+          {% parameters = parameters + "#{arg}" %}
+          {% parameters = parameters + ", " unless (idx == block.args.size - 1) %}
+        {% end %}
+        {% parameters = parameters.id %}
 
-      def self.\{{name.id}}(\{{parameters}})
-        query.\{{name.id}}(\{{parameters}})
-      end
-
-      class Collection < Clear::Model::CollectionBase(\{{@type}});
-        def \{{name.id}}(\{{parameters}})
-          \{{yield}}
-
-          return self
+        def self.{{name.id}}({{parameters}})
+          query.{{name.id}}({{parameters}})
         end
-      end
+
+        class Collection < Clear::Model::CollectionBase({{@type}});
+          def {{name.id}}({{parameters}})
+            {{yield}}
+
+            return self
+          end
+        end
+      {% end %}
     end
   end
 end

@@ -90,8 +90,9 @@ module Clear::Model::FullTextSearchable
 
     scope "{{scope_name.id}}" do |str|
       table = self.item_class.table
-      where{ op( var(table, "{{through.id}}"), to_tsquery({{catalog}},
-        Clear::Model::FullTextSearchable.to_tsq(str)), "@@") }
+      schema = self.item_class.schema
+      where{ op( var(schema, table, "{{through.id}}"), "@@",
+        to_tsquery({{catalog}}, Clear::Model::FullTextSearchable.to_tsq(str)) ) }
     end
   end
 

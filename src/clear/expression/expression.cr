@@ -124,8 +124,12 @@ class Clear::Expression
   end
 
   # Transform multiple objects into a string which is SQL-Injection safe.
-  def self.safe_literal(x : Enumerable(AvailableLiteral)) : Enumerable(String)
-    x.map { |item| self.safe_literal(item) }
+  def self.safe_literal(x : Enumerable(AvailableLiteral)) : String
+    self.safe_literal({
+      "{",
+      x.map { |item| self.safe_literal(item) }.join(", "),
+      "}",
+    }.join)
   end
 
   # Return unsafe string injected to the query.
@@ -229,15 +233,13 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }           # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
-  #
   #
   def raw(x : String, *args)
     Node::Raw.new(self.class.raw(x, *args))
   end
-
 
   # In case the name of the variable is a reserved word (e.g. `not`, `var`, `raw` )
   # or in case of a complex piece of computation impossible to express with the expression engine
@@ -246,7 +248,7 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }           # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(?, ?) = ?", a, b, c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
@@ -276,7 +278,7 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }                       # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
@@ -291,15 +293,15 @@ class Clear::Expression
   # BE AWARE than the String is pasted AS-IS and can lead to SQL injection if not used properly.
   #
   # ```
-  # having { raw("COUNT(*)") > 5 } # SELECT ... FROM ... HAVING COUNT(*) > 5
+  # having { raw("COUNT(*)") > 5 }                       # SELECT ... FROM ... HAVING COUNT(*) > 5
   # where { raw("func(:a, :b) = :c", a: a, b: b, c: c) } # SELECT ... FROM ... WHERE function(a, b) = c
   # ```
   #
   def self.raw(__template : String, **tuple)
-    __template.gsub(/\:[a-zA-Z0-9_]+/) do |question_mark|
+    __template.gsub(/(^|[^:])\:([a-zA-Z0-9_]+)/) do |_, match|
       begin
-        sym = question_mark[1..-1]
-        Clear::Expression[tuple[sym]]
+        sym = match[2]
+        match[1] + Clear::Expression[tuple[sym]]
       rescue e : KeyError
         raise Clear::ErrorMessages.query_building_error(e.message)
       end
@@ -312,32 +314,31 @@ class Clear::Expression
   # This is useful to escape SQL keywords or `.` and `"` character in the name of a column.
   #
   # ```crystal
-  #   var("template1", "users", "name") # "template1"."users"."name"
-  #   var("template1", "users.table2", "name") # "template1"."users.table2"."name"
-  #   var("order") # "order"
+  # var("template1", "users", "name")        # "template1"."users"."name"
+  # var("template1", "users.table2", "name") # "template1"."users.table2"."name"
+  # var("order")                             # "order"
   # ```
   #
   def var(*parts)
-    _var(parts)
+    __var_parts(parts)
   end
 
   # :nodoc:
-  private def _var(parts : Tuple, pos = parts.size - 1)
+  private def __var_parts(parts : Tuple, pos = parts.size - 1)
     if pos == 0
       Node::Variable.new(parts[pos].to_s)
     else
-      Node::Variable.new(parts[pos].to_s, _var(parts, pos - 1))
+      Node::Variable.new(parts[pos].to_s, __var_parts(parts, pos - 1))
     end
   end
 
   # Because many postgresql operators are not transcriptable in Crystal lang,
-  # this helpers helps to write the expressions:
+  # this helpers helps to write operation expressions:
   #
   # ```crystal
-  # where { op(jsonb_field, "something", "?") } #<< Return "jsonb_field ? 'something'"
+  # where { op(jsonb_field, "?", "something") } # << Return "jsonb_field ? 'something'"
   # ```
-  #
-  def op(a : (Node | AvailableLiteral), b : (Node | AvailableLiteral), op : String)
+  def op(a : (Node | AvailableLiteral), op : String, b : (Node | AvailableLiteral))
     a = Node::Literal.new(a) if a.is_a?(AvailableLiteral)
     b = Node::Literal.new(b) if b.is_a?(AvailableLiteral)
 

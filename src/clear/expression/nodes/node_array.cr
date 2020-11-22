@@ -1,10 +1,11 @@
 require "./node"
 
 # This node is used to generate expression like `( a AND b AND ... AND k )`
-class Clear::Expression::Node::AndArray < Clear::Expression::Node
-  @expression : Array(Node)
+class Clear::Expression::Node::NodeArray < Clear::Expression::Node
+  property expression : Array(Node)
+  property link : String
 
-  def initialize(expression : Array(Node))
+  def initialize(expression : Array(Node), @link)
     @expression = expression.dup
   end
 
@@ -12,8 +13,8 @@ class Clear::Expression::Node::AndArray < Clear::Expression::Node
     if @expression.any?
       {
         "(",
-        @expression.map(&.resolve).join(" AND "),
-        ")"
+        @expression.map(&.resolve).join(" #{@link} "),
+        ")",
       }.join
     else
       ""

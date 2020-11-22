@@ -1,7 +1,6 @@
 require "../spec_helper"
 
 module EventSpec
-
   ACCUMULATOR = [] of String
 
   abstract class ModelA
@@ -19,7 +18,6 @@ module EventSpec
   end
 
   class ModelB < ModelA
-
     before(:validate) { ACCUMULATOR << "A" }
 
     after(:validate, :x)
@@ -27,7 +25,6 @@ module EventSpec
     def x
       ACCUMULATOR << "Z"
     end
-
   end
 
   describe "Clear::Model" do

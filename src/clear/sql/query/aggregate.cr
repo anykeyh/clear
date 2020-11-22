@@ -4,7 +4,6 @@ module Clear::SQL::Query::Aggregate
   # as count return always a scalar, the usage of `COUNT(*) OVER GROUP BY` can be done by
   # using `pluck` or `select`
   #
-  #
   def count(type : X.class = Int64) forall X
     # save the `select` column clause to ensure non-mutability of the query
     columns = @columns.dup
@@ -34,7 +33,7 @@ module Clear::SQL::Query::Aggregate
   # query.agg("MEDIAN(age)", Int64)
   # ```
   #
-  # Note than COUNT, MIN, MAX, SUM and AVG are already conveniently mapped.
+  # COUNT, MIN, MAX, SUM and AVG are already conveniently mapped.
   #
   # This return only one row, and should not be used with `group_by` (prefer pluck or fetch)
   def agg(field, x : X.class) forall X
@@ -42,12 +41,13 @@ module Clear::SQL::Query::Aggregate
   end
 
   # SUM through a field and return a Float64
-  # Note: This function is not safe injection-wise, so beware !.
+  #
+  # This function is not safe injection-wise, so beware !.
   def sum(field) : Float64
-    agg("SUM(#{field})", Union(Int64 | PG::Numeric | Nil)).try(&.to_f) || 0.0
+    agg("SUM(#{field})", Union(Int64 | ::PG::Numeric | Nil)).try(&.to_f) || 0.0
   end
 
-  {% for x in %w(min max avg) %}
+  {% for x in %w(min max avg sum) %}
     # SQL aggregation function {{x.upcase}}:
     #
     # ```

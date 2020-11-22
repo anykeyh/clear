@@ -69,8 +69,7 @@ class Clear::Migration::Manager
 
     raise no_migration_yet(version) if current_version.nil?
 
-    list_of_migrations.size + version <= 0 ? 0 :
-        list_of_migrations[version - 1].uid
+    list_of_migrations.size + version <= 0 ? 0 : list_of_migrations[version - 1].uid
   end
 
   def apply_to(version, direction = :both)
@@ -88,14 +87,14 @@ class Clear::Migration::Manager
     uid_to_apply = list_of_migrations.map(&.uid).reject(&.>(version)) - @migrations_up.to_a
 
     uid_to_apply.each do |uid|
-      operations << {uid, Migration::Direction::UP}
+      operations << {uid, Migration::Direction::Up}
     end
 
     # Then we revert migration from requested version to now
     uid_to_apply = list_of_migrations.map(&.uid).select(&.>(version)) & @migrations_up.to_a
 
     uid_to_apply.each do |uid|
-      operations << {uid, Migration::Direction::DOWN}
+      operations << {uid, Migration::Direction::Down}
     end
 
     # We sort
@@ -120,13 +119,13 @@ class Clear::Migration::Manager
     end
 
     if operations.empty?
-      Clear.logger.debug("Nothing to do.")
+      Log.info { "Nothing to do." }
       return
     end
 
-    Clear.logger.debug("Migrations will be applied (in this order):")
+    Log.info { "Migrations will be applied (in this order):" }
     operations.each do |(uid, d)|
-      Clear.logger.debug("#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}")
+      Log.info { "#{d.up? ? "[ UP ]" : "[DOWN]"} #{uid} - #{find(uid).class.name}" }
     end
 
     operations.each do |(uid, d)|
@@ -144,13 +143,17 @@ class Clear::Migration::Manager
   def apply_all
     ensure_ready
 
+    Clear::View.apply(:drop)
+
     list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
     list_of_migrations.reject! { |x| @migrations_up.includes?(x.uid) }
 
     list_of_migrations.each do |migration|
-      migration.apply(Clear::Migration::Direction::UP)
+      migration.apply
       @migrations_up.add(migration.uid)
     end
+
+    Clear::View.apply(:create)
   end
 
   #
@@ -223,9 +226,9 @@ class Clear::Migration::Manager
 
     Clear::SQL.select("*")
       .from("__clear_metadatas")
-      .where({metatype: "migration"}).to_a.map { |m|
-        @migrations_up.add(Int64.new(m["value"].as(String)))
-      }
+      .where(metatype: "migration").map { |m|
+      @migrations_up.add(Int64.new(m["value"].as(String)))
+    }
   end
 
   def refresh
@@ -239,29 +242,32 @@ class Clear::Migration::Manager
   end
 
   # Force up a migration; throw error if the migration is already up
-  def up(number : Int64) : Void
+  def up(number : Int64) : Nil
     m = find(number)
 
     raise migration_already_up(number) if migrations_up.includes?(number)
 
-    m.apply(Clear::Migration::Direction::UP)
+    m.apply(Clear::Migration::Direction::Up)
     @migrations_up.add(m.uid)
   end
 
   # Force down a migration; throw error if the mgiration is already down
-  def down(number : Int64) : Void
+  def down(number : Int64) : Nil
     m = find(number)
 
     raise migration_already_down(number) unless migrations_up.includes?(number)
 
-    m.apply(Clear::Migration::Direction::DOWN)
+    m.apply(Clear::Migration::Direction::Down)
     @migrations_up.delete(m.uid)
   end
 
   # Print out the status ( up | down ) of all migrations found by the manager.
   def print_status : String
     ensure_ready
-    @migrations.sort { |a, b| a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid }.map do |m|
+
+    @migrations.sort do |a, b|
+      a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid
+    end.map do |m|
       active = @migrations_up.includes?(m.uid)
       "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"
     end.join("\n")

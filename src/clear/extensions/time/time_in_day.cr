@@ -6,15 +6,15 @@
 # ## Usage example
 #
 # ```
-#   time = Clear::TimeInDay.parse("12:33")
-#   puts time.hour # 12
-#   puts time.minutes # 0
+# time = Clear::TimeInDay.parse("12:33")
+# puts time.hour    # 12
+# puts time.minutes # 0
 #
-#   Time.local.at(time) # Today at 12:33:00
-#   time.to_s # 12:33:00
-#   time.to_s(false) # don't show seconds => 12:33
+# Time.local.at(time) # Today at 12:33:00
+# time.to_s           # 12:33:00
+# time.to_s(false)    # don't show seconds => 12:33
 #
-#   time = time + 2.minutes #12:35
+# time = time + 2.minutes # 12:35
 # ```
 #
 # As with Interval, you might wanna use it as a column (use underlying `time` type in PostgreSQL):
@@ -31,7 +31,7 @@ struct Clear::TimeInDay
 
   private SECOND = 1_000_000_u64
   private MINUTE = 60_u64 * SECOND
-  private HOUR = 60_u64 * MINUTE
+  private HOUR   = 60_u64 * MINUTE
 
   def initialize(hours, minutes, seconds = 0)
     @microseconds = (SECOND * seconds) + (MINUTE * minutes) + (HOUR * hours)
@@ -53,11 +53,11 @@ struct Clear::TimeInDay
   end
 
   def hour
-    ( @microseconds // HOUR )
+    (@microseconds // HOUR)
   end
 
   def minutes
-    ( @microseconds % HOUR ) // MINUTE
+    (@microseconds % HOUR) // MINUTE
   end
 
   def seconds
@@ -73,7 +73,7 @@ struct Clear::TimeInDay
     minutes, left = left.divmod(MINUTE)
     seconds = left // SECOND
 
-    { hours, minutes, seconds }
+    {hours, minutes, seconds}
   end
 
   def inspect

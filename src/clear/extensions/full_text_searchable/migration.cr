@@ -1,4 +1,3 @@
-
 class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operation
   module Priority
     VERY_IMPORTANT = 'A'

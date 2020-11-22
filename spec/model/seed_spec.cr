@@ -23,15 +23,15 @@ module SeedSpec
 
   def self.reinit
     reinit_migration_manager
-    SeedModelMigration96842.new.apply(Clear::Migration::Direction::UP)
+    SeedModelMigration96842.new.apply
   end
 
   Clear.seed do
-    SeedModel.create!({value: "val_a"})
+    SeedModel.create!(value: "val_a")
   end
 
   Clear.seed do
-    SeedModel.create!({value: "val_b"})
+    SeedModel.create!(value: "val_b")
   end
 
   describe "Clear::Model::HasScope" do

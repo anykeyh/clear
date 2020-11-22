@@ -21,7 +21,7 @@ module Clear::SQL::Query::Fetch
   # Fetch the data using CURSOR.
   # This will prevent Clear to load all the data from the database into memory.
   # This is useful if you need to retrieve and update a large dataset.
-  def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Nil)
     trigger_before_query
 
     Clear::SQL.transaction do |cnx|
@@ -94,12 +94,16 @@ module Clear::SQL::Query::Fetch
 
     sql = self.to_sql
 
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-    o = [] of Hash(String, ::Clear::SQL::Any)
-    fetch_result_set(h, rs) { |x| o << x.dup }
+      o = [] of Hash(String, ::Clear::SQL::Any)
+      fetch_result_set(h, rs) { |x| o << x.dup }
 
-    o
+      o
+    ensure
+      rs.try &.close
+    end
   end
 
   # Fetch the result set row per row
@@ -122,21 +126,23 @@ module Clear::SQL::Query::Fetch
   #   Clear::SQL.select.from("posts").where { u["id"] == posts.id }
   # end
   # ```
-  def fetch(fetch_all = false, &block : Hash(String, ::Clear::SQL::Any) -> Void)
+  def fetch(fetch_all = false, &block : Hash(String, ::Clear::SQL::Any) -> Nil)
     trigger_before_query
 
     h = {} of String => ::Clear::SQL::Any
 
     sql = self.to_sql
 
-    rs = Clear::SQL.log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.query(sql)) }
+    Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
+      rs = Clear::SQL.log_query(sql) { cnx.query(sql) }
 
-    if fetch_all
-      o = [] of Hash(String, ::Clear::SQL::Any)
-      fetch_result_set(h, rs) { |x| o << x.dup }
-      o.each { |x| yield(x) }
-    else
-      fetch_result_set(h, rs) { |x| yield(x) }
+      if fetch_all
+        o = [] of Hash(String, ::Clear::SQL::Any)
+        fetch_result_set(h, rs) { |x| o << x.dup }
+        o.each { |x| yield(x) }
+      else
+        fetch_result_set(h, rs) { |x| yield(x) }
+      end
     end
   end
 end

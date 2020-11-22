@@ -12,11 +12,11 @@ module Clear
     protected def initialize(@value)
     end
 
-    def to_s
+    def to_s : String
       @value.to_s
     end
 
-    def to_sql
+    def to_sql : String
       @value.to_sql
     end
 
@@ -80,35 +80,35 @@ module Clear
   # Now, you can assign the enum:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = MyApp::Gender::Male
+  # u = User.new
+  # u.gender = MyApp::Gender::Male
   # ```
   #
   # You can dynamically check and build the enumeration values:
   #
   # ```crystal
-  #   MyApp::Gender.authorized_values # < return ["male", "female"]
-  #   MyApp::Gender.all               # < return [MyApp::Gender::Male, MyApp::Gender::Female]
+  # MyApp::Gender.authorized_values # < return ["male", "female"]
+  # MyApp::Gender.all               # < return [MyApp::Gender::Male, MyApp::Gender::Female]
   #
-  #   MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
-  #   MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
+  # MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
+  # MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
   #
-  #   MyApp::Gender.valid?("female")  # < Return true
-  #   MyApp::Gender.valid?("unknown") # < Return false
+  # MyApp::Gender.valid?("female")  # < Return true
+  # MyApp::Gender.valid?("unknown") # < Return false
   # ```
   #
   # However, you cannot write:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = "male"
+  # u = User.new
+  # u.gender = "male"
   # ```
   #
   # But instead:
   #
   # ```crystal
-  #   u = User.new
-  #   u.gender = MyApp::Gender::Male
+  # u = User.new
+  # u.gender = MyApp::Gender::Male
   # ```
   macro enum(name, *values, &block)
     struct {{name.id}} < ::Clear::Enum

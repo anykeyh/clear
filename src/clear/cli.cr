@@ -8,8 +8,27 @@ require "./cli/generator"
 
 module Clear
   module CLI
-    def self.run
-      Clear::CLI::Base.run
+    @@barebone = false
+
+    def self.run(@@barebone = true)
+      if @@barebone
+        Clear::CLI::Barebone.run
+      else
+        Clear::CLI::Base.run
+      end
+    end
+
+    class Barebone < Admiral::Command
+      include Clear::CLI::Command
+
+      define_version Clear::VERSION
+      define_help
+
+      register_sub_command generate, type: Clear::CLI::Generator
+
+      def run_impl
+        STDOUT.puts help
+      end
     end
 
     class Base < Admiral::Command
@@ -32,10 +51,9 @@ module Clear
   def self.with_cli(&block)
     if ARGV.size > 0 && ARGV[0] == "clear"
       ARGV.shift
-      Clear::CLI.run
+      Clear::CLI.run(false)
     else
       yield
     end
   end
-
 end

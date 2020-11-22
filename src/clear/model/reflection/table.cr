@@ -3,6 +3,8 @@
 class Clear::Reflection::Table
   include Clear::Model
 
+  primary_key "table_name", :text
+
   self.table = "tables"
   self.schema = "information_schema"
 
@@ -18,7 +20,7 @@ class Clear::Reflection::Table
   scope(:tables_only) { where { table_type == "BASE TABLE" } }
   scope(:views_only) { where { table_type == "VIEW" } }
 
-  has_many columns : Clear::Reflection::Column, foreign_key: "table_name", primary_key: "table_name"
+  has_many columns : Clear::Reflection::Column, foreign_key: "table_name"
 
   # List all the indexes related to the current table.
   # return an hash where the key is the name of the column

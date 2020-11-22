@@ -1,6 +1,6 @@
 name: clear
 
-version: 0.8
+version: 0.9
 
 crystal: 0.35.1
 
@@ -9,8 +9,12 @@ authors:
 
 description: Clear ORM is an advanced ORM focusing on PostgreSQL
 
+targets:
+  clear-cli:
+    main: src/clear/endpoints/cli.cr
+
 # scripts:
-#   postinstall: "./bin/install-cli"
+#   postinstall: make bin && make run_file
 
 dependencies:
   admiral:

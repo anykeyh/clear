@@ -1,14 +1,14 @@
-
 module Clear::Migration
   class CreateEnum < Operation
     @name : String
     @values : Array(String)
 
-    def initialize(@name, @values)
+    def initialize(@name : String, @values : Array(String))
     end
 
     def up : Array(String)
-      ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[@values].join(", ")})"]
+      safe_values = @values.map { |v| Clear::Expression[v] }
+      ["CREATE TYPE #{@name} AS ENUM (#{safe_values.join(", ")})"]
     end
 
     def down : Array(String)
@@ -20,7 +20,7 @@ module Clear::Migration
     @name : String
     @values : Array(String)?
 
-    def initialize(@name, @values)
+    def initialize(@name : String, @values : Array(String)?)
     end
 
     def up : Array(String)
@@ -29,24 +29,24 @@ module Clear::Migration
 
     def down : Array(String)
       if values = @values
-        ["CREATE TYPE #{@name} AS ENUM (#{Clear::Expression[values].join(", ")})"]
+        safe_values = values.map { |v| Clear::Expression[v] }
+        ["CREATE TYPE #{@name} AS ENUM (#{safe_values.join(", ")})"]
       else
         irreversible!
       end
     end
-
   end
 
   module Clear::Migration::Helper
-    def create_enum(name, arr : Enumerable(T)) forall T
-      self.add_operation(CreateEnum.new(name.to_s, arr.map(&.to_s) ))
+    def create_enum(name : Clear::SQL::Symbolic, arr : Enumerable(T)) forall T
+      self.add_operation(CreateEnum.new(name.to_s, arr.map(&.to_s)))
     end
 
-    def drop_enum(name, arr : Enumerable(T)? = nil ) forall T
-      self.add_operation( DropEnum.new(name.to_s, arr.try &.map(&.to_s)) )
+    def drop_enum(name : Clear::SQL::Symbolic, arr : Enumerable(T)? = nil) forall T
+      self.add_operation(DropEnum.new(name.to_s, arr.try &.map(&.to_s)))
     end
 
-    def create_enum(name, e)
+    def create_enum(name : Clear::SQL::Symbolic, e : ::Clear::Enum.class)
       self.add_operation(CreateEnum.new(name.to_s, e.authorized_values))
     end
   end

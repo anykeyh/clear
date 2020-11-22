@@ -1,7 +1,6 @@
 require "../factory"
 
 module Clear::Model::HasFactory
-
   macro included # In Clear::Model
     macro included # In RealModel
       POLYMORPHISM_SETTINGS = {} of Nil => Nil

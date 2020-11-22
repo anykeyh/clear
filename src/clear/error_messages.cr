@@ -62,7 +62,7 @@ module Clear::ErrorMessages
     end
   end
 
-  def build_error_message(message : String, ways_to_resolve : Tuple|Array = Tuple.new, manual_pages : Tuple|Array = Tuple.new)
+  def build_error_message(message : String, ways_to_resolve : Tuple | Array = Tuple.new, manual_pages : Tuple | Array = Tuple.new)
     {% if flag?(:release) %}
       message
     {% else %}
@@ -71,10 +71,10 @@ module Clear::ErrorMessages
         build_tips(ways_to_resolve),
         build_manual(manual_pages),
         (
-          "You may also have encountered a bug. \n"+
+          "You may also have encountered a bug. \n" +
           "Feel free to submit an issue: \n#{build_url("https://github.com/anykeyh/clear/issues/new")}"
         ),
-        "\n\nStack trace:\n"
+        "\n\nStack trace:\n",
       }.join)
     {% end %}
   end
@@ -83,7 +83,7 @@ module Clear::ErrorMessages
     build_error_message \
       "Migration already up: #{number}",
       {
-        "You're trying to force a migration which is already existing in your database. "+
+        "You're trying to force a migration which is already existing in your database. " +
         "You should down the migration first, then up it again.",
       },
       {
@@ -141,13 +141,11 @@ module Clear::ErrorMessages
       }
   end
 
-  def migration_irreversible(name=nil, operation = nil)
+  def migration_irreversible(name = nil, operation = nil)
     op_string = operation ? "This is caused by the operation #{operation} which is irreversible." : nil
-    mig_string = name ?
-      "The migration `#{name}` is irreversible. You're trying to down a migration which is not downable, "+
-      "because the operations are one way only." :
-      "A migration is irreversible. You're trying to down a migration which is not downable, " +
-      "because the operations are one way only."
+    mig_string = name ? "The migration `#{name}` is irreversible. You're trying to down a migration which is not downable, " +
+                        "because the operations are one way only." : "A migration is irreversible. You're trying to down a migration which is not downable, " +
+                                                                     "because the operations are one way only."
 
     build_error_message \
       mig_string,
@@ -155,7 +153,7 @@ module Clear::ErrorMessages
         op_string,
         "Build a way to revert the migration",
         "Do not revert the migration",
-        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table store loaded "+
+        "Maybe you need to manually flush the migration using Postgres. `__clear_metadatas` table stores loaded " +
         "migrations. Good luck !",
       ].compact,
       {
@@ -194,7 +192,7 @@ module Clear::ErrorMessages
       {
         "Ensure that the column `#{name}` exists in your table",
         "If the model comes from a collection query, there was maybe a filtering on your `select` clause, " +
-          "and you forgot to declare the column `#{name}`",
+        "and you forgot to declare the column `#{name}`",
         "In the case of unpersisted models, please initialize by calling `#{name}=` first",
         "For validator, try `ensure_than` method, or use `#{name}_column.defined?` to avoid your validation code.",
         "Are you calling `#{name}_column.revert` somewhere before?",

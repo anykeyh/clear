@@ -405,11 +405,11 @@ One thing very important for a good ORM is to offer vision of the SQL
 called under the hood.
 Clear is offering SQL logging tools, with SQL syntax colorizing in your terminal.
 
-For activation, simply setup the logger to `DEBUG` level !
+For activation, simply setup the log to `:debug` level
 
 
 ```
-Clear.logger.level = ::Logger::DEBUG
+::Log.builder.bind "clear.*", Log::Severity::Debug, Log::IOBackend.new
 ```
 
 ### Save & validation

@@ -44,7 +44,6 @@ module ValidationSpec
           /yahoo.[A-Za-z\.]+$/,
         ].any? { |x| v =~ x }
       end
-
     end
   end
 

@@ -1,7 +1,6 @@
 require "db"
 
 module Clear::SQL::Query::Execute
-  #
   # Execute an SQL statement which does not return anything.
   #
   # If an optional `connection_name` parameter is given, this will

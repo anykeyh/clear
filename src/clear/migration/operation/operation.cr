@@ -3,6 +3,7 @@ module Clear::Migration
     include Clear::ErrorMessages
 
     property migration : Clear::Migration? = nil
+
     abstract def up : Array(String)
     abstract def down : Array(String)
 

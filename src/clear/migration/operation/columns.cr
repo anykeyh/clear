@@ -15,7 +15,7 @@ module Clear::Migration
 
     @with_values : Bool
 
-    def initialize(@table, @column, datatype, @nullable = false, @constraint = nil, @default = nil, @with_values = false )
+    def initialize(@table, @column, datatype, @nullable = false, @constraint = nil, @default = nil, @with_values = false)
       @datatype = Clear::Migration::Helper.datatype(datatype.to_s)
     end
 
@@ -27,7 +27,7 @@ module Clear::Migration
       [[
         "ALTER TABLE", @table, "ADD", @column, @datatype, @nullable ? "NULL" : "NOT NULL",
         constraint ? "CONSTRAINT #{constraint}" : nil, default ? "DEFAULT #{default}" : nil,
-        with_values ? "WITH VALUES" : nil
+        with_values ? "WITH VALUES" : nil,
       ].compact.join(" ")]
     end
 
@@ -101,7 +101,7 @@ end
 
 module Clear::Migration::Helper
   # Add a column to a specific table
-  def add_column(table, column, datatype,  nullable = false, constraint = nil, default = nil, with_values = false)
+  def add_column(table, column, datatype, nullable = false, constraint = nil, default = nil, with_values = false)
     self.add_operation(Clear::Migration::AddColumn.new(table, column, datatype,
       nullable, constraint, default, with_values))
   end

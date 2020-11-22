@@ -1,3 +1,7 @@
+module Clear
+  Log = ::Log.for("clear")
+end
+
 # Require everything except the extensions and the CLI
 require "./version"
 require "./util"
@@ -7,3 +11,4 @@ require "./expression/**"
 require "./sql/**"
 require "./model/**"
 require "./migration/**"
+require "./view/**"

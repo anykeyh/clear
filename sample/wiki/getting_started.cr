@@ -7,8 +7,9 @@ require "../../src/clear"
 
 # Initialize the connection
 Clear::SQL.init("postgres://postgres@localhost/sample_for_wiki")
+
 # Setting log level to DEBUG will allow you to see the requests made by the system
-Clear.logger.level = ::Logger::DEBUG
+Log.builder.bind "clear.*", Log::Severity::Debug, Log::IOBackend.new
 
 # Because it's a step by step tutorial
 def pause
@@ -55,7 +56,7 @@ class User
 
   # Adding a primary key is mandatory in models
   # if you want to use relations !
-  with_serial_pkey # By default, the primary key is `id`
+  primary_key # By default, the primary key is `id`
 
   column first_name : String
   column last_name : String
@@ -79,7 +80,7 @@ class Post
   include Clear::Model
   self.table = "posts"
 
-  with_serial_pkey
+  primary_key
 
   belongs_to user : User
 

@@ -7,15 +7,14 @@
 # Each cache can references multiples relations at the same time.
 # This cache use an underlying hash to access to the references keys.
 class Clear::Model::QueryCache
-
   # :nodoc:
   record CacheKey, relation_name : String, relation_value : Clear::SQL::Any, relation_model : String
 
   # Store the associations through a Hash. For performance reaons, the hash is storing the array of models
-  # as `Pointer(Void)` (while being underlying an Array(T)). This is a current limitation of Crystal, where
+  # as `Pointer(Nil)` (while being underlying an Array(T)). This is a current limitation of Crystal, where
   # you cannot store nor cast safely an `Array(Child)` in a `Array(Parent)`
   # reference (while Child inheriting from Parent).
-  @cache : Hash(CacheKey, Pointer(Void)) = {} of CacheKey => Pointer(Void)
+  @cache : Hash(CacheKey, Pointer(Nil)) = {} of CacheKey => Pointer(Nil)
 
   # References the current cached relations.
   @cache_activation : Set(String) = Set(String).new
@@ -51,13 +50,13 @@ class Clear::Model::QueryCache
 
   # Set the cached array for a specific key `{relation_name,relation_value}`
   def set(relation_name, relation_value, arr : Array(T)) forall T
-    # We store the array as `Pointer(Void)`.
+    # We store the array as `Pointer(Nil)`.
     # Thus to make happy the compiler and keep away garbage collecting.
-    # After that, I'm going to cast back to the real array type Array(T) in `hit` method
-    # to prevent array recopy on hit.
+    # After that, we cast back to the real array type Array(T) in `hit` method
+    # to prevent array recopy when `hit` is called.
     #
     # See: https://github.com/crystal-lang/crystal/issues/5289
-    @cache[CacheKey.new(relation_name, relation_value, T.name)] = arr.unsafe_as(Pointer(Void))
+    @cache[CacheKey.new(relation_name, relation_value, T.name)] = arr.unsafe_as(Pointer(Nil))
   end
 
   # Perform some operations with the cache then eventually clear the cache.

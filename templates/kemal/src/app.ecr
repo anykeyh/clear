@@ -11,7 +11,7 @@ module Application
   end
 end
 
-Clear.logger.level = ::Logger::DEBUG if Application.env == "development"
+Clear.log.level = ::Log::Severity::Debug if Application.env == "development"
 
 require "./db/init.cr"
 

@@ -5,7 +5,7 @@ struct Citext
 
   forward_missing_to @string
 
-  def initialize(@string)
+  def initialize(@string : String)
   end
 
   def ==(x : String | Citext)

@@ -5,11 +5,13 @@ require "db"
 
 require "./errors"
 require "./logger"
+require "./transaction"
 
 # Add a field to DB::Database to handle
 #   the state of transaction of a specific
 #   connection
-abstract class DB::Database
+abstract class DB::Connection
+  # add getter to transaction status for this specific DB::Connection
   property? _clear_in_transaction : Bool = false
 end
 
@@ -23,27 +25,26 @@ module Clear
   # +------------------------------------+
   # |           THE ORM STACK            +
   # +------------------------------------+
-  # |  Model | DB Views | Migrations     | < High Level Tools
+  # |  Model | DB Views | Migrations     | < High level things
   # +---------------+--------------------+
-  # |  Columns | Validation | Converters | < Mapping system
+  # |  Columns | Validation | Converters | < Mapping stuff
   # +---------------+--------------------+
-  # |  Clear::SQL   | Clear::Expression  | < Low Level SQL Builder
+  # |  Clear::SQL   | Clear::Expression  | < Low level SQL builder
   # +------------------------------------+
-  # |  Crystal DB   | Crystal PG         | < Low Level connection
+  # |  Crystal DB   | Crystal PG         | < Libs we deal with
   # +------------------------------------+
   # ```
   #
   # On the bottom stack, Clear offer SQL query building.
-  # Theses features are then used by top level parts of the engine.
+  # Features provided are then used by top level parts of the engine.
   #
   # The SQL module provide a simple API to generate `delete`, `insert`, `select`
   # and `update` methods.
   #
   # Each requests can be duplicated then modified and executed.
   #
-  # Note: Each request object is mutable. Therefore, to update and store a request,
+  # Note: Each request object is mutable. Therefore, to keep a request prior to modification,
   # you must use manually the `dup` method.
-  #
   module SQL
     alias Any = Array(PG::BoolArray) | Array(PG::CharArray) | Array(PG::Float32Array) |
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
@@ -56,6 +57,7 @@ module Clear
                 Nil
 
     include Clear::SQL::Logger
+    include Clear::SQL::Transaction
     extend self
 
     alias Symbolic = String | Symbol
@@ -72,18 +74,15 @@ module Clear
     # query = Mode.query.select(Clear::SQL.raw("CASE WHEN x=:x THEN 1 ELSE 0 END as check", x: "blabla"))
     # query = Mode.query.select(Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as check", "blabla"))
     # ```
-    def raw(x, *params)
-      Clear::Expression.raw(x, *params)
+    #
+    # note than returned string is tagged as unsafe and SQL inject is possible (so beware!)
+    def raw(__template, *__args)
+      __args.size > 0 ? Clear::Expression.raw(__template, *__args) : __template
     end
 
-    # See `self.raw`
-    # Can pass an array to this version
-    def raw_enum(x, params : Enumerable(T)) forall T
-      Clear::Expression.raw_enum(x, params)
-    end
-
-    def raw(__template, **params)
-      Clear::Expression.raw(__template, **params)
+    # :ditto:
+    def raw(__template, **__keys)
+      __keys.size > 0 ? Clear::Expression.raw(__template, **__keys) : __template
     end
 
     # Escape the expression, double quoting it.
@@ -98,147 +97,70 @@ module Clear
       "\"" + x.to_s.gsub("\"", "\"\"") + "\""
     end
 
+    # Create an unsafe expression, which can be used in many places in Clear as
+    # substitute for string
+    #
+    # ```
+    #   select.where("x = ?", Clear::SQL.unsafe("y")) # SELECT ... WHERE x = y
+    # ```
     def unsafe(x)
       Clear::Expression::UnsafeSql.new(x)
     end
 
-    def init(url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, "default", connection_pool_size)
+    # Initialize a new connection to a specific database
+    # Use "default" connection if no name is provided:
+    # ```
+    # init("postgres://postgres@localhost:5432/database") # use "default" connection
+    # init("secondary_db", "postgres://postgres@localhost:5432/secondary_db")
+    # ```
+    def init(url : String)
+      Clear::SQL::ConnectionPool.init(url, "default")
     end
 
-    def init(name : String, url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
-      # @@connections[name] = DB.open(url)
+    # :ditto:
+    def init(name : String, url : String)
+      Clear::SQL::ConnectionPool.init(url, name)
     end
 
-    def init(connections : Hash(Symbolic, String), connection_pool_size = 5)
+    # connect through a hash/named tuple of connections:
+    #
+    # ```
+    # Clear::SQL.init(
+    #   default: "postgres://postgres@localhost:5432/database",
+    #   secondary: "postgres://postgres@localhost:5432/secondary"
+    # )
+    # ```
+    def init(**__named_tuple)
+      init(__named_tuple.to_h)
+    end
+
+    # :ditto:
+    def init(connections : Hash(Symbolic, String))
       connections.each do |name, url|
-        Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+        add_connection(name, url)
       end
     end
 
-    def add_connection(name : String, url : String, connection_pool_size = 5)
-      Clear::SQL::ConnectionPool.init(url, name, connection_pool_size)
+    # :ditto:
+    def add_connection(name : String, url : String)
+      Clear::SQL::ConnectionPool.init(url, name)
     end
 
-    @@savepoint_uid : UInt64 = 0_u64
-
-    # Create an unstackable transaction
-    #
-    # Example:
-    # ```
-    # Clear::SQL.transaction do
-    #   # do something
-    #   Clear::SQL.transaction do # Technically, this block do nothing, since we already are in transaction
-    #     rollback                # < Rollback the up-most `transaction` block.
-    #   end
-    # end
-    # ```
-    # see #with_savepoint to use a stackable version using savepoints.
-    #
-    def transaction(connection = "default", &block)
-      Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
-        has_rollback = false
-
-        if cnx._clear_in_transaction?
-          return yield(cnx) # In case we already are in transaction, we just ignore
-        else
-          cnx._clear_in_transaction = true
-          execute("BEGIN")
-          begin
-            return yield(cnx)
-          rescue e
-            has_rollback = true
-            is_rollback_error = e.is_a?(RollbackError) || e.is_a?(CancelTransactionError)
-            execute("ROLLBACK --" + (is_rollback_error ? "normal" : "program error")) rescue nil
-            raise e unless is_rollback_error
-          ensure
-            cnx._clear_in_transaction = false
-            execute("COMMIT") unless has_rollback
-          end
-        end
-      end
-    end
-
-    # Create a transaction, but this one is stackable
-    # using savepoints.
-    #
-    # Example:
-    # ```
-    # Clear::SQL.with_savepoint do
-    #   # do something
-    #   Clear::SQL.with_savepoint do
-    #     rollback # < Rollback only the last `with_savepoint` block
-    #   end
-    # end
-    # ```
-    def with_savepoint(connection_name = "default", &block)
-      transaction do |cnx|
-        sp_name = "sp_#{@@savepoint_uid += 1}"
-        begin
-          execute(connection_name, "SAVEPOINT #{sp_name}")
-          yield
-          execute(connection_name, "RELEASE SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
-        rescue e : RollbackError
-          execute(connection_name, "ROLLBACK TO SAVEPOINT #{sp_name}") if cnx._clear_in_transaction?
-        end
-      end
-    end
-
-    # Truncate a table or a model
-    #
-    # ```
-    # User.query.count          # => 200
-    # Clear::SQL.truncate(User) # equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)
-    # User.query.count          # => 0
-    # ```
-    #
-    # SEE https://www.postgresql.org/docs/current/sql-truncate.html
-    # for more information.
-    #
-    # - `restart_sequence` set to true will append `RESTART IDENTITY` to the query
-    # - `cascade` set to true will append `CASCADE` to the query
-    # - `truncate_inherited` set to false will append `ONLY` to the query
-    # - `connection_name` will be: `Model.connection` or `default` unless optionally defined.
-    def self.truncate(tablename : T.class | String, restart_sequence = false, cascade = false, truncate_inherited = true, connection_name : String? = nil) forall T
-      if (tablename.is_a?(String))
-        connection_name ||= "default"
-      else
-        connection_name ||= tablename.connection
-        tablename ||= tablename.table
-      end
-
-      only = truncate_inherited ? "" : " ONLY "
-      restart_sequence = restart_sequence ? " RESTART IDENTITY " : ""
-      cascade = cascade ? " CASCADE " : ""
-
-      execute(connection_name,
-        {"TRUNCATE TABLE ", only, Clear::SQL.escape(tablename), restart_sequence, cascade}.join
-      )
-    end
-
-    # Raise a rollback, in case of transaction
-    def rollback
-      raise RollbackError.new
-    end
-
-    # Execute a SQL statement.
+    # Execute a SQL statement without returning a result set
     #
     # Usage:
-    # Clear::SQL.execute("SELECT 1 FROM users")
     #
-    def execute(sql)
-      log_query(sql) { Clear::SQL::ConnectionPool.with_connection("default", &.exec(sql)) }
-    end
-
-    # Execute a SQL statement on a specific connection.
+    # ```
+    # Clear::SQL.execute("NOTIFY listener")
+    # ```
     #
-    # Usage:
-    # Clear::SQL.execute("seconddatabase", "SELECT 1 FROM users")
     def execute(connection_name : String, sql)
-      log_query(sql) do
-        Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec(sql))
-      end
+      log_query(sql) { Clear::SQL::ConnectionPool.with_connection(connection_name, &.exec_all(sql)) }
+    end
+
+    # :ditto:
+    def execute(sql : String)
+      execute("default", sql)
     end
 
     # :nodoc:
@@ -246,51 +168,59 @@ module Clear
       s.is_a?(Symbolic) ? s.to_s : s.to_sql
     end
 
-    # Start a DELETE table query
+    # Prepare a DELETE table query
     def delete(table : Symbolic)
       Clear::SQL::DeleteQuery.new.from(table)
     end
 
     # Start an INSERT INTO table query
-    def insert_into(table)
-      Clear::SQL::InsertQuery.new(table)
-    end
-
-    # Start an INSERT INTO table query
     #
     # ```
-    # Clear::SQL.insert_into("table", id: 1, name: "hello")
+    # Clear::SQL.insert_into("table", {id: 1, name: "hello"}, {id: 2, name: "World"})
     # ```
-    def insert_into(table, *args)
+    def insert_into(table : Symbolic, *args)
       Clear::SQL::InsertQuery.new(table).values(*args)
     end
 
-    # Create a new INSERT query
+    # Prepare a new INSERT INTO table query
+    # :ditto:
+    def insert_into(table : Symbolic)
+      Clear::SQL::InsertQuery.new(table)
+    end
+
+    # Alias of `insert_into`, for developers in hurry
+    # :ditto:
+    def insert(table : Symbolic, *args)
+      insert_into(table, *args)
+    end
+
+    # :ditto:
+    def insert(table : Symbolic, args : NamedTuple)
+      insert_into(table, args)
+    end
+
+    # Create a new blank INSERT query. See `Clear::SQL::InsertQuery`
     def insert
       Clear::SQL::InsertQuery.new
     end
 
-    # Alias of `insert_into`, for hurry developers
-    def insert(table, *args)
-      insert_into(table, *args)
-    end
-
-    def insert(table, args : NamedTuple)
-      insert_into(table, args)
-    end
-
-    # Start a UPDATE table query
-    def update(table)
+    # Start a UPDATE table query. See `Clear::SQL::UpdateQuery`
+    def update(table : Symbolic)
       Clear::SQL::UpdateQuery.new(table)
     end
 
-    # Start a SELECT FROM table query
+    # Start a SELECT ... query
     def select(*args)
       if args.size > 0
         Clear::SQL::SelectQuery.new.select(*args)
       else
         Clear::SQL::SelectQuery.new
       end
+    end
+
+    # :ditto:
+    def select(**args)
+      Clear::SQL::SelectQuery.new.select(**args)
     end
   end
 end

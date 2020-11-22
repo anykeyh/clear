@@ -1,3 +1,150 @@
+# v0.9
+
+I'm pleased to announce the version 0.9 of Crystal Clear ORM !
+This version is probably the biggest version released since Clear is born.
+
+Under the hood, it simplifies a lot of code, push testing to another level with
+a great amount of new specs.
+
+On the feature part, it add full support for serializing to and from json, with mass assignment secure check, big decimal
+type, PostgreSQL view management at migration, new callbacks methods, support for postgres interval object and so on...
+
+Finally, the code has been tweaked to be compatible with release of Crystal 1.0.
+
+With that in mind, Clear starts to mature, with only CLI, polymorphic relations and model inheritance still lacking.
+
+_Note of warning_: some changes will break your code. However everything can be fixed in matter of minutes (hopefully)
+
+Special thanks to all contributors of this version:
+
+@007lva @anykeyh @GabFitzgerald @dukeraphaelng @mamantoha @watzon @yujiri8
+
+(hopefully I did not forget someone)
+
+## Breaking changes
+
+- `Clear::SQL::ConnectionPool` now returns DB::Connection instead of DB::Database (fix #177)
+- `Clear::Migration::Direction` is now an enum instead of a struct.
+- where and having clauses use splat and named tuple always. This is breaking change.
+  - Before you had to do:
+
+  ```crystal
+    where("a = ?", [1])
+  ```
+
+  Now you can do much more easy:
+
+  ```crystal
+    where("a = ?", 1)
+  ```
+
+  Same apply for the named parameters version:
+
+  ```crystal
+    # Instead of
+    where("a = :a", { a: 1 } )
+    # Do
+    where("a = :a", a: 1)
+  ```
+
+
+## Features
+
+- PR #187 Add methods to import from and to `json`, with mass_assignment security
+  (thanks @dukeraphaelng and Caspian Baska for this awesome work!)
+- PR #191 Add Big Decimal support (@dukeraphaelng)
+- `Collection#add_operation` has been renamed to `Collection#append_operation`
+- Add `Clear::SQL.after_commit` method
+
+Register a callback function which will be fired once when SQL `COMMIT`
+operation is called
+
+This can be used for example to send email, or perform others tasks
+when you want to be sure the data is secured in the database.
+
+```crystal
+  transaction do
+    @user = User.find(1)
+    @user.subscribe!
+    Clear::SQL.after_commit{ Email.deliver(ConfirmationMail.new(@user)) }
+  end
+```
+
+In case the transaction fail and eventually rollback, the code won't be called.
+
+Same method exists now on the model level, using before and after hooks:
+
+```crystal
+  class User
+    include Clear::Model
+
+    after(:commit){ |mdl| WelcomeEmail.new(mdl.as(User)).deliver_now }
+  end
+```
+
+Note: `before(:commit)` and `after(:commit)` are both called after the transaction has been commited.
+      Before hook always call before after hook.
+
+- Add possibility to name and rollback to a specific savepoint:
+
+```crystal
+  Clear::SQL.with_savepoint("a") do
+    Clear::SQL.with_savepoint("b") do
+      Clear::SQL.rollback("a") # < Exit to "a"
+    end
+    puts "This won't be called"
+  end
+  puts "This will be called"
+```
+
+- Add `Clear.json_serializable_converter(CustomType)`
+
+This macro help setting a converter transparently for any `CustomType`.
+Your `CustomType` must be `JSON::Serializable`, and the database column
+must be of type `jsonb`, `json` or `text`.
+
+```crystal
+  class Color
+    include JSON::Serializable
+
+    @[JSON::Field]; property r: Int8
+    @[JSON::Field]; property g: Int8
+    @[JSON::Field]; property b: Int8
+    @[JSON::Field]; property a: Int8
+  end
+
+  Clear.json_serializable_converter(Color)
+
+  # Now you can use Color in your models:
+
+  class MyModel
+    include Clear::Model
+
+    column color : Color
+  end
+```
+
+- Add `jsonb().contains?(...)` method
+
+This allow usage of Postgres `?` operator over `jsonb` fields:
+
+```crystal
+  # SELECT * FROM actors WHERE "jsonb_column"->'movies' ? 'Top Gun' LIMIT 1;
+  Actor.query.where{ var("jsonb_column").jsonb("movies").contains?("Top Gun") }.first!.name # << Tom Cruise
+```
+
+- Add `SelectQuery#reverse_order_by` method
+
+A convenient method to reverse all the order by clauses,
+turning each `ASC` to `DESC` direction, and each `NULLS FIRST` to `NULLS LAST`
+
+
+## Bugfixes
+
+- Prepare the code to make it compatible with crystal 1.0. Change `Void` to `Nil`
+- `first` and `last` on collection object does not change the collection anymore (previously would add limit/offset and change order_by clauses)
+- Dozen of other bugs not tracked here have been fixed, by usage or new test sets.
+
 # v0.8
 
 ## Features
@@ -29,9 +176,9 @@ query = Mode.query.select( Clear::SQL.raw("CASE WHEN x=? THEN 1 ELSE 0 END as ch
 
 ## Features
 
-- Add `Clear::Interval` type
+- Add support for `PG::Interval` type
 
-This type is related to the type `Clear::Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
+This type is related to the type `PG::Interval` of PostgreSQL. It stores `month`, `days` and `microseconds` and can be used
 with `Time` (Postgres' `datetime`) by adding or substracting it.
 
 ### Examples:
@@ -39,20 +186,20 @@ with `Time` (Postgres' `datetime`) by adding or substracting it.
 Usage in Expression engine:
 
 ```crystal
-interval = Clear::Interval.new(months: 1, days: 1)
+interval = PG::Interval.new(months: 1, days: 1)
 
 MyModel.query.where{ created_at - interval > updated_at  }.each do |model|
   # ...
 end
 ```
 
-It might be used as column definition, and added / removed to crystal `Time` object
+It might be used as column definition as well.
 
 ```crystal
 class MyModel
   include Clear::Model
 
-  column i : Clear::Interval
+  column i : PG::Interval
 end
 
 puts "Expected time: #{Time.local + MyModel.first!.i}"
@@ -257,7 +404,7 @@ Basically a transition version, to support Crystal 0.27. Some of the features of
 
 ## Breaking changes
 - `Model#save` on read only model do not throw exception anymore but return false (save! still throw error)
-- `with_serial_pkey` use Int32 (type `:serial`) and Int64 (type `:longserial`) pkey instead of UInt32 and UInt64. This would prevent issue with default `belongs_to` behavior and simplify static number assignation.
+- `with_serial_pkey` use Int32 (type `:serial`) and Int64 (type `:longserial`) primary key instead of `UInt32` and `UInt64`. This would prevent issue with default `belongs_to` behavior and simplify static number assignation.
 
 # v0.2
 
@@ -300,7 +447,7 @@ Basically a transition version, to support Crystal 0.27. Some of the features of
 
 ## Bugfixes
 
-- Patching segfault caused by weird architecture choice of mine over the `pkey` method.
+- Patching segfault caused by weird architecture choice of mine over the `__pkey__` method.
 - Fix issue with delete if the primary key is not `id`
 - Add watchdog to disallow inclusion of `Clear::Model` on struct objects, which
   is not intended to work.

@@ -26,12 +26,17 @@ module Clear::Model
 
   # Alias method for primary key.
   #
-  # If `Model#id` IS the primary key, then calling `Model#pkey` is exactly the same as `Model#id`.
+  # If `Model#id` IS the primary key, then calling `Model#__pkey__` is exactly the same as `Model#id`.
   #
   # This method exists to tremendously simplify the meta-programming code.
   # If no primary key has been setup to this model, raise an exception.
-  def pkey
+  def __pkey__
     raise lack_of_primary_key(self.class.name)
+  end
+
+  # Comparison between models is made by comparing their primary keys.
+  def ==(model : self)
+    self.__pkey__ == model.__pkey__
   end
 
   # We use here included for errors purpose.
@@ -40,8 +45,6 @@ module Clear::Model
   macro included
     {% raise "Do NOT include Clear::Model on struct-like objects.\n" +
              "It would behave very strangely otherwise." unless @type < Reference %}    # <~ Models are mutable objects;
-                                                                                        # they do not work with structures which are immuable
-
 
     extend Clear::Model::HasHooks::ClassMethods
 
@@ -65,9 +68,9 @@ module Clear::Model
       reset(t)
     end
 
-    # Force to clean-up the caches for the relations
-    # connected to this model.
-    def invalidate_caching : self
+    # Invalidate local-to-relation cache and eager-loading cache.
+    # Useful to forcefully query again when calling relation defined method
+    def invalidate_caches : self
       @cache = nil
       self
     end

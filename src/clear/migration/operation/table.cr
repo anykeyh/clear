@@ -12,13 +12,15 @@ module Clear::Migration
       foreign_fields : Array(String), on_delete : String, primary : Bool
 
     getter name : String
+    getter schema : String
+
     getter? is_create : Bool
 
     getter column_operations : Array(ColumnOperation) = [] of ColumnOperation
     getter index_operations : Array(IndexOperation) = [] of IndexOperation
     getter fkey_operations : Array(FkeyOperation) = [] of FkeyOperation
 
-    def initialize(@name, @is_create)
+    def initialize(@name, @schema, @is_create)
       raise "Not yet implemented" unless is_create?
     end
 
@@ -63,6 +65,10 @@ module Clear::Migration
       end
     end
 
+    def full_name
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
+    end
+
     # Add or replace an index for this table.
     # Alias for `add_index`
     def index(field : String | Symbol, name = nil, using = nil, unique = false)
@@ -86,7 +92,7 @@ module Clear::Migration
     #
     # Return a safe index name from the condition string
     private def safe_index_name(str)
-      str.underscore.gsub(/[^a-zA-Z0-9_]/, "_").gsub(/_+/, "_")
+      str.underscore.gsub(/[^a-zA-Z0-9_]+/, "_")
     end
 
     def up : Array(String)
@@ -96,19 +102,18 @@ module Clear::Migration
 
       arr = if is_create?
               [
-                ["CREATE TABLE", @name, content].compact.join(" "),
+                ["CREATE TABLE", full_name, content].compact.join(" "),
               ]
             else
               # To implement later
               [] of String
             end
-
       arr + print_indexes
     end
 
     def down : Array(String)
       [
-        (["DROP TABLE", @name].join(" ") if is_create?),
+        (["DROP TABLE", full_name].join(" ") if is_create?),
       ].compact
     end
 
@@ -183,9 +188,14 @@ module Clear::Migration
   end
 
   class AddTable < Operation
-    @table : String
+    getter table : String
+    getter schema : String
 
-    def initialize(@table)
+    def initialize(@table, @schema)
+    end
+
+    def full_name
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
     end
 
     def up : Array(String)
@@ -198,9 +208,14 @@ module Clear::Migration
   end
 
   class DropTable < Operation
-    @table : String
+    getter table : String
+    getter schema : String
 
-    def initialize(@table)
+    def initialize(@table, @schema)
+    end
+
+    def full_name
+      {Clear::SQL.escape(@schema), Clear::SQL.escape(@name)}.join(".")
     end
 
     def up : Array(String)
@@ -240,8 +255,8 @@ module Clear::Migration
     # end
     # ```
     #
-    def create_table(name, id : Symbol | Bool = true, &block)
-      table = Table.new(name.to_s, is_create: true)
+    def create_table(name, id : Symbol | Bool = true, schema = "public", &block)
+      table = Table.new(name.to_s, schema.to_s, is_create: true)
       self.add_operation(table)
 
       case id

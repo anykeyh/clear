@@ -25,10 +25,9 @@ module NestedQuerySpec
         INSERT INTO tags VALUES     (1, 1, 'foo');
         INSERT INTO tags VALUES     (2, 1, 'bar');
       SQL
-      .split(";").each do |qry|
+        .split(";").each do |qry|
         execute(qry)
       end
-
     end
   end
 
@@ -73,16 +72,15 @@ module NestedQuerySpec
 
   def self.reinit
     reinit_migration_manager
-    NestedQuerySpecMigration9991.new.apply(Clear::Migration::Direction::UP)
+    NestedQuerySpecMigration9991.new.apply
   end
-
 
   it "nests the query" do
     temporary do
       reinit
 
       Release.query
-             .with_video(&.with_tags).to_a
+        .with_video(&.with_tags).to_a
     end
   end
 end

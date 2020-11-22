@@ -28,7 +28,7 @@ module FullTextSearchableSpec
 
   def self.reinit
     reinit_migration_manager
-    CreateSeriesMigration5312354.new.apply(Clear::Migration::Direction::UP)
+    CreateSeriesMigration5312354.new.apply
   end
 
   describe "test tsv searchable" do
@@ -104,8 +104,8 @@ module FullTextSearchableSpec
 
       tsvec["other"]?.should be_nil
       tsvec.to_sql.should eq "'bad':12A 'better':1A 'break':11A 'call':2A " +
-                            "'follow':4A 'goodman':6A 'lawyer':9A " +
-                            "'saul':3A,5A 'sketchi':8A"
+                             "'follow':4A 'goodman':6A 'lawyer':9A " +
+                             "'saul':3A,5A 'sketchi':8A"
     end
   end
 end

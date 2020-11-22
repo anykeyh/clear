@@ -23,6 +23,7 @@ class Clear::SQL::UpdateQuery
     h = {} of String => Updatable
     row.each { |k, v| h[k.to_s] = v }
     set(h)
+
     change!
   end
 
@@ -53,14 +54,13 @@ class Clear::SQL::UpdateQuery
         x
       when Hash(String, Updatable)
         print_value(x)
-      when Nil
+      else
         "NULL"
       end
     end.join(", ")
   end
 
   def to_sql
-    # raise Clear::ErrorMessages.query_building_error("Update Query must have a table clause.") if @table.nil?
     table = @table.is_a?(Symbol) ? SQL.escape(@table.to_s) : @table
 
     [print_ctes, "UPDATE", table, "SET", print_values, print_wheres].compact.join(" ")
