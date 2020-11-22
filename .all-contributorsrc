@@ -171,6 +171,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "yujiri8",
+      "name": "Ryan Westlund",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/16864184?v=4",
+      "profile": "https://yujiri.xyz",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
