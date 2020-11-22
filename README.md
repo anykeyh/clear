@@ -699,6 +699,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/batarian71"><img src="https://avatars1.githubusercontent.com/u/36008612?v=4" width="100px;" alt=""/><br /><sub><b>batarian71</b></sub></a><br /><a href="#design-batarian71" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/anykeyh"><img src="https://avatars2.githubusercontent.com/u/2456898?v=4" width="100px;" alt=""/><br /><sub><b>Yacine Petitprez</b></sub></a><br /><a href="#maintenance-anykeyh" title="Maintenance">🚧</a></td>
     <td align="center"><a href="https://github.com/alex-min"><img src="https://avatars1.githubusercontent.com/u/1898825?v=4" width="100px;" alt=""/><br /><sub><b>Alexandre</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=alex-min" title="Code">💻</a></td>
+    <td align="center"><a href="https://duke-nguyen.netlify.app"><img src="https://avatars1.githubusercontent.com/u/58082199?v=4" width="100px;" alt=""/><br /><sub><b>Anh (Duke) Nguyen</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=dukeraphaelng" title="Code">💻</a></td>
     <td align="center"><a href="https://yujiri.xyz"><img src="https://avatars1.githubusercontent.com/u/16864184?v=4" width="100px;" alt=""/><br /><sub><b>Ryan Westlund</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=yujiri8" title="Documentation">📖</a></td>
   </tr>
 </table>
