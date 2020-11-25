@@ -3,7 +3,7 @@
 # Clear
 [![Build Status](https://travis-ci.org/anykeyh/clear.svg?branch=master)](https://travis-ci.org/anykeyh/clear) [![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://anykeyh.github.io/clear/) [![GitHub release](https://img.shields.io/github/release/anykeyh/clear.svg)](https://github.com/anykeyh/clear/releases)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-18-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-20-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Clear is an ORM built specifically for PostgreSQL in Crystal.
@@ -701,6 +701,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/alex-min"><img src="https://avatars1.githubusercontent.com/u/1898825?v=4" width="100px;" alt=""/><br /><sub><b>Alexandre</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=alex-min" title="Code">💻</a></td>
     <td align="center"><a href="https://duke-nguyen.netlify.app"><img src="https://avatars1.githubusercontent.com/u/58082199?v=4" width="100px;" alt=""/><br /><sub><b>Anh (Duke) Nguyen</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=dukeraphaelng" title="Code">💻</a></td>
     <td align="center"><a href="https://yujiri.xyz"><img src="https://avatars1.githubusercontent.com/u/16864184?v=4" width="100px;" alt=""/><br /><sub><b>Ryan Westlund</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=yujiri8" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/caspiano"><img src="https://avatars2.githubusercontent.com/u/18466497?v=4" width="100px;" alt=""/><br /><sub><b>Caspian Baska</b></sub></a><br /><a href="https://github.com/anykeyh/clear/commits?author=caspiano" title="Code">💻</a></td>
   </tr>
 </table>
 
