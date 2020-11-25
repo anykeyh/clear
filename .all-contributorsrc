@@ -180,6 +180,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "caspiano",
+      "name": "Caspian Baska",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/18466497?v=4",
+      "profile": "https://github.com/caspiano",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
