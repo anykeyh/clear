@@ -45,6 +45,7 @@ module RelationSpec
     has_one user_info : UserInfo, foreign_key: "user_id"
     # Same...
     has_many user_infos : UserInfo, foreign_key: "user_id"
+    has_one user_info_nilable : UserInfo?, foreign_key: "user_id"
 
     has_many posts : Post, foreign_key: "user_id"
 
