@@ -61,11 +61,11 @@ module Clear::Model::Relations::HasOneMacro
 
       {% if nilable %}
         def {{method_name}}! : {{relation_type}}
-          if model = self.{{method_name}}.nil?
+          if model = self.{{method_name}}
+            model
+          else
             raise Clear::SQL::RecordNotFoundError.new
           end
-
-          model
         end # /  *!
       {% end %}
 
