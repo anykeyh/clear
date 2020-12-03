@@ -640,6 +640,17 @@ module ModelSpec
       user.first_name.should eq(user_body["first_name"])
     end
 
+    it "can create a new model instance with a column with column_name field" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        p = Post.create_from_json({title: "A post", user_id: u.id}.to_json)
+        p.title.should eq("A post")
+        p.user_id.should eq(u.id)
+      end
+    end
+
     it "sets fields from json" do
       user_body = {first_name: "Steve"}
       update_body = {first_name: "stevo"}
