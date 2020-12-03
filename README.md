@@ -668,7 +668,21 @@ I hope one day we will cover all the features of PG here !
 
 ### Running Tests
 
-In order to run the test suite, you will need to have the PostgresSQL service locally available via a socket for access with psql. psql will attempt to use the 'postgres' user to create the test database. If you are working with a newly installed database that may not have the postgres user, this can be created with `createuser -s postgres`.
+#### With local PostgreSQL
+To run the test suite with local PostgreSQL, you will need to have the PostgresSQL service locally available via a socket for access with psql. psql will attempt to use the 'postgres' user to create the test database. If you are working with a newly installed database that may not have the postgres user, this can be created with `createuser -s postgres`.
+
+ Simply run crystal spec [--flags]
+
+ #### Using Docker
+To run the test suite with Docker, you will need to have Docker installed, then start the postgreSQL service container with the following command
+
+ `docker run --name clear_db -e POSTGRES_PASSWORD=password -h localhost -p 5432:5432 -d postgres`
+
+ Then simply load ENV=docker when running crystal spec [--flags]
+
+ `ENV=docker crystal spec [--flags]`
+
+ You can also specify the name of the container by loading it into `DB_NAME` environment variable
 
 ## Contributors ✨
 
