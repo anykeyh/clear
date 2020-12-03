@@ -50,6 +50,7 @@ module Clear::Model::HasRelations
         presence: Bool,                     # For belongs_to, check or not the presence
 
         cache: Bool,                        # whether the model will cache the relation
+        mass_assign: Bool?                  # whether the model can be mass assigned on this field during deserialisation
       }
     end
   end
@@ -164,7 +165,7 @@ module Clear::Model::HasRelations
   # ```
   macro belongs_to(name, foreign_key = nil, cache = true, primary = false,
                    foreign_key_type = Int64, polymorphic = false,
-                   polymorphic_type_column = nil, presence = true)
+                   polymorphic_type_column = nil, presence = true, mass_assign = true)
 
     {%
       foreign_key = "#{foreign_key.id}" if foreign_key
@@ -196,8 +197,9 @@ module Clear::Model::HasRelations
         primary:  primary,
         presence: presence,
 
-        through: nil,
-        cache:   cache,
+        through:     nil,
+        cache:       cache,
+        mass_assign: mass_assign,
       }
     %}
   end
