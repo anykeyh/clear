@@ -48,13 +48,20 @@ module ValidationSpec
   end
 
   describe "Clear::Model Validation" do
-    it "can validate presence using the type of the column " do
+    it "can validate presence using the type of the column" do
       u = User.new
       u.valid?.should eq(false)
       u.print_errors.should eq("user_name: must be present")
       u.user_name = "helloworld"
       u.valid?.should eq(true)
       u.errors.size.should eq(0)
+    end
+
+    it "raises Clear::Model::InvalidError when #valid! is called on an invalid model" do
+      u = User.new
+      expect_raises Clear::Model::InvalidError do
+        u.valid!
+      end
     end
 
     it "won't use the presence validator if persisted" do
