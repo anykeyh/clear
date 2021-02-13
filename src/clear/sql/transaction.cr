@@ -61,12 +61,17 @@ module Clear::SQL::Transaction
           raise e unless is_rollback_error
         ensure
           cnx._clear_in_transaction = false
+
+          callbacks = @@commit_callbacks.delete(cnx)
+
           unless has_rollback
             execute("COMMIT")
-            @@commit_callbacks[cnx].each(&.call(cnx))
-          end
 
-          @@commit_callbacks.delete(cnx)
+            # Remove the list from the global hash, and execute after the commits
+            # this should prevent the proc to be called twice in case of usage
+            # of a new Clear transaction into the `after_commit` block.
+            callbacks.try &.each &.call(cnx)
+          end
         end
       end
     end
