@@ -44,7 +44,7 @@ module Clear::Model::HasValidation
   # Check whether the model is valid. If not, raise `InvalidModelError`.
   # Return the model itself
   def valid!
-    raise InvalidModelError.new("Model is invalid: #{print_errors}") unless valid?
+    raise InvalidError.new(self) unless valid?
     self
   end
 
