@@ -2,7 +2,7 @@ name: clear
 
 version: 0.9
 
-crystal: 0.35.1
+crystal: 1.0.0-dev
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -25,7 +25,6 @@ dependencies:
     branch: master
   pg:
     github: will/crystal-pg
-    branch: master
   inflector:
     github: phoffer/inflector.cr
     version: "~> 0.1.8"
