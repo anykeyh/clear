@@ -136,7 +136,7 @@ class Clear::View
   end
 
   def full_name
-    {@schema, @name}.map { |x| Clear::SQL.escape(x) }.join(".")
+    {@schema, @name}.join(".") { |x| Clear::SQL.escape(x) }
   end
 
   def to_create_sql

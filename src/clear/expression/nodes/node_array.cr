@@ -13,7 +13,7 @@ class Clear::Expression::Node::NodeArray < Clear::Expression::Node
     if @expression.any?
       {
         "(",
-        @expression.map(&.resolve).join(" #{@link} "),
+        @expression.join(" #{@link} ", &.resolve),
         ")",
       }.join
     else

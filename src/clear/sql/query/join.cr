@@ -40,6 +40,6 @@ module Clear::SQL::Query::Join
   {% end %}
 
   protected def print_joins
-    joins.map(&.to_sql.as(String)).join(" ")
+    joins.join(" ", &.to_sql.as(String))
   end
 end

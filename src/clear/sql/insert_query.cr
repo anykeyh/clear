@@ -173,7 +173,7 @@ class Clear::SQL::InsertQuery
   end
 
   protected def print_keys
-    @keys.any? ? "(" + @keys.map { |x| Clear::SQL.escape(x.to_s) }.join(", ") + ")" : nil
+    @keys.any? ? "(" + @keys.join(", ") { |x| Clear::SQL.escape(x.to_s) } + ")" : nil
   end
 
   protected def print_values
@@ -181,7 +181,7 @@ class Clear::SQL::InsertQuery
     v.map_with_index { |row, idx|
       raise QueryBuildingError.new "No value to insert (at row ##{idx})" if row.empty?
 
-      "(" + row.map { |x| Clear::Expression[x] }.join(", ") + ")"
+      "(" + row.join(", "){ |x| Clear::Expression[x] } + ")"
     }.join(",\n")
   end
 

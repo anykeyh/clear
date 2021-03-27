@@ -75,7 +75,7 @@ module CacheSpec
           end
           Clear::Model::QueryCache.cache_hitted.should eq(4) # Number of posts
 
-          Category.query.with_users { |q| q.order_by("model_users.id", :asc) }.order_by("id", :asc).each do |c|
+          Category.query.with_users(&.order_by("model_users.id", :asc)).order_by("id", :asc).each do |c|
             c.users.each do |user|
               c.id.not_nil!
               user.id.not_nil!

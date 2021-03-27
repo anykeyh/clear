@@ -30,9 +30,9 @@ module Clear::Model::HasValidation
 
   # Print the errors in string. Useful for debugging or simple error handling.
   def print_errors
-    @errors.group_by(&.column).to_a.sort { |(f1, _), (f2, _)| (f1 || "") <=> (f2 || "") }.map do |column, errors|
-      [column, errors.map(&.reason).join(", ")].compact.join(": ")
-    end.join("\n")
+    @errors.group_by(&.column).to_a.sort { |(f1, _), (f2, _)| (f1 || "") <=> (f2 || "") }.join("\n") do |column, errors|
+      [column, errors.join(", ", &.reason)].compact.join(": ")
+    end
   end
 
   # This method is called whenever `valid?` or `save` is called.

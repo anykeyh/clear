@@ -1,3 +1,7 @@
 Style/ConstantNames:
   Excluded:
   - "**/*.cr"
+
+Performance/AnyInsteadOfEmpty:
+  Excluded:
+  - "**/*.cr"

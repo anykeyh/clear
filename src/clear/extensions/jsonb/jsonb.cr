@@ -46,7 +46,7 @@ module Clear::SQL::JSONB
   # Do any of these array strings exist as top-level keys?
   #
   def jsonb_any_exists?(field, keys : Array(String))
-    {field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"}.join(" ?| ")
+    {field, "array[" + keys.join(",") { |x| Clear::SQL.sanitize(x) } + "]"}.join(" ?| ")
   end
 
   # Does the string exist as a top-level key within the JSON value?
@@ -57,7 +57,7 @@ module Clear::SQL::JSONB
   # jsonb `?&` operator
   # Do all of these array strings exist as top-level keys?
   def jsonb_all_exists?(field, keys : Array(String))
-    {field, "array[" + keys.map { |x| Clear::SQL.sanitize(x) }.join(",") + "]"}.join(" ?& ")
+    {field, "array[" + keys.join(",") { |x| Clear::SQL.sanitize(x) } + "]"}.join(" ?& ")
   end
 
   # :nodoc:

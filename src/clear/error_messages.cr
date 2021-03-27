@@ -40,10 +40,10 @@ module Clear::ErrorMessages
   private def build_tips(ways_to_resolve)
     if ways_to_resolve.size > 0
       "Here some tips:\n\n" +
-        ways_to_resolve.map do |l|
+        ways_to_resolve.join("\n\n") do |l|
           l = format_width(l, 72)
           l = "  - " + l.gsub(/\n/) { |m| "#{m}    " }
-        end.join("\n\n") + "\n\n"
+        end + "\n\n"
     end
   end
 
@@ -55,9 +55,9 @@ module Clear::ErrorMessages
     if manual_pages.size > 0
       {
         "You may want to check the manual:",
-        manual_pages.map { |x|
+        manual_pages.join("\n") { |x|
           build_url("https://github.com/anykeyh/clear/tree/master/manual/#{x}")
-        }.join("\n"),
+        }
       }.join("\n") + "\n\n"
     end
   end
