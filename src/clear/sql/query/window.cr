@@ -25,8 +25,8 @@ module Clear::SQL::Query::Window
   end
 
   def print_windows
-    @windows.map do |name, value|
+    @windows.join do |name, value|
       {name.to_s, " AS ", value}.join
-    end.join
+    end
   end
 end

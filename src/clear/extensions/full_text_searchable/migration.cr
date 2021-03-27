@@ -32,12 +32,12 @@ class Clear::Migration::FullTextSearchableOperation < Clear::Migration::Operatio
   end
 
   private def print_concat_rules(use_new = true)
-    src_fields.map do |(field_name, field_priority)|
+    src_fields.join(" || ") do |(field_name, field_priority)|
       ensure_priority!(field_priority)
 
       "setweight(to_tsvector(#{Clear::Expression[catalog]}, coalesce(#{use_new && "new." || ""}#{field_name}, ''))," +
         " #{Clear::Expression[field_priority]})"
-    end.join(" || ")
+    end
   end
 
   private def print_trigger : Array(String)

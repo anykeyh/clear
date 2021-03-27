@@ -54,12 +54,12 @@ module Clear::SQL::Query::CTE
     return unless cte.any?
 
     {"WITH ",
-     cte.map do |name, v|
+     cte.join(", ") do |name, v|
        query = v.query
        value = query.responds_to?(:to_sql) ? query.to_sql : query.to_s
        {v.recursive ? "RECURSIVE" : "",
         name, " AS (", value, ")"}.join
-     end.join(", "),
+     end
     }.join
   end
 end

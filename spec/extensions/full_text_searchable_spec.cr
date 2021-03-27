@@ -80,7 +80,7 @@ module FullTextSearchableSpec
       Series.create!({title:       "",
                       description: ""})
 
-      Series.query.each { |s| s.tsv.to_sql }
+      Series.query.each(&.tsv.to_sql)
     end
   end
 

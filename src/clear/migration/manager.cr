@@ -267,9 +267,9 @@ class Clear::Migration::Manager
 
     @migrations.sort do |a, b|
       a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid
-    end.map do |m|
+    end.join("\n") do |m|
       active = @migrations_up.includes?(m.uid)
       "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"
-    end.join("\n")
+    end
   end
 end

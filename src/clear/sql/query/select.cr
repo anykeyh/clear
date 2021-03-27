@@ -133,12 +133,12 @@ module Clear::SQL::Query::Select
   end
 
   protected def print_columns
-    (@columns.any? ? @columns.map(&.to_sql.as(String)).join(", ") : print_wildcard)
+    (@columns.any? ? @columns.join(", ", &.to_sql.as(String)) : print_wildcard)
   end
 
   protected def print_forced_columns
     if @forced_columns.any?
-      ", " + @forced_columns.map(&.to_sql.as(String)).join(", ")
+      ", " + @forced_columns.join(", ", &.to_sql.as(String))
     else
       ""
     end

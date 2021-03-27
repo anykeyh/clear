@@ -156,6 +156,6 @@ module Clear::SQL::Query::Having
 
   # :nodoc:
   protected def print_havings
-    {"HAVING ", @havings.map(&.resolve).join(" AND ")}.join if @havings.any?
+    {"HAVING ", @havings.join(" AND ", &.resolve)}.join if @havings.any?
   end
 end

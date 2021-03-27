@@ -2,25 +2,25 @@ version: 2.0
 shards:
   admiral:
     git: https://github.com/jwaldrip/admiral.cr.git
-    version: 1.11.2+git.commit.c3c3467953654554b72c24e7b853d6fbb23f10c0
+    version: 1.11.4
 
   ameba:
-    git: https://github.com/veelenga/ameba.git
-    version: 0.13.4+git.commit.51b0a07e810501895a71a8f8183ccf752d10d083
+    git: https://github.com/crystal-ameba/ameba.git
+    version: 0.14.1
 
   db:
     git: https://github.com/crystal-lang/crystal-db.git
-    version: 0.10.0
+    version: 0.10.1
 
   generate:
     git: https://github.com/anykeyh/generate.cr.git
-    version: 0.1.0+git.commit.27a59d663ded8ce39a361e3a88b8dd747f59ce42
+    version: 0.1.0+git.commit.f5dafc934a70e0ee2f246dddf3df44686f844da2
 
   inflector:
-    git: https://github.com/phoffer/inflector.cr.git
-    version: 0.1.8
+    git: https://github.com/anykeyh/inflector.cr.git
+    version: 0.1.8+git.commit.dc5c898b0a834617d8b3ff73ac5a2239bd9fc019
 
   pg:
     git: https://github.com/will/crystal-pg.git
-    version: 0.23.1+git.commit.cafe039cfd6340a271e81603943bb1975f5a91f5
+    version: 0.23.1
 

@@ -127,7 +127,7 @@ class Clear::Expression
   def self.safe_literal(x : Enumerable(AvailableLiteral)) : String
     self.safe_literal({
       "{",
-      x.map { |item| self.safe_literal(item) }.join(", "),
+      x.join(", ") { |item| self.safe_literal(item) },
       "}",
     }.join)
   end

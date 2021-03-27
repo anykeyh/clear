@@ -2,7 +2,7 @@ name: clear
 
 version: 0.9
 
-crystal: 0.35.1
+crystal: 1.0.0
 
 authors:
    - Yacine Petitprez <anykeyh@gmail.com>
@@ -19,22 +19,17 @@ targets:
 dependencies:
   admiral:
     github: jwaldrip/admiral.cr
-    branch: master
   generate:
     github: anykeyh/generate.cr
     branch: master
   pg:
     github: will/crystal-pg
-    branch: master
   inflector:
-    github: phoffer/inflector.cr
-    version: "~> 0.1.8"
+    github: anykeyh/inflector.cr
+    branch: master
 
 development_dependencies:
-  # coverage:
-  #   github: anykeyh/crystal-coverage
   ameba:
-    github: veelenga/ameba
-    branch: master
+    github: crystal-ameba/ameba
 
 license: MIT
