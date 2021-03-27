@@ -21,10 +21,12 @@ dependencies:
     github: jwaldrip/admiral.cr
   generate:
     github: anykeyh/generate.cr
+    branch: master
   pg:
     github: will/crystal-pg
   inflector:
-    github: phoffer/inflector.cr
+    github: anykeyh/inflector.cr
+    branch: master
 
 development_dependencies:
   ameba:

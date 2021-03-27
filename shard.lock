@@ -14,11 +14,11 @@ shards:
 
   generate:
     git: https://github.com/anykeyh/generate.cr.git
-    version: 0.1.0
+    version: 0.1.0+git.commit.f5dafc934a70e0ee2f246dddf3df44686f844da2
 
   inflector:
-    git: https://github.com/phoffer/inflector.cr.git
-    version: 0.1.8
+    git: https://github.com/anykeyh/inflector.cr.git
+    version: 0.1.8+git.commit.dc5c898b0a834617d8b3ff73ac5a2239bd9fc019
 
   pg:
     git: https://github.com/will/crystal-pg.git
