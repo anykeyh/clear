@@ -421,7 +421,7 @@ module Clear::Model::HasColumns
       JSON.build{ |json| to_json(json, emit_nulls) }
     end
 
-    def to_json(json, emit_nulls = false)
+    def to_json(json : ::JSON::Builder, emit_nulls = false)
       json.object do
         {% for name, settings in COLUMNS %}
         if emit_nulls || @{{settings[:crystal_variable_name]}}_column.defined?
