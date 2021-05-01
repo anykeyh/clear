@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="HEAD">
+<meta name="crystal_docs.project_name" content="clear">
+
+
+
+<link href="../../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../../js/doc.js"></script>
+
+  <meta name="repository-name" content="clear">
+  <title>Clear::Expression::Node::DoubleOperator - clear HEAD</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../../index.html">
+          clear
+        </a>
+      </h1>
+
+      <span class="project-version">
+        HEAD
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="clear/toplevel" data-name="top level namespace">
+      <a href="../../../toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/BigDecimal" data-name="bigdecimal">
+      <a href="../../../BigDecimal.html">BigDecimal</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Char" data-name="char">
+      <a href="../../../Char.html">Char</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Citext" data-name="citext">
+      <a href="../../../Citext.html">Citext</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="clear/Clear" data-name="clear">
+      <a href="../../../Clear.html">Clear</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/CLI" data-name="clear::cli">
+      <a href="../../../Clear/CLI.html">CLI</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Barebone" data-name="clear::cli::barebone">
+      <a href="../../../Clear/CLI/Barebone.html">Barebone</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Barebone/Arguments" data-name="clear::cli::barebone::arguments">
+      <a href="../../../Clear/CLI/Barebone/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Barebone/Flags" data-name="clear::cli::barebone::flags">
+      <a href="../../../Clear/CLI/Barebone/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Base" data-name="clear::cli::base">
+      <a href="../../../Clear/CLI/Base.html">Base</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Base/Arguments" data-name="clear::cli::base::arguments">
+      <a href="../../../Clear/CLI/Base/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Base/Flags" data-name="clear::cli::base::flags">
+      <a href="../../../Clear/CLI/Base/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Command" data-name="clear::cli::command">
+      <a href="../../../Clear/CLI/Command.html">Command</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator" data-name="clear::cli::generator">
+      <a href="../../../Clear/CLI/Generator.html">Generator</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Arguments" data-name="clear::cli::generator::arguments">
+      <a href="../../../Clear/CLI/Generator/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Flags" data-name="clear::cli::generator::flags">
+      <a href="../../../Clear/CLI/Generator/Flags.html">Flags</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/Migration" data-name="clear::cli::generator::migration">
+      <a href="../../../Clear/CLI/Generator/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Migration/Arguments" data-name="clear::cli::generator::migration::arguments">
+      <a href="../../../Clear/CLI/Generator/Migration/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Migration/Flags" data-name="clear::cli::generator::migration::flags">
+      <a href="../../../Clear/CLI/Generator/Migration/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/Model" data-name="clear::cli::generator::model">
+      <a href="../../../Clear/CLI/Generator/Model.html">Model</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Model/Arguments" data-name="clear::cli::generator::model::arguments">
+      <a href="../../../Clear/CLI/Generator/Model/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Model/Flags" data-name="clear::cli::generator::model::flags">
+      <a href="../../../Clear/CLI/Generator/Model/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/NewKemal" data-name="clear::cli::generator::newkemal">
+      <a href="../../../Clear/CLI/Generator/NewKemal.html">NewKemal</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/NewKemal/Arguments" data-name="clear::cli::generator::newkemal::arguments">
+      <a href="../../../Clear/CLI/Generator/NewKemal/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/NewKemal/Flags" data-name="clear::cli::generator::newkemal::flags">
+      <a href="../../../Clear/CLI/Generator/NewKemal/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Record" data-name="clear::cli::generator::record">
+      <a href="../../../Clear/CLI/Generator/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration" data-name="clear::cli::migration">
+      <a href="../../../Clear/CLI/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Arguments" data-name="clear::cli::migration::arguments">
+      <a href="../../../Clear/CLI/Migration/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Down" data-name="clear::cli::migration::down">
+      <a href="../../../Clear/CLI/Migration/Down.html">Down</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Down/Arguments" data-name="clear::cli::migration::down::arguments">
+      <a href="../../../Clear/CLI/Migration/Down/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Down/Flags" data-name="clear::cli::migration::down::flags">
+      <a href="../../../Clear/CLI/Migration/Down/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Flags" data-name="clear::cli::migration::flags">
+      <a href="../../../Clear/CLI/Migration/Flags.html">Flags</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Migrate" data-name="clear::cli::migration::migrate">
+      <a href="../../../Clear/CLI/Migration/Migrate.html">Migrate</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Migrate/Arguments" data-name="clear::cli::migration::migrate::arguments">
+      <a href="../../../Clear/CLI/Migration/Migrate/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Migrate/Flags" data-name="clear::cli::migration::migrate::flags">
+      <a href="../../../Clear/CLI/Migration/Migrate/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Rollback" data-name="clear::cli::migration::rollback">
+      <a href="../../../Clear/CLI/Migration/Rollback.html">Rollback</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Rollback/Arguments" data-name="clear::cli::migration::rollback::arguments">
+      <a href="../../../Clear/CLI/Migration/Rollback/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Rollback/Flags" data-name="clear::cli::migration::rollback::flags">
+      <a href="../../../Clear/CLI/Migration/Rollback/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Seed" data-name="clear::cli::migration::seed">
+      <a href="../../../Clear/CLI/Migration/Seed.html">Seed</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Seed/Arguments" data-name="clear::cli::migration::seed::arguments">
+      <a href="../../../Clear/CLI/Migration/Seed/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Seed/Flags" data-name="clear::cli::migration::seed::flags">
+      <a href="../../../Clear/CLI/Migration/Seed/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Set" data-name="clear::cli::migration::set">
+      <a href="../../../Clear/CLI/Migration/Set.html">Set</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Set/Arguments" data-name="clear::cli::migration::set::arguments">
+      <a href="../../../Clear/CLI/Migration/Set/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Set/Flags" data-name="clear::cli::migration::set::flags">
+      <a href="../../../Clear/CLI/Migration/Set/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Status" data-name="clear::cli::migration::status">
+      <a href="../../../Clear/CLI/Migration/Status.html">Status</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Status/Arguments" data-name="clear::cli::migration::status::arguments">
+      <a href="../../../Clear/CLI/Migration/Status/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Status/Flags" data-name="clear::cli::migration::status::flags">
+      <a href="../../../Clear/CLI/Migration/Status/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Up" data-name="clear::cli::migration::up">
+      <a href="../../../Clear/CLI/Migration/Up.html">Up</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Up/Arguments" data-name="clear::cli::migration::up::arguments">
+      <a href="../../../Clear/CLI/Migration/Up/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Up/Flags" data-name="clear::cli::migration::up::flags">
+      <a href="../../../Clear/CLI/Migration/Up/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Seed" data-name="clear::cli::seed">
+      <a href="../../../Clear/CLI/Seed.html">Seed</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Seed/Arguments" data-name="clear::cli::seed::arguments">
+      <a href="../../../Clear/CLI/Seed/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Seed/Flags" data-name="clear::cli::seed::flags">
+      <a href="../../../Clear/CLI/Seed/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Enum" data-name="clear::enum">
+      <a href="../../../Clear/Enum.html">Enum</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Enum/Converter" data-name="clear::enum::converter(t)">
+      <a href="../../../Clear/Enum/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/ErrorMessages" data-name="clear::errormessages">
+      <a href="../../../Clear/ErrorMessages.html">ErrorMessages</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="clear/Clear/Expression" data-name="clear::expression">
+      <a href="../../../Clear/Expression.html">Expression</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/AvailableLiteral" data-name="clear::expression::availableliteral">
+      <a href="../../../Clear/Expression/AvailableLiteral.html">AvailableLiteral</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression/JSONB" data-name="clear::expression::jsonb">
+      <a href="../../../Clear/Expression/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/JSONB/Node" data-name="clear::expression::jsonb::node">
+      <a href="../../../Clear/Expression/JSONB/Node.html">Node</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Literal" data-name="clear::expression::literal">
+      <a href="../../../Clear/Expression/Literal.html">Literal</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="clear/Clear/Expression/Node" data-name="clear::expression::node">
+      <a href="../../../Clear/Expression/Node.html">Node</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/Expression/Node/Between" data-name="clear::expression::node::between">
+      <a href="../../../Clear/Expression/Node/Between.html">Between</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Between/BetweenType" data-name="clear::expression::node::between::betweentype">
+      <a href="../../../Clear/Expression/Node/Between/BetweenType.html">BetweenType</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" current" data-id="clear/Clear/Expression/Node/DoubleOperator" data-name="clear::expression::node::doubleoperator">
+      <a href="../../../Clear/Expression/Node/DoubleOperator.html">DoubleOperator</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Function" data-name="clear::expression::node::function">
+      <a href="../../../Clear/Expression/Node/Function.html">Function</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InArray" data-name="clear::expression::node::inarray">
+      <a href="../../../Clear/Expression/Node/InArray.html">InArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InRange" data-name="clear::expression::node::inrange">
+      <a href="../../../Clear/Expression/Node/InRange.html">InRange</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InSelect" data-name="clear::expression::node::inselect">
+      <a href="../../../Clear/Expression/Node/InSelect.html">InSelect</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression/Node/JSONB" data-name="clear::expression::node::jsonb">
+      <a href="../../../Clear/Expression/Node/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/ArrayContains" data-name="clear::expression::node::jsonb::arraycontains">
+      <a href="../../../Clear/Expression/Node/JSONB/ArrayContains.html">ArrayContains</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/Equality" data-name="clear::expression::node::jsonb::equality">
+      <a href="../../../Clear/Expression/Node/JSONB/Equality.html">Equality</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/Field" data-name="clear::expression::node::jsonb::field">
+      <a href="../../../Clear/Expression/Node/JSONB/Field.html">Field</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Literal" data-name="clear::expression::node::literal">
+      <a href="../../../Clear/Expression/Node/Literal.html">Literal</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Minus" data-name="clear::expression::node::minus">
+      <a href="../../../Clear/Expression/Node/Minus.html">Minus</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/NodeArray" data-name="clear::expression::node::nodearray">
+      <a href="../../../Clear/Expression/Node/NodeArray.html">NodeArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Not" data-name="clear::expression::node::not">
+      <a href="../../../Clear/Expression/Node/Not.html">Not</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Null" data-name="clear::expression::node::null">
+      <a href="../../../Clear/Expression/Node/Null.html">Null</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/PGArray" data-name="clear::expression::node::pgarray(t)">
+      <a href="../../../Clear/Expression/Node/PGArray.html">PGArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Raw" data-name="clear::expression::node::raw">
+      <a href="../../../Clear/Expression/Node/Raw.html">Raw</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Variable" data-name="clear::expression::node::variable">
+      <a href="../../../Clear/Expression/Node/Variable.html">Variable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/UnsafeSql" data-name="clear::expression::unsafesql">
+      <a href="../../../Clear/Expression/UnsafeSql.html">UnsafeSql</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/IllegalEnumValueError" data-name="clear::illegalenumvalueerror">
+      <a href="../../../Clear/IllegalEnumValueError.html">IllegalEnumValueError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration" data-name="clear::migration">
+      <a href="../../../Clear/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/AddColumn" data-name="clear::migration::addcolumn">
+      <a href="../../../Clear/Migration/AddColumn.html">AddColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/AddTable" data-name="clear::migration::addtable">
+      <a href="../../../Clear/Migration/AddTable.html">AddTable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/AlterColumn" data-name="clear::migration::altercolumn">
+      <a href="../../../Clear/Migration/AlterColumn.html">AlterColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/CreateEnum" data-name="clear::migration::createenum">
+      <a href="../../../Clear/Migration/CreateEnum.html">CreateEnum</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/CreateIndex" data-name="clear::migration::createindex">
+      <a href="../../../Clear/Migration/CreateIndex.html">CreateIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Direction" data-name="clear::migration::direction">
+      <a href="../../../Clear/Migration/Direction.html">Direction</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/DropEnum" data-name="clear::migration::dropenum">
+      <a href="../../../Clear/Migration/DropEnum.html">DropEnum</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/DropTable" data-name="clear::migration::droptable">
+      <a href="../../../Clear/Migration/DropTable.html">DropTable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Execute" data-name="clear::migration::execute">
+      <a href="../../../Clear/Migration/Execute.html">Execute</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableHelpers" data-name="clear::migration::fulltextsearchablehelpers">
+      <a href="../../../Clear/Migration/FullTextSearchableHelpers.html">FullTextSearchableHelpers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration/FullTextSearchableOperation" data-name="clear::migration::fulltextsearchableoperation">
+      <a href="../../../Clear/Migration/FullTextSearchableOperation.html">FullTextSearchableOperation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableOperation/Priority" data-name="clear::migration::fulltextsearchableoperation::priority">
+      <a href="../../../Clear/Migration/FullTextSearchableOperation/Priority.html">Priority</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableTableHelpers" data-name="clear::migration::fulltextsearchabletablehelpers">
+      <a href="../../../Clear/Migration/FullTextSearchableTableHelpers.html">FullTextSearchableTableHelpers</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Helper" data-name="clear::migration::helper">
+      <a href="../../../Clear/Migration/Helper.html">Helper</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/IrreversibleMigration" data-name="clear::migration::irreversiblemigration">
+      <a href="../../../Clear/Migration/IrreversibleMigration.html">IrreversibleMigration</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Manager" data-name="clear::migration::manager">
+      <a href="../../../Clear/Migration/Manager.html">Manager</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Operation" data-name="clear::migration::operation">
+      <a href="../../../Clear/Migration/Operation.html">Operation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/RemoveColumn" data-name="clear::migration::removecolumn">
+      <a href="../../../Clear/Migration/RemoveColumn.html">RemoveColumn</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration/Table" data-name="clear::migration::table">
+      <a href="../../../Clear/Migration/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/ColumnOperation" data-name="clear::migration::table::columnoperation">
+      <a href="../../../Clear/Migration/Table/ColumnOperation.html">ColumnOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/FkeyOperation" data-name="clear::migration::table::fkeyoperation">
+      <a href="../../../Clear/Migration/Table/FkeyOperation.html">FkeyOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/IndexOperation" data-name="clear::migration::table::indexoperation">
+      <a href="../../../Clear/Migration/Table/IndexOperation.html">IndexOperation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model" data-name="clear::model">
+      <a href="../../../Clear/Model.html">Model</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/ClassMethods" data-name="clear::model::classmethods">
+      <a href="../../../Clear/Model/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/CollectionBase" data-name="clear::model::collectionbase(t)">
+      <a href="../../../Clear/Model/CollectionBase.html">CollectionBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Column" data-name="clear::model::column(t, c)">
+      <a href="../../../Clear/Model/Column.html">Column</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Column/UnknownClass" data-name="clear::model::column::unknownclass">
+      <a href="../../../Clear/Model/Column/UnknownClass.html">UnknownClass</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Connection" data-name="clear::model::connection">
+      <a href="../../../Clear/Model/Connection.html">Connection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Converter" data-name="clear::model::converter">
+      <a href="../../../Clear/Model/Converter.html">Converter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterBool" data-name="clear::model::converter::arrayconverterbool">
+      <a href="../../../Clear/Model/Converter/ArrayConverterBool.html">ArrayConverterBool</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterFloat32" data-name="clear::model::converter::arrayconverterfloat32">
+      <a href="../../../Clear/Model/Converter/ArrayConverterFloat32.html">ArrayConverterFloat32</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterFloat64" data-name="clear::model::converter::arrayconverterfloat64">
+      <a href="../../../Clear/Model/Converter/ArrayConverterFloat64.html">ArrayConverterFloat64</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterInt32" data-name="clear::model::converter::arrayconverterint32">
+      <a href="../../../Clear/Model/Converter/ArrayConverterInt32.html">ArrayConverterInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterInt64" data-name="clear::model::converter::arrayconverterint64">
+      <a href="../../../Clear/Model/Converter/ArrayConverterInt64.html">ArrayConverterInt64</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterString" data-name="clear::model::converter::arrayconverterstring">
+      <a href="../../../Clear/Model/Converter/ArrayConverterString.html">ArrayConverterString</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Base" data-name="clear::model::converter::base">
+      <a href="../../../Clear/Model/Converter/Base.html">Base</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BcryptPasswordConverter" data-name="clear::model::converter::bcryptpasswordconverter">
+      <a href="../../../Clear/Model/Converter/BcryptPasswordConverter.html">BcryptPasswordConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigDecimalConverter" data-name="clear::model::converter::bigdecimalconverter">
+      <a href="../../../Clear/Model/Converter/BigDecimalConverter.html">BigDecimalConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigFloatConverter" data-name="clear::model::converter::bigfloatconverter">
+      <a href="../../../Clear/Model/Converter/BigFloatConverter.html">BigFloatConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigIntConverter" data-name="clear::model::converter::bigintconverter">
+      <a href="../../../Clear/Model/Converter/BigIntConverter.html">BigIntConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BoolConverter" data-name="clear::model::converter::boolconverter">
+      <a href="../../../Clear/Model/Converter/BoolConverter.html">BoolConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Float32Converter" data-name="clear::model::converter::float32converter">
+      <a href="../../../Clear/Model/Converter/Float32Converter.html">Float32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Float64Converter" data-name="clear::model::converter::float64converter">
+      <a href="../../../Clear/Model/Converter/Float64Converter.html">Float64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int16Converter" data-name="clear::model::converter::int16converter">
+      <a href="../../../Clear/Model/Converter/Int16Converter.html">Int16Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int32Converter" data-name="clear::model::converter::int32converter">
+      <a href="../../../Clear/Model/Converter/Int32Converter.html">Int32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int64Converter" data-name="clear::model::converter::int64converter">
+      <a href="../../../Clear/Model/Converter/Int64Converter.html">Int64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int8Converter" data-name="clear::model::converter::int8converter">
+      <a href="../../../Clear/Model/Converter/Int8Converter.html">Int8Converter</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Converter/JSON" data-name="clear::model::converter::json">
+      <a href="../../../Clear/Model/Converter/JSON.html">JSON</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/JSON/AnyConverter" data-name="clear::model::converter::json::anyconverter">
+      <a href="../../../Clear/Model/Converter/JSON/AnyConverter.html">AnyConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/StringConverter" data-name="clear::model::converter::stringconverter">
+      <a href="../../../Clear/Model/Converter/StringConverter.html">StringConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/TimeConverter" data-name="clear::model::converter::timeconverter">
+      <a href="../../../Clear/Model/Converter/TimeConverter.html">TimeConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt16Converter" data-name="clear::model::converter::uint16converter">
+      <a href="../../../Clear/Model/Converter/UInt16Converter.html">UInt16Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt32Converter" data-name="clear::model::converter::uint32converter">
+      <a href="../../../Clear/Model/Converter/UInt32Converter.html">UInt32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt64Converter" data-name="clear::model::converter::uint64converter">
+      <a href="../../../Clear/Model/Converter/UInt64Converter.html">UInt64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt8Converter" data-name="clear::model::converter::uint8converter">
+      <a href="../../../Clear/Model/Converter/UInt8Converter.html">UInt8Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UUIDConverter" data-name="clear::model::converter::uuidconverter">
+      <a href="../../../Clear/Model/Converter/UUIDConverter.html">UUIDConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Error" data-name="clear::model::error">
+      <a href="../../../Clear/Model/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/EventManager" data-name="clear::model::eventmanager">
+      <a href="../../../Clear/Model/EventManager.html">EventManager</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/EventManager/EventKey" data-name="clear::model::eventmanager::eventkey">
+      <a href="../../../Clear/Model/EventManager/EventKey.html">EventKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/EventManager/HookFunction" data-name="clear::model::eventmanager::hookfunction">
+      <a href="../../../Clear/Model/EventManager/HookFunction.html">HookFunction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Factory" data-name="clear::model::factory">
+      <a href="../../../Clear/Model/Factory.html">Factory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/Base" data-name="clear::model::factory::base">
+      <a href="../../../Clear/Model/Factory/Base.html">Base</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/PolymorphicFactory" data-name="clear::model::factory::polymorphicfactory(t)">
+      <a href="../../../Clear/Model/Factory/PolymorphicFactory.html">PolymorphicFactory</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/SimpleFactory" data-name="clear::model::factory::simplefactory(t)">
+      <a href="../../../Clear/Model/Factory/SimpleFactory.html">SimpleFactory</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/FullTextSearchable" data-name="clear::model::fulltextsearchable">
+      <a href="../../../Clear/Model/FullTextSearchable.html">FullTextSearchable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasColumns" data-name="clear::model::hascolumns">
+      <a href="../../../Clear/Model/HasColumns.html">HasColumns</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasFactory" data-name="clear::model::hasfactory">
+      <a href="../../../Clear/Model/HasFactory.html">HasFactory</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/HasHooks" data-name="clear::model::hashooks">
+      <a href="../../../Clear/Model/HasHooks.html">HasHooks</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/HasHooks/ClassMethods" data-name="clear::model::hashooks::classmethods">
+      <a href="../../../Clear/Model/HasHooks/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasRelations" data-name="clear::model::hasrelations">
+      <a href="../../../Clear/Model/HasRelations.html">HasRelations</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasSaving" data-name="clear::model::hassaving">
+      <a href="../../../Clear/Model/HasSaving.html">HasSaving</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasScope" data-name="clear::model::hasscope">
+      <a href="../../../Clear/Model/HasScope.html">HasScope</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasSerialPkey" data-name="clear::model::hasserialpkey">
+      <a href="../../../Clear/Model/HasSerialPkey.html">HasSerialPkey</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasTimestamps" data-name="clear::model::hastimestamps">
+      <a href="../../../Clear/Model/HasTimestamps.html">HasTimestamps</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/HasValidation" data-name="clear::model::hasvalidation">
+      <a href="../../../Clear/Model/HasValidation.html">HasValidation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/HasValidation/Error" data-name="clear::model::hasvalidation::error">
+      <a href="../../../Clear/Model/HasValidation/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/InvalidError" data-name="clear::model::invaliderror">
+      <a href="../../../Clear/Model/InvalidError.html">InvalidError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/JSONDeserialize" data-name="clear::model::jsondeserialize">
+      <a href="../../../Clear/Model/JSONDeserialize.html">JSONDeserialize</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/QueryCache" data-name="clear::model::querycache">
+      <a href="../../../Clear/Model/QueryCache.html">QueryCache</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/ReadOnlyError" data-name="clear::model::readonlyerror">
+      <a href="../../../Clear/Model/ReadOnlyError.html">ReadOnlyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Relations" data-name="clear::model::relations">
+      <a href="../../../Clear/Model/Relations.html">Relations</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Schema" data-name="clear::model::schema">
+      <a href="../../../Clear/Model/Schema.html">Schema</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Schema/Column" data-name="clear::model::schema::column">
+      <a href="../../../Clear/Model/Schema/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Schema/Relation" data-name="clear::model::schema::relation">
+      <a href="../../../Clear/Model/Schema/Relation.html">Relation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/PG" data-name="clear::pg">
+      <a href="../../../Clear/PG.html">PG</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/PG/Interval" data-name="clear::pg::interval">
+      <a href="../../../Clear/PG/Interval.html">Interval</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/PG/Interval/Converter" data-name="clear::pg::interval::converter">
+      <a href="../../../Clear/PG/Interval/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Reflection" data-name="clear::reflection">
+      <a href="../../../Clear/Reflection.html">Reflection</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/Reflection/Column" data-name="clear::reflection::column">
+      <a href="../../../Clear/Reflection/Column.html">Column</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Reflection/Column/Collection" data-name="clear::reflection::column::collection">
+      <a href="../../../Clear/Reflection/Column/Collection.html">Collection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Reflection/Table" data-name="clear::reflection::table">
+      <a href="../../../Clear/Reflection/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Reflection/Table/Collection" data-name="clear::reflection::table::collection">
+      <a href="../../../Clear/Reflection/Table/Collection.html">Collection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL" data-name="clear::sql">
+      <a href="../../../Clear/SQL.html">SQL</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Any" data-name="clear::sql::any">
+      <a href="../../../Clear/SQL/Any.html">Any</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/CancelTransactionError" data-name="clear::sql::canceltransactionerror">
+      <a href="../../../Clear/SQL/CancelTransactionError.html">CancelTransactionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Column" data-name="clear::sql::column">
+      <a href="../../../Clear/SQL/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/ConnectionPool" data-name="clear::sql::connectionpool">
+      <a href="../../../Clear/SQL/ConnectionPool.html">ConnectionPool</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/DeleteQuery" data-name="clear::sql::deletequery">
+      <a href="../../../Clear/SQL/DeleteQuery.html">DeleteQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Error" data-name="clear::sql::error">
+      <a href="../../../Clear/SQL/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/ExecutionError" data-name="clear::sql::executionerror">
+      <a href="../../../Clear/SQL/ExecutionError.html">ExecutionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Fragment" data-name="clear::sql::fragment">
+      <a href="../../../Clear/SQL/Fragment.html">Fragment</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/From" data-name="clear::sql::from">
+      <a href="../../../Clear/SQL/From.html">From</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/InsertQuery" data-name="clear::sql::insertquery">
+      <a href="../../../Clear/SQL/InsertQuery.html">InsertQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/InsertQuery/Inserable" data-name="clear::sql::insertquery::inserable">
+      <a href="../../../Clear/SQL/InsertQuery/Inserable.html">Inserable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Join" data-name="clear::sql::join">
+      <a href="../../../Clear/SQL/Join.html">Join</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/JSONB" data-name="clear::sql::jsonb">
+      <a href="../../../Clear/SQL/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/JSONB/JSONBHash" data-name="clear::sql::jsonb::jsonbhash">
+      <a href="../../../Clear/SQL/JSONB/JSONBHash.html">JSONBHash</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/JSONB/JSONBKey" data-name="clear::sql::jsonb::jsonbkey">
+      <a href="../../../Clear/SQL/JSONB/JSONBKey.html">JSONBKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Logger" data-name="clear::sql::logger">
+      <a href="../../../Clear/SQL/Logger.html">Logger</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/OperationNotPermittedError" data-name="clear::sql::operationnotpermittederror">
+      <a href="../../../Clear/SQL/OperationNotPermittedError.html">OperationNotPermittedError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query" data-name="clear::sql::query">
+      <a href="../../../Clear/SQL/Query.html">Query</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Aggregate" data-name="clear::sql::query::aggregate">
+      <a href="../../../Clear/SQL/Query/Aggregate.html">Aggregate</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/BeforeQuery" data-name="clear::sql::query::beforequery">
+      <a href="../../../Clear/SQL/Query/BeforeQuery.html">BeforeQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Change" data-name="clear::sql::query::change">
+      <a href="../../../Clear/SQL/Query/Change.html">Change</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Connection" data-name="clear::sql::query::connection">
+      <a href="../../../Clear/SQL/Query/Connection.html">Connection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/CTE" data-name="clear::sql::query::cte">
+      <a href="../../../Clear/SQL/Query/CTE.html">CTE</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/CTE/Record" data-name="clear::sql::query::cte::record">
+      <a href="../../../Clear/SQL/Query/CTE/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Execute" data-name="clear::sql::query::execute">
+      <a href="../../../Clear/SQL/Query/Execute.html">Execute</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Fetch" data-name="clear::sql::query::fetch">
+      <a href="../../../Clear/SQL/Query/Fetch.html">Fetch</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/From" data-name="clear::sql::query::from">
+      <a href="../../../Clear/SQL/Query/From.html">From</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/GroupBy" data-name="clear::sql::query::groupby">
+      <a href="../../../Clear/SQL/Query/GroupBy.html">GroupBy</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Having" data-name="clear::sql::query::having">
+      <a href="../../../Clear/SQL/Query/Having.html">Having</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Join" data-name="clear::sql::query::join">
+      <a href="../../../Clear/SQL/Query/Join.html">Join</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Lock" data-name="clear::sql::query::lock">
+      <a href="../../../Clear/SQL/Query/Lock.html">Lock</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OffsetLimit" data-name="clear::sql::query::offsetlimit">
+      <a href="../../../Clear/SQL/Query/OffsetLimit.html">OffsetLimit</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/OnConflict" data-name="clear::sql::query::onconflict">
+      <a href="../../../Clear/SQL/Query/OnConflict.html">OnConflict</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OnConflict/OnConflictWhereClause" data-name="clear::sql::query::onconflict::onconflictwhereclause">
+      <a href="../../../Clear/SQL/Query/OnConflict/OnConflictWhereClause.html">OnConflictWhereClause</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/OrderBy" data-name="clear::sql::query::orderby">
+      <a href="../../../Clear/SQL/Query/OrderBy.html">OrderBy</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OrderBy/Record" data-name="clear::sql::query::orderby::record">
+      <a href="../../../Clear/SQL/Query/OrderBy/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Pluck" data-name="clear::sql::query::pluck">
+      <a href="../../../Clear/SQL/Query/Pluck.html">Pluck</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Select" data-name="clear::sql::query::select">
+      <a href="../../../Clear/SQL/Query/Select.html">Select</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Where" data-name="clear::sql::query::where">
+      <a href="../../../Clear/SQL/Query/Where.html">Where</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/Window" data-name="clear::sql::query::window">
+      <a href="../../../Clear/SQL/Query/Window.html">Window</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Window/WindowDeclaration" data-name="clear::sql::query::window::windowdeclaration">
+      <a href="../../../Clear/SQL/Query/Window/WindowDeclaration.html">WindowDeclaration</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/WithPagination" data-name="clear::sql::query::withpagination">
+      <a href="../../../Clear/SQL/Query/WithPagination.html">WithPagination</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/QueryBuildingError" data-name="clear::sql::querybuildingerror">
+      <a href="../../../Clear/SQL/QueryBuildingError.html">QueryBuildingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/RecordNotFoundError" data-name="clear::sql::recordnotfounderror">
+      <a href="../../../Clear/SQL/RecordNotFoundError.html">RecordNotFoundError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/RollbackError" data-name="clear::sql::rollbackerror">
+      <a href="../../../Clear/SQL/RollbackError.html">RollbackError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Selectable" data-name="clear::sql::selectable">
+      <a href="../../../Clear/SQL/Selectable.html">Selectable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/SelectBuilder" data-name="clear::sql::selectbuilder">
+      <a href="../../../Clear/SQL/SelectBuilder.html">SelectBuilder</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/SelectQuery" data-name="clear::sql::selectquery">
+      <a href="../../../Clear/SQL/SelectQuery.html">SelectQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Symbolic" data-name="clear::sql::symbolic">
+      <a href="../../../Clear/SQL/Symbolic.html">Symbolic</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Transaction" data-name="clear::sql::transaction">
+      <a href="../../../Clear/SQL/Transaction.html">Transaction</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Transaction/Level" data-name="clear::sql::transaction::level">
+      <a href="../../../Clear/SQL/Transaction/Level.html">Level</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/UpdateQuery" data-name="clear::sql::updatequery">
+      <a href="../../../Clear/SQL/UpdateQuery.html">UpdateQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/UpdateQuery/Updatable" data-name="clear::sql::updatequery::updatable">
+      <a href="../../../Clear/SQL/UpdateQuery/Updatable.html">Updatable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/UpdateQuery/UpdateInstruction" data-name="clear::sql::updatequery::updateinstruction">
+      <a href="../../../Clear/SQL/UpdateQuery/UpdateInstruction.html">UpdateInstruction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TimeInDay" data-name="clear::timeinday">
+      <a href="../../../Clear/TimeInDay.html">TimeInDay</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TimeInDay/Converter" data-name="clear::timeinday::converter">
+      <a href="../../../Clear/TimeInDay/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TSVector" data-name="clear::tsvector">
+      <a href="../../../Clear/TSVector.html">TSVector</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TSVector/Converter" data-name="clear::tsvector::converter">
+      <a href="../../../Clear/TSVector/Converter.html">Converter</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TSVector/Lexem" data-name="clear::tsvector::lexem">
+      <a href="../../../Clear/TSVector/Lexem.html">Lexem</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TSVector/Lexem/Position" data-name="clear::tsvector::lexem::position">
+      <a href="../../../Clear/TSVector/Lexem/Position.html">Position</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Util" data-name="clear::util">
+      <a href="../../../Clear/Util.html">Util</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Validation" data-name="clear::validation">
+      <a href="../../../Clear/Validation.html">Validation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Validation/Helper" data-name="clear::validation::helper">
+      <a href="../../../Clear/Validation/Helper.html">Helper</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/View" data-name="clear::view">
+      <a href="../../../Clear/View.html">View</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Slice" data-name="slice(t)">
+      <a href="../../../Slice.html">Slice</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Time" data-name="time">
+      <a href="../../../Time.html">Time</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/UUID" data-name="uuid">
+      <a href="../../../UUID.html">UUID</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">class</span> Clear::Expression::Node::DoubleOperator
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../../Clear/Expression/Node/DoubleOperator.html">Clear::Expression::Node::DoubleOperator</a></li><li class="superclass"><a href="../../../Clear/Expression/Node.html">Clear::Expression::Node</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>A node managing the rendering of
+combination operations like <code><val1> <op> <val2></code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/expression/nodes/double_operator.cr#L5" target="_blank">
+        clear/expression/nodes/double_operator.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new(a:Node,b:Node,op:String)-class-method" class="signature"><strong>.new</strong>(a : Node, b : Node, op : String)</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#resolve:String-instance-method" class="signature"><strong>#resolve</strong> : String</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+  <h3>Instance methods inherited from class <code><a href="../../../Clear/Expression/Node.html">Clear::Expression::Node</a></code></h3>
+  
+  
+    <a href="../../../Clear/Expression/Node.html#!=(any:Node):Node-instance-method" class="tooltip">
+      <span>!=(any : Node) : Node<br/>!=(any : T) : Node forall T<br/>!=(some_nil : Nil) : Node</span>
+    !=</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#!~(regexp:Regex):Node-instance-method" class="tooltip">
+      <span>!~(regexp : Regex) : Node<br/>!~(any : Node) : Node</span>
+    !~</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#&(any:T):NodeforallT-instance-method" class="tooltip">
+      <span>&(any : T) : Node forall T<br/>&(any : Node) : Node</span>
+    &</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#*(any:T):NodeforallT-instance-method" class="tooltip">
+      <span>*(any : T) : Node forall T<br/>*(any : Node) : Node</span>
+    *</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#+(any:Node):Node-instance-method" class="tooltip">
+      <span>+(any : Node) : Node<br/>+(any : T) : Node forall T</span>
+    +</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#--instance-method" class="tooltip">
+      <span>-<br/>-(any : T) : Node forall T<br/>-(any : Node) : Node</span>
+    -</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#/(any:Node):Node-instance-method" class="tooltip">
+      <span>/(any : Node) : Node<br/>/(any : T) : Node forall T</span>
+    /</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#%3C(any:T):NodeforallT-instance-method" class="tooltip">
+      <span><(any : T) : Node forall T<br/><(any : Node) : Node</span>
+    <</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#%3C=(any:T):NodeforallT-instance-method" class="tooltip">
+      <span><=(any : T) : Node forall T<br/><=(any : Node) : Node</span>
+    <=</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#==(some_nil:Nil):Node-instance-method" class="tooltip">
+      <span>==(some_nil : Nil) : Node<br/>==(any : T) : Node forall T<br/>==(any : Node) : Node</span>
+    ==</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#=~(any:Node):Node-instance-method" class="tooltip">
+      <span>=~(any : Node) : Node<br/>=~(regexp : Regex) : Node</span>
+    =~</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#%3E(any:Node):Node-instance-method" class="tooltip">
+      <span>>(any : Node) : Node<br/>>(any : T) : Node forall T</span>
+    ></a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#%3E=(any:T):NodeforallT-instance-method" class="tooltip">
+      <span>>=(any : T) : Node forall T<br/>>=(any : Node) : Node</span>
+    >=</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#between(a,b)-instance-method" class="tooltip">
+      <span>between(a, b)</span>
+    between</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#ilike(any:Node):Node-instance-method" class="tooltip">
+      <span>ilike(any : Node) : Node<br/>ilike(any : T) : Node forall T</span>
+    ilike</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#in?(request:Clear::SQL::SelectBuilder)-instance-method" class="tooltip">
+      <span>in?(request : Clear::SQL::SelectBuilder)<br/>in?(range : Range(B, E)) forall B, E<br/>in?(arr : Array(T)) forall T<br/>in?(tuple : Tuple(<span class="o">*</span><span class="t">T</span>)) forall T</span>
+    in?</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#like(any:Node):Node-instance-method" class="tooltip">
+      <span>like(any : Node) : Node<br/>like(any : T) : Node forall T</span>
+    like</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#resolve:String-instance-method" class="tooltip">
+      <span>resolve : String</span>
+    resolve</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#%7C(any:T):NodeforallT-instance-method" class="tooltip">
+      <span>|(any : T) : Node forall T<br/>|(any : Node) : Node</span>
+    |</a>, 
+    
+  
+    <a href="../../../Clear/Expression/Node.html#~-instance-method" class="tooltip">
+      <span>~</span>
+    ~</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+  <h3>Instance methods inherited from module <code><a href="../../../Clear/Expression/JSONB/Node.html">Clear::Expression::JSONB::Node</a></code></h3>
+  
+  
+    <a href="../../../Clear/Expression/JSONB/Node.html#jsonb(key:String)-instance-method" class="tooltip">
+      <span>jsonb(key : String)</span>
+    jsonb</a>, 
+    
+  
+    <a href="../../../Clear/Expression/JSONB/Node.html#jsonb_all_keys_exists?(keys:Array(T))forallT-instance-method" class="tooltip">
+      <span>jsonb_all_keys_exists?(keys : Array(T)) forall T</span>
+    jsonb_all_keys_exists?</a>, 
+    
+  
+    <a href="../../../Clear/Expression/JSONB/Node.html#jsonb_any_key_exists?(keys:Array(T))forallT-instance-method" class="tooltip">
+      <span>jsonb_any_key_exists?(keys : Array(T)) forall T</span>
+    jsonb_any_key_exists?</a>, 
+    
+  
+    <a href="../../../Clear/Expression/JSONB/Node.html#jsonb_key_exists?(key:String)-instance-method" class="tooltip">
+      <span>jsonb_key_exists?(key : String)</span>
+    jsonb_key_exists?</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(a:Node,b:Node,op:String)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(a : <a href="../../../Clear/Expression/Node.html">Node</a>, b : <a href="../../../Clear/Expression/Node.html">Node</a>, op : String)
+
+        <a class="method-permalink" href="#new(a:Node,b:Node,op:String)-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/expression/nodes/double_operator.cr#L6" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="resolve:String-instance-method">
+      <div class="signature">
+        
+        def <strong>resolve</strong> : String
+
+        <a class="method-permalink" href="#resolve:String-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/expression/nodes/double_operator.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>

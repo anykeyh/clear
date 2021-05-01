@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="HEAD">
+<meta name="crystal_docs.project_name" content="clear">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="clear">
+  <title>Clear::SQL - clear HEAD</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          clear
+        </a>
+      </h1>
+
+      <span class="project-version">
+        HEAD
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class=" " data-id="clear/toplevel" data-name="top level namespace">
+      <a href="../toplevel.html">Top Level Namespace</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/BigDecimal" data-name="bigdecimal">
+      <a href="../BigDecimal.html">BigDecimal</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Char" data-name="char">
+      <a href="../Char.html">Char</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Citext" data-name="citext">
+      <a href="../Citext.html">Citext</a>
+      
+    </li>
+  
+  <li class="parent open current" data-id="clear/Clear" data-name="clear">
+      <a href="../Clear.html">Clear</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/CLI" data-name="clear::cli">
+      <a href="../Clear/CLI.html">CLI</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Barebone" data-name="clear::cli::barebone">
+      <a href="../Clear/CLI/Barebone.html">Barebone</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Barebone/Arguments" data-name="clear::cli::barebone::arguments">
+      <a href="../Clear/CLI/Barebone/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Barebone/Flags" data-name="clear::cli::barebone::flags">
+      <a href="../Clear/CLI/Barebone/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Base" data-name="clear::cli::base">
+      <a href="../Clear/CLI/Base.html">Base</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Base/Arguments" data-name="clear::cli::base::arguments">
+      <a href="../Clear/CLI/Base/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Base/Flags" data-name="clear::cli::base::flags">
+      <a href="../Clear/CLI/Base/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Command" data-name="clear::cli::command">
+      <a href="../Clear/CLI/Command.html">Command</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator" data-name="clear::cli::generator">
+      <a href="../Clear/CLI/Generator.html">Generator</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Arguments" data-name="clear::cli::generator::arguments">
+      <a href="../Clear/CLI/Generator/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Flags" data-name="clear::cli::generator::flags">
+      <a href="../Clear/CLI/Generator/Flags.html">Flags</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/Migration" data-name="clear::cli::generator::migration">
+      <a href="../Clear/CLI/Generator/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Migration/Arguments" data-name="clear::cli::generator::migration::arguments">
+      <a href="../Clear/CLI/Generator/Migration/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Migration/Flags" data-name="clear::cli::generator::migration::flags">
+      <a href="../Clear/CLI/Generator/Migration/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/Model" data-name="clear::cli::generator::model">
+      <a href="../Clear/CLI/Generator/Model.html">Model</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Model/Arguments" data-name="clear::cli::generator::model::arguments">
+      <a href="../Clear/CLI/Generator/Model/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Model/Flags" data-name="clear::cli::generator::model::flags">
+      <a href="../Clear/CLI/Generator/Model/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Generator/NewKemal" data-name="clear::cli::generator::newkemal">
+      <a href="../Clear/CLI/Generator/NewKemal.html">NewKemal</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/NewKemal/Arguments" data-name="clear::cli::generator::newkemal::arguments">
+      <a href="../Clear/CLI/Generator/NewKemal/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/NewKemal/Flags" data-name="clear::cli::generator::newkemal::flags">
+      <a href="../Clear/CLI/Generator/NewKemal/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Generator/Record" data-name="clear::cli::generator::record">
+      <a href="../Clear/CLI/Generator/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration" data-name="clear::cli::migration">
+      <a href="../Clear/CLI/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Arguments" data-name="clear::cli::migration::arguments">
+      <a href="../Clear/CLI/Migration/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Down" data-name="clear::cli::migration::down">
+      <a href="../Clear/CLI/Migration/Down.html">Down</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Down/Arguments" data-name="clear::cli::migration::down::arguments">
+      <a href="../Clear/CLI/Migration/Down/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Down/Flags" data-name="clear::cli::migration::down::flags">
+      <a href="../Clear/CLI/Migration/Down/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Flags" data-name="clear::cli::migration::flags">
+      <a href="../Clear/CLI/Migration/Flags.html">Flags</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Migrate" data-name="clear::cli::migration::migrate">
+      <a href="../Clear/CLI/Migration/Migrate.html">Migrate</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Migrate/Arguments" data-name="clear::cli::migration::migrate::arguments">
+      <a href="../Clear/CLI/Migration/Migrate/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Migrate/Flags" data-name="clear::cli::migration::migrate::flags">
+      <a href="../Clear/CLI/Migration/Migrate/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Rollback" data-name="clear::cli::migration::rollback">
+      <a href="../Clear/CLI/Migration/Rollback.html">Rollback</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Rollback/Arguments" data-name="clear::cli::migration::rollback::arguments">
+      <a href="../Clear/CLI/Migration/Rollback/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Rollback/Flags" data-name="clear::cli::migration::rollback::flags">
+      <a href="../Clear/CLI/Migration/Rollback/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Seed" data-name="clear::cli::migration::seed">
+      <a href="../Clear/CLI/Migration/Seed.html">Seed</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Seed/Arguments" data-name="clear::cli::migration::seed::arguments">
+      <a href="../Clear/CLI/Migration/Seed/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Seed/Flags" data-name="clear::cli::migration::seed::flags">
+      <a href="../Clear/CLI/Migration/Seed/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Set" data-name="clear::cli::migration::set">
+      <a href="../Clear/CLI/Migration/Set.html">Set</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Set/Arguments" data-name="clear::cli::migration::set::arguments">
+      <a href="../Clear/CLI/Migration/Set/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Set/Flags" data-name="clear::cli::migration::set::flags">
+      <a href="../Clear/CLI/Migration/Set/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Status" data-name="clear::cli::migration::status">
+      <a href="../Clear/CLI/Migration/Status.html">Status</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Status/Arguments" data-name="clear::cli::migration::status::arguments">
+      <a href="../Clear/CLI/Migration/Status/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Status/Flags" data-name="clear::cli::migration::status::flags">
+      <a href="../Clear/CLI/Migration/Status/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Migration/Up" data-name="clear::cli::migration::up">
+      <a href="../Clear/CLI/Migration/Up.html">Up</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Up/Arguments" data-name="clear::cli::migration::up::arguments">
+      <a href="../Clear/CLI/Migration/Up/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Migration/Up/Flags" data-name="clear::cli::migration::up::flags">
+      <a href="../Clear/CLI/Migration/Up/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/CLI/Seed" data-name="clear::cli::seed">
+      <a href="../Clear/CLI/Seed.html">Seed</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/CLI/Seed/Arguments" data-name="clear::cli::seed::arguments">
+      <a href="../Clear/CLI/Seed/Arguments.html">Arguments</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/CLI/Seed/Flags" data-name="clear::cli::seed::flags">
+      <a href="../Clear/CLI/Seed/Flags.html">Flags</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Enum" data-name="clear::enum">
+      <a href="../Clear/Enum.html">Enum</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Enum/Converter" data-name="clear::enum::converter(t)">
+      <a href="../Clear/Enum/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/ErrorMessages" data-name="clear::errormessages">
+      <a href="../Clear/ErrorMessages.html">ErrorMessages</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression" data-name="clear::expression">
+      <a href="../Clear/Expression.html">Expression</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/AvailableLiteral" data-name="clear::expression::availableliteral">
+      <a href="../Clear/Expression/AvailableLiteral.html">AvailableLiteral</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression/JSONB" data-name="clear::expression::jsonb">
+      <a href="../Clear/Expression/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/JSONB/Node" data-name="clear::expression::jsonb::node">
+      <a href="../Clear/Expression/JSONB/Node.html">Node</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Literal" data-name="clear::expression::literal">
+      <a href="../Clear/Expression/Literal.html">Literal</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression/Node" data-name="clear::expression::node">
+      <a href="../Clear/Expression/Node.html">Node</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/Expression/Node/Between" data-name="clear::expression::node::between">
+      <a href="../Clear/Expression/Node/Between.html">Between</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Between/BetweenType" data-name="clear::expression::node::between::betweentype">
+      <a href="../Clear/Expression/Node/Between/BetweenType.html">BetweenType</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/DoubleOperator" data-name="clear::expression::node::doubleoperator">
+      <a href="../Clear/Expression/Node/DoubleOperator.html">DoubleOperator</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Function" data-name="clear::expression::node::function">
+      <a href="../Clear/Expression/Node/Function.html">Function</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InArray" data-name="clear::expression::node::inarray">
+      <a href="../Clear/Expression/Node/InArray.html">InArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InRange" data-name="clear::expression::node::inrange">
+      <a href="../Clear/Expression/Node/InRange.html">InRange</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/InSelect" data-name="clear::expression::node::inselect">
+      <a href="../Clear/Expression/Node/InSelect.html">InSelect</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Expression/Node/JSONB" data-name="clear::expression::node::jsonb">
+      <a href="../Clear/Expression/Node/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/ArrayContains" data-name="clear::expression::node::jsonb::arraycontains">
+      <a href="../Clear/Expression/Node/JSONB/ArrayContains.html">ArrayContains</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/Equality" data-name="clear::expression::node::jsonb::equality">
+      <a href="../Clear/Expression/Node/JSONB/Equality.html">Equality</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/JSONB/Field" data-name="clear::expression::node::jsonb::field">
+      <a href="../Clear/Expression/Node/JSONB/Field.html">Field</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Literal" data-name="clear::expression::node::literal">
+      <a href="../Clear/Expression/Node/Literal.html">Literal</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Minus" data-name="clear::expression::node::minus">
+      <a href="../Clear/Expression/Node/Minus.html">Minus</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/NodeArray" data-name="clear::expression::node::nodearray">
+      <a href="../Clear/Expression/Node/NodeArray.html">NodeArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Not" data-name="clear::expression::node::not">
+      <a href="../Clear/Expression/Node/Not.html">Not</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Null" data-name="clear::expression::node::null">
+      <a href="../Clear/Expression/Node/Null.html">Null</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/PGArray" data-name="clear::expression::node::pgarray(t)">
+      <a href="../Clear/Expression/Node/PGArray.html">PGArray</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Raw" data-name="clear::expression::node::raw">
+      <a href="../Clear/Expression/Node/Raw.html">Raw</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/Node/Variable" data-name="clear::expression::node::variable">
+      <a href="../Clear/Expression/Node/Variable.html">Variable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Expression/UnsafeSql" data-name="clear::expression::unsafesql">
+      <a href="../Clear/Expression/UnsafeSql.html">UnsafeSql</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/IllegalEnumValueError" data-name="clear::illegalenumvalueerror">
+      <a href="../Clear/IllegalEnumValueError.html">IllegalEnumValueError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration" data-name="clear::migration">
+      <a href="../Clear/Migration.html">Migration</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/AddColumn" data-name="clear::migration::addcolumn">
+      <a href="../Clear/Migration/AddColumn.html">AddColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/AddTable" data-name="clear::migration::addtable">
+      <a href="../Clear/Migration/AddTable.html">AddTable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/AlterColumn" data-name="clear::migration::altercolumn">
+      <a href="../Clear/Migration/AlterColumn.html">AlterColumn</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/CreateEnum" data-name="clear::migration::createenum">
+      <a href="../Clear/Migration/CreateEnum.html">CreateEnum</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/CreateIndex" data-name="clear::migration::createindex">
+      <a href="../Clear/Migration/CreateIndex.html">CreateIndex</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Direction" data-name="clear::migration::direction">
+      <a href="../Clear/Migration/Direction.html">Direction</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/DropEnum" data-name="clear::migration::dropenum">
+      <a href="../Clear/Migration/DropEnum.html">DropEnum</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/DropTable" data-name="clear::migration::droptable">
+      <a href="../Clear/Migration/DropTable.html">DropTable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Execute" data-name="clear::migration::execute">
+      <a href="../Clear/Migration/Execute.html">Execute</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableHelpers" data-name="clear::migration::fulltextsearchablehelpers">
+      <a href="../Clear/Migration/FullTextSearchableHelpers.html">FullTextSearchableHelpers</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration/FullTextSearchableOperation" data-name="clear::migration::fulltextsearchableoperation">
+      <a href="../Clear/Migration/FullTextSearchableOperation.html">FullTextSearchableOperation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableOperation/Priority" data-name="clear::migration::fulltextsearchableoperation::priority">
+      <a href="../Clear/Migration/FullTextSearchableOperation/Priority.html">Priority</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/FullTextSearchableTableHelpers" data-name="clear::migration::fulltextsearchabletablehelpers">
+      <a href="../Clear/Migration/FullTextSearchableTableHelpers.html">FullTextSearchableTableHelpers</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Helper" data-name="clear::migration::helper">
+      <a href="../Clear/Migration/Helper.html">Helper</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/IrreversibleMigration" data-name="clear::migration::irreversiblemigration">
+      <a href="../Clear/Migration/IrreversibleMigration.html">IrreversibleMigration</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Manager" data-name="clear::migration::manager">
+      <a href="../Clear/Migration/Manager.html">Manager</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Operation" data-name="clear::migration::operation">
+      <a href="../Clear/Migration/Operation.html">Operation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/RemoveColumn" data-name="clear::migration::removecolumn">
+      <a href="../Clear/Migration/RemoveColumn.html">RemoveColumn</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Migration/Table" data-name="clear::migration::table">
+      <a href="../Clear/Migration/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/ColumnOperation" data-name="clear::migration::table::columnoperation">
+      <a href="../Clear/Migration/Table/ColumnOperation.html">ColumnOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/FkeyOperation" data-name="clear::migration::table::fkeyoperation">
+      <a href="../Clear/Migration/Table/FkeyOperation.html">FkeyOperation</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Migration/Table/IndexOperation" data-name="clear::migration::table::indexoperation">
+      <a href="../Clear/Migration/Table/IndexOperation.html">IndexOperation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model" data-name="clear::model">
+      <a href="../Clear/Model.html">Model</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/ClassMethods" data-name="clear::model::classmethods">
+      <a href="../Clear/Model/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/CollectionBase" data-name="clear::model::collectionbase(t)">
+      <a href="../Clear/Model/CollectionBase.html">CollectionBase</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Column" data-name="clear::model::column(t, c)">
+      <a href="../Clear/Model/Column.html">Column</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Column/UnknownClass" data-name="clear::model::column::unknownclass">
+      <a href="../Clear/Model/Column/UnknownClass.html">UnknownClass</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Connection" data-name="clear::model::connection">
+      <a href="../Clear/Model/Connection.html">Connection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Converter" data-name="clear::model::converter">
+      <a href="../Clear/Model/Converter.html">Converter</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterBool" data-name="clear::model::converter::arrayconverterbool">
+      <a href="../Clear/Model/Converter/ArrayConverterBool.html">ArrayConverterBool</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterFloat32" data-name="clear::model::converter::arrayconverterfloat32">
+      <a href="../Clear/Model/Converter/ArrayConverterFloat32.html">ArrayConverterFloat32</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterFloat64" data-name="clear::model::converter::arrayconverterfloat64">
+      <a href="../Clear/Model/Converter/ArrayConverterFloat64.html">ArrayConverterFloat64</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterInt32" data-name="clear::model::converter::arrayconverterint32">
+      <a href="../Clear/Model/Converter/ArrayConverterInt32.html">ArrayConverterInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterInt64" data-name="clear::model::converter::arrayconverterint64">
+      <a href="../Clear/Model/Converter/ArrayConverterInt64.html">ArrayConverterInt64</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/ArrayConverterString" data-name="clear::model::converter::arrayconverterstring">
+      <a href="../Clear/Model/Converter/ArrayConverterString.html">ArrayConverterString</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Base" data-name="clear::model::converter::base">
+      <a href="../Clear/Model/Converter/Base.html">Base</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BcryptPasswordConverter" data-name="clear::model::converter::bcryptpasswordconverter">
+      <a href="../Clear/Model/Converter/BcryptPasswordConverter.html">BcryptPasswordConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigDecimalConverter" data-name="clear::model::converter::bigdecimalconverter">
+      <a href="../Clear/Model/Converter/BigDecimalConverter.html">BigDecimalConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigFloatConverter" data-name="clear::model::converter::bigfloatconverter">
+      <a href="../Clear/Model/Converter/BigFloatConverter.html">BigFloatConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BigIntConverter" data-name="clear::model::converter::bigintconverter">
+      <a href="../Clear/Model/Converter/BigIntConverter.html">BigIntConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/BoolConverter" data-name="clear::model::converter::boolconverter">
+      <a href="../Clear/Model/Converter/BoolConverter.html">BoolConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Float32Converter" data-name="clear::model::converter::float32converter">
+      <a href="../Clear/Model/Converter/Float32Converter.html">Float32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Float64Converter" data-name="clear::model::converter::float64converter">
+      <a href="../Clear/Model/Converter/Float64Converter.html">Float64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int16Converter" data-name="clear::model::converter::int16converter">
+      <a href="../Clear/Model/Converter/Int16Converter.html">Int16Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int32Converter" data-name="clear::model::converter::int32converter">
+      <a href="../Clear/Model/Converter/Int32Converter.html">Int32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int64Converter" data-name="clear::model::converter::int64converter">
+      <a href="../Clear/Model/Converter/Int64Converter.html">Int64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/Int8Converter" data-name="clear::model::converter::int8converter">
+      <a href="../Clear/Model/Converter/Int8Converter.html">Int8Converter</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Converter/JSON" data-name="clear::model::converter::json">
+      <a href="../Clear/Model/Converter/JSON.html">JSON</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/JSON/AnyConverter" data-name="clear::model::converter::json::anyconverter">
+      <a href="../Clear/Model/Converter/JSON/AnyConverter.html">AnyConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/StringConverter" data-name="clear::model::converter::stringconverter">
+      <a href="../Clear/Model/Converter/StringConverter.html">StringConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/TimeConverter" data-name="clear::model::converter::timeconverter">
+      <a href="../Clear/Model/Converter/TimeConverter.html">TimeConverter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt16Converter" data-name="clear::model::converter::uint16converter">
+      <a href="../Clear/Model/Converter/UInt16Converter.html">UInt16Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt32Converter" data-name="clear::model::converter::uint32converter">
+      <a href="../Clear/Model/Converter/UInt32Converter.html">UInt32Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt64Converter" data-name="clear::model::converter::uint64converter">
+      <a href="../Clear/Model/Converter/UInt64Converter.html">UInt64Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UInt8Converter" data-name="clear::model::converter::uint8converter">
+      <a href="../Clear/Model/Converter/UInt8Converter.html">UInt8Converter</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Converter/UUIDConverter" data-name="clear::model::converter::uuidconverter">
+      <a href="../Clear/Model/Converter/UUIDConverter.html">UUIDConverter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Error" data-name="clear::model::error">
+      <a href="../Clear/Model/Error.html">Error</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/EventManager" data-name="clear::model::eventmanager">
+      <a href="../Clear/Model/EventManager.html">EventManager</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/EventManager/EventKey" data-name="clear::model::eventmanager::eventkey">
+      <a href="../Clear/Model/EventManager/EventKey.html">EventKey</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/EventManager/HookFunction" data-name="clear::model::eventmanager::hookfunction">
+      <a href="../Clear/Model/EventManager/HookFunction.html">HookFunction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Factory" data-name="clear::model::factory">
+      <a href="../Clear/Model/Factory.html">Factory</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/Base" data-name="clear::model::factory::base">
+      <a href="../Clear/Model/Factory/Base.html">Base</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/PolymorphicFactory" data-name="clear::model::factory::polymorphicfactory(t)">
+      <a href="../Clear/Model/Factory/PolymorphicFactory.html">PolymorphicFactory</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Factory/SimpleFactory" data-name="clear::model::factory::simplefactory(t)">
+      <a href="../Clear/Model/Factory/SimpleFactory.html">SimpleFactory</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/FullTextSearchable" data-name="clear::model::fulltextsearchable">
+      <a href="../Clear/Model/FullTextSearchable.html">FullTextSearchable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasColumns" data-name="clear::model::hascolumns">
+      <a href="../Clear/Model/HasColumns.html">HasColumns</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasFactory" data-name="clear::model::hasfactory">
+      <a href="../Clear/Model/HasFactory.html">HasFactory</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/HasHooks" data-name="clear::model::hashooks">
+      <a href="../Clear/Model/HasHooks.html">HasHooks</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/HasHooks/ClassMethods" data-name="clear::model::hashooks::classmethods">
+      <a href="../Clear/Model/HasHooks/ClassMethods.html">ClassMethods</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasRelations" data-name="clear::model::hasrelations">
+      <a href="../Clear/Model/HasRelations.html">HasRelations</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasSaving" data-name="clear::model::hassaving">
+      <a href="../Clear/Model/HasSaving.html">HasSaving</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasScope" data-name="clear::model::hasscope">
+      <a href="../Clear/Model/HasScope.html">HasScope</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasSerialPkey" data-name="clear::model::hasserialpkey">
+      <a href="../Clear/Model/HasSerialPkey.html">HasSerialPkey</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/HasTimestamps" data-name="clear::model::hastimestamps">
+      <a href="../Clear/Model/HasTimestamps.html">HasTimestamps</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/HasValidation" data-name="clear::model::hasvalidation">
+      <a href="../Clear/Model/HasValidation.html">HasValidation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/HasValidation/Error" data-name="clear::model::hasvalidation::error">
+      <a href="../Clear/Model/HasValidation/Error.html">Error</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/InvalidError" data-name="clear::model::invaliderror">
+      <a href="../Clear/Model/InvalidError.html">InvalidError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/JSONDeserialize" data-name="clear::model::jsondeserialize">
+      <a href="../Clear/Model/JSONDeserialize.html">JSONDeserialize</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/QueryCache" data-name="clear::model::querycache">
+      <a href="../Clear/Model/QueryCache.html">QueryCache</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/ReadOnlyError" data-name="clear::model::readonlyerror">
+      <a href="../Clear/Model/ReadOnlyError.html">ReadOnlyError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Relations" data-name="clear::model::relations">
+      <a href="../Clear/Model/Relations.html">Relations</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Model/Schema" data-name="clear::model::schema">
+      <a href="../Clear/Model/Schema.html">Schema</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Model/Schema/Column" data-name="clear::model::schema::column">
+      <a href="../Clear/Model/Schema/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Model/Schema/Relation" data-name="clear::model::schema::relation">
+      <a href="../Clear/Model/Schema/Relation.html">Relation</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/PG" data-name="clear::pg">
+      <a href="../Clear/PG.html">PG</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/PG/Interval" data-name="clear::pg::interval">
+      <a href="../Clear/PG/Interval.html">Interval</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/PG/Interval/Converter" data-name="clear::pg::interval::converter">
+      <a href="../Clear/PG/Interval/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Reflection" data-name="clear::reflection">
+      <a href="../Clear/Reflection.html">Reflection</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="clear/Clear/Reflection/Column" data-name="clear::reflection::column">
+      <a href="../Clear/Reflection/Column.html">Column</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Reflection/Column/Collection" data-name="clear::reflection::column::collection">
+      <a href="../Clear/Reflection/Column/Collection.html">Collection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Reflection/Table" data-name="clear::reflection::table">
+      <a href="../Clear/Reflection/Table.html">Table</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Reflection/Table/Collection" data-name="clear::reflection::table::collection">
+      <a href="../Clear/Reflection/Table/Collection.html">Collection</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent open current" data-id="clear/Clear/SQL" data-name="clear::sql">
+      <a href="../Clear/SQL.html">SQL</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Any" data-name="clear::sql::any">
+      <a href="../Clear/SQL/Any.html">Any</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/CancelTransactionError" data-name="clear::sql::canceltransactionerror">
+      <a href="../Clear/SQL/CancelTransactionError.html">CancelTransactionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Column" data-name="clear::sql::column">
+      <a href="../Clear/SQL/Column.html">Column</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/ConnectionPool" data-name="clear::sql::connectionpool">
+      <a href="../Clear/SQL/ConnectionPool.html">ConnectionPool</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/DeleteQuery" data-name="clear::sql::deletequery">
+      <a href="../Clear/SQL/DeleteQuery.html">DeleteQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Error" data-name="clear::sql::error">
+      <a href="../Clear/SQL/Error.html">Error</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/ExecutionError" data-name="clear::sql::executionerror">
+      <a href="../Clear/SQL/ExecutionError.html">ExecutionError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Fragment" data-name="clear::sql::fragment">
+      <a href="../Clear/SQL/Fragment.html">Fragment</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/From" data-name="clear::sql::from">
+      <a href="../Clear/SQL/From.html">From</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/InsertQuery" data-name="clear::sql::insertquery">
+      <a href="../Clear/SQL/InsertQuery.html">InsertQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/InsertQuery/Inserable" data-name="clear::sql::insertquery::inserable">
+      <a href="../Clear/SQL/InsertQuery/Inserable.html">Inserable</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Join" data-name="clear::sql::join">
+      <a href="../Clear/SQL/Join.html">Join</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/JSONB" data-name="clear::sql::jsonb">
+      <a href="../Clear/SQL/JSONB.html">JSONB</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/JSONB/JSONBHash" data-name="clear::sql::jsonb::jsonbhash">
+      <a href="../Clear/SQL/JSONB/JSONBHash.html">JSONBHash</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/JSONB/JSONBKey" data-name="clear::sql::jsonb::jsonbkey">
+      <a href="../Clear/SQL/JSONB/JSONBKey.html">JSONBKey</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Logger" data-name="clear::sql::logger">
+      <a href="../Clear/SQL/Logger.html">Logger</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/OperationNotPermittedError" data-name="clear::sql::operationnotpermittederror">
+      <a href="../Clear/SQL/OperationNotPermittedError.html">OperationNotPermittedError</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query" data-name="clear::sql::query">
+      <a href="../Clear/SQL/Query.html">Query</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Aggregate" data-name="clear::sql::query::aggregate">
+      <a href="../Clear/SQL/Query/Aggregate.html">Aggregate</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/BeforeQuery" data-name="clear::sql::query::beforequery">
+      <a href="../Clear/SQL/Query/BeforeQuery.html">BeforeQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Change" data-name="clear::sql::query::change">
+      <a href="../Clear/SQL/Query/Change.html">Change</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Connection" data-name="clear::sql::query::connection">
+      <a href="../Clear/SQL/Query/Connection.html">Connection</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/CTE" data-name="clear::sql::query::cte">
+      <a href="../Clear/SQL/Query/CTE.html">CTE</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/CTE/Record" data-name="clear::sql::query::cte::record">
+      <a href="../Clear/SQL/Query/CTE/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Execute" data-name="clear::sql::query::execute">
+      <a href="../Clear/SQL/Query/Execute.html">Execute</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Fetch" data-name="clear::sql::query::fetch">
+      <a href="../Clear/SQL/Query/Fetch.html">Fetch</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/From" data-name="clear::sql::query::from">
+      <a href="../Clear/SQL/Query/From.html">From</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/GroupBy" data-name="clear::sql::query::groupby">
+      <a href="../Clear/SQL/Query/GroupBy.html">GroupBy</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Having" data-name="clear::sql::query::having">
+      <a href="../Clear/SQL/Query/Having.html">Having</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Join" data-name="clear::sql::query::join">
+      <a href="../Clear/SQL/Query/Join.html">Join</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Lock" data-name="clear::sql::query::lock">
+      <a href="../Clear/SQL/Query/Lock.html">Lock</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OffsetLimit" data-name="clear::sql::query::offsetlimit">
+      <a href="../Clear/SQL/Query/OffsetLimit.html">OffsetLimit</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/OnConflict" data-name="clear::sql::query::onconflict">
+      <a href="../Clear/SQL/Query/OnConflict.html">OnConflict</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OnConflict/OnConflictWhereClause" data-name="clear::sql::query::onconflict::onconflictwhereclause">
+      <a href="../Clear/SQL/Query/OnConflict/OnConflictWhereClause.html">OnConflictWhereClause</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/OrderBy" data-name="clear::sql::query::orderby">
+      <a href="../Clear/SQL/Query/OrderBy.html">OrderBy</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/OrderBy/Record" data-name="clear::sql::query::orderby::record">
+      <a href="../Clear/SQL/Query/OrderBy/Record.html">Record</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Pluck" data-name="clear::sql::query::pluck">
+      <a href="../Clear/SQL/Query/Pluck.html">Pluck</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Select" data-name="clear::sql::query::select">
+      <a href="../Clear/SQL/Query/Select.html">Select</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Where" data-name="clear::sql::query::where">
+      <a href="../Clear/SQL/Query/Where.html">Where</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Query/Window" data-name="clear::sql::query::window">
+      <a href="../Clear/SQL/Query/Window.html">Window</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/Window/WindowDeclaration" data-name="clear::sql::query::window::windowdeclaration">
+      <a href="../Clear/SQL/Query/Window/WindowDeclaration.html">WindowDeclaration</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Query/WithPagination" data-name="clear::sql::query::withpagination">
+      <a href="../Clear/SQL/Query/WithPagination.html">WithPagination</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/QueryBuildingError" data-name="clear::sql::querybuildingerror">
+      <a href="../Clear/SQL/QueryBuildingError.html">QueryBuildingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/RecordNotFoundError" data-name="clear::sql::recordnotfounderror">
+      <a href="../Clear/SQL/RecordNotFoundError.html">RecordNotFoundError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/RollbackError" data-name="clear::sql::rollbackerror">
+      <a href="../Clear/SQL/RollbackError.html">RollbackError</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Selectable" data-name="clear::sql::selectable">
+      <a href="../Clear/SQL/Selectable.html">Selectable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/SelectBuilder" data-name="clear::sql::selectbuilder">
+      <a href="../Clear/SQL/SelectBuilder.html">SelectBuilder</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/SelectQuery" data-name="clear::sql::selectquery">
+      <a href="../Clear/SQL/SelectQuery.html">SelectQuery</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/Symbolic" data-name="clear::sql::symbolic">
+      <a href="../Clear/SQL/Symbolic.html">Symbolic</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/Transaction" data-name="clear::sql::transaction">
+      <a href="../Clear/SQL/Transaction.html">Transaction</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/Transaction/Level" data-name="clear::sql::transaction::level">
+      <a href="../Clear/SQL/Transaction/Level.html">Level</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/SQL/UpdateQuery" data-name="clear::sql::updatequery">
+      <a href="../Clear/SQL/UpdateQuery.html">UpdateQuery</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/SQL/UpdateQuery/Updatable" data-name="clear::sql::updatequery::updatable">
+      <a href="../Clear/SQL/UpdateQuery/Updatable.html">Updatable</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/SQL/UpdateQuery/UpdateInstruction" data-name="clear::sql::updatequery::updateinstruction">
+      <a href="../Clear/SQL/UpdateQuery/UpdateInstruction.html">UpdateInstruction</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TimeInDay" data-name="clear::timeinday">
+      <a href="../Clear/TimeInDay.html">TimeInDay</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TimeInDay/Converter" data-name="clear::timeinday::converter">
+      <a href="../Clear/TimeInDay/Converter.html">Converter</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TSVector" data-name="clear::tsvector">
+      <a href="../Clear/TSVector.html">TSVector</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TSVector/Converter" data-name="clear::tsvector::converter">
+      <a href="../Clear/TSVector/Converter.html">Converter</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/TSVector/Lexem" data-name="clear::tsvector::lexem">
+      <a href="../Clear/TSVector/Lexem.html">Lexem</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/TSVector/Lexem/Position" data-name="clear::tsvector::lexem::position">
+      <a href="../Clear/TSVector/Lexem/Position.html">Position</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/Util" data-name="clear::util">
+      <a href="../Clear/Util.html">Util</a>
+      
+    </li>
+  
+  <li class="parent " data-id="clear/Clear/Validation" data-name="clear::validation">
+      <a href="../Clear/Validation.html">Validation</a>
+      
+        <ul>
+  
+  <li class=" " data-id="clear/Clear/Validation/Helper" data-name="clear::validation::helper">
+      <a href="../Clear/Validation/Helper.html">Helper</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Clear/View" data-name="clear::view">
+      <a href="../Clear/View.html">View</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="clear/Slice" data-name="slice(t)">
+      <a href="../Slice.html">Slice</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/Time" data-name="time">
+      <a href="../Time.html">Time</a>
+      
+    </li>
+  
+  <li class=" " data-id="clear/UUID" data-name="uuid">
+      <a href="../UUID.html">UUID</a>
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">module</span> Clear::SQL
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <h2><a id="clearsql" class="anchor" href="#clearsql">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Clear::SQL</h2>
+
+<p>Clear is made like an onion:</p>
+
+<pre><code class="language-text">+------------------------------------+
+|           THE ORM STACK            +
++------------------------------------+
+|  Model | DB Views | Migrations     | &lt; High level things
++---------------+--------------------+
+|  Columns | Validation | Converters | &lt; Mapping stuff
++---------------+--------------------+
+|  Clear::SQL   | Clear::Expression  | &lt; Low level SQL builder
++------------------------------------+
+|  Crystal DB   | Crystal PG         | &lt; Libs we deal with
++------------------------------------+</code></pre>
+
+<p>On the bottom stack, Clear offer SQL query building.
+Features provided are then used by top level parts of the engine.</p>
+
+<p>The SQL module provide a simple API to generate <code><a href="../Clear/SQL.html#delete(table:Symbolic)-instance-method">#delete</a></code>, <code><a href="../Clear/SQL.html#insert-instance-method">#insert</a></code>, <code><a href="../Clear/SQL.html#select(**args)-instance-method">#select</a></code>
+and <code><a href="../Clear/SQL.html#update(table:Symbolic)-instance-method">#update</a></code> methods.</p>
+
+<p>Each requests can be duplicated then modified and executed.</p>
+
+<p>Note: Each request object is mutable. Therefore, to keep a request prior to modification,
+you must use manually the <code>dup</code> method.</p>
+
+
+
+
+
+  <h2>
+    <a id="included-modules" class="anchor" href="#included-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Included Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../Clear/SQL/Logger.html">Clear::SQL::Logger</a></li>
+    
+      <li class="other-type"><a href="../Clear/SQL/Transaction.html">Clear::SQL::Transaction</a></li>
+    
+  </ul>
+
+
+
+  <h2>
+    <a id="extended-modules" class="anchor" href="#extended-modules">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Extended Modules
+  </h2>
+  <ul class="other-types-list">
+    
+      <li class="other-type"><a href="../Clear/SQL.html">Clear::SQL</a></li>
+    
+  </ul>
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/connection_pool.cr#L1" target="_blank">
+        clear/sql/connection_pool.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/errors.cr#L1" target="_blank">
+        clear/sql/errors.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/fragment/column.cr#L9" target="_blank">
+        clear/sql/fragment/column.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/fragment/fragment.cr#L1" target="_blank">
+        clear/sql/fragment/fragment.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/fragment/from.cr#L3" target="_blank">
+        clear/sql/fragment/from.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/fragment/join.cr#L3" target="_blank">
+        clear/sql/fragment/join.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/lock.cr#L2" target="_blank">
+        clear/sql/lock.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/query/connection.cr#L1" target="_blank">
+        clear/sql/query/connection.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/query/from.cr#L1" target="_blank">
+        clear/sql/query/from.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L48" target="_blank">
+        clear/sql/sql.cr
+      </a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/truncate.cr#L2" target="_blank">
+        clear/sql/truncate.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+  <h2>
+    <a id="class-method-summary" class="anchor" href="#class-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#lock(table:String%7CSymbol,mode=&quot;ACCESSEXCLUSIVE&quot;,connection=&quot;default&quot;,&)-class-method" class="signature"><strong>.lock</strong>(table : String | Symbol, mode = <span class="s">&quot;ACCESS EXCLUSIVE&quot;</span>, connection = <span class="s">&quot;default&quot;</span>, &)</a>
+        
+          <div class="summary"><p>Lock completetly a table.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#truncate(tablename:Clear::Model.class%7CString%7CSymbol,restart_sequence:Bool=false,cascade:Bool=false,truncate_inherited:Bool=true,connection_name:String=&quot;default&quot;)forallT-class-method" class="signature"><strong>.truncate</strong>(tablename : <span class="t">Clear</span><span class="t">::</span><span class="t">Model</span>.<span class="k">class</span> | String | Symbol, restart_sequence : Bool = <span class="n">false</span>, cascade : Bool = <span class="n">false</span>, truncate_inherited : Bool = <span class="n">true</span>, connection_name : String = <span class="s">&quot;default&quot;</span>) forall T</a>
+        
+          <div class="summary"><p>Truncate a table or a model</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#add_connection(name:String,url:String)-instance-method" class="signature"><strong>#add_connection</strong>(name : String, url : String)</a>
+        
+          <div class="summary"><p>connect through a hash/named tuple of connections:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#delete(table:Symbolic)-instance-method" class="signature"><strong>#delete</strong>(table : Symbolic)</a>
+        
+          <div class="summary"><p>Prepare a DELETE table query</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#escape(x:String%7CSymbol)-instance-method" class="signature"><strong>#escape</strong>(x : String | Symbol)</a>
+        
+          <div class="summary"><p>Escape the expression, double quoting it.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#execute(connection_name:String,sql)-instance-method" class="signature"><strong>#execute</strong>(connection_name : String, sql)</a>
+        
+          <div class="summary"><p>Execute a SQL statement without returning a result set</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#execute(sql:String)-instance-method" class="signature"><strong>#execute</strong>(sql : String)</a>
+        
+          <div class="summary"><p>Execute a SQL statement without returning a result set</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#init(name:String,url:String)-instance-method" class="signature"><strong>#init</strong>(name : String, url : String)</a>
+        
+          <div class="summary"><p>Initialize a new connection to a specific database Use "default" connection if no name is provided: <code></code>` init("postgres://postgres@localhost:5432/database") # use "default" connection init("secondary_db", "postgres://postgres@localhost:5432/secondary_db") <code></code>`</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#init(url:String)-instance-method" class="signature"><strong>#init</strong>(url : String)</a>
+        
+          <div class="summary"><p>Initialize a new connection to a specific database Use "default" connection if no name is provided: <code></code>` init("postgres://postgres@localhost:5432/database") # use "default" connection init("secondary_db", "postgres://postgres@localhost:5432/secondary_db") <code></code>`</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#init(connections:Hash(Symbolic,String))-instance-method" class="signature"><strong>#init</strong>(connections : Hash(Symbolic, String))</a>
+        
+          <div class="summary"><p>connect through a hash/named tuple of connections:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#init(**__named_tuple)-instance-method" class="signature"><strong>#init</strong>(**__named_tuple)</a>
+        
+          <div class="summary"><p>connect through a hash/named tuple of connections:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert-instance-method" class="signature"><strong>#insert</strong></a>
+        
+          <div class="summary"><p>Create a new blank INSERT query.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert(table:Symbolic,*args)-instance-method" class="signature"><strong>#insert</strong>(table : Symbolic, *args)</a>
+        
+          <div class="summary"><p>Alias of <code><a href="../Clear/SQL.html#insert_into(table:Symbolic)-instance-method">#insert_into</a></code>, for developers in hurry :ditto:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert(table:Symbolic,args:NamedTuple)-instance-method" class="signature"><strong>#insert</strong>(table : Symbolic, args : NamedTuple)</a>
+        
+          <div class="summary"><p>Alias of <code><a href="../Clear/SQL.html#insert_into(table:Symbolic)-instance-method">#insert_into</a></code>, for developers in hurry :ditto:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert_into(table:Symbolic)-instance-method" class="signature"><strong>#insert_into</strong>(table : Symbolic)</a>
+        
+          <div class="summary"><p>Prepare a new INSERT INTO table query :ditto:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#insert_into(table:Symbolic,*args)-instance-method" class="signature"><strong>#insert_into</strong>(table : Symbolic, *args)</a>
+        
+          <div class="summary"><p>Start an INSERT INTO table query</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#raw(__template,*__args)-instance-method" class="signature"><strong>#raw</strong>(__template, *__args)</a>
+        
+          <div class="summary"><p>This provide a fast way to create SQL fragment while escaping items, both with <code>?</code> and <code>:key</code> system:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#raw(__template,**__keys)-instance-method" class="signature"><strong>#raw</strong>(__template, **__keys)</a>
+        
+          <div class="summary"><p>This provide a fast way to create SQL fragment while escaping items, both with <code>?</code> and <code>:key</code> system:</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#sanitize(x)-instance-method" class="signature"><strong>#sanitize</strong>(x)</a>
+        
+          <div class="summary"><p>Sanitize string and convert some literals (e.g.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#select(*args)-instance-method" class="signature"><strong>#select</strong>(*args)</a>
+        
+          <div class="summary"><p>Start a SELECT ...</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#select(**args)-instance-method" class="signature"><strong>#select</strong>(**args)</a>
+        
+          <div class="summary"><p>Start a SELECT ...</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unsafe(x)-instance-method" class="signature"><strong>#unsafe</strong>(x)</a>
+        
+          <div class="summary"><p>Create an unsafe expression, which can be used in many places in Clear as substitute for string</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#update(table:Symbolic)-instance-method" class="signature"><strong>#update</strong>(table : Symbolic)</a>
+        
+          <div class="summary"><p>Start a UPDATE table query.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+  <h3>Instance methods inherited from module <code><a href="../Clear/SQL/Transaction.html">Clear::SQL::Transaction</a></code></h3>
+  
+  
+    <a href="../Clear/SQL/Transaction.html#after_commit(connection:String=&quot;default&quot;,&block:DB::Connection-%3ENil)-instance-method" class="tooltip">
+      <span>after_commit(connection : String = <span class="s">&quot;default&quot;</span>, &block : DB::Connection -> Nil)</span>
+    after_commit</a>, 
+    
+  
+    <a href="../Clear/SQL/Transaction.html#in_transaction?(connection:String=&quot;default&quot;)-instance-method" class="tooltip">
+      <span>in_transaction?(connection : String = <span class="s">&quot;default&quot;</span>)</span>
+    in_transaction?</a>, 
+    
+  
+    <a href="../Clear/SQL/Transaction.html#rollback(to=nil)-instance-method" class="tooltip">
+      <span>rollback(to = <span class="n">nil</span>)</span>
+    rollback</a>, 
+    
+  
+    <a href="../Clear/SQL/Transaction.html#rollback_transaction-instance-method" class="tooltip">
+      <span>rollback_transaction</span>
+    rollback_transaction</a>, 
+    
+  
+    <a href="../Clear/SQL/Transaction.html#transaction(connection:String=&quot;default&quot;,level:Level=Level::Serializable,&)-instance-method" class="tooltip">
+      <span>transaction(connection : String = <span class="s">&quot;default&quot;</span>, level : Level = <span class="t">Level</span><span class="t">::</span><span class="t">Serializable</span>, &)</span>
+    transaction</a>, 
+    
+  
+    <a href="../Clear/SQL/Transaction.html#with_savepoint(sp_name:Symbolic?=nil,connection_name:String=&quot;default&quot;,&)-instance-method" class="tooltip">
+      <span>with_savepoint(sp_name : Symbolic? = <span class="n">nil</span>, connection_name : String = <span class="s">&quot;default&quot;</span>, &)</span>
+    with_savepoint</a>
+    
+  
+
+
+    
+
+
+    
+
+
+  
+    
+
+  <h3>Instance methods inherited from module <code><a href="../Clear/SQL/Logger.html">Clear::SQL::Logger</a></code></h3>
+  
+  
+    <a href="../Clear/SQL/Logger.html#log_query(sql:String,&)-instance-method" class="tooltip">
+      <span>log_query(sql : String, &)</span>
+    log_query</a>
+    
+  
+
+
+    
+
+
+    
+
+  <h3>Class methods inherited from module <code><a href="../Clear/SQL/Logger.html">Clear::SQL::Logger</a></code></h3>
+  
+  
+    <a href="../Clear/SQL/Logger.html#colorize:Bool-class-method" class="tooltip">
+      <span>colorize : Bool</span>
+    colorize</a>, 
+    
+  
+    <a href="../Clear/SQL/Logger.html#colorize=(colorize:Bool)-class-method" class="tooltip">
+      <span>colorize=(colorize : Bool)</span>
+    colorize=</a>, 
+    
+  
+    <a href="../Clear/SQL/Logger.html#colorize_query(qry:String)-class-method" class="tooltip">
+      <span>colorize_query(qry : String)</span>
+    colorize_query</a>, 
+    
+  
+    <a href="../Clear/SQL/Logger.html#display_mn_sec(x:Float64):String-class-method" class="tooltip">
+      <span>display_mn_sec(x : Float64) : String</span>
+    display_mn_sec</a>, 
+    
+  
+    <a href="../Clear/SQL/Logger.html#display_time(x:Float64):String-class-method" class="tooltip">
+      <span>display_time(x : Float64) : String</span>
+    display_time</a>
+    
+  
+
+
+  
+</div>
+
+
+
+
+  <h2>
+    <a id="class-method-detail" class="anchor" href="#class-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Class Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="lock(table:String|Symbol,mode=&quot;ACCESSEXCLUSIVE&quot;,connection=&quot;default&quot;,&)-class-method">
+      <div class="signature">
+        
+        def self.<strong>lock</strong>(table : String | Symbol, mode = <span class="s">&quot;ACCESS EXCLUSIVE&quot;</span>, connection = <span class="s">&quot;default&quot;</span>, &)
+
+        <a class="method-permalink" href="#lock(table:String%7CSymbol,mode=&quot;ACCESSEXCLUSIVE&quot;,connection=&quot;default&quot;,&)-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Lock completetly a table.</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.lock(<span class="s">&quot;my_table&quot;</span>) <span class="k">do</span>
+<span class="k">end</span></code></pre>
+
+<p>Optional parameter <code>mode</code> allow you to decide over the lock level
+Modes are:</p>
+
+<ul><li>ACCESS EXCLUSIVE (default)</li><li>ACCESS SHARE</li><li>ROW SHARE</li><li>ROW EXCLUSIVE</li><li>SHARE UPDATE EXCLUSIVE</li><li>SHARE</li><li>SHARE ROW EXCLUSIVE</li><li>EXCLUSIVE</li></ul>
+
+<p>See <a href="https://www.postgresql.org/docs/12/explicit-locking.html">Official PG documentation for more informations</a></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/lock.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="truncate(tablename:Clear::Model.class|String|Symbol,restart_sequence:Bool=false,cascade:Bool=false,truncate_inherited:Bool=true,connection_name:String=&quot;default&quot;)forallT-class-method">
+      <div class="signature">
+        
+        def self.<strong>truncate</strong>(tablename : <span class="t">Clear</span><span class="t">::</span><span class="t">Model</span>.<span class="k">class</span> | String | Symbol, restart_sequence : Bool = <span class="n">false</span>, cascade : Bool = <span class="n">false</span>, truncate_inherited : Bool = <span class="n">true</span>, connection_name : String = <span class="s">&quot;default&quot;</span>) forall T
+
+        <a class="method-permalink" href="#truncate(tablename:Clear::Model.class%7CString%7CSymbol,restart_sequence:Bool=false,cascade:Bool=false,truncate_inherited:Bool=true,connection_name:String=&quot;default&quot;)forallT-class-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Truncate a table or a model</p>
+
+<pre><code class="language-crystal"><span class="t">User</span>.query.count          <span class="c"># =&gt; 200</span>
+<span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.truncate(<span class="t">User</span>) <span class="c"># equivalent to Clear::SQL.truncate(User.table, connection_name: User.connection)</span>
+<span class="t">User</span>.query.count          <span class="c"># =&gt; 0</span></code></pre>
+
+<p>SEE https://www.postgresql.org/docs/current/sql-truncate.html
+for more information.</p>
+
+<ul><li><code>restart_sequence</code> set to true will append <code>RESTART IDENTITY</code> to the query</li><li><code>cascade</code> set to true will append <code>CASCADE</code> to the query</li><li><code>truncate_inherited</code> set to false will append <code>ONLY</code> to the query</li><li><code>connection_name</code> will be: <code>Model.connection</code> or <code>default</code> unless optionally defined.</li></ul>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/truncate.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="add_connection(name:String,url:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>add_connection</strong>(name : String, url : String)
+
+        <a class="method-permalink" href="#add_connection(name:String,url:String)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>connect through a hash/named tuple of connections:</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.init(
+  default: <span class="s">&quot;postgres://postgres@localhost:5432/database&quot;</span>,
+  secondary: <span class="s">&quot;postgres://postgres@localhost:5432/secondary&quot;</span>
+)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L145" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="delete(table:Symbolic)-instance-method">
+      <div class="signature">
+        
+        def <strong>delete</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>)
+
+        <a class="method-permalink" href="#delete(table:Symbolic)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Prepare a DELETE table query</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L172" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="escape(x:String|Symbol)-instance-method">
+      <div class="signature">
+        
+        def <strong>escape</strong>(x : String | Symbol)
+
+        <a class="method-permalink" href="#escape(x:String%7CSymbol)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Escape the expression, double quoting it.</p>
+
+<p>It allows use of reserved keywords as table or column name</p>
+
+<p><span class="flag purple">NOTE</span>  Escape is used for escaping postgresql keyword. For example
+if you have a column named order (which is a reserved word), you want
+to escape it by double-quoting it.</p>
+
+<p>For escaping STRING value, please use Clear::SQL.sanitize</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L96" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="execute(connection_name:String,sql)-instance-method">
+      <div class="signature">
+        
+        def <strong>execute</strong>(connection_name : String, sql)
+
+        <a class="method-permalink" href="#execute(connection_name:String,sql)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute a SQL statement without returning a result set</p>
+
+<p>Usage:</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.execute(<span class="s">&quot;NOTIFY listener&quot;</span>)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L157" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="execute(sql:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>execute</strong>(sql : String)
+
+        <a class="method-permalink" href="#execute(sql:String)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Execute a SQL statement without returning a result set</p>
+
+<p>Usage:</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.execute(<span class="s">&quot;NOTIFY listener&quot;</span>)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L162" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="init(name:String,url:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>init</strong>(name : String, url : String)
+
+        <a class="method-permalink" href="#init(name:String,url:String)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initialize a new connection to a specific database
+Use "default" connection if no name is provided:</p>
+
+<pre><code class="language-crystal">init(<span class="s">&quot;postgres://postgres@localhost:5432/database&quot;</span>) <span class="c"># use &quot;default&quot; connection</span>
+init(<span class="s">&quot;secondary_db&quot;</span>, <span class="s">&quot;postgres://postgres@localhost:5432/secondary_db&quot;</span>)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L121" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="init(url:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>init</strong>(url : String)
+
+        <a class="method-permalink" href="#init(url:String)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Initialize a new connection to a specific database
+Use "default" connection if no name is provided:</p>
+
+<pre><code class="language-crystal">init(<span class="s">&quot;postgres://postgres@localhost:5432/database&quot;</span>) <span class="c"># use &quot;default&quot; connection</span>
+init(<span class="s">&quot;secondary_db&quot;</span>, <span class="s">&quot;postgres://postgres@localhost:5432/secondary_db&quot;</span>)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L116" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="init(connections:Hash(Symbolic,String))-instance-method">
+      <div class="signature">
+        
+        def <strong>init</strong>(connections : Hash(<a href="../Clear/SQL/Symbolic.html">Symbolic</a>, String))
+
+        <a class="method-permalink" href="#init(connections:Hash(Symbolic,String))-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>connect through a hash/named tuple of connections:</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.init(
+  default: <span class="s">&quot;postgres://postgres@localhost:5432/database&quot;</span>,
+  secondary: <span class="s">&quot;postgres://postgres@localhost:5432/secondary&quot;</span>
+)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L138" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="init(**__named_tuple)-instance-method">
+      <div class="signature">
+        
+        def <strong>init</strong>(**__named_tuple)
+
+        <a class="method-permalink" href="#init(**__named_tuple)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>connect through a hash/named tuple of connections:</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.init(
+  default: <span class="s">&quot;postgres://postgres@localhost:5432/database&quot;</span>,
+  secondary: <span class="s">&quot;postgres://postgres@localhost:5432/secondary&quot;</span>
+)</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L133" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert-instance-method">
+      <div class="signature">
+        
+        def <strong>insert</strong>
+
+        <a class="method-permalink" href="#insert-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Create a new blank INSERT query. See <code><a href="../Clear/SQL/InsertQuery.html">Clear::SQL::InsertQuery</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L203" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert(table:Symbolic,*args)-instance-method">
+      <div class="signature">
+        
+        def <strong>insert</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>, *args)
+
+        <a class="method-permalink" href="#insert(table:Symbolic,*args)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Alias of <code><a href="../Clear/SQL.html#insert_into(table:Symbolic)-instance-method">#insert_into</a></code>, for developers in hurry
+:ditto:</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L193" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert(table:Symbolic,args:NamedTuple)-instance-method">
+      <div class="signature">
+        
+        def <strong>insert</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>, args : NamedTuple)
+
+        <a class="method-permalink" href="#insert(table:Symbolic,args:NamedTuple)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Alias of <code><a href="../Clear/SQL.html#insert_into(table:Symbolic)-instance-method">#insert_into</a></code>, for developers in hurry
+:ditto:</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L198" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert_into(table:Symbolic)-instance-method">
+      <div class="signature">
+        
+        def <strong>insert_into</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>)
+
+        <a class="method-permalink" href="#insert_into(table:Symbolic)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Prepare a new INSERT INTO table query
+:ditto:</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L187" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="insert_into(table:Symbolic,*args)-instance-method">
+      <div class="signature">
+        
+        def <strong>insert_into</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>, *args)
+
+        <a class="method-permalink" href="#insert_into(table:Symbolic,*args)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Start an INSERT INTO table query</p>
+
+<pre><code class="language-crystal"><span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.insert_into(<span class="s">&quot;table&quot;</span>, {id: <span class="n">1</span>, name: <span class="s">&quot;hello&quot;</span>}, {id: <span class="n">2</span>, name: <span class="s">&quot;World&quot;</span>})</code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L181" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="raw(__template,*__args)-instance-method">
+      <div class="signature">
+        
+        def <strong>raw</strong>(__template, *__args)
+
+        <a class="method-permalink" href="#raw(__template,*__args)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>This provide a fast way to create SQL fragment while escaping items, both with <code>?</code> and <code>:key</code> system:</p>
+
+<pre><code class="language-crystal">query <span class="o">=</span> <span class="t">Mode</span>.query.<span class="k">select</span>(<span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.raw(<span class="s">&quot;CASE WHEN x=:x THEN 1 ELSE 0 END as check&quot;</span>, x: <span class="s">&quot;blabla&quot;</span>))
+query <span class="o">=</span> <span class="t">Mode</span>.query.<span class="k">select</span>(<span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.raw(<span class="s">&quot;CASE WHEN x=? THEN 1 ELSE 0 END as check&quot;</span>, <span class="s">&quot;blabla&quot;</span>))</code></pre>
+
+<p>note than returned string is tagged as unsafe and SQL inject is possible (so beware!)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L79" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="raw(__template,**__keys)-instance-method">
+      <div class="signature">
+        
+        def <strong>raw</strong>(__template, **__keys)
+
+        <a class="method-permalink" href="#raw(__template,**__keys)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>This provide a fast way to create SQL fragment while escaping items, both with <code>?</code> and <code>:key</code> system:</p>
+
+<pre><code class="language-crystal">query <span class="o">=</span> <span class="t">Mode</span>.query.<span class="k">select</span>(<span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.raw(<span class="s">&quot;CASE WHEN x=:x THEN 1 ELSE 0 END as check&quot;</span>, x: <span class="s">&quot;blabla&quot;</span>))
+query <span class="o">=</span> <span class="t">Mode</span>.query.<span class="k">select</span>(<span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.raw(<span class="s">&quot;CASE WHEN x=? THEN 1 ELSE 0 END as check&quot;</span>, <span class="s">&quot;blabla&quot;</span>))</code></pre>
+
+<p>note than returned string is tagged as unsafe and SQL inject is possible (so beware!)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L84" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="sanitize(x)-instance-method">
+      <div class="signature">
+        
+        def <strong>sanitize</strong>(x)
+
+        <a class="method-permalink" href="#sanitize(x)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Sanitize string and convert some literals (e.g. <code><a href="../Time.html">Time</a></code>)</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L67" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="select(*args)-instance-method">
+      <div class="signature">
+        
+        def <strong>select</strong>(*args)
+
+        <a class="method-permalink" href="#select(*args)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Start a SELECT ... query</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L213" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="select(**args)-instance-method">
+      <div class="signature">
+        
+        def <strong>select</strong>(**args)
+
+        <a class="method-permalink" href="#select(**args)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Start a SELECT ... query</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L222" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unsafe(x)-instance-method">
+      <div class="signature">
+        
+        def <strong>unsafe</strong>(x)
+
+        <a class="method-permalink" href="#unsafe(x)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Create an unsafe expression, which can be used in many places in Clear as
+substitute for string</p>
+
+<pre><code class="language-crystal">  <span class="k">select</span>.where(<span class="s">&quot;x = ?&quot;</span>, <span class="t">Clear</span><span class="t">::</span><span class="t">SQL</span>.unsafe(<span class="s">&quot;y&quot;</span>)) <span class="c"># SELECT ... WHERE x = y</span></code></pre>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L106" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="update(table:Symbolic)-instance-method">
+      <div class="signature">
+        
+        def <strong>update</strong>(table : <a href="../Clear/SQL/Symbolic.html">Symbolic</a>)
+
+        <a class="method-permalink" href="#update(table:Symbolic)-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Start a UPDATE table query. See <code><a href="../Clear/SQL/UpdateQuery.html">Clear::SQL::UpdateQuery</a></code></p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/anykeyh/clear/blob/775e877c4f961da01fa621ae7ca302cb735198df/src/clear/sql/sql.cr#L208" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
