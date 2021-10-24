@@ -146,9 +146,9 @@ Clear::Model::Converter.add_converter("MyClass", Clear::Model::Converter::MyClas
 ##### Column presence
 
 Most of the ORM for Crystal are mapping column type as `Type | Nil` union.
-It makes sens so we allow selection of some columns only of a model.
+It makes sense so we allow selection of some columns only of a model.
 However, this have a caveats: columns are still accessible, and will return nil,
-even if the real value of the column is not null !
+even if the real value of the column is not null!
 
 Moreover, most of the developers will enforce nullity only on their programming
 language level via validation, but not on the database, leading to inconsistency.
@@ -437,7 +437,7 @@ u.email_column.revert # Return to #undef.
 
 ##### Presence validator
 
-Presence validator is done using the type of the column:
+Presence validation is done using the type of the column:
 
 ```crystal
 class User
@@ -454,7 +454,7 @@ end
 There's a case when a column CAN be null inside Crystal, if not persisted,
 but CANNOT be null inside Postgres.
 
-It's for example the case of the `id` column, which take value after saving !
+For example in the case of the `id` column, the value is generated during insert !
 
 In this case, you can write:
 
@@ -501,13 +501,13 @@ Validation fails if `model#errors` is not empty:
 
 ##### Unique validator
 
-Please use `unique` feature of postgres. Unique validator at crystal level is a
-non-go and lead to terrible race concurrency issues if your deploy on multiple nodes/pods.
+Please use the `unique` constraint feature of postgres. Unique validation outside of the database
+does not protect against race conditions between multiple fibers/threads/nodes/pods.
 It's an anti-pattern and must be avoided at any cost.
 
 ##### The validation and the presence system
 
-In the case you try validation on a column which has not been initialized,
+If you try to validate a column which has not been initialized,
 Clear will complain, telling you you cannot access to the column.
 Let's see an example here:
 
@@ -523,7 +523,7 @@ MyModel.new.save! #< Raise unexpected exception, not validation failure :(
 ```
 
 This validator will raise an exception, because first_name has never been initialized.
-To avoid this, we have many way:
+To avoid this, we have many options:
 ```crystal
 # 1. Check presence:
 
@@ -559,14 +559,15 @@ end
 
 ```
 
-I recommend the 4th method in most of the cases you will faces.
+I recommend the 4th method in most scenarios.
 Simple to write and easy to read !
 
 ### Migration
 
 Clear offers of course a migration system.
 
-Migration should have an `order` column set.
+Migration should have an number at the end of the class name
+to define the order migrations should be ran in.
 This number can be wrote at the end of the class itself:
 
 ```crystal
@@ -598,7 +599,7 @@ end
 
 #### Migration examples
 
-Migration must implement the method `change(dir : Migration::Direction)`
+Migrations must implement the method `change(dir : Migration::Direction)`
 
 Direction is the current direction of the migration (up or down).
 It provides few methods: `up?`, `down?`, `up(&block)`, `down(&block)`
@@ -620,7 +621,7 @@ You can create a table:
 
 #### Constraints
 
-I strongly encourage to use the foreign key constraints of postgres for your references:
+I strongly encourage use of postgres's foreign key constraints for your references:
 
 ```crystal
   t.references to: "users", on_delete: "cascade", null: false
@@ -628,12 +629,12 @@ I strongly encourage to use the foreign key constraints of postgres for your ref
 
 There's no plan to offer on Crystal level the `on_delete` feature, like
 `dependent` in ActiveRecord. That's a standard PG feature, just set it
-up in migration
+up in your migrations.
 
 ## Performances
 
 Models add a layer of computation. Below is a sample with a very simple model
-(two integer column ), with fetching of 100k rows over 1M rows database, using --release flag:
+(two integer columns), with fetching of 100k rows over 1M rows database, using --release flag:
 
 
 | Method                     |        | Total time            | Speed        |
@@ -661,7 +662,7 @@ This shard is provided under the MIT license.
 
 ## Contribution
 
-All contributions are welcome ! As a specialized ORM for PostgreSQL,
+All contributions are welcome! As a specialized ORM for PostgreSQL,
 be sure a great contribution on a very specific PG feature will be incorporated
 to this shard.
 I hope one day we will cover all the features of PG here !
