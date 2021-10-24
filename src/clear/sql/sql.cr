@@ -46,15 +46,16 @@ module Clear
   # Note: Each request object is mutable. Therefore, to keep a request prior to modification,
   # you must use manually the `dup` method.
   module SQL
+
     alias Any = Array(PG::BoolArray) | Array(PG::CharArray) | Array(PG::Float32Array) |
                 Array(PG::Float64Array) | Array(PG::Int16Array) | Array(PG::Int32Array) |
                 Array(PG::Int64Array) | Array(PG::StringArray) | Array(PG::TimeArray) |
-                Array(PG::NumericArray) |
+                Array(PG::NumericArray) | Array(JSON::Any) | JSON::PullParser |
                 Bool | Char | Float32 | Float64 | Int8 | Int16 | Int32 | Int64 | BigDecimal | JSON::Any | JSON::Any::Type | PG::Geo::Box | PG::Geo::Circle |
                 PG::Geo::Line | PG::Geo::LineSegment | PG::Geo::Path | PG::Geo::Point |
                 PG::Geo::Polygon | PG::Numeric | PG::Interval | Slice(UInt8) | String | Time |
                 UInt8 | UInt16 | UInt32 | UInt64 | Clear::Expression::UnsafeSql | UUID |
-                Nil
+                Nil | Hash(String, JSON::Any)
 
     include Clear::SQL::Logger
     include Clear::SQL::Transaction

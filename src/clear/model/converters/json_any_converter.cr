@@ -7,6 +7,8 @@ module Clear::Model::Converter::JSON::AnyConverter
       nil
     when ::JSON::Any
       x
+    when ::JSON::PullParser
+      ::JSON::Any.new(x)
     else
       ::JSON.parse(x.to_s)
     end
@@ -46,8 +48,10 @@ module Clear
           ::{{type}}.new(::JSON::PullParser.new(x))
         when ::JSON::Any
           ::{{type}}.new(::JSON::PullParser.new(x.to_json))
+        when ::JSON::PullParser
+          ::{{type}}.new(x)
         else
-          raise {{"Cannot convert to #{type} from \#{x.class}"}}
+          raise "Cannot convert to {{type}} from #{x.class}"
         end
       end
 
