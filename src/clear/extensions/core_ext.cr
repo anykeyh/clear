@@ -36,8 +36,8 @@ struct PG::Geo::Box
   def to_json(json)
     json.object do
       json.field("x1") { json.number x1 }
-      json.field("x2") { json.number x2 }
       json.field("y1") { json.number y1 }
+      json.field("x2") { json.number x2 }
       json.field("y2") { json.number y2 }
     end
   end
@@ -47,8 +47,8 @@ struct PG::Geo::LineSegment
   def to_json(json)
     json.object do
       json.field("x1") { json.number x1 }
-      json.field("x2") { json.number x2 }
       json.field("y1") { json.number y1 }
+      json.field("x2") { json.number x2 }
       json.field("y2") { json.number y2 }
     end
   end
@@ -87,11 +87,7 @@ struct PG::Geo::Path
   def to_json(json)
     json.object do
       json.field("points") do
-        json.array do
-          points.each do
-            points.to_json(json)
-          end
-        end
+        points.to_json(json)
       end
       json.field("closed") { json.bool(closed?) }
     end
@@ -100,29 +96,19 @@ end
 
 struct PG::Geo::Polygon
   def to_json(json)
-    json.object do
-      json.array do
-        points.each do
-          points.to_json(json)
-        end
-      end
-    end
+    points.to_json(json)
   end
 end
 
 struct Slice(T)
   def to_json(json)
-    s = String::Builder.new
-    to_s(s)
-    json.string(Base64.strict_encode(s.to_s))
+    json.string(Base64.strict_encode(to_s))
   end
 end
 
 struct PG::Numeric
   def to_json(json)
-    s = String::Builder.new
-    to_s(s)
-    json.string(s.to_s)
+    json.string(to_s)
   end
 end
 
