@@ -3,13 +3,13 @@ require "base64"
 # Extension of some objects outside of Clear ("Monkey Patching")
 
 struct Char
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.string("#{self}")
   end
 end
 
 struct PG::Interval
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("microseconds") { json.number microseconds }
       json.field("days") { json.number days }
@@ -33,7 +33,7 @@ end
 
 struct PG::Geo::Box
   # :nodoc:
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("x1") { json.number x1 }
       json.field("y1") { json.number y1 }
@@ -44,7 +44,7 @@ struct PG::Geo::Box
 end
 
 struct PG::Geo::LineSegment
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("x1") { json.number x1 }
       json.field("y1") { json.number y1 }
@@ -55,7 +55,7 @@ struct PG::Geo::LineSegment
 end
 
 struct PG::Geo::Point
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("x") { json.number x }
       json.field("y") { json.number y }
@@ -64,7 +64,7 @@ struct PG::Geo::Point
 end
 
 struct PG::Geo::Line
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("a") { json.number a }
       json.field("b") { json.number b }
@@ -74,7 +74,7 @@ struct PG::Geo::Line
 end
 
 struct PG::Geo::Circle
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("x") { json.number x }
       json.field("y") { json.number y }
@@ -84,7 +84,7 @@ struct PG::Geo::Circle
 end
 
 struct PG::Geo::Path
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.object do
       json.field("points") do
         points.to_json(json)
@@ -95,31 +95,31 @@ struct PG::Geo::Path
 end
 
 struct PG::Geo::Polygon
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     points.to_json(json)
   end
 end
 
 struct Slice(T)
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.string(Base64.strict_encode(to_s))
   end
 end
 
 struct PG::Numeric
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.string(to_s)
   end
 end
 
 struct BigDecimal
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     json.string(to_s)
   end
 end
 
 class JSON::PullParser
-  def to_json(json)
+  def to_json(json : JSON::Builder)
     raw_value
   end
 end

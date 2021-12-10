@@ -20,7 +20,7 @@ module Clear
       @value.to_sql
     end
 
-    def to_json(json)
+    def to_json(json : JSON::Builder)
       json.string(@value)
     end
 
