@@ -117,3 +117,9 @@ struct BigDecimal
     json.string(to_s)
   end
 end
+
+class JSON::PullParser
+  def to_json(json)
+    raw_value
+  end
+end

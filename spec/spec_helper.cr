@@ -25,9 +25,9 @@ end
 
 Spec.before_suite do
   {% if flag?(:quiet) %}
-    ::Log.setup(:warn)
+    ::Log.setup(level: Log::Severity::Warn)
   {% else %}
-    ::Log.setup(:debug)
+    ::Log.setup(level: Log::Severity::Debug)
   {% end %}
 end
 
