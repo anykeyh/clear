@@ -120,6 +120,6 @@ end
 
 class JSON::PullParser
   def to_json(json : JSON::Builder)
-    raw_value
+    json.raw(raw_value)
   end
 end
