@@ -11,16 +11,31 @@ class ::Crypto::Bcrypt::Password
   DEFAULT_COST = 4
 end
 
+DB_ENV = ENV.fetch("ENV", "local")
+
+DB_NAME = ENV.fetch("DB_NAME", "clear_db")
+
 def initdb
-  system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres 1>/dev/null")
+  if DB_ENV == "local"
+    system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres 1>/dev/null")
+    system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres 1>/dev/null")
 
-  system("echo \"DROP DATABASE IF EXISTS clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql -U postgres clear_secondary_spec 1>/dev/null")
+    system("echo \"DROP DATABASE IF EXISTS clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
+    system("echo \"CREATE DATABASE clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
+    system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql -U postgres clear_secondary_spec 1>/dev/null")
+  elsif DB_ENV == "docker"
+    system("docker exec -it #{DB_NAME} psql -c 'DROP DATABASE IF EXISTS clear_spec;' -U postgres")
+    system("docker exec -it #{DB_NAME} psql -c 'CREATE DATABASE clear_spec;' -U postgres")
 
-  Clear::SQL.init("postgres://postgres@localhost/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
-  Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+    system("docker exec -it #{DB_NAME} psql -c 'DROP DATABASE IF EXISTS clear_secondary_spec;' -U postgres")
+    system("docker exec -it #{DB_NAME} psql -c 'CREATE DATABASE clear_secondary_spec;' -U postgres")
+    system("docker exec -it #{DB_NAME} psql -c 'CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);' -U postgres clear_secondary_spec")
+  else
+    raise ArgumentError.new("Invalid ENV value")
+  end
+
+  Clear::SQL.init("postgres://postgres:password@localhost:5432/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("secondary", "postgres://postgres:password@localhost:5432/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
 end
 
 Spec.before_suite do
