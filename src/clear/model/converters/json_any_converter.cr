@@ -15,7 +15,7 @@ module Clear::Model::Converter::JSON::AnyConverter
   end
 
   def self.to_db(x : ::JSON::Any?)
-    x.to_json
+    x ? x.to_json : nil
   end
 end
 

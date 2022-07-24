@@ -112,6 +112,11 @@ module JSONConverterSpec
       converter.to_column(JSON_DATA_SAMPLE).should eq(json_any)
     end
 
+    it "converts nil values to db" do
+      converter = Clear::Model::Converter::JSON::AnyConverter
+      converter.to_db(nil).should eq(nil)
+    end
+
     it "converts using json_serializable_converter" do
       temporary do
         reinit_migration_manager
