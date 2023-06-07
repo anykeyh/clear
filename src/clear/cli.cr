@@ -36,7 +36,8 @@ module Clear
 
       define_version Clear::VERSION
       define_help
-
+      
+      register_sub_command generate, type: Clear::CLI::Generator
       register_sub_command migrate, type: Clear::CLI::Migration
       register_sub_command generate, type: Clear::CLI::Generator
       register_sub_command seed, type: Clear::CLI::Seed
