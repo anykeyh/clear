@@ -58,7 +58,7 @@ class Clear::SQL::InsertQuery
 
     loop do
       rs.each_column do |col|
-        h[col] = rs.read
+        h[col] = rs.read.as(::Clear::SQL::Any)
       end
 
       yield(h)

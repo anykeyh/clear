@@ -32,7 +32,7 @@ module Clear::SQL::Query::Pluck
       o = [] of Clear::SQL::Any
 
       while rs.move_next
-        o << rs.read
+        o << rs.read.as(::Clear::SQL::Any)
       end
       o
     ensure
@@ -85,7 +85,7 @@ module Clear::SQL::Query::Pluck
         o = [] of Tuple({% for t in T %}Clear::SQL::Any,{% end %})
 
         while rs.move_next
-            o << { {% for t in T %} rs.read, {% end %} }
+            o << { {% for t in T %} rs.read.as(::Clear::SQL::Any), {% end %} }
         end
         o
       {% end %}

@@ -5,7 +5,7 @@ module Clear::SQL::Query::Fetch
 
     loop do
       rs.each_column do |col|
-        h[col] = rs.read
+        h[col] = rs.read.as(::Clear::SQL::Any)
       end
 
       yield(h)
