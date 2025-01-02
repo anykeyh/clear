@@ -12,7 +12,7 @@ begin
     # Clear automatically create a connection nº1 
     Clear::SQL.transaction do
       Clear::SQL.insert("tests", {id: 1}).execute
-      sleep 0.2 #< Wait and do not commit the transaction for now
+      sleep 0.2.seconds # Wait and do not commit the transaction for now
     end
   end
 
@@ -20,12 +20,12 @@ begin
 
   # Spawn a new fiber
   spawn do
-    sleep 0.1 #Wait a bit, to ensure than the first connection is inside a transaction
+    sleep 0.1.seconds # Wait a bit, to ensure than the first connection is inside a transaction
     # execute in connection nº2
     @@count = Clear::SQL.select.from("tests").count
   end
 
-  sleep 0.3 # Let the 2 fiber time to finish...
+  sleep 0.3.seconds # Let the 2 fiber time to finish...
 
   # The count is zero, because: it has been setup by the second fiber, which
   # called AFTER the insert but BEFORE the commit on the connection nº1
