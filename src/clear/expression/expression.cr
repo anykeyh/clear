@@ -83,7 +83,7 @@ class Clear::Expression
       @value
     end
 
-    def to_json(b = nil)
+    def to_json(x = nil)
       @value
     end
   end
