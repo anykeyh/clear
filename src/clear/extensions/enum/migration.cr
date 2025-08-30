@@ -37,7 +37,7 @@ module Clear::Migration
     end
   end
 
-  module Clear::Migration::Helper
+  module Helper
     def create_enum(name : Clear::SQL::Symbolic, arr : Enumerable(T)) forall T
       self.add_operation(CreateEnum.new(name.to_s, arr.map(&.to_s)))
     end

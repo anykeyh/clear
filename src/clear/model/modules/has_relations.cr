@@ -80,7 +80,7 @@ module Clear::Model::HasRelations
       polymorphic_type_column = "#{polymorphic_type_column.id}" if polymorphic_type_column
 
       if name.type.is_a?(Union) # Nilable?
-        nilable = name.type.types.map { |x| "#{x.id}" }.includes?("Nil")
+        nilable = name.type.resolve.nilable?
         type = name.type.types.first
       else
         type = name.type
@@ -173,7 +173,7 @@ module Clear::Model::HasRelations
       nilable = false
 
       if name.type.is_a?(Union) # Nilable?
-        nilable = name.type.types.map { |x| "#{x.id}" }.includes?("Nil")
+        nilable = name.type.resolve.nilable?
         type = name.type.types.first
       else
         type = name.type
