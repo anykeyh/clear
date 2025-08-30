@@ -743,7 +743,7 @@ module ModelSpec
         data.save!
 
         data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
-        data.num2.should eq(42424224.01234568)
+        data.num2.should eq(BigDecimal.new(42424224.01234568))
         data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40).trunc)
 
         # Clear::SQL::Error:numeric field overflow

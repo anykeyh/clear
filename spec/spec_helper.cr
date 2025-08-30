@@ -12,15 +12,17 @@ class ::Crypto::Bcrypt::Password
 end
 
 def initdb
-  system("echo \"DROP DATABASE IF EXISTS clear_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_spec;\" | psql -U postgres 1>/dev/null")
+  # Recreate test database to have a f
+  system("bin/prepare_test_db.sh")
 
-  system("echo \"DROP DATABASE IF EXISTS clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE DATABASE clear_secondary_spec;\" | psql -U postgres 1>/dev/null")
-  system("echo \"CREATE TABLE models_post_stats (id serial PRIMARY KEY, post_id INTEGER);\" | psql -U postgres clear_secondary_spec 1>/dev/null")
+  db_user = ENV.fetch("DB_USER", "postgres")
+  db_password = ENV.fetch("DB_PASSWORD", "postgres")
+  db_host = ENV.fetch("DB_HOST", "localhost")
+  db_name = ENV.fetch("DB_NAME", "clear_spec")
+  db_name_secondary = ENV.fetch("DB_NAME_SECONDARY", "clear_secondary_spec")
 
-  Clear::SQL.init("postgres://postgres@localhost/clear_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
-  Clear::SQL.init("secondary", "postgres://postgres@localhost/clear_secondary_spec?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("postgres://#{db_user}:#{db_password}@#{db_host}/#{db_name}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("secondary", "postgres://#{db_user}:#{db_password}@#{db_host}/#{db_name_secondary}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
 end
 
 Spec.before_suite do
