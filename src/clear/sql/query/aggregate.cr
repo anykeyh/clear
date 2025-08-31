@@ -10,7 +10,7 @@ module Clear::SQL::Query::Aggregate
 
     # In case of group by or pagination,
     # to have the count of records.
-    if (@offset || @limit || @group_bys)
+    if @offset || @limit || @group_bys
       # SELECT COUNT(query_count.*) FROM ( $subquery query_count )
 
       # Optimize returning 1 if found, as we count only...

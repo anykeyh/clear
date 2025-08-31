@@ -3,7 +3,7 @@ module Clear::SQL
     getter froms : Array(SQL::From)
 
     # FROM fragment of the SQL query
-    # ```crystal
+    # ```
     # Clear::SQL.select.from("airplanes").to_sql # < SELECT * FROM airplanes
     # ```
     def from(*__args)
@@ -31,9 +31,11 @@ module Clear::SQL
     end
 
     protected def print_froms
-      if @froms.any?
-        "FROM " + @froms.join(", ", &.to_sql)
-      end
+      froms = @froms
+
+      return nil if froms.empty?
+
+      "FROM " + @froms.join(", ", &.to_sql)
     end
   end
 end

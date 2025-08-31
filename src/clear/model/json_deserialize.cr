@@ -2,7 +2,7 @@
 module Clear::Model::JSONDeserialize
   macro included
     macro included # When included into Model
-      macro inherited #Polymorphism
+      macro inherited # Polymorphism
         macro finished
           columns_to_instance_vars
         end

@@ -29,7 +29,7 @@ module CollectionSpec
           User.create! first_name: "user #{x}"
         end
 
-        User.query.find { first_name == "user 2" }.not_nil!.first_name.should eq("user 2")
+        User.query.find! { first_name == "user 2" }.first_name.should eq("user 2")
         User.query.find { first_name == "not_exists" }.should be_nil
 
         expect_raises(Clear::SQL::RecordNotFoundError) {

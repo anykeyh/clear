@@ -2,7 +2,6 @@ require "db"
 require "pg"
 require "./sql"
 
-# TODO: Documentation
 class Clear::SQL::UpdateQuery
   alias Updatable = Clear::SQL::Any | BigInt | BigFloat | Time
   alias UpdateInstruction = Hash(String, Updatable) | String

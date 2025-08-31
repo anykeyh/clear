@@ -18,24 +18,30 @@ class Clear::Expression::Node::JSONB::Field < Clear::Expression::Node
     self
   end
 
-  def ==(value : Clear::Expression::Node)
-    super(value) # << Keep same for node which are not literal value
+  def ==(other : Clear::Expression::Node)
+    super(other) # << Keep same for node which are not literal value
   end
 
-  def ==(value : _) # << For other type, literalize and use smart JSONB equality
+  def ==(other : _) # << For other type, literalize and use smart JSONB equality
     if @cast
-      super(value)
+      super(other)
     else
-      Clear::Expression::Node::JSONB::Equality.new(field.resolve, jsonb_k2h(key, value))
+      Clear::Expression::Node::JSONB::Equality.new(
+        field.resolve, jsonb_k2h(key, other)
+      )
     end
   end
 
   def contains?(expression : Clear::Expression::Node)
-    Clear::Expression::Node::JSONB::ArrayContains.new(resolve, expression.resolve)
+    Clear::Expression::Node::JSONB::ArrayContains.new(
+      resolve, expression.resolve
+    )
   end
 
   def contains?(expression)
-    Clear::Expression::Node::JSONB::ArrayContains.new(resolve, Clear::Expression[expression])
+    Clear::Expression::Node::JSONB::ArrayContains.new(
+      resolve, Clear::Expression[expression]
+    )
   end
 end
 

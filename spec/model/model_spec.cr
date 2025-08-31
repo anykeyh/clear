@@ -603,7 +603,7 @@ module ModelSpec
           u = User.new({first_name: "Hello", last_name: "World"})
           u.to_json.should eq %({"first_name":"Hello","last_name":"World"})
 
-          u.to_json(emit_nulls: true).should eq (
+          u.to_json(emit_nulls: true).should eq(
             %({"id":null,"first_name":"Hello","last_name":"World","middle_name":null,"active":null,"notification_preferences":null,"updated_at":null,"created_at":null})
           )
         end
@@ -718,11 +718,11 @@ module ModelSpec
         u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
         u1 = User.create_from_json(u1_body.to_json)
 
-        usr = User.query.where{ first_name == "George" }.select("first_name, 'example' as custom_field").first!(fetch_columns: true)
+        usr = User.query.where { first_name == "George" }.select("first_name, 'example' as custom_field").first!(fetch_columns: true)
         usr["custom_field"].should eq "example"
 
         json = {
-          custom_field: usr["custom_field"]
+          custom_field: usr["custom_field"],
         }.to_json
 
         json.should eq %({"custom_field":"example"})

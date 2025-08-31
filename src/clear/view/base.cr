@@ -98,7 +98,7 @@ class Clear::View
   getter query : String = ""
   getter requirement = Set(String).new
   getter connection : String = "default"
-  getter materialized : Bool = false
+  getter? materialized : Bool = false
 
   # name of the view
   def name(value : String | Symbol)
@@ -127,8 +127,8 @@ class Clear::View
   end
 
   # list of dependencies from the other view related to this view
-  def require(*req)
-    req.map(&.to_s).each { |s| @requirement.add(s) }
+  def require(*requirements)
+    requirements.map(&.to_s).each { |req| @requirement.add(req) }
   end
 
   def to_drop_sql

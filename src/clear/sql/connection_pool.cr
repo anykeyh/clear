@@ -10,7 +10,7 @@ class Clear::SQL::ConnectionPool
   # Retrieve a connection from the connection pool, or wait for it.
   # If the current Fiber already has a connection, the connection is returned;
   #   this strategy provides easy usage of multiple statement connection (like BEGIN/ROLLBACK features).
-  def self.with_connection(target : String, &block)
+  def self.with_connection(target : String, &)
     fiber_target = {target, Fiber.current}
 
     database = @@databases.fetch(target) { raise Clear::ErrorMessages.uninitialized_db_connection(target) }

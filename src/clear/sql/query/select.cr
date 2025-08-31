@@ -16,10 +16,13 @@ module Clear::SQL::Query::Select
   # In some case you want you query to return `table.*` instead of `*`
   #   if no select parameters has been set. This occurs in the case of joins
   #   between models.
+  # ameba:disable Naming/AccessorMethodName
   def set_default_table_wildcard(table : String? = nil)
     @default_wildcard_table = table
     change!
   end
+
+  # ameba:enable Naming/AccessorMethodName
 
   # :nodoc:
   def select(c : Column)
@@ -133,15 +136,19 @@ module Clear::SQL::Query::Select
   end
 
   protected def print_columns
-    (@columns.any? ? @columns.join(", ", &.to_sql.as(String)) : print_wildcard)
+    columns = @columns
+
+    return print_wildcard if columns.empty?
+
+    columns.join(", ", &.to_sql.as(String))
   end
 
   protected def print_forced_columns
-    if @forced_columns.any?
-      ", " + @forced_columns.join(", ", &.to_sql.as(String))
-    else
-      ""
-    end
+    forced_columns = @forced_columns
+
+    return "" if forced_columns.empty?
+
+    ", " + @forced_columns.join(", ", &.to_sql.as(String))
   end
 
   protected def print_select

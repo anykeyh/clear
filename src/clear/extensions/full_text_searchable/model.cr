@@ -9,7 +9,7 @@ require "./tsvector"
 #
 # Let's assume we have a blog and want to implement full text search over title and content:
 #
-# ```crystal
+# ```
 # create_table "posts" do |t|
 #   t.column :title, :string, null: false
 #   t.column :content, :string, null: false
@@ -25,7 +25,7 @@ require "./tsvector"
 #
 # Now, let's build some models:
 #
-# ```crystal
+# ```
 #
 #   model Post
 #     include Clear::Model
@@ -40,13 +40,13 @@ require "./tsvector"
 # ```
 #
 # Search is now easily done
-# ```crystal
+# ```
 # Post.query.search("poney") # Return all the articles !
 # ```
 #
 # Obviously, search call can be chained:
 #
-# ```crystal
+# ```
 # user = User.find! { email == "some_email@example.com" }
 # Post.query.from_user(user).search("orm")
 # ```
@@ -57,7 +57,7 @@ require "./tsvector"
 #
 # Select the catalog to use to build the tsquery. By default, `pg_catalog.english` is used.
 #
-# ```crystal
+# ```
 # # in your migration:
 # t.full_text_searchable on: [{"title", 'A'}, {"content", 'C'}], catalog: "pg_catalog.french"
 #
@@ -76,7 +76,7 @@ require "./tsvector"
 #
 # The field created in the database, which will contains your ts vector. Default is `full_text_vector`.
 #
-# ```crystal
+# ```
 # # in your migration
 # t.full_text_searchable on: [{"title", 'A'}, {"content", 'C'}], dest_field: "tsv"
 #
@@ -110,12 +110,12 @@ module Clear::Model::FullTextSearchable
     currtoken = [] of Char
     arr_tokens = [] of {Symbol?, String}
 
-    text.chars.each do |c|
-      case c
+    text.each_char do |char|
+      case char
       when '\''
         if quote_char.nil?
           if last_char.to_s =~ /[a-z0-9]/i # Avoid french word e.g. "l'avion"
-            currtoken << c
+            currtoken << char
           else
             quote_char = '\''
           end
@@ -125,20 +125,20 @@ module Clear::Model::FullTextSearchable
           modifier = nil
           quote_char = nil
         else
-          currtoken << c
+          currtoken << char
         end
       when ' '
         if quote_char.nil?
-          if currtoken.any?
+          unless currtoken.empty?
             arr_tokens << {modifier, currtoken.join}
             currtoken.clear
           end
           modifier = nil
         else
-          currtoken << c
+          currtoken << char
         end
       when '"'
-        if (quote_char.nil?)
+        if quote_char.nil?
           quote_char = '"'
         elsif quote_char == '"'
           arr_tokens << {modifier, currtoken.join}
@@ -146,22 +146,22 @@ module Clear::Model::FullTextSearchable
           modifier = nil
           quote_char = nil
         else
-          currtoken << c
+          currtoken << char
         end
       when '-'
         if currtoken.empty? && quote_char.nil? # When first char of the token == `-`
           modifier = :-
         else
-          currtoken << c
+          currtoken << char
         end
       else
-        currtoken << c
+        currtoken << char
       end
 
-      last_char = c
+      last_char = char
     end
 
-    if currtoken.any?
+    unless currtoken.empty?
       arr_tokens << {modifier, currtoken.join}
     end
 

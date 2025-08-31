@@ -19,7 +19,10 @@ module Clear::SQL::Query::GroupBy
   end
 
   protected def print_group_bys
-    return unless @group_bys.any?
-    "GROUP BY " + @group_bys.join(", ") { |x| x.is_a?(Symbol) ? SQL.escape(x) : x }
+    group_bys = @group_bys
+
+    return if group_bys.empty?
+
+    "GROUP BY " + group_bys.join(", ") { |x| x.is_a?(Symbol) ? SQL.escape(x) : x }
   end
 end

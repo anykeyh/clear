@@ -1,5 +1,4 @@
 # Reflection of the tables using information_schema in postgreSQL.
-# TODO: Usage of view instead of model
 class Clear::Reflection::Table
   include Clear::Model
 
@@ -68,9 +67,9 @@ class Clear::Reflection::Table
           (t.relname == self.table_name)
       }
       .order_by("t.relname").order_by("i.relname")
-      .fetch do |h|
-        col = h["column_name"].to_s
-        v = h["index_name"].to_s
+      .fetch do |row|
+        col = row["column_name"].to_s
+        v = row["index_name"].to_s
 
         arr = o[col]? ? o[col] : (o[col] = [] of String)
 

@@ -37,7 +37,7 @@ def reinit_migration_manager
   Clear::Migration::Manager.instance.reinit!
 end
 
-def temporary(&block)
+def temporary(&)
   exception = nil
 
   Clear::SQL.with_savepoint do

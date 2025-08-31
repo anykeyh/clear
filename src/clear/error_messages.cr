@@ -57,7 +57,7 @@ module Clear::ErrorMessages
         "You may want to check the manual:",
         manual_pages.join("\n") { |x|
           build_url("https://github.com/anykeyh/clear/tree/master/manual/#{x}")
-        }
+        },
       }.join("\n") + "\n\n"
     end
   end

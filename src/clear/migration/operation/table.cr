@@ -255,7 +255,7 @@ module Clear::Migration
     # end
     # ```
     #
-    def create_table(name, id : Symbol | Bool = true, schema = "public", &block)
+    def create_table(name, id : Symbol | Bool = true, schema = "public", &)
       table = Table.new(name.to_s, schema.to_s, is_create: true)
       self.add_operation(table)
 
