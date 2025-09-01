@@ -1,6 +1,6 @@
 name: clear
 
-version: 0.9
+version: "0.10.0"
 
 crystal: 1.17.1
 
