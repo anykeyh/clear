@@ -1,3 +1,5 @@
+#!/bin/sh
+
 DB_NAME=${DB_NAME:="clear_spec"}
 DB_NAME_SECONDARY=${DB_NAME_SECONDARY:="clear_secondary_spec"}
 DB_NAME_SYSTEM=${DB_NAME_SYSTEM:="postgres"}
