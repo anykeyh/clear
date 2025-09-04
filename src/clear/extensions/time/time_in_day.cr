@@ -19,7 +19,7 @@
 #
 # As with Interval, you might wanna use it as a column (use underlying `time` type in PostgreSQL):
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #
@@ -40,16 +40,20 @@ struct Clear::TimeInDay
   def initialize(@microseconds : UInt64 = 0)
   end
 
-  def +(t : Time::Span)
-    Clear::TimeInDay.new(microseconds: @microseconds + t.total_nanoseconds.to_i64 // 1_000)
+  def +(other : Time::Span)
+    Clear::TimeInDay.new(
+      microseconds: @microseconds + other.total_nanoseconds.to_i64 // 1_000
+    )
   end
 
-  def -(t : Time::Span)
-    Clear::TimeInDay.new(microseconds: @microseconds - t.total_nanoseconds.to_i64 // 1_000)
+  def -(other : Time::Span)
+    Clear::TimeInDay.new(
+      microseconds: @microseconds - other.total_nanoseconds.to_i64 // 1_000
+    )
   end
 
-  def +(x : self)
-    TimeInDay.new(@microseconds + x.ms)
+  def +(other : self)
+    TimeInDay.new(@microseconds + other.ms)
   end
 
   def hour
@@ -134,12 +138,12 @@ struct Time
     end
   end
 
-  def +(t : Clear::TimeInDay)
-    self + t.microseconds.microseconds
+  def +(other : Clear::TimeInDay)
+    self + other.microseconds.microseconds
   end
 
-  def -(t : Clear::TimeInDay)
-    self - t.microseconds.microseconds
+  def -(other : Clear::TimeInDay)
+    self - other.microseconds.microseconds
   end
 end
 

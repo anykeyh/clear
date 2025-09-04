@@ -4,12 +4,12 @@ module Clear::SQL::Query::Having
   end
 
   # Build SQL `having` condition using a Clear::Expression::Node
-  # ```crystal
+  # ```
   # query.having(Clear::Expression::Node::InArray.new("id", ['1', '2', '3', '4']))
   # # Note: in this example, InArray node use unsafe strings
   # ```
   # If useful for moving a having clause from a request to another one:
-  # ```crystal
+  # ```
   # query1.having { a == b } # having a = b
   # ```
   # ```
@@ -21,12 +21,12 @@ module Clear::SQL::Query::Having
   end
 
   # Build SQL `or_having` condition using a Clear::Expression::Node
-  # ```crystal
+  # ```
   # query.or_having(Clear::Expression::Node::InArray.new("id", ['1', '2', '3', '4']))
   # # Note: in this example, InArray node use unsafe strings
   # ```
   # If useful for moving a having clause from a request to another one:
-  # ```crystal
+  # ```
   # query1.or_having { a == b } # having a = b
   # ```
   # ```
@@ -57,10 +57,10 @@ module Clear::SQL::Query::Having
   end
 
   # Build SQL `having` condition using the Expression engine.
-  # ```crystal
+  # ```
   # query.having { id == 1 }
   # ```
-  def having(&block)
+  def having(&)
     having(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
@@ -71,20 +71,20 @@ module Clear::SQL::Query::Having
   # Build SQL `having` condition using a NamedTuple.
   #   this will use:
   # - the `=` operator if compared with a literal
-  # ```crystal
+  # ```
   # query.having({keyword: "hello"}) # having keyword = 'hello'
   # ```
   # - the `IN` operator if compared with an array:
-  # ```crystal
+  # ```
   # query.having({x: [1, 2]}) # having x in (1, 2)
   # ```
   # - the `>=` and `<=` | `<` if compared with a range:
-  # ```crystal
+  # ```
   # query.having({x: (1..4)})  # having x >= 1 AND x <= 4
   # query.having({x: (1...4)}) # having x >= 1 AND x < 4
   # ```
   # - You also can put another select query as argument:
-  # ```crystal
+  # ```
   # query.having({x: another_select}) # having x IN (SELECT ... )
   # ```
   def having(__conditions : NamedTuple | Hash(String, Clear::SQL::Any))
@@ -113,7 +113,7 @@ module Clear::SQL::Query::Having
   end
 
   # Build SQL `having` interpolating `:keyword` with the NamedTuple passed in argument.
-  # ```crystal
+  # ```
   # having("id = :id OR date >= :start", id: 1, start: 1.day.ago)
   # # having id = 1 AND date >= '201x-xx-xx ...'
   # ```
@@ -123,7 +123,7 @@ module Clear::SQL::Query::Having
 
   # Build SQL `having` condition using a template string and
   # interpolating `?` characters with parameters given in a tuple or array.
-  # ```crystal
+  # ```
   # having("x = ? OR y = ?", 1, "l'eau") # having x = 1 OR y = 'l''eau'
   # ```
   # Raise error if there's not enough parameters to cover all the `?` placeholders
@@ -140,10 +140,10 @@ module Clear::SQL::Query::Having
   end
 
   # Build SQL `having` condition using the Expression engine.
-  # ```crystal
+  # ```
   # query.or_having { id == 1 }
   # ```
-  def or_having(&block)
+  def or_having(&)
     or_having(Clear::Expression.ensure_node!(with Clear::Expression.new yield))
   end
 
@@ -156,6 +156,10 @@ module Clear::SQL::Query::Having
 
   # :nodoc:
   protected def print_havings
-    {"HAVING ", @havings.join(" AND ", &.resolve)}.join if @havings.any?
+    havings = @havings
+
+    return nil if havings.empty?
+
+    {"HAVING ", havings.join(" AND ", &.resolve)}.join
   end
 end

@@ -3,7 +3,7 @@ require "log"
 require "benchmark"
 
 module Clear::SQL::Logger
-  class_property colorize : Bool = STDOUT.tty? && STDERR.tty?
+  class_property? colorize : Bool = STDOUT.tty? && STDERR.tty?
 
   private SQL_KEYWORDS = Set(String).new(%w(
     ADD ALL ALTER ANALYSE ANALYZE AND ANY ARRAY AS ASC ASYMMETRIC
@@ -42,11 +42,11 @@ module Clear::SQL::Logger
   end
 
   def self.display_time(x : Float64) : String
-    if (x > 60)
+    if x > 60
       display_mn_sec(x)
-    elsif (x > 1)
+    elsif x > 1
       ("%.2f" % x) + "s"
-    elsif (x > 0.001)
+    elsif x > 0.001
       (1_000 * x).to_i.to_s + "ms"
     else
       (1_000_000 * x).to_i.to_s + "µs"
@@ -54,7 +54,7 @@ module Clear::SQL::Logger
   end
 
   # Log a specific query, wait for it to return
-  def log_query(sql : String, &block)
+  def log_query(sql : String, &)
     start_time = Time.monotonic
 
     o = yield

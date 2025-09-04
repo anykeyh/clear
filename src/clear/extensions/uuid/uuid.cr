@@ -35,9 +35,9 @@ Clear::Model::Converter.add_converter("UUID", Clear::Model::Converter::UUIDConve
 Clear::Model::HasSerialPkey.add_pkey_type "uuid" do
   column __name__ : UUID, primary: true, presence: true
 
-  before(:validate) do |m|
-    if !m.persisted? && m.as(self).__name___column.value(nil).nil?
-      m.as(self).__name__ = UUID.random
+  before(:validate) do |mdl|
+    if !mdl.persisted? && mdl.as(self).__name___column.value(nil).nil?
+      mdl.as(self).__name__ = UUID.random
     end
   end
 end

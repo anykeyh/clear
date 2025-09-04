@@ -26,7 +26,7 @@ module Clear::Migration
     Down
 
     # Run the block given in parameter if the direction is a upstream
-    def up(&block)
+    def up(&)
       yield if self == Up
     end
 
@@ -36,7 +36,7 @@ module Clear::Migration
     end
 
     # Run the block given in parameter if the direction is a rollback
-    def down(&block)
+    def down(&)
       yield if down?
     end
 

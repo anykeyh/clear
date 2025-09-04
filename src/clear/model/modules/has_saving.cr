@@ -14,12 +14,11 @@ module Clear::Model::HasSaving
       # models as saved in the database.
       #
       # ## Example:
-      # ```crystal
-      #
-      #  users = [ User.new(id: 1), User.new(id: 2), User.new(id: 3)]
-      #  users = User.import(users)
       # ```
-      def self.import(array : Enumerable(self), on_conflict : (Clear::SQL::InsertQuery -> )? = nil)
+      # users = [User.new(id: 1), User.new(id: 2), User.new(id: 3)]
+      # users = User.import(users)
+      # ```
+      def self.import(array : Enumerable(self), on_conflict : (Clear::SQL::InsertQuery ->)? = nil)
         array.each do |item|
           raise "One of your model is persisted while calling import" if item.persisted?
         end
@@ -37,7 +36,7 @@ module Clear::Model::HasSaving
         o = [] of self
         query.fetch(@@connection) do |hash|
           o << Clear::Model::Factory.build(self.name, hash, persisted: true,
-          fetch_columns: false, cache: nil).as(self)
+            fetch_columns: false, cache: nil).as(self)
         end
 
         o.each(&.trigger_after_events(:create))
@@ -61,7 +60,7 @@ module Clear::Model::HasSaving
   #
   # Example:
   #
-  # ```crystal
+  # ```
   # u = User.new
   # if u.save
   #   puts "User correctly saved !"
@@ -75,7 +74,7 @@ module Clear::Model::HasSaving
   #
   # Example:
   #
-  # ```crystal
+  # ```
   # u = User.new id: 123, email: "email@example.com"
   # u.save(-> (qry) { qry.on_conflict.do_update{ |u| u.set(email: "email@example.com") } #update
   # # IMPORTANT NOTICE: user may not be saved, but will be still detected as persisted !
@@ -83,7 +82,7 @@ module Clear::Model::HasSaving
   #
   # You may want to use a block for `on_conflict` optional parameter:
   #
-  # ```crystal
+  # ```
   # u = User.new id: 123, email: "email@example.com"
   # u.save do |qry|
   #    qry.on_conflict.do_update{ |u| u.set(email: "email@example.com")
@@ -98,14 +97,14 @@ module Clear::Model::HasSaving
         if persisted?
           h = update_h
 
-          if h.any?
+          unless h.empty?
             with_triggers(:update) do
               hash = Clear::SQL.update(self.class.full_table_name).set(update_h).where { var("#{self.class.__pkey__}") == self.__pkey__ }.execute(@@connection)
             end
           end
         else
           with_triggers(:create) do
-            execute_insert = ->{
+            execute_insert = -> {
               query = Clear::SQL.insert_into(self.class.full_table_name, to_h).returning("*")
               on_conflict.try &.call(query)
               hash = query.execute(@@connection)

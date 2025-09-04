@@ -56,9 +56,12 @@ class Clear::Model::Column(T, C)
     reset C.to_column(x)
   end
 
+  # ameba:disable Naming/AccessorMethodName
   def set_convert(x)
     set C.to_column(x)
   end
+
+  # ameba:enable Naming/AccessorMethodName
 
   def set(x : T?)
     old_value = @value

@@ -27,9 +27,9 @@ module Clear::Model::HasScope
       {% verbatim do %}
         {% parameters = "" %}
         {% for arg, idx in block.args %}
-          {% parameters = parameters + "*" if (block.splat_index && idx == block.splat_index) %}
+          {% parameters = parameters + "*" if block.splat_index && idx == block.splat_index %}
           {% parameters = parameters + "#{arg}" %}
-          {% parameters = parameters + ", " unless (idx == block.args.size - 1) %}
+          {% parameters = parameters + ", " unless idx == block.args.size - 1 %}
         {% end %}
         {% parameters = parameters.id %}
 

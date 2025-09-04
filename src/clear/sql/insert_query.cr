@@ -40,7 +40,7 @@ class Clear::SQL::InsertQuery
   def into(@table : Symbol | String)
   end
 
-  def fetch(connection_name : String = "default", &block : Hash(String, ::Clear::SQL::Any) -> Nil)
+  def fetch(connection_name : String = "default", & : Hash(String, ::Clear::SQL::Any) -> Nil)
     h = {} of String => ::Clear::SQL::Any
 
     Clear::SQL::ConnectionPool.with_connection(connection_name) do |cnx|
@@ -53,7 +53,7 @@ class Clear::SQL::InsertQuery
     end
   end
 
-  protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &block) : Bool
+  protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &) : Bool
     return false unless rs.move_next
 
     loop do
@@ -120,17 +120,9 @@ class Clear::SQL::InsertQuery
     change!
   end
 
-  def values(rows : Array(NamedTuple))
-    rows.each do |nt|
-      values(nt)
-    end
-
-    change!
-  end
-
-  def values(rows : Array(Hash(Symbolic, Inserable)))
-    rows.each do |nt|
-      values(nt)
+  def values(rows : Array(NamedTuple) | Array(Hash(Symbolic, Inserable)))
+    rows.each do |named_tuple|
+      values(named_tuple)
     end
 
     change!
@@ -151,7 +143,9 @@ class Clear::SQL::InsertQuery
 
   # Insert into ... (...) SELECT
   def values(select_query : SelectBuilder)
-    if @values.is_a?(Array) && @values.as(Array).any?
+    val = @values
+
+    if val.is_a?(Array) && !val.empty?
       raise QueryBuildingError.new "Cannot insert both from SELECT and from data"
     end
 
@@ -173,7 +167,9 @@ class Clear::SQL::InsertQuery
   end
 
   protected def print_keys
-    @keys.any? ? "(" + @keys.join(", ") { |x| Clear::SQL.escape(x.to_s) } + ")" : nil
+    return nil if @keys.empty?
+
+    "(" + @keys.join(", ") { |x| Clear::SQL.escape(x.to_s) } + ")"
   end
 
   protected def print_values
@@ -181,7 +177,7 @@ class Clear::SQL::InsertQuery
     v.map_with_index { |row, idx|
       raise QueryBuildingError.new "No value to insert (at row ##{idx})" if row.empty?
 
-      "(" + row.join(", "){ |x| Clear::Expression[x] } + ")"
+      "(" + row.join(", ") { |x| Clear::Expression[x] } + ")"
     }.join(",\n")
   end
 

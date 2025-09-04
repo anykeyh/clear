@@ -1,5 +1,5 @@
 require "../../spec_helper"
-require "./fixture"
+require "./fixture_spec"
 
 module RelationSpec
   describe("belongs_to relation (not nilable)") do

@@ -10,7 +10,7 @@ class Clear::TSVector
     def initialize(io)
       chars = [] of UInt8
 
-      while ((c = io.read_byte.not_nil!) != 0)
+      while (c = io.read_byte.not_nil!) != 0
         chars << c
       end
 
@@ -48,7 +48,7 @@ class Clear::TSVector
     @lexems.values.join(" ") do |v|
       {
         Clear::Expression[v.value],
-        v.positions.join(",") { |p| {p.position, p.weight}.join },
+        v.positions.join(",") { |pos| {pos.position, pos.weight}.join },
       }.join(":")
     end
   end

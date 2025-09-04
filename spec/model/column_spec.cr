@@ -18,7 +18,7 @@ module ColumnSpec
           u.first_name = "Rick"
           u.save! # Will try to update model with id=2.
 
-          User.query.where(id: 2).any?.should be_false
+          User.query.where(id: 2).empty?.should be_true
         end
       end
 

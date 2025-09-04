@@ -32,7 +32,7 @@ class Clear::CLI::Generator
 
         migration_file = "#{migration_uid}_#{name_underscore}.cr"
 
-        if Dir[File.join(g.target_directory, "src/db/migrations/*_#{name_underscore}.cr")].any?
+        unless Dir[File.join(g.target_directory, "src/db/migrations/*_#{name_underscore}.cr")].empty?
           puts "A migration file `xxxx_#{name_underscore}.cr` already exists"
           exit 1
         end

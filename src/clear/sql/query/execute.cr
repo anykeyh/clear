@@ -6,7 +6,7 @@ module Clear::SQL::Query::Execute
   # If an optional `connection_name` parameter is given, this will
   #   override the connection used by the query.
   #
-  # ```crystal
+  # ```
   # %(default secondary).each do |cnx|
   #   Clear::SQL.select("pg_shards('xxx')").execute(cnx)
   # end

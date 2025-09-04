@@ -11,7 +11,7 @@ module Clear::SQL
     getter type : String
     getter from : Selectable
     getter condition : Clear::Expression::Node?
-    getter lateral : Bool
+    getter? lateral : Bool
 
     def initialize(@from, @condition = nil, @lateral = false, type : Symbol = :inner)
       @type = TYPE.fetch(type) { raise Clear::ErrorMessages.query_building_error("Type of join unknown: `#{type}`") }
@@ -29,12 +29,12 @@ module Clear::SQL
 
       if c = @condition
         [type,
-         lateral ? "LATERAL" : nil,
+         @lateral ? "LATERAL" : nil,
          from,
          "ON",
          c.resolve].compact.join(" ")
       else
-        [type, lateral ? "LATERAL" : nil, SQL.sel_str(from)].compact.join(" ")
+        [type, @lateral ? "LATERAL" : nil, SQL.sel_str(from)].compact.join(" ")
       end
     end
   end

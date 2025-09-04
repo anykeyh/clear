@@ -45,30 +45,30 @@ module MigrationSpec
           Clear::Migration::Manager.instance.reinit!
           Migration7771.new.apply
 
-          Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq true
+          Clear::Reflection::Table.public.where { table_name == "test" }.empty?.should eq false
 
           table = Clear::Reflection::Table.public.find! { table_name == "test" }
           columns = table.columns
 
-          columns.dup.where { column_name == "first_name" }.any?.should eq true
-          columns.dup.where { column_name == "last_name" }.any?.should eq true
+          columns.dup.where { column_name == "first_name" }.empty?.should eq false
+          columns.dup.where { column_name == "last_name" }.empty?.should eq false
 
           table.indexes.size.should eq 6
 
           Migration7772.new.apply
           columns = table.columns
-          columns.dup.where { column_name == "middle_name" }.any?.should eq true
+          columns.dup.where { column_name == "middle_name" }.empty?.should eq false
           table.indexes.size.should eq 7
 
           # Revert the last migration
           Migration7772.new.apply(Clear::Migration::Direction::Down)
           columns = table.columns
-          columns.dup.where { column_name == "middle_name" }.any?.should eq false
+          columns.dup.where { column_name == "middle_name" }.empty?.should eq true
           table.indexes.size.should eq 6
 
           # Revert the table migration
           Migration7771.new.apply(Clear::Migration::Direction::Down)
-          Clear::Reflection::Table.public.where { table_name == "test" }.any?.should eq false
+          Clear::Reflection::Table.public.where { table_name == "test" }.empty?.should eq true
         end
       end
     end

@@ -7,7 +7,7 @@ module Clear::Validation::Helper
 
   # Usage example:
   #
-  # ```crystal
+  # ```
   # ensure_than email, "must be an email" do |v|
   #   EmailRegexp.valid?(v)
   # end

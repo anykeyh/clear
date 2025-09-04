@@ -11,7 +11,7 @@ module Clear::SQL::Query::CTE
 
   # Add a CTE to the query.
   #
-  # ```crystal
+  # ```
   # Clear::SQL.select.with_cte("full_year",
   #   "SELECT DATE(date)"
   #   "FROM generate_series(NOW() - INTERVAL '1 year', NOW(), '1 day'::interval) date")
@@ -25,7 +25,7 @@ module Clear::SQL::Query::CTE
 
   # Add a CTE to the query. Use NamedTuple convention:
   #
-  # ```crystal
+  # ```
   # Clear::SQL.select.with_cte(cte: "xxx")
   # # WITH cte AS xxx SELECT...
   # ```
@@ -38,7 +38,7 @@ module Clear::SQL::Query::CTE
 
   # Add a CTE to the query. Use NamedTuple convention:
   #
-  # ```crystal
+  # ```
   # Clear::SQL.select.with_recursive_cte(cte: "xxx")
   # # WITH RECURSIVE cte AS xxx SELECT...
   # ```
@@ -51,7 +51,7 @@ module Clear::SQL::Query::CTE
 
   # :nodoc:
   protected def print_ctes
-    return unless cte.any?
+    return if cte.empty?
 
     {"WITH ",
      cte.join(", ") do |name, v|
@@ -59,7 +59,7 @@ module Clear::SQL::Query::CTE
        value = query.responds_to?(:to_sql) ? query.to_sql : query.to_s
        {v.recursive ? "RECURSIVE" : "",
         name, " AS (", value, ")"}.join
-     end
+     end,
     }.join
   end
 end

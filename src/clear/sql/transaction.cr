@@ -43,7 +43,7 @@ module Clear::SQL::Transaction
   # ```
   # see #with_savepoint to use a stackable version using savepoints.
   #
-  def transaction(connection : String = "default", level : Level = Level::Serializable, &block)
+  def transaction(connection : String = "default", level : Level = Level::Serializable, &)
     Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
       has_rollback = false
 
@@ -115,7 +115,7 @@ module Clear::SQL::Transaction
   #   end
   # end
   # ```
-  def with_savepoint(sp_name : Symbolic? = nil, connection_name : String = "default", &block)
+  def with_savepoint(sp_name : Symbolic? = nil, connection_name : String = "default", &)
     transaction do |cnx|
       sp_name ||= "sp_#{@@savepoint_uid += 1}"
       execute(connection_name, "SAVEPOINT #{sp_name}")

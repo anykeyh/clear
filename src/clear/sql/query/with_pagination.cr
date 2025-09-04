@@ -11,7 +11,7 @@ module Clear::SQL::Query::WithPagination
   # Pagination will handle the page progression automatically and update
   # `offset` and `limit` parameters by his own.
   #
-  # ```crystal
+  # ```
   # page = query.paginate(2, 50)
   # ```
   def paginate(page : Int32 = DEFAULT_PAGE, per_page : Int32 = DEFAULT_LIMIT)

@@ -4,13 +4,13 @@ require "./node"
 #
 # Example:
 #
-# ```crystal
+# ```
 # value.in?(1..5)
 # ```
 #
 # will render:
 #
-# ```crystal
+# ```
 # value >= 1 AND value < 5
 # ```
 #

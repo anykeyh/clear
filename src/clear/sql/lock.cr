@@ -20,7 +20,7 @@ module Clear
     #
     # See [Official PG documentation for more informations](https://www.postgresql.org/docs/12/explicit-locking.html)
     #
-    def self.lock(table : String | Symbol, mode = "ACCESS EXCLUSIVE", connection = "default", &block)
+    def self.lock(table : String | Symbol, mode = "ACCESS EXCLUSIVE", connection = "default", &)
       Clear::SQL::ConnectionPool.with_connection(connection) do |cnx|
         transaction do
           execute("LOCK TABLE #{table} IN #{mode} MODE")

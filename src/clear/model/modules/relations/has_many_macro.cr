@@ -49,7 +49,7 @@ module Clear::Model::Relations::HasManyMacro
       {% # Allow to add an element in this collection by changing the `foreign_key`
 # value of the distant model.
 
-      %}
+  %}
       query.append_operation = -> (x : {{relation_type}}) do
         x.{{foreign_key}} = self.__pkey__
         self.save! unless self.persisted?

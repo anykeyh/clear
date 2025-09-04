@@ -3,7 +3,7 @@ require "../sql/select_query"
 # Model definition is made by adding the `Clear::Model` mixin in your class.
 # ## Simple Model
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #
@@ -15,7 +15,7 @@ require "../sql/select_query"
 #
 # Now, you can play with your model:
 #
-# ```crystal
+# ```
 # row = MyModel.new # create an empty row
 # row.my_column = "This is a content"
 # row.save! # insert the new row in the database !
@@ -25,7 +25,7 @@ require "../sql/select_query"
 # A model into a module will prepend the module name before, so `Logistic::MyModel` will check for `logistic_my_models` in your database.
 # You can force a specific table name using:
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #   self.table = "another_table_name"
@@ -42,7 +42,7 @@ require "../sql/select_query"
 #
 # For example, this code will compile:
 #
-# ```crystal
+# ```
 # row = MyModel.new # create an empty row
 # puts row.my_column
 # ```
@@ -51,14 +51,14 @@ require "../sql/select_query"
 #
 # Same way, trying to save the object will raise an error:
 #
-# ```crystal
+# ```
 # row.save      # Will return false
 # pp row.errors # Will tell you than `my_column` presence is mandatory.
 # ```
 #
 # Thanks to expressiveness of the Crystal language, we can handle presence validation by simply using the `Nilable` type in crystal:
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #
@@ -76,7 +76,7 @@ require "../sql/select_query"
 #
 # Queries are fetchable using `each`:
 #
-# ```crystal
+# ```
 # MyModel.query.each do |model|
 #   # Do something with your model here.
 # end
@@ -110,7 +110,7 @@ require "../sql/select_query"
 #
 # To setup a primary key, you can add the modifier `primary: true` to the column:
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #
@@ -122,7 +122,7 @@ require "../sql/select_query"
 # Note the flag `presence: false` added to the column. This tells Clear than presence checking on save is not mandatory. Usually this happens if you setup a default value in postgres. In the case of our primary key `id`, we use a serial auto-increment default value.
 # Therefore, saving the model without primary key will works. The id will be fetched after insertion:
 #
-# ```crystal
+# ```
 # m = MyModel
 # m.save!
 # m.id # Now the id value is setup.
@@ -134,7 +134,7 @@ require "../sql/select_query"
 #
 # ### Timestamps
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #   timestamps # Will map the two columns 'created_at' and 'updated_at', and map some hooks to update their values.
@@ -145,7 +145,7 @@ require "../sql/select_query"
 #
 # ### With Serial Pkey
 #
-# ```crystal
+# ```
 # class MyModel
 #   include Clear::Model
 #   with_serial_pkey "my_primary_key"
@@ -216,7 +216,7 @@ module Clear::Model
       # collection specific parameters ---v
       @tags = {} of String => Clear::SQL::Any,
       @cache = Clear::Model::QueryCache.new,
-      @cached_result = nil
+      @cached_result = nil,
     )
     end
 
@@ -396,7 +396,7 @@ module Clear::Model
     def any?
       cr = @cached_result
 
-      return cr.any? if cr
+      return !cr.empty? if cr
 
       clear_select.select("1").limit(1).fetch do |_|
         return true
@@ -464,7 +464,7 @@ module Clear::Model
       return cr if cr
 
       o = [] of T
-      each(fetch_columns: fetch_columns) { |m| o << m }
+      each(fetch_columns: fetch_columns) { |mdl| o << mdl }
       o
     end
 
@@ -484,7 +484,7 @@ module Clear::Model
     end
 
     # A convenient way to write `where{ condition }.first`
-    def find(fetch_columns = false, &block) : T?
+    def find(fetch_columns = false, &) : T?
       x = Clear::Expression.ensure_node!(with Clear::Expression.new yield)
       where(x).first(fetch_columns)
     end
@@ -495,7 +495,7 @@ module Clear::Model
     end
 
     # A convenient way to write `where({any_column: "any_value"}).first!`
-    def find!(fetch_columns = false, &block) : T
+    def find!(fetch_columns = false, &) : T
       x = Clear::Expression.ensure_node!(with Clear::Expression.new yield)
       where(x).first!(fetch_columns)
     end
@@ -523,7 +523,7 @@ module Clear::Model
 
     # Try to fetch a row. If not found, build a new object and setup
     # the fields like setup in the condition tuple.
-    def find_or_build(**tuple, &block : T -> Nil) : T
+    def find_or_build(**tuple, & : T -> Nil) : T
       where(tuple) unless tuple.size == 0
       r = first
 
@@ -551,7 +551,7 @@ module Clear::Model
     # Try to fetch a row. If not found, build a new object and setup
     # the fields like setup in the condition tuple.
     # Just after building, save the object.
-    def find_or_create(**tuple, &block : T -> Nil) : T
+    def find_or_create(**tuple, & : T -> Nil) : T
       r = find_or_build(**tuple) do |mdl|
         yield(mdl)
       end

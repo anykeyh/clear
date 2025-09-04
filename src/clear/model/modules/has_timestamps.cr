@@ -3,8 +3,8 @@ module Clear::Model::HasTimestamps
   # The two column values are automatically set during insertion
   #   or update of the model.
   macro timestamps
-    column( updated_at : Time )
-    column( created_at : Time )
+    column(updated_at : Time)
+    column(created_at : Time)
 
     before(:validate) do |model|
       model = model.as(self)
@@ -31,6 +31,5 @@ module Clear::Model::HasTimestamps
 
       self
     end
-
   end
 end

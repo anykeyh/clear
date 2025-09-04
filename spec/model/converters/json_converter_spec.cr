@@ -68,10 +68,10 @@ module JSONConverterSpec
     property weight : Float64
 
     @[JSON::Field(key: "hasChildren")]
-    property has_children : Bool
+    property? has_children : Bool
 
     @[JSON::Field(key: "hasGreyHair")]
-    property has_grey_hair : Bool
+    property? has_grey_hair : Bool
 
     @[JSON::Field]
     property children : Array(String)

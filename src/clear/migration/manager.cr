@@ -46,16 +46,14 @@ class Clear::Migration::Manager
   def current_version
     ensure_ready
 
-    if @migrations_up.any?
-      @migrations_up.max
-    else
-      nil
-    end
+    return nil if @migrations_up.empty?
+
+    @migrations_up.max
   end
 
   def max_version
     if @migrations.size > 0
-      @migrations.map(&.uid).max
+      @migrations.max_of(&.uid)
     else
       nil
     end
@@ -75,7 +73,7 @@ class Clear::Migration::Manager
   def apply_to(version, direction = :both)
     ensure_ready
 
-    list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
+    list_of_migrations = @migrations.sort_by(&.uid)
 
     version = compute_version(version, list_of_migrations)
 
@@ -145,10 +143,12 @@ class Clear::Migration::Manager
 
     Clear::View.apply(:drop)
 
-    list_of_migrations = @migrations.sort { |a, b| a.uid <=> b.uid }
-    list_of_migrations.reject! { |x| @migrations_up.includes?(x.uid) }
+    migrations_to_apply = @migrations.reject do |migration|
+      @migrations_up.includes?(migration.uid)
+    end
+    migrations_to_apply.sort_by!(&.uid)
 
-    list_of_migrations.each do |migration|
+    migrations_to_apply.each do |migration|
       migration.apply
       @migrations_up.add(migration.uid)
     end
@@ -213,11 +213,11 @@ class Clear::Migration::Manager
 
   # :nodoc:
   private def ensure_unicity!
-    if @migrations.any?
-      all_migrations = @migrations.map(&.uid)
-      r = all_migrations - all_migrations.uniq
-      raise migration_not_unique(r) unless r.empty?
-    end
+    return if @migrations.empty?
+
+    all_migrations = @migrations.map(&.uid)
+    r = all_migrations - all_migrations.uniq
+    raise migration_not_unique(r) unless r.empty?
   end
 
   # Fetch all the migrations already activated on the database.
@@ -226,8 +226,12 @@ class Clear::Migration::Manager
 
     Clear::SQL.select("*")
       .from("__clear_metadatas")
-      .where(metatype: "migration").map { |m|
-      @migrations_up.add(Int64.new(m["value"].as(String)))
+      .where(metatype: "migration").map { |row|
+      @migrations_up.add(
+        Int64.new(
+          row["value"].as(String)
+        )
+      )
     }
   end
 
@@ -265,11 +269,9 @@ class Clear::Migration::Manager
   def print_status : String
     ensure_ready
 
-    @migrations.sort do |a, b|
-      a.as(Clear::Migration).uid <=> b.as(Clear::Migration).uid
-    end.join("\n") do |m|
-      active = @migrations_up.includes?(m.uid)
-      "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{m.uid} - #{m.class.name}"
+    @migrations.sort_by(&.uid).join("\n") do |migration|
+      active = @migrations_up.includes?(migration.uid)
+      "[#{active ? "✓".colorize.green : "✗".colorize.red}] #{migration.uid} - #{migration.class.name}"
     end
   end
 end

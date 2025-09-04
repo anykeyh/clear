@@ -1,4 +1,7 @@
-require "./**"
+# require "./**"
+require "./tsvector"
+require "./migration"
+require "./model"
 
 module Clear::Model
   include Clear::Model::FullTextSearchable

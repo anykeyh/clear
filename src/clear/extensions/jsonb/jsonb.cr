@@ -5,7 +5,7 @@
 #
 # Functions can be used calling or including Clear::SQL::JSONB methods as helper methods:
 #
-# ```crystal
+# ```
 # class MyClass
 #   include Clear::SQL::JSONB
 #
@@ -20,7 +20,7 @@
 #
 # ### Filter by jsonb
 #
-# ```crystal
+# ```
 # Product.query.where { (attributes.jsonb("category") == "Book") & (attributes.jsonb("author.name") == "Philip K. Dick") }
 # # ^-- Will produce optimized for gin index jsonb filter query:
 # # WHERE attributes @> '{"category": "Book", "author": {"name": "Philip K. Dick"} }'::jsonb
@@ -80,21 +80,21 @@ module Clear::SQL::JSONB
     ignore_next = false
     buff = "" # Todo: Use stringbuffer
 
-    key.chars.each do |c|
+    key.each_char do |char|
       if ignore_next
         ignore_next = false
-        buff += c
+        buff += char
         next
       end
 
-      case c
+      case char
       when '\\'
         ignore_next = true
       when '.'
         arr << buff
         buff = ""
       else
-        buff += c
+        buff += char
       end
     end
 
@@ -107,7 +107,7 @@ module Clear::SQL::JSONB
 
   # Test equality using the `@>` operator
   #
-  # ```crystal
+  # ```
   # jsonb_eq("data.sub.key", "value")
   # ```
   #
@@ -125,7 +125,7 @@ module Clear::SQL::JSONB
   def jsonb_resolve(field, arr : Array(String), cast = nil) : String
     return field if arr.empty?
 
-    key_list = [field] + arr.map { |it| Clear::Expression[it] }
+    key_list = [field] + arr.map { |exp| Clear::Expression[exp] }
 
     o = key_list.join("->")
     o = "(#{o})::#{cast}" if cast
@@ -135,7 +135,7 @@ module Clear::SQL::JSONB
 
   # Return text selector for the field/key :
   #
-  # ```crystal
+  # ```
   # jsonb_text("data", "sub.key").like("user%")
   # # => "data->'sub'->>'key' LIKE 'user%'"
   # ```

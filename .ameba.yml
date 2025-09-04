@@ -2,6 +2,18 @@ Style/ConstantNames:
   Excluded:
   - "**/*.cr"
 
-Performance/AnyInsteadOfEmpty:
+# Performance/AnyInsteadOfEmpty:
+#   Excluded:
+#   - "**/*.cr"
+
+Lint/UselessAssign:
+  Excluded:
+  - "**/*.cr"
+
+Lint/NotNil:
+  Excluded:
+  - "**/*.cr"
+
+Naming/BlockParameterName:
   Excluded:
   - "**/*.cr"

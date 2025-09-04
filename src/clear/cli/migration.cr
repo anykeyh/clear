@@ -84,19 +84,16 @@ class Clear::CLI::Migration < Admiral::Command
 
     def run_impl
       array = Clear::Migration::Manager.instance.migrations_up.to_a.sort
-      num = if arguments.num.nil?
-              2
-            else
-              arguments.num.not_nil!.to_i + 1
-            end
 
-      if (num > array.size)
-        num = array.size - 1
-      end
+      num = arguments.num || 1
+
+      # Clamp the number to the size of the array
+      num = [(num.to_i + 1), array.size - 1].min
 
       Clear::Migration::Manager.instance.apply_to(
         array[-num],
-        direction: :down)
+        direction: :down
+      )
     end
   end
 

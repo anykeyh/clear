@@ -60,7 +60,7 @@ class Clear::Model::QueryCache
   end
 
   # Perform some operations with the cache then eventually clear the cache.
-  def with_cache(&block)
+  def with_cache(&)
     yield
   ensure
     clear

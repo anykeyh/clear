@@ -51,7 +51,7 @@ class Category
   column name : String
 
   has_many categories : Category
-	belongs_to category : Category?
+  belongs_to category : Category?
 
   has_many posts : Post
   has_many users : User, through: :posts

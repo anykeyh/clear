@@ -11,9 +11,8 @@ module Clear::Model::HasSerialPkey
   macro primary_key(name = "id", type = :bigserial)
     {% # Transform symbols to string
 
-name = "#{name.id}"
-type = "#{type.id}"
-    %}
+ name = "#{name.id}"
+ type = "#{type.id}" %}
     {% cb = PKEY_TYPE[type] %}
     {% if cb %}
       {{cb.gsub(/__name__/, name).id}}

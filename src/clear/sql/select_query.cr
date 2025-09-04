@@ -27,7 +27,7 @@ class Clear::SQL::SelectQuery
   include SelectBuilder
 
   # Enumerable items
-  def each
+  def each(&)
     fetch { |h| yield(h) }
   end
 
