@@ -1,3 +1,5 @@
+require "json"
+
 module Clear
   class IllegalEnumValueError < Exception
   end
@@ -26,6 +28,21 @@ module Clear
 
     def ==(other)
       super(other) || @value == other
+    end
+
+    macro inherited
+      macro finished
+        # For Serialisation with JSON
+        def initialize(value : (::JSON::PullParser | String))
+          if value.is_a?(String)
+            @value = value
+          else
+            str = value.read_string
+            str.in?(self.class.authorized_values) || raise ::Clear::IllegalEnumValueError.new("Illegal enum value for `#{self.class}`: '#{str}'")
+            @value = str
+          end
+        end
+      end
     end
 
     module Converter(T)
@@ -92,6 +109,9 @@ module Clear
   #
   # MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
   # MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
+  #
+  # (De)serialisation is also supported
+  # MyApp::Gender.from_json("male")    # < return MyApp::Gender::Male
   #
   # MyApp::Gender.valid?("female")  # < Return true
   # MyApp::Gender.valid?("unknown") # < Return false
