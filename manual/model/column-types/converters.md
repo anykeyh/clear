@@ -4,6 +4,8 @@ Any type from PostgreSQL can be converted using converter objects. By default, C
 
 However, custom type may not be supported yet. Clear offers you the possibility to add a custom converter.
 
+The example demonstrated below is also available in `spec/model/converters/custom_converter_spec`
+
 ## Declare a new converter
 
 The example below with a converter for a `Color` structure should be straight-forward:
