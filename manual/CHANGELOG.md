@@ -1,10 +1,10 @@
 # v0.10
 
-This is a maintenance release, which bring support for Crystal 1.6 and 1.7.
+This is a maintenance release, which bring support for latest Crystal version (1.17.1)
 
 ## Added feature
 
-- Add GitHub Actions to run specs on multiple Crystal versions.
+- Add GitHub Actions for running the test under CI/CD.
 - Add ENV variables to control the database connection in specs.
 - Fix mass assignment on `belongs_to` relation (thanks @dukeraphaelng)
 - Fix issues with json serialization. (thanks @dukenguyenxyz).
