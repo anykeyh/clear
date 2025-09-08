@@ -65,6 +65,10 @@ module EnumSpec
       end
     end
 
+    it "can create from json", focus: true do
+      GenderType.from_json(%("male")).should eq(GenderType::Male)
+    end
+
     it "can export to json" do
       temporary do
         reinit!
