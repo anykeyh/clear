@@ -1,7 +1,7 @@
 ## Few words about the presence validator
 By default, Clear handle `presence` validation through the `Nilable` type.
 
-Therefore: 
+Therefore:
 - `column x : String` is assumed to be present
 - `column x : String?` can be nilable (and NULL in the database)
 - `column x : String, presence: false` will assume the value cannot be NULL in the database (e.g. there's a default value) but creating an object without it will not trigger the presence error.
@@ -10,7 +10,7 @@ Therefore:
 
 Clear offers four methods for checking validations: `valid?`, `valid!`, `save` and `save!`
 
-- `valid?` check whether the model is valid. If not, `errors` will not be empty 
+- `valid?` check whether the model is valid. If not, `errors` will not be empty
 - `valid!` check if the model is valid or throw exception. Return the model. Usefully for fail-fast code:
 ```crystal
   my_model.valid!.delete #Why would you delete a model which is valid btw? :-)
@@ -35,7 +35,7 @@ Whenever the validation fail, your model will retrieve the different errors into
 
 ## Other validators
 
-For simplicity, each of your model implements the method `validate` without body. 
+For simplicity, each of your model implements the method `validate` without body.
 You can then create your own validators:
 
 ```crystal
@@ -52,7 +52,7 @@ There's however a catch: You will be in trouble when `age` is not defined (e.g. 
 ```crystal
   class User
     include Clear::Model
-    
+
     column id : Int32, primary:  true, presence: false
     column age : Int32
     column first_name : String
@@ -96,11 +96,11 @@ end
 
 ### Ensure than
 
-the `ensure_than` helpers provide fast way to validate a field:
+the `ensure_that` helpers provide fast way to validate a field:
 
 ```crystal
 def validate
-   ensure_than age, "must be greater than 18", &.>(18)
+   ensure_that age, "must be greater than 18", &.>(18)
 end
 ```
 
@@ -108,7 +108,7 @@ With the rating column, you can write:
 
 ```crystal
 def validate
-  on_presence(rating){ ensure_than(age, "must be greater than 18"){ |x| x > 18 && rating == "mature"  } }
+  on_presence(rating){ ensure_that(age, "must be greater than 18"){ |x| x > 18 && rating == "mature"  } }
 end
 ```
 

@@ -719,6 +719,27 @@ module ModelSpec
         u1.middle_name.should be_nil
       end
     end
+
+    it "should do mass_assignment for belongs_to relation" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        p = Post.create_from_json({title: "A post", user_id: u.id}.to_json)
+        p.user_id.should eq(u.id)
+      end
+    end
+
+    it "should not do mass_assignment for belongs_to relation" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        c = Category.create!({name: "Nature"})
+        p = Post.create_from_json({title: "A post", user_id: u.id, category_id: c.id}.to_json)
+        p.category_id.should be_nil
+      end
+    end
   end
 
   describe "Access to custom fields" do

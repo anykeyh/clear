@@ -194,7 +194,7 @@ module Clear::ErrorMessages
         "If the model comes from a collection query, there was maybe a filtering on your `select` clause, " +
         "and you forgot to declare the column `#{name}`",
         "In the case of unpersisted models, please initialize by calling `#{name}=` first",
-        "For validator, try `ensure_than` method, or use `#{name}_column.defined?` to avoid your validation code.",
+        "For validator, try `ensure_that` method, or use `#{name}_column.defined?` to avoid your validation code.",
         "Are you calling `#{name}_column.revert` somewhere before?",
         "If your model comes from JSON, please ensure the JSON source defines the column. Usage of `strict` mode will " +
         "trigger exception on JSON loading.",

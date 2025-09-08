@@ -37,7 +37,7 @@ Ensure to check presence of your column while validation. In case of semi-fetchi
 
 ## Helpers methods
 
-To simplify the writing of validation code, you may want to use `on_presence(field, &block)` or `ensure_than(field, message, &block)` built-in helpers:
+To simplify the writing of validation code, you may want to use `on_presence(field, &block)` or `ensure_that(field, message, &block)` built-in helpers:
 
 ```ruby
 class Article
@@ -47,7 +47,7 @@ class Article
   column description : String
 
   def validate
-    ensure_than :description, "must contains at least 100 characters", &.size.<(100)
+    ensure_that :description, "must contains at least 100 characters", &.size.<(100)
   end
 end
 ```

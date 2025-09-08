@@ -77,14 +77,14 @@ class Post
   scope("published") { where published: true }
 
   def validate
-    ensure_than(title, "is not empty", &.size.>(0))
+    ensure_that(title, "is not empty", &.size.>(0))
   end
 
   has_many post_tags : PostTag, foreign_key: "post_id"
   has_many tag_relations : Tag, through: :post_tags, relation: :tag
 
-  belongs_to user : User, foreign_key_type: Int32
-  belongs_to category : Category?, foreign_key_type: Int64
+  belongs_to user : User, foreign_key_type: Int32, mass_assign: true
+  belongs_to category : Category?, foreign_key_type: Int64, mass_assign: false
 end
 
 class UserInfo
