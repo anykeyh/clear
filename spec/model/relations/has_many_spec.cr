@@ -96,8 +96,8 @@ module RelationSpec
         user_info_call.should eq 1
         user_call.should eq 1
 
-        # FIXME: Not sure how to check if there's queries made here.
-        #        for now we assume there's none :-)
+        # Not sure how to check if there's queries made here.
+        # for now we assume there's none :-)
         user.user_infos.count.should eq 2 # 2 for each
       end
     end

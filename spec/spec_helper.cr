@@ -20,9 +20,10 @@ def initdb
   db_host = ENV.fetch("DB_HOST", "localhost")
   db_name = ENV.fetch("DB_NAME", "clear_spec")
   db_name_secondary = ENV.fetch("DB_NAME_SECONDARY", "clear_secondary_spec")
+  db_port = ENV.fetch("DB_PORT", "5432")
 
-  Clear::SQL.init("postgres://#{db_user}:#{db_password}@#{db_host}/#{db_name}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
-  Clear::SQL.init("secondary", "postgres://#{db_user}:#{db_password}@#{db_host}/#{db_name_secondary}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("postgres://#{db_user}:#{db_password}@#{db_host}:#{db_port}/#{db_name}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
+  Clear::SQL.init("secondary", "postgres://#{db_user}:#{db_password}@#{db_host}:#{db_port}/#{db_name_secondary}?retry_attempts=1&retry_delay=1&initial_pool_size=5")
 end
 
 Spec.before_suite do

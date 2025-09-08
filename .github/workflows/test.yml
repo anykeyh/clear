@@ -1,0 +1,41 @@
+name: Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+          POSTGRES_DB: clear_test
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+
+      - name: Install dependencies
+        run: shards install
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Run tests
+        run: make spec
+        env:
+          DB_USER: "postgres"
+          DB_PASSWORD: "postgres"
+          DB_PORT: "5432"
+          DB_HOST: "localhost"
+          DB_NAME: "clear_test"
+          DB_NAME_SECONDARY: "clear_test_secondary"
