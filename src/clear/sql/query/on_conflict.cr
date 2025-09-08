@@ -25,7 +25,7 @@ module Clear::SQL::Query::OnConflict
     change!
   end
 
-  def do_update(&block)
+  def do_update(&)
     action = Clear::SQL::UpdateQuery.new(nil)
     yield(action)
     @on_conflict_action = action
@@ -42,7 +42,7 @@ module Clear::SQL::Query::OnConflict
     change!
   end
 
-  def on_conflict(&block)
+  def on_conflict(&)
     condition = OnConflictWhereClause.new
     condition.where(
       Clear::Expression.ensure_node!(with Clear::Expression.new yield)

@@ -1,7 +1,6 @@
 require "./table"
 
 # Reflection of the columns using information_schema in postgreSQL.
-# TODO: Usage of view instead of model
 class Clear::Reflection::Column
   include Clear::Model
 
@@ -15,8 +14,4 @@ class Clear::Reflection::Column
   column column_name : String, primary: true
 
   belongs_to table : Clear::Reflection::Table?, foreign_key: "table_name", foreign_key_type: String
-
-  # def table : Clear::Reflection::Table
-  #   Column.query.where { var("table_name") == self.table_name }.first
-  # end
 end

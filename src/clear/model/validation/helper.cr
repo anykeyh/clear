@@ -7,13 +7,12 @@ module Clear::Validation::Helper
 
   # Usage example:
   #
-  # ```crystal
-  # ensure_than email, "must be an email" do |v|
+  # ```
+  # ensure_that email, "must be an email" do |v|
   #   EmailRegexp.valid?(v)
   # end
   # ```
-  macro ensure_than(field, message, &block)
-
+  macro ensure_that(field, message, &block)
     if {{field.id}}_column.defined?
       o = {{field.id}}
 
@@ -23,6 +22,10 @@ module Clear::Validation::Helper
         add_error({{field.stringify}}, {{message}})
       end
     end
+  end
 
+  @[Deprecated("Use `ensure_that` instead")]
+  macro ensure_than(field, message, &block)
+    ensure_that({{field.id}}, {{message}}) {{ block }}
   end
 end

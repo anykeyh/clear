@@ -1,6 +1,6 @@
 module Clear::SQL::Query::Fetch
   # :no_doc:
-  protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &block) : Bool
+  protected def fetch_result_set(h : Hash(String, ::Clear::SQL::Any), rs, &) : Bool
     return false unless rs.move_next
 
     loop do
@@ -21,7 +21,7 @@ module Clear::SQL::Query::Fetch
   # Fetch the data using CURSOR.
   # This will prevent Clear to load all the data from the database into memory.
   # This is useful if you need to retrieve and update a large dataset.
-  def fetch_with_cursor(count = 1_000, &block : Hash(String, ::Clear::SQL::Any) -> Nil)
+  def fetch_with_cursor(count = 1_000, & : Hash(String, ::Clear::SQL::Any) -> Nil)
     trigger_before_query
 
     Clear::SQL.transaction do |cnx|
@@ -112,7 +112,7 @@ module Clear::SQL::Query::Fetch
   # preventing creation of a new connection if you need to call SQL into the
   # yielded block.
   #
-  # ```crystal
+  # ```
   # # This is wrong: The connection is still busy retrieving the users:
   # Clear::SQL.select.from("users").fetch do |u|
   #   Clear::SQL.select.from("posts").where { u["id"] == posts.id }
@@ -122,11 +122,11 @@ module Clear::SQL::Query::Fetch
   # # Clear will store the value of the result set in memory
   # # before calling the block, and the connection is now ready to handle
   # # another query.
-  # Clear::SQL.select.from("users").fetch(fetch_all:true) do |u|
+  # Clear::SQL.select.from("users").fetch(fetch_all: true) do |u|
   #   Clear::SQL.select.from("posts").where { u["id"] == posts.id }
   # end
   # ```
-  def fetch(fetch_all = false, &block : Hash(String, ::Clear::SQL::Any) -> Nil)
+  def fetch(fetch_all = false, & : Hash(String, ::Clear::SQL::Any) -> Nil)
     trigger_before_query
 
     h = {} of String => ::Clear::SQL::Any

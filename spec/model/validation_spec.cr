@@ -24,7 +24,7 @@ module ValidationSpec
     column a : String # Must be present
 
     def validate
-      ensure_than a, "must not be empty", &.strip.!=("")
+      ensure_that a, "must not be empty", &.strip.!=("")
     end
   end
 
@@ -34,8 +34,8 @@ module ValidationSpec
     column email : String
 
     def validate
-      ensure_than email, "must be email", &.strip.=~(/^[a-z0-9_+\.]+@[a-z0-9_\.]+$/i)
-      ensure_than email, "must not be a free email" do |value|
+      ensure_that email, "must be email", &.strip.=~(/^[a-z0-9_+\.]+@[a-z0-9_\.]+$/i)
+      ensure_that email, "must not be a free email" do |value|
         v = value.strip
 
         ![

@@ -603,7 +603,7 @@ module ModelSpec
           u = User.new({first_name: "Hello", last_name: "World"})
           u.to_json.should eq %({"first_name":"Hello","last_name":"World"})
 
-          u.to_json(emit_nulls: true).should eq (
+          u.to_json(emit_nulls: true).should eq(
             %({"id":null,"first_name":"Hello","last_name":"World","middle_name":null,"active":null,"notification_preferences":null,"updated_at":null,"created_at":null})
           )
         end
@@ -638,6 +638,17 @@ module ModelSpec
       user_body = {first_name: "Steve"}
       user = User.from_json(user_body.to_json)
       user.first_name.should eq(user_body["first_name"])
+    end
+
+    it "can create a new model instance with a column with column_name field" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        p = Post.create_from_json({title: "A post", user_id: u.id}.to_json)
+        p.title.should eq("A post")
+        p.user_id.should eq(u.id)
+      end
     end
 
     it "sets fields from json" do
@@ -708,6 +719,27 @@ module ModelSpec
         u1.middle_name.should be_nil
       end
     end
+
+    it "should do mass_assignment for belongs_to relation" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        p = Post.create_from_json({title: "A post", user_id: u.id}.to_json)
+        p.user_id.should eq(u.id)
+      end
+    end
+
+    it "should not do mass_assignment for belongs_to relation" do
+      temporary do
+        reinit_example_models
+
+        u = User.create!({first_name: "John"})
+        c = Category.create!({name: "Nature"})
+        p = Post.create_from_json({title: "A post", user_id: u.id, category_id: c.id}.to_json)
+        p.category_id.should be_nil
+      end
+    end
   end
 
   describe "Access to custom fields" do
@@ -718,11 +750,11 @@ module ModelSpec
         u1_body = {first_name: "George", last_name: "Dream", middle_name: "Sapnap"}
         u1 = User.create_from_json(u1_body.to_json)
 
-        usr = User.query.where{ first_name == "George" }.select("first_name, 'example' as custom_field").first!(fetch_columns: true)
+        usr = User.query.where { first_name == "George" }.select("first_name, 'example' as custom_field").first!(fetch_columns: true)
         usr["custom_field"].should eq "example"
 
         json = {
-          custom_field: usr["custom_field"]
+          custom_field: usr["custom_field"],
         }.to_json
 
         json.should eq %({"custom_field":"example"})
@@ -743,7 +775,7 @@ module ModelSpec
         data.save!
 
         data.num1.should eq(BigDecimal.new(BigInt.new(420123), 4))
-        data.num2.should eq(42424224.01234568)
+        data.num2.should eq(BigDecimal.new(42424224.01234568))
         data.num3.should eq(BigDecimal.new(BigInt.new("-1029387192083710928371092837019283701982370918237".to_big_i), 40).trunc)
 
         # Clear::SQL::Error:numeric field overflow

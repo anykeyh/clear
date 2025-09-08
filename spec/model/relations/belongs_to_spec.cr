@@ -1,5 +1,5 @@
 require "../../spec_helper"
-require "./fixture"
+require "./fixture_spec"
 
 module RelationSpec
   describe("belongs_to relation (not nilable)") do
@@ -86,8 +86,8 @@ module RelationSpec
           user_info_call.should eq(1)
           user_call.should eq(1)
 
-          # FIXME: Not sure how to check if there's queries made here.
-          #        for now we assume there's none :-)
+          # Not sure how to check if there's queries made here.
+          # for now we assume there's none :-)
           user_info.user
         end
       end

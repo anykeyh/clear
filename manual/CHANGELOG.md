@@ -1,3 +1,20 @@
+# v0.10
+
+This is a maintenance release, which bring support for Crystal 1.6 and 1.7.
+
+## Added feature
+
+- Add GitHub Actions to run specs on multiple Crystal versions.
+- Add ENV variables to control the database connection in specs.
+- Fix mass assignment on `belongs_to` relation (thanks @dukeraphaelng)
+- Fix issues with json serialization. (thanks @dukenguyenxyz).
+- Fix issues with column types with newest version of `pg` shard (thanks @lbguilherme and @mloughran)
+
+## Breaking changes
+
+- `ensure_than` macro is now deprecated, use `ensure_that` instead. It was a typo all this time.
+- Some boolean properties getter have been renamed using `?` at the end, to be more idiomatic and might break your code.
+
 # v0.9
 
 I'm pleased to announce the version 0.9 of Crystal Clear ORM !

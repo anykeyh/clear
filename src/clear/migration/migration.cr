@@ -141,7 +141,6 @@ module Clear::Migration
   include Helper
 
   macro included
-
     @operations : Array(Operation) = [] of Operation
 
     #

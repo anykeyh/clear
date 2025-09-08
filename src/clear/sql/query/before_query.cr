@@ -4,11 +4,11 @@ module Clear::SQL::Query::BeforeQuery
 
     # A hook to apply some operation just before the query is executed.
     #
-    # ```crystal
-    #  call = 0
-    #  req = Clear::SQL.select("1").before_query{ call += 1 }
-    #  10.times{ req.execute }
-    #  pp call # 10
+    # ```
+    # call = 0
+    # req = Clear::SQL.select("1").before_query { call += 1 }
+    # 10.times { req.execute }
+    # pp call # 10
     # ```
     def before_query(&block : -> Nil)
       @before_query_triggers << block

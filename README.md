@@ -545,14 +545,14 @@ def validate
   end
 end
 
-#4. Use the helper macro `ensure_than`
+#4. Use the helper macro `ensure_that`
 def validate
-  ensure_than(first_name, "should not be empty", &.!=(""))
+  ensure_that(first_name, "should not be empty", &.!=(""))
 end
 
-#5. Use the `ensure_than` helper (but with block notation) !
+#5. Use the `ensure_that` helper (but with block notation) !
 def validate
-  ensure_than(first_name, "should not be empty") do |column|
+  ensure_that(first_name, "should not be empty") do |column|
     column != ""
   end
 end

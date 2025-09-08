@@ -19,7 +19,7 @@ module ConnectionPoolSpec
           spawn do
             Clear::SQL.transaction do
               Clear::SQL.insert("tests", {id: 1}).execute
-              sleep 0.2 # < The transaction is not yet commited
+              sleep 0.2.seconds # < The transaction is not yet commited
             end
           end
 
@@ -27,11 +27,11 @@ module ConnectionPoolSpec
 
           spawn do
             # Not inside the transaction so count must be zero since the transaction is not finished:
-            sleep 0.1
+            sleep 0.1.seconds
             @@count = Clear::SQL.select.from("tests").count
           end
 
-          sleep 0.3 # Let the 2 spawn finish...
+          sleep 0.3.seconds # Let the 2 spawn finish...
 
           @@count.should eq 0 # < If one, the connection pool got wrong with the fiber.
 

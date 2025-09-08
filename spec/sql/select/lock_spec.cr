@@ -19,7 +19,7 @@ module LockSpec
         Clear::SQL.select.from(:to_lock).pluck_col(:id).should eq [1]
       end
 
-      sleep(0.05) # Give hand to the other fiber. Now it should be not locked anymore?
+      sleep(0.05.seconds) # Give hand to the other fiber. Now it should be not locked anymore?
       Clear::SQL.select.from(:to_lock).order_by("id", :asc).pluck_col(:id).should eq [1, 2]
     ensure
       Clear::SQL.execute("DROP TABLE to_lock")

@@ -1,3 +1,5 @@
+require "json"
+
 module Clear
   class IllegalEnumValueError < Exception
   end
@@ -24,19 +26,34 @@ module Clear
       json.string(@value)
     end
 
-    def ==(x)
-      super(x) || @value == x
+    def ==(other)
+      super(other) || @value == other
+    end
+
+    macro inherited
+      macro finished
+        # For Serialisation with JSON
+        def initialize(value : (::JSON::PullParser | String))
+          if value.is_a?(String)
+            @value = value
+          else
+            str = value.read_string
+            str.in?(self.class.authorized_values) || raise ::Clear::IllegalEnumValueError.new("Illegal enum value for `#{self.class}`: '#{str}'")
+            @value = str
+          end
+        end
+      end
     end
 
     module Converter(T)
-      def self.to_column(x) : T?
-        case x
+      def self.to_column(value) : T?
+        case value
         when String
-          T.authorized_values[x]
+          T.authorized_values[value]
         when Nil
           nil
         else
-          raise converter_error(x.class.name, "Enum: #{T.class.name}")
+          raise converter_error(value.class.name, "Enum: #{T.class.name}")
         end
       end
     end
@@ -50,14 +67,14 @@ module Clear
   #
   # Let's say you need to define an enum for genders:
   #
-  # ```crystal
+  # ```
   # # Define the enum
   # Clear.enum MyApp::Gender, "male", "female" # , ...
   # ```
   #
   # In migration, we tell Postgres about the enum:
   #
-  # ```crystal
+  # ```
   # create_enum :gender, MyApp::Gender # < Create the new type `gender` in the database
   #
   # create_table :users do |t|
@@ -68,7 +85,7 @@ module Clear
   #
   # Finally in your model, simply add the enum as column:
   #
-  # ```crystal
+  # ```
   # class User
   #   include Clear::Model
   #   # ...
@@ -79,19 +96,22 @@ module Clear
   #
   # Now, you can assign the enum:
   #
-  # ```crystal
+  # ```
   # u = User.new
   # u.gender = MyApp::Gender::Male
   # ```
   #
   # You can dynamically check and build the enumeration values:
   #
-  # ```crystal
+  # ```
   # MyApp::Gender.authorized_values # < return ["male", "female"]
   # MyApp::Gender.all               # < return [MyApp::Gender::Male, MyApp::Gender::Female]
   #
   # MyApp::Gender.from_string("male")    # < return MyApp::Gender::Male
   # MyApp::Gender.from_string("unknown") # < throw Clear::IllegalEnumValueError
+  #
+  # (De)serialisation is also supported
+  # MyApp::Gender.from_json("male")    # < return MyApp::Gender::Male
   #
   # MyApp::Gender.valid?("female")  # < Return true
   # MyApp::Gender.valid?("unknown") # < Return false
@@ -99,14 +119,14 @@ module Clear
   #
   # However, you cannot write:
   #
-  # ```crystal
+  # ```
   # u = User.new
   # u.gender = "male"
   # ```
   #
   # But instead:
   #
-  # ```crystal
+  # ```
   # u = User.new
   # u.gender = MyApp::Gender::Male
   # ```

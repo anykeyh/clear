@@ -1,7 +1,6 @@
 module Clear::Model::Connection
   macro included # When included into Model
     macro included # When included into final Model
-
       # Define on which connection the model is living. Useful in case of models living in different databases.
       #
       # Is set to "default" by default.
@@ -10,8 +9,8 @@ module Clear::Model::Connection
       #
       # Example:
       # ```
-      #  Clear::SQL.init("postgres://postgres@localhost/database_1", connection_pool_size: 5)
-      #  Clear::SQL.init("secondary", "postgres://postgres@localhost/database_2", connection_pool_size: 5)
+      # Clear::SQL.init("postgres://postgres@localhost/database_1", connection_pool_size: 5)
+      # Clear::SQL.init("secondary", "postgres://postgres@localhost/database_2", connection_pool_size: 5)
       #
       # class ModelA
       #   include Clear::Model
@@ -30,7 +29,6 @@ module Clear::Model::Connection
       #
       #   column id : Int32, primary: true, presence: false
       # end
-      #
       # ```
       class_property connection : String = "default"
     end

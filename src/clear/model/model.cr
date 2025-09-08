@@ -35,8 +35,8 @@ module Clear::Model
   end
 
   # Comparison between models is made by comparing their primary keys.
-  def ==(model : self)
-    self.__pkey__ == model.__pkey__
+  def ==(other : self)
+    self.__pkey__ == other.__pkey__
   end
 
   # We use here included for errors purpose.

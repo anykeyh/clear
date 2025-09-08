@@ -19,7 +19,7 @@ module Clear::Model::HasValidation
   # Return `true` if saving has been declined because of validation issues.
   # The error list can be found by calling `Clear::Model#errors`
   def error?
-    @errors.any?
+    !@errors.empty?
   end
 
   # Clear the errors log (if any) of the model and return itself

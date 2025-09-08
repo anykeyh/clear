@@ -1,5 +1,5 @@
 require "../../spec_helper"
-require "./fixture"
+require "./fixture_spec"
 
 module RelationSpec
   describe("has_many relation (not nilable)") do
@@ -99,11 +99,7 @@ module RelationSpec
       query1.each do |user|
         category_call.should eq 1
         user_call.should eq 1
-
-        # FIXME: Not sure how to check if there's queries made here.
-        #        for now we assume there's none :-)
-
-        user.categories.count.should eq 2 # 2 for each
+        user.categories.count.should eq 2
       end
     end
   end

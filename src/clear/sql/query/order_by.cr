@@ -122,7 +122,10 @@ module Clear::SQL::Query::OrderBy
 
   # :nodoc:
   protected def print_order_bys
-    return unless @order_bys.any?
-    "ORDER BY " + @order_bys.join(", ") { |r| [r.op, r.dir.to_s.upcase, to_nulls_statement(r.nulls)].compact.join(" ") }
+    order_bys = @order_bys
+
+    return if order_bys.empty?
+
+    "ORDER BY " + order_bys.join(", ") { |r| [r.op, r.dir.to_s.upcase, to_nulls_statement(r.nulls)].compact.join(" ") }
   end
 end
