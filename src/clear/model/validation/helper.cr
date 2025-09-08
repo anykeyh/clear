@@ -26,6 +26,6 @@ module Clear::Validation::Helper
 
   @[Deprecated("Use `ensure_that` instead")]
   macro ensure_than(field, message, &block)
-    ensure_that({{field.id}}, {{message}}, &block)
+    ensure_that({{field.id}}, {{message}}) {{ block }}
   end
 end
